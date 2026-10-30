@@ -4,7 +4,7 @@ Fictional teaching resources for the Claude Masterclass. Start with [the company
 
 ## Explore
 
-- Open `dashboard/index.html` in a browser for the interactive analytics mockup. It embeds the supplied demonstration data and works offline.
+- Open `dashboard/index.html` in a browser for the rough interactive analytics mockup. It embeds the supplied demonstration data and works offline.
 - `data/` contains CSV, JSON and Parquet; evaluation inputs and labels are separate from history.
 - `brand/` contains the visual system and logo assets; `skills/orion-brand/` applies it.
 - `resources/part1/` contains lesson input files.
@@ -18,4 +18,4 @@ Run `python3 tools/validate.py` to check the portable data package. Installation
 
 See [data dictionary](docs/DATA_DICTIONARY.md), [metric definitions](docs/METRICS.md), [embedding lesson handoff](docs/EMBEDDING_HANDOFF.md) and [provenance](docs/PROVENANCE.md). Download `brand/orion-brand-skill.zip` for the self-contained visual skill.
 
-The dashboard is a functional static design reference, not the completed course application. Live account resources, model installation and the application are tracked separately in [pre-production readiness](course/PREPRODUCTION.md).
+The dashboard is the rough starting point; its visual quality is not approved as final. The dedicated Section 8 Claude Design workflow will redesign the working dashboard during the course. See [dashboard teaching stages](docs/DASHBOARD_STAGES.md). Live account resources, model installation and the application are tracked separately in [pre-production readiness](course/PREPRODUCTION.md).

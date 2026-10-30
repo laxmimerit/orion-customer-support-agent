@@ -25,7 +25,7 @@
     "result": "byte-identical"
   },
   "skill_frontmatter": "valid",
-  "curriculum_lessons": 106,
+  "curriculum_lessons": 116,
   "visual_review": [
     "desktop dashboard",
     "mobile dashboard",
@@ -33,5 +33,6 @@
     "four contract pages",
     "two competitor pages",
     "30 invoice PDF contact sheet"
-  ]
+  ],
+  "curriculum_check": "See course-plan-checks.json for v6; original dataset/browser checks retained."
 }

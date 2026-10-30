@@ -1,4 +1,4 @@
-# Claude Masterclass: Tool-First Course Plan (v5 working revision)
+# Claude Masterclass: Tool-First Course Plan (v6 working revision)
 
 Oct 30, 2026 · @Laxmi Kant
 
@@ -19,6 +19,18 @@ These decisions supersede conflicting v4 stack, preparation and timing instructi
 - One learner resources repository: https://github.com/laxmimerit/orion-customer-support-agent-resources . Keep private through recording; public release is a later creator action. Keep instructor answer keys, credentials and recordings outside the repository.
 - The dashboard mockup is an explicitly requested pre-production design reference. The working application is still built during the course.
 
+## Dedicated Claude Design section — creator decision, 30 October 2026
+
+The current dashboard is a rough starting point. The creator accepted its functional and analytics concept, not its visual quality. Preserve `dashboard/` and the baseline at commit `7bcd3ae`; do not polish or replace it during this plan update.
+
+Teaching progression: rough design in Section 4 → working data-connected dashboard in Section 7 → a complete Claude Design redesign section in Section 8 → refined UI implemented and verified with Claude Code within that section. Later engineering, automation and API sections continue on that refined application.
+
+Section 8 teaches deliberate critique and iteration: design brief; Sonnet/Opus comparison on identical inputs; information hierarchy and responsive grids; typography, spacing and component consistency; truthful analytics; tables and navigation; accessibility; realistic states; implementation handoff; rendered before/after review. Compare actual outputs without assuming either model is always better. Verify model availability and Claude Design's actual export/handoff workflow before recording.
+
+The new section has ten lessons. Former Sections 8, 9 and 10 become 9, 10 and 11; Welcome and Sections 1–7 retain their lesson IDs. There are now 116 planned lessons across Welcome plus eleven sections. Duration remains to be estimated from complete walkthroughs. Original imported plans and existing pilot media remain historical sources.
+
+The production-style UI is an outcome built and reviewed during the course, not a completed pre-recording deliverable or a claim that the application is deployed to production.
+
 ## Course at a glance
 
 | Item | Decision |
@@ -26,15 +38,17 @@ These decisions supersede conflicting v4 stack, preparation and timing instructi
 | Working title | Claude Masterclass: Every Claude Feature, from Chat and Design to Claude Code and the API |
 | Course promise | Use every part of Claude with confidence: research, documents, decks, sheets, designs, dashboards, skills, plugins, Claude in your browser and office apps, Claude Code, and building with the API |
 | Course style | **Tool-first.** Each lesson teaches one Claude feature (or a small group of related ones) on the Orion story. It is not a deep production-project course: lessons stand alone from a provided starting state |
-| Structure | Welcome section (built last) + 10 sections. Part 1, the Claude app: Sections 1 to 5. Part 2, Claude Code and the API: Sections 6 to 10 |
-| Length | 106 planned lessons; duration to be re-estimated for complete setup walkthroughs |
+| Structure | Welcome section (built last) + 11 sections. Part 1, the Claude app: Sections 1 to 5. Part 2, Claude Code and the API: Sections 6 to 11 |
+| Length | 116 planned lessons; duration to be re-estimated for complete setup walkthroughs |
 | Audience | Part 1: any professional. Part 2: developers, or Part 1 graduates ready to build |
 | Plan target | **Claude Pro** (the paid individual plan). Free users can follow most of Part 1 and watch the rest to learn the fundamentals. Max is never required |
 | Main surface | **GUI-first:** the Claude desktop app (chat, and the Code tab for Claude Code). The terminal only where no app screen can show the feature |
 | Project | Orion, a fictional startup's AI customer support desk: launched as a business in Part 1, its product built in Part 2 on a multi-stack codebase |
 | Recording | macOS for most lessons; Windows lessons are separate lessons (as in the Codex course), recorded on the Windows PC |
 
-## Changes in this revision (v3 → v4)
+## Historical changes from v3 to v4
+
+This table preserves the earlier comparison and its original lesson numbers. Current structure and numbering are in the v6 sections below.
 
 | Area | v3 | v4 |
 | --- | --- | --- |
@@ -59,14 +73,14 @@ These decisions supersede conflicting v4 stack, preparation and timing instructi
 
 - Each lesson opens on its own feature, does one Orion task with it, and stops. No repeated ship/PR routines, no side tours.
 - Related features may share a lesson (for example `/context`, `/compact`, `/recap`, `/focus`), as listed in the tables.
-- Every Part 2 lesson starts from a tagged state of the starter repo (`lesson-6.3-start`, `lesson-8.1-start`, …), so a learner can jump into any lesson. The lesson's end state is tagged too (`lesson-6.3-end`).
+- Every Part 2 lesson starts from a tagged state of the starter repo (`lesson-6.3-start`, `lesson-9.1-start`, …), so a learner can jump into any lesson. The lesson's end state is tagged too (`lesson-6.3-end`).
 
 ### 2. GUI-first
 
 - **Part 1:** the Claude desktop app (with claude.ai on the web where a feature lives only there), the mobile app where taught.
 - **Part 2:** the Claude desktop app's **Code tab** is the main surface. Slash commands are typed in the Code tab's prompt; modes, model and effort are picked in the app; worktrees come from the app's per-session worktrees; parallel work uses side sessions and split view; the app's built-in browser pane shows the running app; scheduled tasks, connectors and plugins use the app's own screens.
 - **VS Code** (light theme) shows the files Claude writes: open the project once per lesson and watch it change. Never show files one by one in a terminal.
-- **The terminal appears only where no app screen can show it**, and the lesson says why in one line. Expected cases: 6.2 (Claude Code in the terminal and VS Code, taught as a surface), 8.12 (status line), 9.7 (headless `claude -p` in CI), and commands whose dialog is terminal-only (for example `/hooks`, `/permissions`). For a terminal-only dialog, prefer asking Claude in the Code tab to make the change and showing the settings file in VS Code; show the terminal dialog only briefly.
+- **The terminal appears only where no app screen can show it**, and the lesson says why in one line. Expected cases: 6.2 (Claude Code in the terminal and VS Code, taught as a surface), 9.12 (status line), 10.7 (headless `claude -p` in CI), and commands whose dialog is terminal-only (for example `/hooks`, `/permissions`). For a terminal-only dialog, prefer asking Claude in the Code tab to make the change and showing the settings file in VS Code; show the terminal dialog only briefly.
 - **Before filming each section, check every listed command in the Code tab** against the current commands page. Anything that turns out terminal-only gets the one-line reason; nothing is dropped.
 
 ### 3. The stack, introduced properly
@@ -91,14 +105,14 @@ What Anthropic's models overview says (checked 2026-10-30; re-check before recor
 - **Sonnet is the default** for day-to-day work and for development in Claude Code.
 - **Switch to Opus when Sonnet gets it wrong** (a wrong fix, a missed bug, a weak plan). If a real Sonnet miss happens on camera, keep it as a teaching beat and redo the step on Opus. Never stage a fake failure.
 - **Haiku for small test tasks**: quick checks, small subagents (a test runner), and small agent checks. Orion classification follows the free-first OpenRouter/Jev policy above.
-- **Fable reminders:** whenever a lesson talks about output quality or a hard task, remind learners that Fable is the top tier for the hardest reasoning and long-horizon agent work, and that it costs more and is slower. Planned reminder points: 1.2, 2.2, 3.1, 6.7, 8.2, 9.3, 9.5, 10.6, 10.7.
+- **Fable reminders:** whenever a lesson talks about output quality or a hard task, remind learners that Fable is the top tier for the hardest reasoning and long-horizon agent work, and that it costs more and is slower. Planned reminder points: 1.2, 2.2, 3.1, 6.7, 9.2, 10.3, 10.5, 11.6, 11.7.
 - Be honest once: Anthropic's own docs suggest starting with Opus for most workloads. The course defaults to Sonnet because it is faster and lasts longer within a Pro plan's usage limits, and Opus stays one click away.
 
 ### 5. Plans
 
 - The course is recorded on **Pro**. 1.4 compares Free, Pro and Max and says plainly: Pro is the target; Free users can follow most of Part 1 and should watch the rest to learn the fundamentals.
 - Mark lessons whose features need a paid plan with a small on-screen badge ("Pro"). Check which features Free lacks before recording (Claude Code, some artifact types, connectors, scheduled tasks).
-- Section 10 needs Claude Console API credits, billed separately from the Claude plan: say so at the start of 10.1.
+- Section 11 needs Claude Console API credits, billed separately from the Claude plan: say so at the start of 11.1.
 
 ### 6. Titles
 
@@ -137,7 +151,7 @@ Follow the `calm-lecture-edit` skill and the Codex course rules:
 - The founder inbox is **the course-owned test inbox** (fine on screen). Beta-user emails go only to the course's test Gmail accounts, never to real people. Claude confirms before each send.
 - Keys and tokens never appear on screen: redact them in the source capture, not with a moving blur. API keys live in `.env`.
 - Project and demo folders live under `~/Documents/Claude/<name>/` (for example `~/Documents/Claude/orion/`), never in the home folder.
-- Lessons that teach Claude in Chrome (5.6, 9.9) film it driving Chrome on purpose. The glow and the agent cursor are the feature. Every other browser beat uses plain Chrome or the app's browser pane.
+- Lessons that teach Claude in Chrome (5.6, 10.9) film it driving Chrome on purpose. The glow and the agent cursor are the feature. Every other browser beat uses plain Chrome or the app's browser pane.
 
 ### 11. Listing
 
@@ -162,8 +176,8 @@ Orion is a fictional startup's AI customer support desk. Part 1 uses the Claude 
 | Web app | Next.js (App Router, TypeScript) | 7.4 |
 | Vector search | pgvector + **nomic-embed-text** embeddings run locally through Python/Sentence Transformers (no Ollama) | 7.5 |
 | Analytics | Polars and DuckDB on a Parquet export | 7.6 |
-| CI/CD | GitHub Actions (tests on every PR; headless `claude -p` review added in 9.7) | 7.7 |
-| AI | Claude API, Claude Agent SDK, Managed Agents | Section 10 |
+| CI/CD | GitHub Actions (tests on every PR; headless `claude -p` review added in 10.7) | 7.7 |
+| AI | Claude API, Claude Agent SDK, Managed Agents | Section 11 |
 | Email | Signups in PostgreSQL; beta-user emails sent from the course-owned test inbox through the Gmail connector | 5.7 |
 
 Nomic embeddings run through Python. Ollama and LM Studio are separate optional Windows demonstrations; neither belongs to the active Orion stack.
@@ -223,7 +237,7 @@ Surface key: **App** = Claude desktop app (chat); **Web** = claude.ai in the bro
 
 | # | Lesson title | Claude feature | Surface | Orion task | Min |
 | --- | --- | --- | --- | --- | --- |
-| 4.1 | AI UI Design: Landing Page and Dashboard in Three Directions | Design canvas | App | Landing page and agent dashboard | 5 |
+| 4.1 | AI UI Design: Landing Page and Dashboard in Three Directions | Design canvas | App | Landing page and rough agent-dashboard concepts; establish the starting point for Section 8 | 5 |
 | 4.2 | Design Systems: Colors, Typography and Components | Design System | App | Brand applied to every design | 5 |
 | 4.3 | Design System from a Brand Kit: Import the Orion DESIGN.md | Design System from brand assets | App, Web | Download the published Orion brand kit from designmd.ai on camera and build the system from it | 3 |
 | 4.4 | Whiteboard: Flowcharts and Process Maps | Whiteboard | App | Ticket flow and launch flowchart | 4 |
@@ -251,7 +265,7 @@ Surface key: **App** = Claude desktop app (chat); **Web** = claude.ai in the bro
 | 5.9 M | Computer Use: Desktop Automation on Mac | Computer use | App | Organise the messy launch assets folder | 4 |
 | 5.9 W | Computer Use on Windows | Computer use, Windows permissions | Win | The same folder task on Windows | 3 |
 
-## Part 2: Claude Code and the API (Sections 6 to 10, 240 min)
+## Part 2: Claude Code and the API (Sections 6 to 11, duration TBD)
 
 Surface key: **Code** = the desktop app's Code tab; **VS Code** = files shown in VS Code; **Term** = terminal, with the reason; **Win** = Windows PC.
 
@@ -279,66 +293,89 @@ Each lesson introduces one stack piece properly (rule 3). Claude builds it in th
 | 7.1 W | Docker Desktop on Windows with WSL 2 | WSL 2 backend, file paths | Win | The same stack on Windows | 5 |
 | 7.2 | PostgreSQL and Alembic: Database Schema and Migrations | Tables, keys, migrations | Code, VS Code | Customers, agents, tickets, waitlist tables | 6 |
 | 7.3 | FastAPI: Build the Ticket REST API | Routes, models, OpenAPI docs, pytest | Code, browser pane | Ticket endpoints with tests | 6 |
-| 7.4 | Next.js: The Agent Dashboard from the Section 4 Design | App Router, pages, components | Code, browser pane | Dashboard built from the Section 4 design | 6 |
-| 7.5 | Vector Search: pgvector and nomic-embed-text Embeddings | Embeddings, cosine similarity, vector index | Code, VS Code | Load the precomputed embeddings; find similar tickets for one new ticket | 6 |
+| 7.4 | Next.js: Build the Basic Dashboard from the Rough Design | App Router, pages, components | Code, browser pane | Working dashboard from the rough Section 4 design; final visual refinement follows in Section 8 | 6 |
+| 7.5 | Vector Search: pgvector and nomic-embed-text Embeddings | Embeddings, cosine similarity, vector index | Code, VS Code | Install local Nomic through Python; generate embeddings and find similar tickets for one new ticket | 6 |
 | 7.6 | Polars and DuckDB: Ticket Analytics on Parquet | DataFrames, SQL on files | Code, VS Code | Weekly ticket report from the Parquet export | 5 |
 | 7.7 | CI/CD with GitHub Actions: Tests on Every Pull Request | Workflows, checks | Code, browser | Green checks on a PR | 5 |
 
-### Section 8: Built-In Power Tools and Extending Claude Code (56 min)
+### Section 8: Claude Design — From a Working Dashboard to a Production-Style UI (duration TBD)
+
+Prerequisite: the basic dashboard, data contracts and analytics from Section 7 work. Section 4 introduces rough designs; this separate section develops a complete design and implementation workflow. Begin with the supplied rough mockup and the actual working application, not a prebuilt polished answer.
+
+| # | Lesson title | Design focus | Surface | Orion task | Min |
+| --- | --- | --- | --- | --- | --- |
+| 8.1 | Critique the Rough Dashboard and Write the Design Brief | Design audit and acceptance criteria | Design, browser | Inspect the existing dashboard; define users, primary decisions, pain points and measurable design acceptance criteria | TBD |
+| 8.2 | Sonnet and Opus: Compare Two Design Approaches | Controlled model comparison | Design | Use the same brief, brand and dataset with available Sonnet and Opus models; inspect strengths and failures and choose a direction | TBD |
+| 8.3 | Information Hierarchy and Responsive Layout Grids | Navigation, hierarchy, columns and breakpoints | Design | Prioritise support decisions; establish a consistent grid, page structure and responsive reading order | TBD |
+| 8.4 | Typography, Spacing and a Reusable Component System | Type scale, density, tokens and components | Design | Refine the Orion visual system and reusable controls while preserving brand identity | TBD |
+| 8.5 | Design Trustworthy KPIs and Analytics Charts | Chart selection, scales, labels and denominators | Design | Redesign trend, SLA, CSAT, billing and backlog views without changing metric definitions or inventing numbers | TBD |
+| 8.6 | Design the Ticket Table, Filters and Detail Flow | Dense tables and interaction flows | Design | Improve scanning, sorting, filtering, pagination, ticket detail and export discoverability | TBD |
+| 8.7 | Responsive Design and Accessibility | Narrow layouts, contrast and keyboard access | Design, browser | Inspect desktop, tablet and mobile layouts; design focus, readable labels and accessible status cues | TBD |
+| 8.8 | Loading, Empty, Error and Partial-Data States | State design and realistic prototypes | Design | Design the whole experience including no results, slow requests, failures and missing observations; distinguish zero from unavailable | TBD |
+| 8.9 | Bring the Refined Design into Claude Code | Design handoff and frontend implementation | Design, Code, browser | Carry approved layouts, components and interaction notes into the working app; implement without replacing the data or API contracts | TBD |
+| 8.10 | Review the Before and After and Verify the Redesign | Visual critique and regression checks | Design, Code, browser | Compare the same records and viewport sizes, refine the rendered result, verify keyboard/mobile flows and reconcile metrics, filters and exports | TBD |
+
+**Teaching method:** show the brief, generation, critique, corrections and the rendered result. Keep unsuccessful iterations when they explain a useful correction. Compare Sonnet and Opus using the same constraints and evaluate hierarchy, usability, consistency and factual accuracy rather than assuming a model winner. Do not rush the process to fit earlier time estimates.
+
+**Section deliverables:** annotated before/after captures, a design brief and critique rubric, refined tokens/components and responsive layouts, interaction/state specifications, and the implemented dashboard. Keep the original mockup as the before reference. Capture design assets through the workflow actually supported at recording time; explain the handoff instead of implying automatic production-ready code.
+
+**Completion checks:** inspect real desktop, tablet and mobile renders; keyboard navigation and focus; contrast/readability; loading/empty/error/partial-data states; filters, sorting, pagination, detail and CSV export. For identical selected records, verify counts, medians, SLA denominators, CSAT coverage and billing totals match before and after. Treat a successful build as one check, not visual approval. Use the refined result for subsequent lessons and the final showcase after review.
+
+### Section 9: Built-In Power Tools and Extending Claude Code (56 min)
 
 | # | Lesson title | Claude Code feature | Surface | Orion task | Min |
 | --- | --- | --- | --- | --- | --- |
-| 8.1 | /code-review: AI Code Review with Effort Levels and Auto-Fix | `/code-review`, `--fix`, `--comment` | Code | Planted bugs found and fixed in the ticket API | 5 |
-| 8.2 | /security-review: Find Vulnerabilities and Prompt Injection | `/security-review` | Code | The planted SQL injection and injected tickets found (Fable reminder) | 5 |
-| 8.3 | /simplify: Refactoring and Code Cleanup | `/simplify` | Code | A messy change tidied | 3 |
-| 8.4 | /verify: Verify Changes in the Running App | `/verify` | Code, browser pane | Dashboard run and checked, not just tested | 4 |
-| 8.5 | /batch: Large-Scale Codebase Changes in Parallel | `/batch` | Code | Rename the ticket model across the codebase | 4 |
-| 8.6 | /deep-research: Technical Research from Claude Code | `/deep-research` | Code | Embedding model comparison with sources | 4 |
-| 8.7 | /skills, /skill-doctor: Claude Code Skills for Migrations and Endpoints | `.claude/skills/`, `/skills`, `/skill-doctor` | Code, VS Code | `db-migration` and `api-endpoint` skills, first used for the signup endpoint | 5 |
-| 8.8 | /agents: Subagents for Security Review and Test Writing | Subagents | Code, VS Code | `security-reviewer` (Sonnet) and `test-writer` (Haiku) | 5 |
-| 8.9 | /hooks: Lifecycle Hooks for Formatting, Tests and Secrets | Hooks | Code, VS Code (`/hooks` dialog shown briefly if terminal-only) | Format and test after each edit; block secrets and migrations on `main` | 5 |
-| 8.10 | /mcp: MCP Servers for PostgreSQL and GitHub | MCP | Code | PostgreSQL and GitHub connected | 5 |
-| 8.11 | /plugin: Plugins and Private Marketplaces | Plugins | Code | `orion-kit` shared with the team | 5 |
-| 8.12 | Output Styles and the Status Line | Output styles, status line | Code; Term for the status line (it lives only in the CLI) | Cost and context in the status line | 3 |
-| 8.13 | /design, /design-sync, /artifacts: Design and Artifacts from Claude Code | Design and artifacts | Code | Dashboard mockup and design system synced from the repo | 3 |
+| 9.1 | /code-review: AI Code Review with Effort Levels and Auto-Fix | `/code-review`, `--fix`, `--comment` | Code | Planted bugs found and fixed in the ticket API | 5 |
+| 9.2 | /security-review: Find Vulnerabilities and Prompt Injection | `/security-review` | Code | The planted SQL injection and injected tickets found (Fable reminder) | 5 |
+| 9.3 | /simplify: Refactoring and Code Cleanup | `/simplify` | Code | A messy change tidied | 3 |
+| 9.4 | /verify: Verify Changes in the Running App | `/verify` | Code, browser pane | Dashboard run and checked, not just tested | 4 |
+| 9.5 | /batch: Large-Scale Codebase Changes in Parallel | `/batch` | Code | Rename the ticket model across the codebase | 4 |
+| 9.6 | /deep-research: Technical Research from Claude Code | `/deep-research` | Code | Embedding model comparison with sources | 4 |
+| 9.7 | /skills, /skill-doctor: Claude Code Skills for Migrations and Endpoints | `.claude/skills/`, `/skills`, `/skill-doctor` | Code, VS Code | `db-migration` and `api-endpoint` skills, first used for the signup endpoint | 5 |
+| 9.8 | /agents: Subagents for Security Review and Test Writing | Subagents | Code, VS Code | `security-reviewer` (Sonnet) and `test-writer` (Haiku) | 5 |
+| 9.9 | /hooks: Lifecycle Hooks for Formatting, Tests and Secrets | Hooks | Code, VS Code (`/hooks` dialog shown briefly if terminal-only) | Format and test after each edit; block secrets and migrations on `main` | 5 |
+| 9.10 | /mcp: MCP Servers for PostgreSQL and GitHub | MCP | Code | PostgreSQL and GitHub connected | 5 |
+| 9.11 | /plugin: Plugins and Private Marketplaces | Plugins | Code | `orion-kit` shared with the team | 5 |
+| 9.12 | Output Styles and the Status Line | Output styles, status line | Code; Term for the status line (it lives only in the CLI) | Cost and context in the status line | 3 |
+| 9.13 | /design, /design-sync, /artifacts: Design and Artifacts from Claude Code | Design and artifacts | Code | Dashboard mockup and design system synced from the repo | 3 |
 
-### Section 9: Parallel Agents, Automation and Teams (41 min)
+### Section 10: Parallel Agents, Automation and Teams (41 min)
 
 | # | Lesson title | Claude Code feature | Surface | Orion task | Min |
 | --- | --- | --- | --- | --- | --- |
-| 9.1 | Git Worktrees: Parallel Sessions Side by Side | Per-session worktrees, split view | Code | Ticket API and dashboard worked on side by side | 3 |
-| 9.2 | /background: Background Agents and Agent View | Background sessions | Code | Similar-tickets panel in the dashboard built while you work | 4 |
-| 9.3 | Agent Teams: Multi-Agent Collaboration on One Feature | Shared tasks, inter-agent messaging | Code | SLA timers end to end (Fable reminder) | 5 |
-| 9.4 | /workflows: Multi-Agent Workflows | Dynamic workflows | Code | Rerunnable test-writing fan-out across modules | 4 |
-| 9.5 | /goal: Long-Running Autonomous Tasks | `/goal` | Code | Run until all tests pass (Fable reminder) | 3 |
-| 9.6 | /teleport: Remote Control, Mobile and Cloud Sessions | Moving between devices | Code, Mobile | Start on the Mac, approve on the phone, finish in the cloud | 4 |
-| 9.7 | Headless claude -p: AI Code Review in GitHub Actions | `claude -p`, GitHub Actions | Term (headless has no app screen), browser | Agent review on every PR | 4 |
-| 9.8 | /schedule: Cloud Scheduled Tasks for a Nightly Report | Cloud scheduled tasks | Code | Nightly support report with Polars and DuckDB | 3 |
-| 9.9 | /chrome and Computer Use: Browser Testing of the Dashboard | Claude in Chrome from Claude Code, computer use | Code, Chrome | End-to-end test of the dashboard in Chrome | 3 |
-| 9.10 | /insights: Usage Analytics for Claude Code | `/insights` | Code | Where sessions go wrong | 4 |
-| 9.11 | Managed Settings: Organization-Wide Policies | Managed settings file | VS Code | Orion rules enforced on every machine | 4 |
+| 10.1 | Git Worktrees: Parallel Sessions Side by Side | Per-session worktrees, split view | Code | Ticket API and dashboard worked on side by side | 3 |
+| 10.2 | /background: Background Agents and Agent View | Background sessions | Code | Similar-tickets panel in the dashboard built while you work | 4 |
+| 10.3 | Agent Teams: Multi-Agent Collaboration on One Feature | Shared tasks, inter-agent messaging | Code | SLA timers end to end (Fable reminder) | 5 |
+| 10.4 | /workflows: Multi-Agent Workflows | Dynamic workflows | Code | Rerunnable test-writing fan-out across modules | 4 |
+| 10.5 | /goal: Long-Running Autonomous Tasks | `/goal` | Code | Run until all tests pass (Fable reminder) | 3 |
+| 10.6 | /teleport: Remote Control, Mobile and Cloud Sessions | Moving between devices | Code, Mobile | Start on the Mac, approve on the phone, finish in the cloud | 4 |
+| 10.7 | Headless claude -p: AI Code Review in GitHub Actions | `claude -p`, GitHub Actions | Term (headless has no app screen), browser | Agent review on every PR | 4 |
+| 10.8 | /schedule: Cloud Scheduled Tasks for a Nightly Report | Cloud scheduled tasks | Code | Nightly support report with Polars and DuckDB | 3 |
+| 10.9 | /chrome and Computer Use: Browser Testing of the Dashboard | Claude in Chrome from Claude Code, computer use | Code, Chrome | End-to-end test of the dashboard in Chrome | 3 |
+| 10.10 | /insights: Usage Analytics for Claude Code | `/insights` | Code | Where sessions go wrong | 4 |
+| 10.11 | Managed Settings: Organization-Wide Policies | Managed settings file | VS Code | Orion rules enforced on every machine | 4 |
 
-### Section 10: The Claude API, Agent SDK and Model Gateways (59 min)
+### Section 11: The Claude API, Agent SDK and Model Gateways (59 min)
 
-Lessons 10.10 to 10.14 use setups Anthropic does not support for Claude Code ([source](https://code.claude.com/docs/en/llm-gateway.md)): say so on camera, and check each provider's terms and free tiers right before recording. They come after the API lessons because the learner then knows what a base URL and a key are.
+Lessons 11.10 to 11.14 use setups Anthropic does not support for Claude Code ([source](https://code.claude.com/docs/en/llm-gateway.md)): say so on camera, and check each provider's terms and free tiers right before recording. They come after the API lessons because the learner then knows what a base URL and a key are.
 
 | # | Lesson title | Feature | Surface | Orion task | Min |
 | --- | --- | --- | --- | --- | --- |
-| 10.1 | Claude API Quickstart: Console, API Keys and the Python SDK | Console, keys, SDK (API billing is separate from the plan) | Web, Code | Ticket service calls Claude | 4 |
-| 10.2 | Tool Use (Function Calling): search_tickets and similar_tickets | Client tools, tool runner | Code | Two tools on Orion's data | 4 |
-| 10.3 | Server Tools: Web Search, Web Fetch, Code Execution and Memory | Server tools | Code | Known product issues looked up inside the API | 4 |
-| 10.4 | Structured Outputs and Citations: Typed Ticket Triage | Structured outputs, citations | Code | Category, priority, draft reply, sources; scored on the labelled test set | 4 |
-| 10.5 | Prompt Caching, Batch API and Files API: Cost at Scale | Caching, batch, Files API | Code | Batch API demonstrated for reply drafting; classification uses the free-first route | 4 |
-| 10.6 | Adaptive Thinking, Effort and Compaction: Hard Tickets and Long Threads | Thinking, effort, compaction, context editing | Code | Escalations and very long threads (Fable reminder) | 3 |
-| 10.7 | Claude Agent SDK: A Triage Agent inside FastAPI | Agent SDK (API key, not a claude.ai login) | Code | Triage agent service (Fable reminder) | 6 |
-| 10.8 | Managed Agents: The Same Agent on Anthropic's Hosted Harness | Managed Agents | Web, Code | Hosted triage agent | 4 |
-| 10.9 | Agent Skills and the MCP Connector in the Claude API | Skills in the API, MCP connector | Code | Brand-voice skill used for reply drafts | 3 |
-| 10.10 | LLM Gateways: How Claude Code Reaches a Model | `ANTHROPIC_BASE_URL`, gateway credentials, `/status` | Win | See exactly where requests go | 3 |
-| 10.11 | Optional: Local Models with Ollama on Windows | Ollama's Anthropic-compatible API, a local coding model with at least 32K context | Win (RTX 5090 PC) | Fix a small bug offline | 4 |
-| 10.12 | OpenRouter: Route Subagents to Cheaper Models | Base URL, per-role model variables | Code | Subagent work on a cheaper model | 3 |
-| 10.13 | NVIDIA NIM through a Community Proxy | Community proxy to NVIDIA Build | Code | The same task on a NIM-hosted model | 3 |
-| 10.14 | Choosing Honestly: Claude vs Local vs Hosted Open Models | Quality, tool-use reliability, privacy, terms, free-tier limits | Code | One task on three setups, compared | 2 |
-| 10.15 | Capstone: Launch Day, Orion End to End | App, Claude Code and API together | App, Code | Research, deck, design, app, CI and triage agent in one recorded run (the closer) | 8 |
+| 11.1 | Claude API Quickstart: Console, API Keys and the Python SDK | Console, keys, SDK (API billing is separate from the plan) | Web, Code | Ticket service calls Claude | 4 |
+| 11.2 | Tool Use (Function Calling): search_tickets and similar_tickets | Client tools, tool runner | Code | Two tools on Orion's data | 4 |
+| 11.3 | Server Tools: Web Search, Web Fetch, Code Execution and Memory | Server tools | Code | Known product issues looked up inside the API | 4 |
+| 11.4 | Structured Outputs and Citations: Typed Ticket Triage | Structured outputs, citations | Code | Category, priority, draft reply, sources; scored on the labelled test set | 4 |
+| 11.5 | Prompt Caching, Batch API and Files API: Cost at Scale | Caching, batch, Files API | Code | Batch API demonstrated for reply drafting; classification uses the free-first route | 4 |
+| 11.6 | Adaptive Thinking, Effort and Compaction: Hard Tickets and Long Threads | Thinking, effort, compaction, context editing | Code | Escalations and very long threads (Fable reminder) | 3 |
+| 11.7 | Claude Agent SDK: A Triage Agent inside FastAPI | Agent SDK (API key, not a claude.ai login) | Code | Triage agent service (Fable reminder) | 6 |
+| 11.8 | Managed Agents: The Same Agent on Anthropic's Hosted Harness | Managed Agents | Web, Code | Hosted triage agent | 4 |
+| 11.9 | Agent Skills and the MCP Connector in the Claude API | Skills in the API, MCP connector | Code | Brand-voice skill used for reply drafts | 3 |
+| 11.10 | LLM Gateways: How Claude Code Reaches a Model | `ANTHROPIC_BASE_URL`, gateway credentials, `/status` | Win | See exactly where requests go | 3 |
+| 11.11 | Optional: Local Models with Ollama on Windows | Ollama's Anthropic-compatible API, a local coding model with at least 32K context | Win (RTX 5090 PC) | Fix a small bug offline | 4 |
+| 11.12 | OpenRouter: Route Subagents to Cheaper Models | Base URL, per-role model variables | Code | Subagent work on a cheaper model | 3 |
+| 11.13 | NVIDIA NIM through a Community Proxy | Community proxy to NVIDIA Build | Code | The same task on a NIM-hosted model | 3 |
+| 11.14 | Choosing Honestly: Claude vs Local vs Hosted Open Models | Quality, tool-use reliability, privacy, terms, free-tier limits | Code | One task on three setups, compared | 2 |
+| 11.15 | Capstone: Launch Day, Orion End to End | App, Claude Code and API together | App, Code | Research, deck, design, app, CI and triage agent in one recorded run (the closer) | 8 |
 
 ## Pre-production: sample data, brand assets and starter repo
 
@@ -380,21 +417,21 @@ Resource inputs are built and checked **before recording starts** and shipped wi
 | --- | --- | --- |
 | Customers | About 300 fictional companies: name, size, industry, country, plan, signup date | 7.1 onward |
 | Support agents | 9 agents with role, team, shift (including one weekend-only shift), skills; one agent planted as consistently slow | 7.1 onward |
-| Plans, subscriptions and invoices | 3 plans; subscriptions per customer; monthly invoices; one month with a pricing change that causes a billing-ticket spike | 7.6, 9.8 |
+| Plans, subscriptions and invoices | 3 plans; subscriptions per customer; monthly invoices; one month with a pricing change that causes a billing-ticket spike | 7.6, 10.8 |
 | Tickets | About 4,000 tickets over 6 months: subject, body, category (billing, bug, how-to, account access, feature request, outage), priority P1 to P4, status, agent, timestamps, SLA due time, first-response and resolution times, threads of 1 to 15 messages | 7.1 onward |
-| Planted ticket patterns | The billing spike (pricing-change month), one slow agent, weekend SLA breaches, a ticket surge on the outage day | 7.6, 9.3, 9.8 |
-| Product releases and one outage | Release log (about 12 releases) and one outage with start and end times that explains the surge | 9.8 |
-| SLA policy and CSAT | SLA targets per priority and plan; a 1 to 5 satisfaction rating on resolved tickets | 9.3, 9.8 |
-| Duplicate and near-duplicate tickets | About 150 tickets in clusters of 2 to 6 that say the same thing in different words | 7.5, 9.2 |
-| Precomputed embeddings | One 768-dimension vector per demonstration ticket from local nomic-embed-text through Python, using the same pinned model and configuration as query generation. Stored documents use the model's document prefix (`search_document:`) and queries use the query prefix (`search_query:`); verify the current prefixes and tag before generating. Stored as Parquet and loaded into a `vector(768)` column with a cosine index | 7.5, 9.2 |
-| Help center articles and known issues | About 40 knowledge-base articles and 10 known product issues | 10.3, 10.4 |
-| Labelled test set | 300 tickets with the correct category and priority (kept out of the training/demo pool) | 10.4, 10.7 |
-| Untriaged backlog | About 500 tickets with no category or priority | 10.5 |
-| Very long ticket threads | 10 threads of 60 to 120 messages | 10.6 |
-| Ticket attachments | About 40 product screenshots (mock UI images in the Orion brand) and 30 PDF invoices | 10.5 |
-| Prompt-injection and personal-data tickets | 6 tickets with hidden instructions (white text, HTML comments, "ignore previous instructions" in a quoted email) and 10 with fake personal data | 8.2, 10.7 |
-| Waitlist signups | The Part 1 signups, as a table | 8.7 |
-| Parquet export | The tickets and invoices as Parquet files | 7.6, 9.8 |
+| Planted ticket patterns | The billing spike (pricing-change month), one slow agent, weekend SLA breaches, a ticket surge on the outage day | 7.6, 10.3, 10.8 |
+| Product releases and one outage | Release log (about 12 releases) and one outage with start and end times that explains the surge | 10.8 |
+| SLA policy and CSAT | SLA targets per priority and plan; a 1 to 5 satisfaction rating on resolved tickets | 10.3, 10.8 |
+| Duplicate and near-duplicate tickets | About 150 tickets in clusters of 2 to 6 that say the same thing in different words | 7.5, 10.2 |
+| Precomputed embeddings | One 768-dimension vector per demonstration ticket from local nomic-embed-text through Python, using the same pinned model and configuration as query generation. Stored documents use the model's document prefix (`search_document:`) and queries use the query prefix (`search_query:`); verify the current prefixes and tag before generating. Stored as Parquet and loaded into a `vector(768)` column with a cosine index | 7.5, 10.2 |
+| Help center articles and known issues | About 40 knowledge-base articles and 10 known product issues | 11.3, 11.4 |
+| Labelled test set | 300 tickets with the correct category and priority (kept out of the training/demo pool) | 11.4, 11.7 |
+| Untriaged backlog | About 500 tickets with no category or priority | 11.5 |
+| Very long ticket threads | 10 threads of 60 to 120 messages | 11.6 |
+| Ticket attachments | About 40 product screenshots (mock UI images in the Orion brand) and 30 PDF invoices | 11.5 |
+| Prompt-injection and personal-data tickets | 6 tickets with hidden instructions (white text, HTML comments, "ignore previous instructions" in a quoted email) and 10 with fake personal data | 9.2, 11.7 |
+| Waitlist signups | The Part 1 signups, as a table | 9.7 |
+| Parquet export | The tickets and invoices as Parquet files | 7.6, 10.8 |
 
 ### Brand assets and the Orion brand kit (published on designmd.ai before the course starts)
 
@@ -418,43 +455,44 @@ The brand kit gives every lesson the same predefined look and avoids surprises i
   - 3 bugs: an off-by-one in SLA time, a timezone error that hides weekend breaches, and an N+1 query in the ticket list;
   - 1 vulnerability: SQL built from user input in the search endpoint;
   - 2 failing tests.
-  - All of them are documented in `ANSWERS.md`. Used in 8.1, 8.2 and 9.5.
+  - All of them are documented in `ANSWERS.md`. Used in 9.1, 9.2 and 10.5.
 - A `.env.example` with placeholder names only. Keys are never committed.
 
 ### Optional Windows extension
 
 | # | Lesson title | Feature | Surface | Task | Min |
 | --- | --- | --- | --- | --- | --- |
-| 10.16 | Optional: Local Models with LM Studio on Windows | Local server and compatible Claude clients | Win | Install, connect, verify and troubleshoot a local-model example | 10 |
+| 11.16 | Optional: Local Models with LM Studio on Windows | Local server and compatible Claude clients | Win | Install, connect, verify and troubleshoot a local-model example | 10 |
 
 ## Timing
 
-The v4 table below is a historical planning baseline. There are now 106 planned lessons including the new optional LM Studio lesson. Total duration is to be re-estimated after complete setup walkthroughs; 437 minutes is not a delivery commitment.
+116 planned lessons across Welcome plus eleven sections. All duration estimates are provisional; complete setup and design iterations take priority. The original v4 timing remains in the preserved source plan and is not a delivery commitment. Section-header minutes outside the new section are inherited estimates pending revision.
 
-| Section | Focus | Lessons | Min |
+| Section | Focus | Lessons | Duration |
 | --- | --- | --- | --- |
-| Welcome | Built last | 3 | 11 |
-| 1 | Claude essentials | 12 | 46 |
-| 2 | Research, connectors and MCP | 6 | 22 |
-| 3 | Agentic work: docs, decks, sheets | 6 | 28 |
-| 4 | Design, artifacts and sharing | 12 | 46 |
-| 5 | Skills, plugins, automation, Claude in your apps | 10 | 44 |
-| 6 | Claude Code foundations in the desktop app | 9 | 40 |
-| 7 | The Orion stack | 8 | 44 |
-| 8 | Built-in power tools and extending Claude Code | 13 | 56 |
-| 9 | Parallel agents, automation and teams | 11 | 41 |
-| 10 | The Claude API, Agent SDK and model gateways | 15 | 59 |
-| Total |  | 105 | 437 (7 h 17 min) |
+| Welcome | Built last | 3 | TBD |
+| 1 | Claude essentials | 12 | TBD |
+| 2 | Research, connectors and MCP | 6 | TBD |
+| 3 | Agentic work: docs, decks, sheets | 6 | TBD |
+| 4 | Rough design, artifacts and sharing | 12 | TBD |
+| 5 | Skills, plugins, automation, Claude in your apps | 10 | TBD |
+| 6 | Claude Code foundations | 9 | TBD |
+| 7 | Orion stack and basic working dashboard | 8 | TBD |
+| 8 | Claude Design: production-style dashboard redesign | 10 | TBD |
+| 9 | Built-in power tools and extending Claude Code | 13 | TBD |
+| 10 | Parallel agents, automation and teams | 11 | TBD |
+| 11 | Claude API, Agent SDK and model gateways | 16 | TBD |
+| Total | | 116 | To be re-estimated |
 
-Part 1 (Sections 1 to 5, 186 min) also works on its own for non-developers and could be sold as a separate course later.
+Part 1 (Sections 1 to 5) remains self-contained for non-developers. Part 2 (Sections 6 to 11) assumes basic coding, terminal and Git familiarity.
 
 ## Recording plan
 
 - **macOS** for every lesson except the Windows ones.
 - **Windows PC:**
   - the separate Windows lessons 1.5 W, 5.9 W, 6.1 W and 7.1 W. Each one is complete on its own and shows only what differs, plus enough to finish the task;
-  - 10.10 and 10.11, the gateway and local-model lessons, on the RTX 5090 workstation.
-- One take each for 3.1 (the trailer) and 10.15 (the closer).
+  - 11.10, 11.11 and 11.16, the gateway and optional local-model lessons, on the RTX 5090 workstation.
+- One take each for 3.1 (the trailer) and 11.15 (the closer).
 - Name features, not menu positions. Re-check the help center, the Claude Code commands page and the models overview right before each section.
 - Before publishing, test every Part 2 lesson's commands on Windows. Add a short on-screen note wherever shortcuts or paths differ (Cmd vs Ctrl), and put both keys in the cheat sheets.
 
@@ -463,7 +501,7 @@ Part 1 (Sections 1 to 5, 186 min) also works on its own for non-developers and c
 - Artifact types (Docs, Slides, Sheets, Design, Whiteboard, Dashboard, Motion and others) are set per account, so a student may not see every type.
 - Features differ by plan. The course is recorded on Pro; check what Free lacks before recording and badge those lessons.
 - Some Claude Code commands depend on plan or setup (for example `/teleport` needs a claude.ai subscription). Re-check the commands page before each section.
-- Lessons 10.10 to 10.14 use setups Anthropic does not support; say so, and check each provider's free-tier terms right before recording.
+- Lessons 11.10 to 11.14 use setups Anthropic does not support; say so, and check each provider's free-tier terms right before recording.
 - Agents built on the Agent SDK must use API keys or a cloud provider, not a claude.ai login ([source](https://code.claude.com/docs/en/agent-sdk/overview.md)).
 - Claude for Outlook needs a Microsoft 365 business tenant with admin consent; mention it only as an option in 5.7.
 

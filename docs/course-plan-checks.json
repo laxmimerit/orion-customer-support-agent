@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "plan_revision": 6,
+  "planned_lessons": 116,
+  "new_section": 8,
+  "new_lessons": 10,
+  "checks": [
+    "markdown, curriculum and tracker lesson IDs agree",
+    "unique lesson IDs and section totals",
+    "existing production statuses preserved",
+    "original source import unchanged",
+    "rough dashboard and resource hashes unchanged"
+  ],
+  "unchanged_resource_files": 219
+}

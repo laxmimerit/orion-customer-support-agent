@@ -1,0 +1,18 @@
+{
+  "status": "pass",
+  "browser": "Existing Google Chrome, headless",
+  "initialTickets": 4000,
+  "aprilFilter": "619 tickets selected",
+  "checks": [
+    "filter updates",
+    "ticket modal",
+    "CSV export row reconciliation",
+    "search",
+    "empty search",
+    "pagination",
+    "390px mobile overflow",
+    "desktop/mobile screenshots"
+  ],
+  "consoleErrors": [],
+  "screenshotAttachments": 40
+}

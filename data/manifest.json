@@ -1,0 +1,10 @@
+{
+  "seed": 20261030,
+  "snapshot": "2026-06-30T23:59:59Z",
+  "fictional": true,
+  "demo_tickets": 4000,
+  "evaluation_tickets": 300,
+  "backlog_tickets": 500,
+  "pools_disjoint": true,
+  "embedding_status": "Generate after the recorded local Python/model setup; no substitute vectors included."
+}

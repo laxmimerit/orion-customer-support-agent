@@ -1,0 +1,22 @@
+[
+  {
+    "role": "Support lead",
+    "goal": "Needs queue ownership and clear handoffs",
+    "objection": "Shared inbox loses accountability"
+  },
+  {
+    "role": "CX director",
+    "goal": "Needs service trends and root-cause analysis",
+    "objection": "Weekly metrics use inconsistent denominators"
+  },
+  {
+    "role": "SaaS founder",
+    "goal": "Needs predictable cost and fast onboarding",
+    "objection": "Cannot justify a long implementation"
+  },
+  {
+    "role": "IT manager",
+    "goal": "Needs role controls and dependable exports",
+    "objection": "Worries about data access and lock-in"
+  }
+]

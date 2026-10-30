@@ -1,0 +1,10 @@
+{
+  "title": "Orion partner signup",
+  "fields": [
+    "company",
+    "contact",
+    "company_size",
+    "use_case"
+  ],
+  "status": "Specification ready; live course-owned Google Form must be created before recording."
+}

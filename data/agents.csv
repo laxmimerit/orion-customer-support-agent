@@ -1,0 +1,10 @@
+agent_id,name,team,shift,skills
+A01,Asha,Customer care,APAC,billing;account access
+A02,Ben,Technical support,EMEA,bug;outage
+A03,Clara,Customer success,Americas,how-to;feature request
+A04,Dev,Customer care,APAC,billing;account access
+A05,Elena,Technical support,EMEA,bug;outage
+A06,Farah,Customer success,Americas,how-to;feature request
+A07,Gabe,Customer care,APAC,billing;account access
+A08,Hana,Technical support,EMEA,bug;outage
+A09,Ishan,Customer success,weekend,how-to;feature request

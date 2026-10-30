@@ -1,0 +1,62 @@
+[
+  {
+    "ticket_id": "T00511",
+    "phone": "+1-202-555-0100",
+    "email": "fixture0@example.com",
+    "note": "Fictional exercise identifier"
+  },
+  {
+    "ticket_id": "T00512",
+    "phone": "+1-202-555-0101",
+    "email": "fixture1@example.com",
+    "note": "Fictional exercise identifier"
+  },
+  {
+    "ticket_id": "T00513",
+    "phone": "+1-202-555-0102",
+    "email": "fixture2@example.com",
+    "note": "Fictional exercise identifier"
+  },
+  {
+    "ticket_id": "T00514",
+    "phone": "+1-202-555-0103",
+    "email": "fixture3@example.com",
+    "note": "Fictional exercise identifier"
+  },
+  {
+    "ticket_id": "T00515",
+    "phone": "+1-202-555-0104",
+    "email": "fixture4@example.com",
+    "note": "Fictional exercise identifier"
+  },
+  {
+    "ticket_id": "T00516",
+    "phone": "+1-202-555-0105",
+    "email": "fixture5@example.com",
+    "note": "Fictional exercise identifier"
+  },
+  {
+    "ticket_id": "T00517",
+    "phone": "+1-202-555-0106",
+    "email": "fixture6@example.com",
+    "note": "Fictional exercise identifier"
+  },
+  {
+    "ticket_id": "T00518",
+    "phone": "+1-202-555-0107",
+    "email": "fixture7@example.com",
+    "note": "Fictional exercise identifier"
+  },
+  {
+    "ticket_id": "T00519",
+    "phone": "+1-202-555-0108",
+    "email": "fixture8@example.com",
+    "note": "Fictional exercise identifier"
+  },
+  {
+    "ticket_id": "T00520",
+    "phone": "+1-202-555-0109",
+    "email": "fixture9@example.com",
+    "note": "Fictional exercise identifier"
+  }
+]

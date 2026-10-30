@@ -1,0 +1,72 @@
+[
+  {
+    "issue_id": "KI001",
+    "component": "Dashboard",
+    "title": "Export stops before completion",
+    "workaround": "Retry in a new view; preserve filters and report a redacted reproduction.",
+    "status": "investigating"
+  },
+  {
+    "issue_id": "KI002",
+    "component": "Exports",
+    "title": "Attachment preview is blank",
+    "workaround": "Retry in a new view; preserve filters and report a redacted reproduction.",
+    "status": "investigating"
+  },
+  {
+    "issue_id": "KI003",
+    "component": "Dashboard",
+    "title": "Dashboard filter resets",
+    "workaround": "Retry in a new view; preserve filters and report a redacted reproduction.",
+    "status": "investigating"
+  },
+  {
+    "issue_id": "KI004",
+    "component": "Exports",
+    "title": "Webhook delivery is delayed",
+    "workaround": "Retry in a new view; preserve filters and report a redacted reproduction.",
+    "status": "investigating"
+  },
+  {
+    "issue_id": "KI005",
+    "component": "Dashboard",
+    "title": "Saved view loses sorting",
+    "workaround": "Retry in a new view; preserve filters and report a redacted reproduction.",
+    "status": "investigating"
+  },
+  {
+    "issue_id": "KI006",
+    "component": "Exports",
+    "title": "Export stops before completion",
+    "workaround": "Retry in a new view; preserve filters and report a redacted reproduction.",
+    "status": "investigating"
+  },
+  {
+    "issue_id": "KI007",
+    "component": "Dashboard",
+    "title": "Attachment preview is blank",
+    "workaround": "Retry in a new view; preserve filters and report a redacted reproduction.",
+    "status": "investigating"
+  },
+  {
+    "issue_id": "KI008",
+    "component": "Exports",
+    "title": "Dashboard filter resets",
+    "workaround": "Retry in a new view; preserve filters and report a redacted reproduction.",
+    "status": "investigating"
+  },
+  {
+    "issue_id": "KI009",
+    "component": "Dashboard",
+    "title": "Webhook delivery is delayed",
+    "workaround": "Retry in a new view; preserve filters and report a redacted reproduction.",
+    "status": "investigating"
+  },
+  {
+    "issue_id": "KI010",
+    "component": "Exports",
+    "title": "Saved view loses sorting",
+    "workaround": "Retry in a new view; preserve filters and report a redacted reproduction.",
+    "status": "investigating"
+  }
+]

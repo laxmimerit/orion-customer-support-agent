@@ -1,0 +1,242 @@
+[
+  {
+    "article_id": "KB001",
+    "title": "Seat count differs from invoice",
+    "category": "billing",
+    "body": "Purpose: seat count differs from invoice. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Checked the invoice line items and seat history, explained the change, and applied the approved correction where needed. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB002",
+    "title": "Export stops before completion",
+    "category": "bug",
+    "body": "Purpose: export stops before completion. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Reproduced the issue with the supplied steps, linked the engineering case and verified the workaround with the customer. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB003",
+    "title": "Configure queue assignment",
+    "category": "how-to",
+    "body": "Purpose: configure queue assignment. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Shared the relevant setup steps and asked the customer to verify the result in their workspace. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB004",
+    "title": "Invite link expired",
+    "category": "account access",
+    "body": "Purpose: invite link expired. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB005",
+    "title": "Add bulk reassignment",
+    "category": "feature request",
+    "body": "Purpose: add bulk reassignment. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Recorded the use case and impact for product review; no delivery date was promised. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB006",
+    "title": "Requests time out",
+    "category": "outage",
+    "body": "Purpose: requests time out. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Linked the incident, communicated the service status and confirmed recovery with the customer. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB007",
+    "title": "Proration after plan upgrade",
+    "category": "billing",
+    "body": "Purpose: proration after plan upgrade. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Checked the invoice line items and seat history, explained the change, and applied the approved correction where needed. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB008",
+    "title": "Attachment preview is blank",
+    "category": "bug",
+    "body": "Purpose: attachment preview is blank. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Reproduced the issue with the supplied steps, linked the engineering case and verified the workaround with the customer. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB009",
+    "title": "Export monthly ticket history",
+    "category": "how-to",
+    "body": "Purpose: export monthly ticket history. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Shared the relevant setup steps and asked the customer to verify the result in their workspace. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB010",
+    "title": "Password reset email delayed",
+    "category": "account access",
+    "body": "Purpose: password reset email delayed. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB011",
+    "title": "Support custom SLA calendars",
+    "category": "feature request",
+    "body": "Purpose: support custom sla calendars. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Recorded the use case and impact for product review; no delivery date was promised. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB012",
+    "title": "Agent workspace unavailable",
+    "category": "outage",
+    "body": "Purpose: agent workspace unavailable. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Linked the incident, communicated the service status and confirmed recovery with the customer. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB013",
+    "title": "Renewal total changed",
+    "category": "billing",
+    "body": "Purpose: renewal total changed. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Checked the invoice line items and seat history, explained the change, and applied the approved correction where needed. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB014",
+    "title": "Dashboard filter resets",
+    "category": "bug",
+    "body": "Purpose: dashboard filter resets. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Reproduced the issue with the supplied steps, linked the engineering case and verified the workaround with the customer. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB015",
+    "title": "Set a reply template",
+    "category": "how-to",
+    "body": "Purpose: set a reply template. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Shared the relevant setup steps and asked the customer to verify the result in their workspace. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB016",
+    "title": "SSO login loops",
+    "category": "account access",
+    "body": "Purpose: sso login loops. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB017",
+    "title": "Add multilingual templates",
+    "category": "feature request",
+    "body": "Purpose: add multilingual templates. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Recorded the use case and impact for product review; no delivery date was promised. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB018",
+    "title": "Messages cannot be sent",
+    "category": "outage",
+    "body": "Purpose: messages cannot be sent. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Linked the incident, communicated the service status and confirmed recovery with the customer. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB019",
+    "title": "Credit missing from next invoice",
+    "category": "billing",
+    "body": "Purpose: credit missing from next invoice. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Checked the invoice line items and seat history, explained the change, and applied the approved correction where needed. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB020",
+    "title": "Webhook delivery is delayed",
+    "category": "bug",
+    "body": "Purpose: webhook delivery is delayed. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Reproduced the issue with the supplied steps, linked the engineering case and verified the workaround with the customer. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB021",
+    "title": "Invite a read-only reviewer",
+    "category": "how-to",
+    "body": "Purpose: invite a read-only reviewer. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Shared the relevant setup steps and asked the customer to verify the result in their workspace. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB022",
+    "title": "Role change not applied",
+    "category": "account access",
+    "body": "Purpose: role change not applied. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB023",
+    "title": "Allow scheduled exports",
+    "category": "feature request",
+    "body": "Purpose: allow scheduled exports. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Recorded the use case and impact for product review; no delivery date was promised. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB024",
+    "title": "Search service unreachable",
+    "category": "outage",
+    "body": "Purpose: search service unreachable. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Linked the incident, communicated the service status and confirmed recovery with the customer. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB025",
+    "title": "Tax line needs explanation",
+    "category": "billing",
+    "body": "Purpose: tax line needs explanation. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Checked the invoice line items and seat history, explained the change, and applied the approved correction where needed. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB026",
+    "title": "Saved view loses sorting",
+    "category": "bug",
+    "body": "Purpose: saved view loses sorting. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Reproduced the issue with the supplied steps, linked the engineering case and verified the workaround with the customer. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB027",
+    "title": "Find archived conversations",
+    "category": "how-to",
+    "body": "Purpose: find archived conversations. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Shared the relevant setup steps and asked the customer to verify the result in their workspace. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB028",
+    "title": "Locked out after device change",
+    "category": "account access",
+    "body": "Purpose: locked out after device change. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB029",
+    "title": "Add audit trail download",
+    "category": "feature request",
+    "body": "Purpose: add audit trail download. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Recorded the use case and impact for product review; no delivery date was promised. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB030",
+    "title": "Queue updates stopped",
+    "category": "outage",
+    "body": "Purpose: queue updates stopped. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Linked the incident, communicated the service status and confirmed recovery with the customer. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB031",
+    "title": "Seat count differs from invoice",
+    "category": "billing",
+    "body": "Purpose: seat count differs from invoice. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Checked the invoice line items and seat history, explained the change, and applied the approved correction where needed. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB032",
+    "title": "Export stops before completion",
+    "category": "bug",
+    "body": "Purpose: export stops before completion. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Reproduced the issue with the supplied steps, linked the engineering case and verified the workaround with the customer. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB033",
+    "title": "Configure queue assignment",
+    "category": "how-to",
+    "body": "Purpose: configure queue assignment. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Shared the relevant setup steps and asked the customer to verify the result in their workspace. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB034",
+    "title": "Invite link expired",
+    "category": "account access",
+    "body": "Purpose: invite link expired. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB035",
+    "title": "Add bulk reassignment",
+    "category": "feature request",
+    "body": "Purpose: add bulk reassignment. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Recorded the use case and impact for product review; no delivery date was promised. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB036",
+    "title": "Requests time out",
+    "category": "outage",
+    "body": "Purpose: requests time out. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Linked the incident, communicated the service status and confirmed recovery with the customer. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB037",
+    "title": "Proration after plan upgrade",
+    "category": "billing",
+    "body": "Purpose: proration after plan upgrade. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Checked the invoice line items and seat history, explained the change, and applied the approved correction where needed. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB038",
+    "title": "Attachment preview is blank",
+    "category": "bug",
+    "body": "Purpose: attachment preview is blank. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Reproduced the issue with the supplied steps, linked the engineering case and verified the workaround with the customer. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB039",
+    "title": "Export monthly ticket history",
+    "category": "how-to",
+    "body": "Purpose: export monthly ticket history. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Shared the relevant setup steps and asked the customer to verify the result in their workspace. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  },
+  {
+    "article_id": "KB040",
+    "title": "Password reset email delayed",
+    "category": "account access",
+    "body": "Purpose: password reset email delayed. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+  }
+]

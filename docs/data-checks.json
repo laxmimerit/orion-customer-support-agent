@@ -1,0 +1,32 @@
+{
+  "status": "pass",
+  "counts": {
+    "tickets": 4000,
+    "customers": 300,
+    "agents": 9,
+    "invoices": 1800,
+    "messages": 36694,
+    "evaluation": 300,
+    "backlog": 500
+  },
+  "weekend_breach_rate": 0.6799,
+  "weekday_breach_rate": 0.2798,
+  "april_billing_share": 0.5509,
+  "checks": [
+    "unique and disjoint pools",
+    "foreign keys",
+    "timestamps and duration arithmetic",
+    "invoice reconciliation",
+    "CSAT validity",
+    "no labels in evaluation inputs",
+    "planted analytics patterns",
+    "safe email identifiers",
+    "message chronology",
+    "ten long threads",
+    "dashboard data parity",
+    "classification urgency evidence",
+    "geographic consistency",
+    "duplicate clusters",
+    "interview lengths"
+  ]
+}

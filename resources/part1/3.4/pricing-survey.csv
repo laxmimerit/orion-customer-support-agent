@@ -1,0 +1,201 @@
+response_id,company_size,current_tool,willingness_to_pay_usd,most_wanted_feature
+S001,1-10,shared inbox,29,routing
+S002,201-500,legacy helpdesk,19,export
+S003,51-200,shared inbox,39,similar tickets
+S004,201-500,spreadsheet,49,export
+S005,201-500,spreadsheet,19,export
+S006,51-200,spreadsheet,19,reply drafts
+S007,1-10,spreadsheet,29,export
+S008,1-10,legacy helpdesk,39,similar tickets
+S009,51-200,spreadsheet,19,export
+S010,1-10,spreadsheet,29,SLA reporting
+S011,1-10,shared inbox,29,routing
+S012,201-500,spreadsheet,29,similar tickets
+S013,201-500,shared inbox,39,SLA reporting
+S014,201-500,spreadsheet,39,reply drafts
+S015,11-50,spreadsheet,29,reply drafts
+S016,201-500,shared inbox,39,similar tickets
+S017,11-50,shared inbox,39,export
+S018,11-50,spreadsheet,59,SLA reporting
+S019,11-50,spreadsheet,29,export
+S020,51-200,legacy helpdesk,29,SLA reporting
+S021,11-50,spreadsheet,49,similar tickets
+S022,11-50,shared inbox,39,reply drafts
+S023,1-10,spreadsheet,19,export
+S024,51-200,legacy helpdesk,29,export
+S025,1-10,legacy helpdesk,39,similar tickets
+S026,51-200,legacy helpdesk,49,export
+S027,51-200,legacy helpdesk,19,routing
+S028,1-10,shared inbox,29,export
+S029,51-200,shared inbox,39,routing
+S030,201-500,legacy helpdesk,39,similar tickets
+S031,51-200,spreadsheet,49,similar tickets
+S032,201-500,shared inbox,59,routing
+S033,51-200,legacy helpdesk,49,reply drafts
+S034,51-200,shared inbox,29,export
+S035,11-50,spreadsheet,29,similar tickets
+S036,201-500,legacy helpdesk,19,SLA reporting
+S037,11-50,legacy helpdesk,59,export
+S038,11-50,spreadsheet,19,SLA reporting
+S039,51-200,spreadsheet,49,export
+S040,201-500,spreadsheet,19,SLA reporting
+S041,51-200,shared inbox,79,SLA reporting
+S042,51-200,legacy helpdesk,29,similar tickets
+S043,201-500,legacy helpdesk,39,routing
+S044,51-200,legacy helpdesk,29,SLA reporting
+S045,11-50,legacy helpdesk,29,export
+S046,11-50,legacy helpdesk,39,SLA reporting
+S047,51-200,spreadsheet,19,similar tickets
+S048,1-10,shared inbox,59,reply drafts
+S049,51-200,shared inbox,29,SLA reporting
+S050,11-50,shared inbox,49,similar tickets
+S051,51-200,shared inbox,59,similar tickets
+S052,201-500,legacy helpdesk,19,similar tickets
+S053,11-50,spreadsheet,49,routing
+S054,201-500,shared inbox,29,export
+S055,11-50,shared inbox,29,SLA reporting
+S056,11-50,legacy helpdesk,49,similar tickets
+S057,11-50,spreadsheet,29,export
+S058,1-10,legacy helpdesk,39,similar tickets
+S059,11-50,shared inbox,19,similar tickets
+S060,51-200,shared inbox,29,reply drafts
+S061,201-500,spreadsheet,39,similar tickets
+S062,201-500,legacy helpdesk,29,similar tickets
+S063,1-10,legacy helpdesk,19,routing
+S064,51-200,shared inbox,39,routing
+S065,11-50,spreadsheet,49,routing
+S066,1-10,shared inbox,29,similar tickets
+S067,51-200,spreadsheet,39,reply drafts
+S068,201-500,spreadsheet,29,export
+S069,1-10,spreadsheet,19,routing
+S070,1-10,spreadsheet,19,similar tickets
+S071,51-200,legacy helpdesk,29,routing
+S072,51-200,spreadsheet,79,export
+S073,1-10,shared inbox,19,SLA reporting
+S074,201-500,legacy helpdesk,39,export
+S075,201-500,legacy helpdesk,39,similar tickets
+S076,1-10,spreadsheet,59,similar tickets
+S077,1-10,legacy helpdesk,39,SLA reporting
+S078,11-50,spreadsheet,19,routing
+S079,11-50,legacy helpdesk,29,similar tickets
+S080,11-50,shared inbox,39,routing
+S081,11-50,shared inbox,39,reply drafts
+S082,1-10,shared inbox,29,export
+S083,51-200,shared inbox,19,similar tickets
+S084,1-10,shared inbox,29,similar tickets
+S085,1-10,legacy helpdesk,29,SLA reporting
+S086,201-500,legacy helpdesk,29,routing
+S087,201-500,legacy helpdesk,39,SLA reporting
+S088,201-500,legacy helpdesk,39,SLA reporting
+S089,201-500,spreadsheet,39,routing
+S090,1-10,spreadsheet,29,reply drafts
+S091,1-10,shared inbox,49,export
+S092,1-10,legacy helpdesk,39,SLA reporting
+S093,201-500,shared inbox,39,export
+S094,11-50,legacy helpdesk,49,reply drafts
+S095,1-10,legacy helpdesk,49,routing
+S096,1-10,spreadsheet,39,export
+S097,11-50,legacy helpdesk,29,SLA reporting
+S098,201-500,spreadsheet,49,export
+S099,201-500,shared inbox,29,export
+S100,201-500,shared inbox,29,SLA reporting
+S101,51-200,spreadsheet,59,SLA reporting
+S102,1-10,shared inbox,19,similar tickets
+S103,51-200,spreadsheet,29,SLA reporting
+S104,11-50,spreadsheet,49,SLA reporting
+S105,51-200,shared inbox,29,similar tickets
+S106,11-50,legacy helpdesk,39,reply drafts
+S107,51-200,legacy helpdesk,39,routing
+S108,201-500,spreadsheet,29,SLA reporting
+S109,201-500,spreadsheet,29,export
+S110,11-50,shared inbox,19,similar tickets
+S111,11-50,legacy helpdesk,39,SLA reporting
+S112,201-500,legacy helpdesk,49,routing
+S113,1-10,legacy helpdesk,29,routing
+S114,51-200,legacy helpdesk,49,similar tickets
+S115,1-10,shared inbox,49,reply drafts
+S116,11-50,spreadsheet,39,routing
+S117,1-10,legacy helpdesk,19,routing
+S118,11-50,shared inbox,39,routing
+S119,51-200,shared inbox,29,routing
+S120,11-50,shared inbox,49,reply drafts
+S121,1-10,legacy helpdesk,19,similar tickets
+S122,1-10,shared inbox,29,SLA reporting
+S123,51-200,legacy helpdesk,19,reply drafts
+S124,51-200,shared inbox,29,reply drafts
+S125,1-10,shared inbox,59,reply drafts
+S126,11-50,shared inbox,29,SLA reporting
+S127,1-10,legacy helpdesk,49,SLA reporting
+S128,1-10,legacy helpdesk,19,export
+S129,1-10,spreadsheet,59,export
+S130,1-10,spreadsheet,19,reply drafts
+S131,1-10,spreadsheet,59,export
+S132,201-500,legacy helpdesk,39,SLA reporting
+S133,51-200,legacy helpdesk,29,routing
+S134,201-500,spreadsheet,49,SLA reporting
+S135,1-10,spreadsheet,29,reply drafts
+S136,11-50,legacy helpdesk,39,export
+S137,51-200,spreadsheet,39,reply drafts
+S138,51-200,legacy helpdesk,29,similar tickets
+S139,51-200,shared inbox,49,export
+S140,1-10,spreadsheet,59,export
+S141,1-10,legacy helpdesk,49,routing
+S142,1-10,legacy helpdesk,39,reply drafts
+S143,51-200,legacy helpdesk,39,reply drafts
+S144,51-200,spreadsheet,29,SLA reporting
+S145,1-10,legacy helpdesk,39,similar tickets
+S146,1-10,spreadsheet,59,reply drafts
+S147,201-500,shared inbox,29,SLA reporting
+S148,11-50,legacy helpdesk,29,export
+S149,11-50,shared inbox,29,routing
+S150,201-500,legacy helpdesk,29,SLA reporting
+S151,11-50,legacy helpdesk,29,reply drafts
+S152,51-200,spreadsheet,19,export
+S153,51-200,spreadsheet,49,routing
+S154,201-500,legacy helpdesk,39,SLA reporting
+S155,201-500,spreadsheet,39,export
+S156,201-500,legacy helpdesk,49,routing
+S157,51-200,shared inbox,49,reply drafts
+S158,11-50,spreadsheet,19,reply drafts
+S159,11-50,shared inbox,39,export
+S160,51-200,spreadsheet,59,SLA reporting
+S161,51-200,shared inbox,49,SLA reporting
+S162,1-10,legacy helpdesk,19,routing
+S163,1-10,spreadsheet,49,export
+S164,201-500,legacy helpdesk,49,routing
+S165,1-10,spreadsheet,39,SLA reporting
+S166,51-200,shared inbox,59,similar tickets
+S167,201-500,legacy helpdesk,39,similar tickets
+S168,1-10,legacy helpdesk,19,export
+S169,51-200,legacy helpdesk,49,similar tickets
+S170,201-500,spreadsheet,19,reply drafts
+S171,51-200,legacy helpdesk,49,routing
+S172,1-10,shared inbox,29,similar tickets
+S173,11-50,spreadsheet,39,similar tickets
+S174,11-50,legacy helpdesk,29,export
+S175,201-500,legacy helpdesk,39,SLA reporting
+S176,11-50,shared inbox,39,similar tickets
+S177,11-50,legacy helpdesk,19,routing
+S178,201-500,shared inbox,39,SLA reporting
+S179,1-10,spreadsheet,39,similar tickets
+S180,11-50,legacy helpdesk,29,SLA reporting
+S181,11-50,shared inbox,39,similar tickets
+S182,51-200,spreadsheet,39,export
+S183,51-200,shared inbox,59,SLA reporting
+S184,11-50,shared inbox,49,reply drafts
+S185,11-50,shared inbox,19,similar tickets
+S186,51-200,shared inbox,39,reply drafts
+S187,201-500,spreadsheet,49,reply drafts
+S188,51-200,shared inbox,39,export
+S189,51-200,shared inbox,49,reply drafts
+S190,51-200,shared inbox,49,export
+S191,11-50,legacy helpdesk,19,reply drafts
+S192,1-10,shared inbox,19,SLA reporting
+S193,11-50,legacy helpdesk,39,export
+S194,201-500,shared inbox,29,similar tickets
+S195,1-10,spreadsheet,59,export
+S196,51-200,shared inbox,29,reply drafts
+S197,11-50,legacy helpdesk,19,export
+S198,201-500,spreadsheet,29,routing
+S199,11-50,legacy helpdesk,49,SLA reporting
+S200,51-200,shared inbox,39,routing

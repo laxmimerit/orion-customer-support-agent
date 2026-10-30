@@ -1,0 +1,37 @@
+{
+  "status": "pass",
+  "parquet_csv_content_parity": [
+    "tickets",
+    "customers",
+    "invoices",
+    "messages"
+  ],
+  "pdf_pages": {
+    "brand": 1,
+    "competitor": 2,
+    "contract": 4
+  },
+  "attachments": 70,
+  "core_text_contrast_ratios": {
+    "152E3B/FFFFFF": 14.13,
+    "526775/FFFFFF": 5.91,
+    "FFFFFF/087F78": 4.86,
+    "F4F8FA/193440": 12.23,
+    "B5C8D1/193440": 7.56
+  },
+  "note": "Core token contrast measured; this is not a complete accessibility audit.",
+  "deterministic_regeneration": {
+    "files": 23,
+    "result": "byte-identical"
+  },
+  "skill_frontmatter": "valid",
+  "curriculum_lessons": 106,
+  "visual_review": [
+    "desktop dashboard",
+    "mobile dashboard",
+    "brand PDF",
+    "four contract pages",
+    "two competitor pages",
+    "30 invoice PDF contact sheet"
+  ]
+}

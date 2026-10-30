@@ -1,4 +1,4 @@
-# Claude Masterclass: Tool-First Course Plan (v6 working revision)
+# Claude Masterclass: Tool-First Course Plan (v7 working revision)
 
 Oct 30, 2026 · @Laxmi Kant
 
@@ -31,13 +31,25 @@ The new section has ten lessons. Former Sections 8, 9 and 10 become 9, 10 and 11
 
 The production-style UI is an outcome built and reviewed during the course, not a completed pre-recording deliverable or a claim that the application is deployed to production.
 
+## Beginner opening — creator decision, 30 October 2026
+
+Teach one complete section of Claude application fundamentals before discussing the Orion course project. Section 1 uses small, familiar tasks: a first conversation, summarising notes, rewriting an email, comparing model answers, uploading a simple document, personal instructions, memory and voice. Teach Claude Projects as an app feature using a small personal workspace; do not confuse it with introducing the Orion business/project.
+
+Lesson 1.1 begins in Claude Chat with one approachable task and a visible follow-up. No Orion brief, finished dashboard, development workspace, architecture, terminal or API workflow in the opening. Explain the app as each control becomes useful. Broader surfaces may be named briefly later; hands-on Claude Code begins in Section 6.
+
+Introduce Orion at the opening of Section 2, before the first research task. Explain the fictional company, its customers and one immediate research question in plain language. Add product and technical detail as the relevant features are taught. Keep Sections 1–5 accessible without programming knowledge.
+
+Welcome also uses a gentle orientation and small examples; defer the detailed finished-product showcase to the later course outcome/capstone. Introduce project-specific resources when students first need them.
+
+The existing 1.1 pilot needs a new opening and demonstration. The existing 1.6 pilot uses project positioning and also needs familiar-example revisions to fit Section 1. Keep previous media and narration as labelled history. The 3.1 lesson's approved visual treatment remains valid for its later placement. No replacement scripts, recordings or voice are claimed complete by this plan change.
+
 ## Course at a glance
 
 | Item | Decision |
 | --- | --- |
 | Working title | Claude Masterclass: Every Claude Feature, from Chat and Design to Claude Code and the API |
 | Course promise | Use every part of Claude with confidence: research, documents, decks, sheets, designs, dashboards, skills, plugins, Claude in your browser and office apps, Claude Code, and building with the API |
-| Course style | **Tool-first.** Each lesson teaches one Claude feature (or a small group of related ones) on the Orion story. It is not a deep production-project course: lessons stand alone from a provided starting state |
+| Course style | **Tool-first.** Section 1 teaches Claude through familiar tasks; Sections 2 onward apply features to the Orion story. It is not a deep production-project course: lessons stand alone from a provided starting state |
 | Structure | Welcome section (built last) + 11 sections. Part 1, the Claude app: Sections 1 to 5. Part 2, Claude Code and the API: Sections 6 to 11 |
 | Length | 116 planned lessons; duration to be re-estimated for complete setup walkthroughs |
 | Audience | Part 1: any professional. Part 2: developers, or Part 1 graduates ready to build |
@@ -124,7 +136,7 @@ What Anthropic's models overview says (checked 2026-10-30; re-check before recor
 
 - Built **last**, from the finished lessons: real clips, real resources, real durations.
 - Never say or show how many lessons or sections there are; player replicas show titles only.
-- The advance showcase of the finished Orion belongs in Welcome, promo and listing. Teaching lessons show the result they actually build: Section 8 includes its refined dashboard and before/after review; the capstone shows the completed application.
+- Welcome starts with a gentle app orientation. Detailed project showcases follow the learner’s introduction to Orion; the final application is reviewed in the capstone. Teaching lessons show the result they actually build: Section 8 includes its refined dashboard and before/after review; the capstone shows the completed application.
 - 0.2 explains the timer ring: when it appears, stop the video and read the screen and diagram. It also says where the cheat sheets are.
 
 ### 8. Cheat sheets
@@ -159,7 +171,7 @@ Follow the `calm-lecture-edit` skill and the Codex course rules:
 
 ## The running project: Orion
 
-Orion is a fictional startup's AI customer support desk. Part 1 uses the Claude app to launch it as a business. Part 2 uses Claude Code and the API to build the product.
+Orion is a fictional startup's AI customer support desk. After the app fundamentals in Section 1, Sections 2–5 use Claude to plan its business launch. Part 2 uses Claude Code and the API to build the product.
 
 | Part | What Claude produces |
 | --- | --- |
@@ -186,36 +198,40 @@ Nomic embeddings run through Python. Ollama and LM Studio are separate optional 
 
 | # | Lesson title | Content | Min |
 | --- | --- | --- | --- |
-| 0.1 | Welcome: What You Will Build with Claude | The finished Orion launch kit and app in real clips; what the course covers | 4 |
+| 0.1 | Welcome: Start Using Claude Step by Step | A reassuring orientation with small everyday examples; explain the progression from app fundamentals to later projects | 4 |
 | 0.2 | How This Course Works: Plans, Models, Timer Ring and Cheat Sheets | Pro target / Free path, the model policy in one line, the timer ring means stop and read, where the cheat sheets are | 4 |
-| 0.3 | Course Resources: Sample Data, the Orion Brand Kit and the Starter Repo | Where each resource is, the lesson tags, the brand kit on designmd.ai | 3 |
+| 0.3 | Course Resources: Where to Find the Files You Need | Show where lesson files live; introduce project datasets, brand kit and repository when their lessons need them | 3 |
 
 ## Part 1: the Claude app (Sections 1 to 5, 186 min)
 
 Surface key: **App** = Claude desktop app (chat); **Web** = claude.ai in the browser; **Mobile**; **Chrome** = Claude in Chrome; **Win** = recorded on the Windows PC.
 
-### Section 1: Claude Essentials: Models, Prompt Engineering, Projects and Memory (46 min)
+### Section 1: Claude Essentials: Models, Prompt Engineering, Projects and Memory (duration TBD)
 
-| # | Lesson title | Claude feature | Surface | Orion task | Min |
+Build confidence with familiar examples throughout this section. Orion begins in Section 2; technical implementation begins in Section 6.
+
+| # | Lesson title | Claude feature | Surface | Practice task | Min |
 | --- | --- | --- | --- | --- | --- |
-| 1.1 | Claude Platform Overview: Chat, Design, Claude Code and the API | Platform map | App | Map each part of Claude to a launch job | 3 |
-| 1.2 | Claude Models Compared: Fable, Opus, Sonnet and Haiku | Model picker; strengths, weaknesses, speed, cost; the course model policy | App | One positioning question on Haiku, Sonnet and Opus side by side; when Fable is worth it | 6 |
-| 1.3 | Claude Everywhere: Web, Desktop, Mobile, Chrome and Office Apps | Surfaces | App | Which surface for which launch job | 3 |
+| 1.1 | Getting Comfortable with Claude: Your First Conversation | Chat basics and iterative follow-up | App | Open Chat, ask for a short summary of everyday notes, inspect the answer and make one simple follow-up request | 3 |
+| 1.2 | Claude Models Compared: Fable, Opus, Sonnet and Haiku | Model picker; strengths, weaknesses, speed, cost; the course model policy | App | Compare answers to the same everyday summarisation question; explain model choices without a project brief | 6 |
+| 1.3 | Claude on Web, Desktop and Mobile: Find Your Way Around | App surfaces and navigation | App | Recognise the main app surfaces using familiar tasks; briefly signpost later Design, Code, API and office workflows without technical demonstrations | 3 |
 | 1.4 | Claude Plans, Usage Limits and Settings: Free, Pro and Max | Plans, limits, web search, memory, guided setup | App | Account ready for the course | 4 |
 | 1.5 M | Install the Claude Desktop and Mobile Apps on Mac | Desktop + mobile apps, continuity | App, Mobile | Start on the Mac, continue on the phone | 3 |
 | 1.5 W | Install the Claude Desktop App on Windows | Windows installer and first run | Win | Same account on Windows | 3 |
-| 1.6 | Prompt Engineering Basics: Clear Asks, Examples and Output Formats | Prompting | App | Product naming and positioning brief | 4 |
-| 1.7 | Multimodal Input: PDFs, Spreadsheets and Images | Uploads | App | Read a competitor's pricing PDF | 4 |
-| 1.8 | Claude Projects: Knowledge Base and Custom Instructions | Projects | App | The Orion project | 5 |
-| 1.9 | Memory, Chat Search and Incognito Chats | Memory, past chats | App | Claude remembers the product | 5 |
-| 1.10 | Memory Import: Bring Your Context from Another AI Assistant | Importing memory | App | Import the founder's notes export | 3 |
-| 1.11 | Voice Mode: Hands-Free Conversations with Claude | Voice | Mobile | Talk through the launch plan | 3 |
+| 1.6 | Prompt Engineering Basics: Clear Asks, Examples and Output Formats | Prompting | App | Improve a short everyday email using a clear ask, supplied context, a style example and an output format | 4 |
+| 1.7 | Multimodal Input: PDFs, Spreadsheets and Images | Uploads | App | Read a short everyday document or simple table and check the extracted details; no Orion competitor brief | 4 |
+| 1.8 | Claude Projects: Knowledge Base and Custom Instructions | Projects | App | Create a small personal learning workspace with a short reference note and reusable instructions | 5 |
+| 1.9 | Memory, Chat Search and Incognito Chats | Memory, past chats | App | Use personal answer preferences and a familiar conversation to explain memory, search and incognito | 5 |
+| 1.10 | Memory Import: Bring Your Context from Another AI Assistant | Importing memory | App | Import a short fictional personal learning-preferences export; keep Orion founder notes for the later project | 3 |
+| 1.11 | Voice Mode: Hands-Free Conversations with Claude | Voice | Mobile | Talk through a simple daily plan using voice | 3 |
 
-### Section 2: AI Research, Connectors and MCP (22 min)
+### Section 2: AI Research, Connectors and MCP (duration TBD)
 
-| # | Lesson title | Claude feature | Surface | Orion task | Min |
+Open lesson 2.1 by introducing Orion for the first time: a fictional support company whose team needs help understanding customers and planning its launch. Explain only the context needed for the first research task. Expand its duration for this orientation; do not rush it into the inherited estimate.
+
+| # | Lesson title | Claude feature | Surface | Practice task | Min |
 | --- | --- | --- | --- | --- | --- |
-| 2.1 | Web Search with Citations | Web search | App | Current help desk software pricing | 3 |
+| 2.1 | Web Search with Citations | Web search | App | First introduce Orion in plain language after Section 1; then research one help-desk software pricing question | TBD |
 | 2.2 | Deep Research: Multi-Source Research Reports | Research | App | Competitor landscape report (Fable reminder for hard research) | 4 |
 | 2.3 | Connectors: Gmail and Google Drive | Connectors | App | Customer interview emails summarised | 5 |
 | 2.4 | Custom Connectors: Remote MCP Servers | Custom connectors | App | Connect the Orion demo MCP server (see open questions) | 4 |
@@ -224,7 +240,7 @@ Surface key: **App** = Claude desktop app (chat); **Web** = claude.ai in the bro
 
 ### Section 3: Agentic Work: Documents, Presentations and Spreadsheets (28 min)
 
-| # | Lesson title | Claude feature | Surface | Orion task | Min |
+| # | Lesson title | Claude feature | Surface | Practice task | Min |
 | --- | --- | --- | --- | --- | --- |
 | 3.1 | Agentic Tasks: A Full Launch Plan from a One-Paragraph Brief | Longer tasks, task list, working while away | App | Launch plan (one take; the trailer; Fable reminder) | 5 |
 | 3.2 | AI Document Editing: Write, Comment and Revise a PRD | Docs | App | PRD revised by comment | 5 |
@@ -235,7 +251,7 @@ Surface key: **App** = Claude desktop app (chat); **Web** = claude.ai in the bro
 
 ### Section 4: AI Design, Artifacts and Sharing (46 min)
 
-| # | Lesson title | Claude feature | Surface | Orion task | Min |
+| # | Lesson title | Claude feature | Surface | Practice task | Min |
 | --- | --- | --- | --- | --- | --- |
 | 4.1 | AI UI Design: Landing Page and Dashboard in Three Directions | Design canvas | App | Landing page and rough agent-dashboard concepts; establish the starting point for Section 8 | 5 |
 | 4.2 | Design Systems: Colors, Typography and Components | Design System | App | Brand applied to every design | 5 |
@@ -252,7 +268,7 @@ Surface key: **App** = Claude desktop app (chat); **Web** = claude.ai in the bro
 
 ### Section 5: Agent Skills, Plugins, Automation and Claude in Your Apps (44 min)
 
-| # | Lesson title | Claude feature | Surface | Orion task | Min |
+| # | Lesson title | Claude feature | Surface | Practice task | Min |
 | --- | --- | --- | --- | --- | --- |
 | 5.1 | Agent Skills: Built-In Skills in Action | Ready-made skills | App | Morning brief and file skills | 4 |
 | 5.2 | Custom Skills: Build a Brand-Voice SKILL.md | Writing a skill | App | `brand-voice` skill (text voice; the visual brand kit is the separate published one) | 5 |

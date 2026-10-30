@@ -35,3 +35,5 @@ Section 8 teaches deliberate critique and iteration: design brief; Sonnet/Opus c
 The new section has ten lessons. Former Sections 8, 9 and 10 become 9, 10 and 11; Welcome and Sections 1–7 retain their lesson IDs. There are now 116 planned lessons across Welcome plus eleven sections. Duration remains to be estimated from complete walkthroughs. Original imported plans and existing pilot media remain historical sources.
 
 The production-style UI is an outcome built and reviewed during the course, not a completed pre-recording deliverable or a claim that the application is deployed to production.
+
+Prepare the beginner opening before recording Section 1: revise pilots 1.1 and 1.6; provide neutral everyday email, document and learning-preference examples. Introduce Orion at the start of Section 2. Existing Orion resources remain available for later lessons.

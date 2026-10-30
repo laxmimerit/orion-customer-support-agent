@@ -7,3 +7,5 @@ During the relevant setup lesson: generate Nomic vectors after the recorded mode
 The repository stays private until the creator changes visibility after recording. No credentials, private answer key or recordings belong here.
 
 The creator requested a separate Claude Design section after the basic dashboard build. The polished UI remains a course outcome; see [dashboard stages](DASHBOARD_STAGES.md).
+
+Prepare the beginner opening before recording Section 1: revise pilots 1.1 and 1.6; provide neutral everyday email, document and learning-preference examples. Introduce Orion at the start of Section 2. Existing Orion resources remain available for later lessons.

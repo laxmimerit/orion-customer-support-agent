@@ -124,7 +124,7 @@ What Anthropic's models overview says (checked 2026-10-30; re-check before recor
 
 - Built **last**, from the finished lessons: real clips, real resources, real durations.
 - Never say or show how many lessons or sections there are; player replicas show titles only.
-- The finished Orion (launch kit and app) appears only in the Welcome section, the promo and the listing.
+- The advance showcase of the finished Orion belongs in Welcome, promo and listing. Teaching lessons show the result they actually build: Section 8 includes its refined dashboard and before/after review; the capstone shows the completed application.
 - 0.2 explains the timer ring: when it appears, stop the video and read the screen and diagram. It also says where the cheat sheets are.
 
 ### 8. Cheat sheets

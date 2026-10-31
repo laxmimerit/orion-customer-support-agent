@@ -23,9 +23,13 @@ For the replacement, use a separate workspace on `main`:
 
 ```sh
 git clone --branch main --single-branch https://github.com/laxmimerit/orion-customer-support-agent.git orion-course
+cd orion-course
+git switch -c my-orion-build course-start
 ```
 
-Build the new project and its configuration during the course. Do not copy the legacy application into `main` as the replacement scaffold. The course covers a new FastAPI backend, Next.js frontend, checked SQL analysis, a deliberate MySQL-to-PostgreSQL-compatible migration, evaluated retrieval and a reviewed email/communication workspace.
+`course-start` preserves the documentation-only starting point even after `main` contains the completed implementation. Build the new project and its configuration on your own branch during the course, carrying in your investigation notes and reviewed requirements/design. Do not copy the legacy application into `main` as the replacement scaffold. Course code progresses on `main`; lesson checkpoints will be added as the work is produced.
+
+The course covers a new FastAPI backend, Next.js frontend, checked SQL analysis, a deliberate MySQL-to-PostgreSQL-compatible migration, evaluated retrieval and a reviewed email/communication workspace.
 
 A branch is not an access boundary: people with repository access can inspect both branches and history. The release will deliberately provide the inherited legacy source as well as the course implementation. Never commit private environment files, account passwords, provider keys or mailbox tokens on either branch.
 

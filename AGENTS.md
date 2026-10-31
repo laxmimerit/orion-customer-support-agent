@@ -1,7 +1,11 @@
-# Instructor-only Orion legacy application
+# Orion Customer Support Agent — orion-legacy branch
 
-This source is an instructor preparation artifact. Never copy it into the learner environment repository or publish it. Learners inspect the hosted application and their own seeded database, then implement a replacement from scratch. The application is fictional and all records are synthetic.
+This branch preserves the inherited Flask/Jinja2 application and MySQL-compatible data. Learners copy it for legacy setup. All new replacement code belongs to main and is built from scratch during the course; do not merge this application into main as a scaffold.
 
-Use Flask, Jinja2, simple HTML/CSS and parameterised PyMySQL queries. Do not introduce React or Next.js here. Limited reporting and subject-only search are deliberate baseline limitations. Preserve functional navigation, readable text, keyboard focus, correct records and missing values. Never introduce SQL injection or expose credentials to make the system look old.
-
-No installation, image upload, account creation or deployment is implied by a successful source build. Record runtime checks separately. Do not record course videos or generate narration during resource preparation.
+- Keep Flask/Jinja2/plain HTML/CSS and parameterised PyMySQL here. Preserve the deliberate literal-subject search and basic status reporting.
+- Preserve navigation, actual records, nulls, UTC values, keyboard focus and readable text. Never introduce vulnerabilities to simulate age.
+- Keep the repository private during preparation. Both branches become public only at the creator's course-publication step.
+- Never commit private .env files, database/mail credentials, provider keys, tokens or private runtime evidence.
+- Changes to the legacy branch should be limited to baseline/setup corrections. Keep the original deployment available as the reference.
+- Instructor provisioning/rehearsal scripts are not replacement implementations to hand to learners as completed work.
+- No course recording or narration during preparation. Explain changes plainly and report checks actually performed.

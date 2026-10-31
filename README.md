@@ -6,7 +6,7 @@ Live reference: https://orion-legacy.vercel.app
 
 The Classic workspace has status views, combined subject/status/priority/owner filters, date/priority sorting, pagination, conversation history, ownership and service targets. Customer pages link support history, subscriptions and invoice records; knowledge articles have individual pages. These use the existing snapshot rather than fabricated live metrics. Search remains literal and subject-only; reporting remains a basic status summary. The replacement course project adds the database-grounded assistant and multi-provider settings later.
 
-Learners receive `../orion-environment/`, the reference URL and their own seeded database. They do **not** receive this source, private environment files or instructor tools. They investigate and build a replacement from scratch. Preserve the original source/data/brand history in `../orion-course-resources/`; its old pre-launch brief is not the current learner scenario.
+Learners receive only the reference URL and their own legacy database/SQL snapshot. `../orion-environment/` stays private as instructor provisioning tooling, not a learner starter. Learners create their workspace, configuration, backend/frontend, reports and communication features during the course. They do **not** receive this source, private environment files or instructor tools. They investigate and build a replacement from scratch. Preserve the original source/data/brand history in `../orion-course-resources/`; its old pre-launch brief is not the current learner scenario.
 
 ## Credentials
 

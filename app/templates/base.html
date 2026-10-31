@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }} — Orion Support Desk</title>
+  <link rel="stylesheet" href="/static/legacy.css">
+  <link rel="icon" href="/static/orion-icon.svg" type="image/svg+xml">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="masthead"><a href="/tickets" aria-label="Orion Support Desk home"><img src="/static/orion-logo.png" alt="Orion" width="132" height="42"></a><span>Support Desk <small>Classic</small></span><span class="account">Support operations</span></header>
+  <nav class="navigation" aria-label="Main navigation">
+    {% for url, label in [('tickets', 'Tickets'), ('customers', 'Customers'), ('knowledge', 'Knowledge'), ('reports', 'Reports'), ('company', 'Company')] %}
+    <a href="/{{ url }}" {% if active == url %}aria-current="page"{% endif %}>{{ label }}</a>
+    {% endfor %}
+  </nav>
+  <main id="main"><div class="breadcrumb">Orion / Support operations</div><h1>{{ title }}</h1>{{ content|safe }}</main>
+  <footer>Orion Support Desk · Internal operations</footer>
+</body>
+</html>

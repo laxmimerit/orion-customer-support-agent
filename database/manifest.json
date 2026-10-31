@@ -1,0 +1,46 @@
+{
+  "baseline": "orion-legacy-v1",
+  "fictional": true,
+  "dialect": "MySQL-compatible; TiDB MySQL Starter tested separately",
+  "sql_sha256": "5a7d78f33bd528385f16b72541daf37e1ca8a5777a4a4c5216b3566c2cd80800",
+  "source_sha256": {
+    "orion-course-resources/data/plans.csv": "97e88ed16ae8a05c0def30aa890e736ba21ba5556105bfa87fe8fef547fb10c3",
+    "orion-course-resources/data/agents.csv": "b0b77c3958b0dd9b10ed322bf2383107b21876b6230f1817e614addf3c1891ca",
+    "orion-course-resources/data/customers.csv": "edf6bcef4c12762bd2fdf2d45974f73dc6c2634923575faff4220c4c9249c144",
+    "orion-course-resources/data/subscriptions.csv": "78ba42021ee98b89a1379a27e586bbb0e59acc41356c9062d5da5dce892feabc",
+    "orion-course-resources/data/tickets.csv": "11af2cca665c78aed535d5e15d5d9623a53dc0723b17d27971f426f6ed934c13",
+    "orion-course-resources/data/messages.csv": "bf078912bc578739e964441d477f6343b0ba9ffe962a4baa547b223f9ec23b69",
+    "orion-course-resources/data/invoices.csv": "7eab7d794a51a073e4e46b76fd0b187938cc99318abcd01a4d478356be9e1236",
+    "orion-course-resources/data/ticket_events.csv": "10a88df442af962966b7eadb6ca3bcadc3404fcac5d092921d60fb61724ab41e",
+    "orion-course-resources/data/releases.csv": "26d8255f3c9fd29b59862843cede0a313c1724dfec684ac1a778f5db2aca79fc",
+    "orion-course-resources/data/incidents.csv": "6ac3fe759ce2713da7581c8fd919307302b48c4d4049a9e4415364328c4a83ee",
+    "orion-course-resources/data/sla_policy.csv": "6a36de3655db03eda6a413f8edc8f9319f4af46e4c6f21bbbdff51da3d57232d",
+    "orion-course-resources/data/knowledge-base.json": "9a21b2c4ed8fc50409f07e9d3fb0d5f59e81c08a1bb09ce38eafda4bdbd97cf7"
+  },
+  "table_counts": {
+    "plans": 3,
+    "agents": 9,
+    "customers": 300,
+    "subscriptions": 300,
+    "tickets": 4000,
+    "messages": 36694,
+    "invoices": 1800,
+    "ticket_events": 7525,
+    "releases": 12,
+    "incidents": 1,
+    "sla_policy": 12,
+    "knowledge_articles": 40,
+    "company_documents": 5,
+    "staff_requests": 4,
+    "lab_metadata": 1
+  },
+  "authored_context": "company_documents and staff_requests are new fictional operating-company context; original pre-launch brief is preserved as history",
+  "excluded": [
+    "evaluation_inputs",
+    "evaluation_labels",
+    "security-fixtures",
+    "private credentials",
+    "original application source"
+  ],
+  "runtime_status": "Run tools/lab.py check after every personal restore; instructor runtime evidence is recorded separately"
+}

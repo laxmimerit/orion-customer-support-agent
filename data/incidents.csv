@@ -1,2 +1,0 @@
-incident_id,start,end,service,description
-INC001,2026-05-14T09:00:00Z,2026-05-14T15:00:00Z,Platform,Synthetic queue-service outage

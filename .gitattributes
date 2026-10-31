@@ -1,8 +1,0 @@
-* text=auto
-*.csv text eol=lf
-*.md text eol=lf
-*.pdf binary
-*.png binary
-*.parquet binary
-*.docx binary
-*.zip binary

@@ -1,0 +1,5 @@
+[project]
+name = "orion-classic-reference"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = ["Flask==3.1.2", "PyMySQL==1.1.2", "gunicorn==23.0.0"]

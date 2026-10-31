@@ -1,51 +1,32 @@
-# Orion Classic — instructor-only reference
+# Orion Customer Support Agent
 
-Traditional Flask/Jinja2 support desk backed by MySQL-compatible TiDB. The deliberately limited interface provides ticket/customer/conversation lookup, subject-only keyword search, a knowledge base, company handbook, staff requests and a status-count report. It is a read-only historical reference, not a live messaging service. All records and company activity are fictional.
+Course repository for rebuilding Orion's customer support application with Claude Code.
 
-Live reference: https://orion-legacy.vercel.app
+The repository is **private during preparation**. The creator intends to make both branches public when the course is published. No visibility change is authorised before that release.
 
-The Classic workspace has status views, combined subject/status/priority/owner filters, date/priority sorting, pagination, conversation history, ownership and service targets. Customer pages link support history, subscriptions and invoice records; knowledge articles have individual pages. These use the existing snapshot rather than fabricated live metrics. Search remains literal and subject-only; reporting remains a basic status summary. The replacement course project adds the database-grounded assistant and multi-provider settings later.
+## Branches
 
-Learners receive only the reference URL and their own legacy database/SQL snapshot. `../orion-environment/` stays private as instructor provisioning tooling, not a learner starter. Learners create their workspace, configuration, backend/frontend, reports and communication features during the course. They do **not** receive this source, private environment files or instructor tools. They investigate and build a replacement from scratch. Preserve the original source/data/brand history in `../orion-course-resources/`; its old pre-launch brief is not the current learner scenario.
+| Branch | Purpose |
+| --- | --- |
+| `orion-legacy` | Existing Flask/Jinja2 application, MySQL-compatible data and legacy-environment setup. Copy this first to prepare the inherited system. |
+| `main` | Replacement built from scratch during the course. It currently contains documentation and ignore rules only. |
 
-## Credentials
-
-`.env` holds instructor database preparation credentials. `.env.vercel` holds the generated read-only reference account. Both have owner-only permissions, are excluded by `.gitignore`, and are excluded from deployment uploads. No Keychain dependency. `.mcp.json` contains a launcher, not credentials.
-
-The launcher loads `.env` into its child environment and starts the TiDB MCP server. Tested compatibility pins: `pytidb[mcp]==0.0.14` and `mcp==1.30.0`. The vendor's unpinned command currently resolves MCP v2, which does not provide the FastMCP API this server imports. The API/migration and MCP reader checks are distinct: the deployed application never uses the instructor root account.
-
-## Run this private repository
-
-Copy `.env.example` to `.env`, fill in your own MySQL-compatible TiDB connection, and restore to an empty personal database if needed:
+Start with the legacy branch in its own folder:
 
 ```sh
-uv run --with PyMySQL==1.1.2 python tools/lab.py restore
-uv run --with PyMySQL==1.1.2 python tools/lab.py check
-uv run --no-project --with-requirements requirements.txt python tools/serve.py
+git clone --branch orion-legacy --single-branch https://github.com/laxmimerit/orion-customer-support-agent.git orion-legacy
 ```
 
-The local preview listens on http://127.0.0.1:8080 . The supplied SQL is in `database/`. The server is intentionally read-only. Use a SELECT-only database account for a hosted reference; instructor provisioning and actual runtime tests create/check that boundary separately.
+Follow that branch's README to restore your personal legacy database and run the inherited app. Keep private configuration and credentials out of Git. The hosted reference is https://orion-legacy.vercel.app.
 
-For a container, build the Dockerfile and provide runtime environment variables using an ignored environment file. The database remains outside the image. Vercel uses sensitive runtime environment variables configured on the project.
-
-## Build and verification
-
-The Dockerfile packages the application and uses `PORT`. No database files or `.env` are copied into the image. This Mac currently has no Docker engine, so no local container build is claimed. The actual Flask runtime has been tested against TiDB and deployed on Vercel's Python 3.12 runtime.
-
-Instructor commands, from the course root:
+For the replacement, use a separate workspace on `main`:
 
 ```sh
-python3 orion-legacy/tools/package_database.py
-python3 -m unittest discover -s orion-legacy/tests -v
-python3 orion-environment/tools/lab.py verify-package
+git clone --branch main --single-branch https://github.com/laxmimerit/orion-customer-support-agent.git orion-course
 ```
 
-`tools/live_database.py` connects/restores/verifies the dedicated lab and provisions a SELECT-only reference user. It refuses a nonempty restore target. `tools/check_runtime.py` exercises real Flask routes against TiDB. `tools/check_mcp.py` initializes the actual server and checks a read-only ticket-count query. Runtime packages come from `requirements.txt`; environment keys are `TIDB_HOST`, `TIDB_PORT`, `TIDB_USERNAME`, `TIDB_PASSWORD`, `TIDB_DATABASE`.
+Build the new project and its configuration during the course. Do not copy the legacy application into `main` as the replacement scaffold. The course covers a new FastAPI backend, Next.js frontend, checked SQL analysis, a deliberate MySQL-to-PostgreSQL-compatible migration, evaluated retrieval and a reviewed email/communication workspace.
 
-## Deployment boundary
+A branch is not an access boundary: people with repository access can inspect both branches and history. The release will deliberately provide the inherited legacy source as well as the course implementation. Never commit private environment files, account passwords, provider keys or mailbox tokens on either branch.
 
-Only `index.py`, `requirements.txt`, `pyproject.toml`, `vercel.json` and approved `app/` Python/template/CSS/SVG/PNG files are uploaded. Vercel runtime variables are sensitive values from the read-only environment. SQL seeds, tools, tests, review artifacts, MCP configuration and environment files are not uploaded. The source project is private.
-
-The first Vercel runtime check caught missing dependencies because Vercel preferred `pyproject.toml` over `requirements.txt`. The project dependencies are now explicit in both. Browser review caught an inappropriate dark-surface logo and a missing In Progress filter; corrected source was redeployed. A successful build alone was not accepted.
-
-See `review/` for actual database/MCP/runtime and browser evidence; `SOURCES.md` for provider documentation. No fresh course recording or narration was generated. Existing course media remain preserved.
+Orion and its historical records are synthetic course material. Recording and narration are currently on hold.

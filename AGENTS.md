@@ -1,7 +1,10 @@
-# Instructor-only Orion legacy application
+# Orion Customer Support Agent — main
 
-This source is an instructor preparation artifact. Never copy it into the learner environment repository or publish it. Learners inspect the hosted application and their own seeded database, then implement a replacement from scratch. The application is fictional and all records are synthetic.
-
-Use Flask, Jinja2, simple HTML/CSS and parameterised PyMySQL queries. Do not introduce React or Next.js here. Limited reporting and subject-only search are deliberate baseline limitations. Preserve functional navigation, readable text, keyboard focus, correct records and missing values. Never introduce SQL injection or expose credentials to make the system look old.
-
-No installation, image upload, account creation or deployment is implied by a successful source build. Record runtime checks separately. Do not record course videos or generate narration during resource preparation.
+- This branch holds the replacement authored from scratch during the course.
+- The inherited Flask/Jinja2 application belongs to `orion-legacy`; do not merge it into main as starter code.
+- Start with documentation only. Add implementation as its course task is authorised.
+- Keep the repository private during preparation. Both branches become public only at the creator's course-publication step.
+- Never commit private environment files, database/mail passwords, API keys or tokens.
+- Learners copy the legacy branch for setup, then build the new backend, frontend, SQL reports and communication features on main.
+- Introduce each tool before using it: purpose, reason, prerequisites, action, evidence and handoff.
+- Recording and voicing remain held. Explain changes briefly and report checks actually performed.

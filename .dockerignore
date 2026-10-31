@@ -1,7 +1,12 @@
 .env
+.env.*
+!.env.example
 .git
+.mcp.json
 .venv
 __pycache__
+*.pyc
+database
 review
 tests
 tools

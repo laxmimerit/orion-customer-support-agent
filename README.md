@@ -4,6 +4,8 @@ Traditional Flask/Jinja2 support desk backed by MySQL-compatible TiDB. The delib
 
 Live reference: https://orion-legacy.vercel.app
 
+The Classic workspace has status views, combined subject/status/priority/owner filters, date/priority sorting, pagination, conversation history, ownership and service targets. Customer pages link support history, subscriptions and invoice records; knowledge articles have individual pages. These use the existing snapshot rather than fabricated live metrics. Search remains literal and subject-only; reporting remains a basic status summary. The replacement course project adds the database-grounded assistant and multi-provider settings later.
+
 Learners receive `../orion-environment/`, the reference URL and their own seeded database. They do **not** receive this source, private environment files or instructor tools. They investigate and build a replacement from scratch. Preserve the original source/data/brand history in `../orion-course-resources/`; its old pre-launch brief is not the current learner scenario.
 
 ## Credentials
@@ -42,7 +44,7 @@ python3 orion-environment/tools/lab.py verify-package
 
 ## Deployment boundary
 
-Only `index.py`, `requirements.txt`, `pyproject.toml`, `vercel.json` and approved `app/` Python/template/CSS/SVG files are uploaded. Vercel runtime variables are sensitive values from the read-only environment. SQL seeds, tools, tests, review artifacts, MCP configuration and environment files are not uploaded. The source project is private.
+Only `index.py`, `requirements.txt`, `pyproject.toml`, `vercel.json` and approved `app/` Python/template/CSS/SVG/PNG files are uploaded. Vercel runtime variables are sensitive values from the read-only environment. SQL seeds, tools, tests, review artifacts, MCP configuration and environment files are not uploaded. The source project is private.
 
 The first Vercel runtime check caught missing dependencies because Vercel preferred `pyproject.toml` over `requirements.txt`. The project dependencies are now explicit in both. Browser review caught an inappropriate dark-surface logo and a missing In Progress filter; corrected source was redeployed. A successful build alone was not accepted.
 

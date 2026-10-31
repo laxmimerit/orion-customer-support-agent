@@ -119,6 +119,39 @@ class BaselineTests(unittest.TestCase):
         self.assertNotIn('<img src=x', views.detail(record, []))
         self.assertIn("&lt;img", views.detail(record, []))
 
+    def test_combined_filters_sort_and_preserved_page_links(self):
+        rows, total = self.store.tickets(status="open", priority="P2", owner="A03")
+        self.assertEqual(total, 4)
+        self.assertTrue(all(r["status"] == "open" and r["priority"] == "P2" and r["name"] == "Clara" for r in rows))
+        oldest, _ = self.store.tickets(sort="oldest")
+        self.assertEqual([r["created_at"] for r in oldest], sorted(r["created_at"] for r in oldest))
+        ranked, _ = self.store.tickets(sort="priority")
+        self.assertTrue(all(r["priority"] == "P1" for r in ranked))
+        rows, total = self.store.tickets(status="resolved", priority="P2", owner="A03")
+        html = views.queue(rows, total, "", "resolved", 1, {}, self.store.agents(), "P2", "A03", "oldest")
+        self.assertIn("priority=P2", html)
+        self.assertIn("owner=A03", html)
+        self.assertIn("sort=oldest", html)
+
+    def test_customer_context_and_article_drilldown(self):
+        customer = self.store.customer("C0086")
+        cases = self.store.customer_tickets("C0086")
+        invoices = self.store.invoices("C0086")
+        subscription = self.store.subscription("C0086")
+        self.assertEqual(len(invoices), 6)
+        self.assertEqual(subscription["seats"], customer["seats"])
+        directory = self.store.customers()
+        self.assertEqual(sum(r["case_count"] for r in directory), 4000)
+        self.assertEqual(sum(r["active_count"] for r in directory), 475)
+        html = views.customer_detail(customer, cases, invoices, subscription)
+        self.assertIn("Invoice history", html)
+        self.assertIn("T00727", html)
+        article = self.store.articles()[0]
+        self.assertEqual(self.store.article(article["article_id"]), article)
+        self.assertIn(views.e(article["title"]), views.knowledge([article]))
+        self.assertIn(views.e(article["body"]), views.knowledge_article(article))
+        self.assertIsNone(self.store.article("unknown"))
+
     def test_company_context_and_evaluation_boundary(self):
         content = views.documents(self.store.documents(), self.store.requests())
         self.assertIn("original application source is outside your access", content)

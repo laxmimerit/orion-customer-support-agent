@@ -21,20 +21,24 @@ paths = ["/", "/tickets", "/tickets?page=2", "/tickets?status=resolved", "/ticke
 checks = []
 from app.store import database
 with database() as db:
+    article_id = db.articles()[0]["article_id"]
     try:
         db.query("DELETE FROM lab_metadata WHERE 1=0")
     except Exception as denied:
         assert denied.args[0] in (1142, 1143, 1227)
     else:
         raise AssertionError("Hosted reference account unexpectedly permits writes")
+paths.extend(["/tickets?status=open&priority=P2&owner=A03", "/tickets?sort=oldest", "/tickets?sort=priority", "/knowledge/" + article_id])
 for path in paths:
     response = client.get(path)
     assert response.status_code == 200, (path, response.status_code)
     assert response.headers.get("X-Content-Type-Options") == "nosniff"
     checks.append({"path": path, "status": response.status_code, "bytes": len(response.data)})
-for path in ["/tickets/unknown", "/customers/unknown", "/missing"]:
+not_found = ["/tickets/unknown", "/customers/unknown", "/knowledge/unknown", "/missing"]
+bad_request = ["/tickets?page=0", "/tickets?page=bad", "/tickets?status=bad", "/tickets?priority=bad", "/tickets?sort=bad", "/tickets?owner=bad!"]
+for path in not_found:
     assert client.get(path).status_code == 404
-for path in ["/tickets?page=0", "/tickets?page=bad", "/tickets?status=bad"]:
+for path in bad_request:
     assert client.get(path).status_code == 400
 assert client.post("/tickets").status_code == 405
 ticket = client.get("/tickets/T00727").get_data(as_text=True)
@@ -42,8 +46,11 @@ assert "Fern Platform 086" in ticket and "Invite link expired" in ticket
 assert client.get("/tickets/T00001").get_data(as_text=True).find("Not recorded") > 0
 assert "No matching tickets" in client.get("/tickets?q=zzzz-no-such-subject-zzzz").get_data(as_text=True)
 assert "4000 matching tickets" in client.get("/tickets").get_data(as_text=True)
+assert "4 matching tickets" in client.get("/tickets?status=open&priority=P2&owner=A03").get_data(as_text=True)
+assert "Invoice history" in client.get("/customers/C0086").get_data(as_text=True)
 assert "root" not in client.get("/healthz").get_data(as_text=True)
 for path, name in [("/tickets", "queue"), ("/tickets/T00727", "case"), ("/company", "company"), ("/reports", "reports")]:
     (ROOT / "review" / (name + ".html")).write_text(client.get(path).get_data(as_text=True))
-(ROOT / "review/flask-live-checks.json").write_text(json.dumps({"backend": "actual TiDB MySQL-compatible", "flask": "actual test client", "routes": checks, "negative_route_cases": 7, "database_write_probe": "denied", "status": "pass"}, indent=2) + "\n")
-print(json.dumps({"flask_live_checks": "pass", "success_routes": len(checks), "negative_route_cases": 7}))
+negative_count = len(not_found) + len(bad_request) + 1
+(ROOT / "review/flask-live-checks.json").write_text(json.dumps({"backend": "actual TiDB MySQL-compatible", "flask": "actual test client", "routes": checks, "negative_route_cases": negative_count, "database_write_probe": "denied", "status": "pass"}, indent=2) + "\n")
+print(json.dumps({"flask_live_checks": "pass", "success_routes": len(checks), "negative_route_cases": negative_count}))

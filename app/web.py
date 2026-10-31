@@ -7,9 +7,9 @@ app = Flask(__name__)
 app.config.update(MAX_CONTENT_LENGTH=4096)
 
 
-def page(title, body, active):
+def page(title, body, active, queue_counts=None):
     # body is produced exclusively by views.py, which escapes all database values.
-    return render_template("base.html", title=title, content=body, active=active)
+    return render_template("base.html", title=title, content=body, active=active, queue_counts=queue_counts or {})
 
 
 @app.after_request
@@ -47,15 +47,24 @@ def health():
 def tickets():
     query = request.args.get("q", "")
     status = request.args.get("status", "")
+    priority = request.args.get("priority", "")
+    owner = request.args.get("owner", "")
+    sort = request.args.get("sort", "newest")
     try:
         number = int(request.args.get("page", "1"))
     except ValueError:
         abort(400)
     if len(query) > 160 or number < 1 or number > 1000 or status not in ("", "open", "in progress", "pending", "resolved"):
         abort(400)
+    if priority not in ("", "P1", "P2", "P3", "P4") or sort not in ("newest", "oldest", "priority"):
+        abort(400)
+    if owner and (len(owner) != 3 or owner[0] != "A" or not owner[1:].isdigit()):
+        abort(400)
     with database() as db:
-        rows, total = db.tickets(query, status, number)
-    return page("Ticket queue", views.queue(rows, total, query, status, number), "tickets")
+        rows, total = db.tickets(query, status, number, priority, owner, sort)
+        counts = {item["status"]: item["total"] for item in db.counts()}
+        agents = db.agents()
+    return page("Ticket workspace", views.queue(rows, total, query, status, number, counts, agents, priority, owner, sort), "tickets", counts)
 
 
 @app.get("/tickets/<ticket_id>")
@@ -82,7 +91,9 @@ def customer(customer_id):
         if not record:
             abort(404)
         tickets = db.customer_tickets(customer_id)
-    return page(record["company"], views.customer_detail(record, tickets), "customers")
+        invoices = db.invoices(customer_id)
+        subscription = db.subscription(customer_id)
+    return page(record["company"], views.customer_detail(record, tickets, invoices, subscription), "customers")
 
 
 @app.get("/knowledge")
@@ -90,6 +101,15 @@ def knowledge():
     with database() as db:
         rows = db.articles()
     return page("Knowledge base", views.knowledge(rows), "knowledge")
+
+
+@app.get("/knowledge/<article_id>")
+def knowledge_article(article_id):
+    with database() as db:
+        row = db.article(article_id)
+    if not row:
+        abort(404)
+    return page(row["title"], views.knowledge_article(row), "knowledge")
 
 
 @app.get("/company")

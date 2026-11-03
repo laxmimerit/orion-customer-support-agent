@@ -1,0 +1,96 @@
+{
+  "query": "invitation",
+  "match": "semantic",
+  "items": [
+    {
+      "kind": "ticket",
+      "id": "T00727",
+      "title": "Invite link expired",
+      "status": "resolved",
+      "priority": "P2",
+      "category": "account access",
+      "similarity": 0.645223706021702
+    },
+    {
+      "kind": "ticket",
+      "id": "T02149",
+      "title": "Invite link expired",
+      "status": "resolved",
+      "priority": "P2",
+      "category": "account access",
+      "similarity": 0.6434683651891615
+    },
+    {
+      "kind": "ticket",
+      "id": "T01246",
+      "title": "Invite link expired",
+      "status": "resolved",
+      "priority": "P3",
+      "category": "account access",
+      "similarity": 0.6397790572656293
+    },
+    {
+      "kind": "ticket",
+      "id": "T00896",
+      "title": "Invite link expired",
+      "status": "resolved",
+      "priority": "P2",
+      "category": "account access",
+      "similarity": 0.6389939520790073
+    },
+    {
+      "kind": "ticket",
+      "id": "T03241",
+      "title": "Invite link expired",
+      "status": "resolved",
+      "priority": "P3",
+      "category": "account access",
+      "similarity": 0.6309813655477688
+    },
+    {
+      "kind": "ticket",
+      "id": "T00699",
+      "title": "Invite link expired",
+      "status": "resolved",
+      "priority": "P3",
+      "category": "account access",
+      "similarity": 0.6308639679338225
+    },
+    {
+      "kind": "ticket",
+      "id": "T02576",
+      "title": "Invite link expired",
+      "status": "resolved",
+      "priority": "P2",
+      "category": "account access",
+      "similarity": 0.6306841527947334
+    },
+    {
+      "kind": "ticket",
+      "id": "T00631",
+      "title": "Invite link expired",
+      "status": "resolved",
+      "priority": "P4",
+      "category": "account access",
+      "similarity": 0.6303748735435729
+    },
+    {
+      "kind": "ticket",
+      "id": "T01096",
+      "title": "Invite link expired",
+      "status": "resolved",
+      "priority": "P3",
+      "category": "account access",
+      "similarity": 0.6299977482330132
+    },
+    {
+      "kind": "ticket",
+      "id": "T01715",
+      "title": "Invite link expired",
+      "status": "resolved",
+      "priority": "P4",
+      "category": "account access",
+      "similarity": 0.6298889469585921
+    }
+  ]
+}

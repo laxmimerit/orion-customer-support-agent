@@ -1,0 +1,15 @@
+{
+  "query": "T00727",
+  "match": "exact_id",
+  "items": [
+    {
+      "kind": "ticket",
+      "id": "T00727",
+      "title": "Invite link expired",
+      "status": "resolved",
+      "priority": "P2",
+      "category": "account access",
+      "similarity": null
+    }
+  ]
+}

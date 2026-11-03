@@ -1,0 +1,257 @@
+{
+  "items": [
+    {
+      "ticket_id": "T01323",
+      "subject": "Messages cannot be sent",
+      "status": "resolved",
+      "priority": "P1",
+      "channel": "API",
+      "category": "outage",
+      "customer_id": "C0285",
+      "agent_id": "A06"
+    },
+    {
+      "ticket_id": "T01150",
+      "subject": "Queue updates stopped",
+      "status": "resolved",
+      "priority": "P1",
+      "channel": "web",
+      "category": "outage",
+      "customer_id": "C0100",
+      "agent_id": "A03"
+    },
+    {
+      "ticket_id": "T01620",
+      "subject": "Configure queue assignment",
+      "status": "in progress",
+      "priority": "P4",
+      "channel": "API",
+      "category": "how-to",
+      "customer_id": "C0002",
+      "agent_id": "A06"
+    },
+    {
+      "ticket_id": "T03720",
+      "subject": "Tax line needs explanation",
+      "status": "open",
+      "priority": "P3",
+      "channel": "web",
+      "category": "billing",
+      "customer_id": "C0117",
+      "agent_id": "A08"
+    },
+    {
+      "ticket_id": "T00314",
+      "subject": "Missing rows in downloaded CSV",
+      "status": "open",
+      "priority": "P3",
+      "channel": "chat",
+      "category": "bug",
+      "customer_id": "C0196",
+      "agent_id": "A04"
+    },
+    {
+      "ticket_id": "T03923",
+      "subject": "Password reset email delayed",
+      "status": "resolved",
+      "priority": "P4",
+      "channel": "email",
+      "category": "account access",
+      "customer_id": "C0140",
+      "agent_id": "A08"
+    },
+    {
+      "ticket_id": "T03653",
+      "subject": "Password reset email delayed",
+      "status": "resolved",
+      "priority": "P3",
+      "channel": "chat",
+      "category": "account access",
+      "customer_id": "C0216",
+      "agent_id": "A02"
+    },
+    {
+      "ticket_id": "T00591",
+      "subject": "Saved view loses sorting",
+      "status": "open",
+      "priority": "P3",
+      "channel": "email",
+      "category": "bug",
+      "customer_id": "C0232",
+      "agent_id": "A01"
+    },
+    {
+      "ticket_id": "T00928",
+      "subject": "Queue updates stopped",
+      "status": "resolved",
+      "priority": "P2",
+      "channel": "email",
+      "category": "outage",
+      "customer_id": "C0013",
+      "agent_id": "A02"
+    },
+    {
+      "ticket_id": "T03702",
+      "subject": "Set a reply template",
+      "status": "pending",
+      "priority": "P3",
+      "channel": "API",
+      "category": "how-to",
+      "customer_id": "C0093",
+      "agent_id": "A07"
+    },
+    {
+      "ticket_id": "T00824",
+      "subject": "Export monthly ticket history",
+      "status": "resolved",
+      "priority": "P3",
+      "channel": "web",
+      "category": "how-to",
+      "customer_id": "C0127",
+      "agent_id": "A06"
+    },
+    {
+      "ticket_id": "T01869",
+      "subject": "Support custom SLA calendars",
+      "status": "open",
+      "priority": "P2",
+      "channel": "API",
+      "category": "feature request",
+      "customer_id": "C0220",
+      "agent_id": "A08"
+    },
+    {
+      "ticket_id": "T00224",
+      "subject": "Missing rows in downloaded CSV",
+      "status": "in progress",
+      "priority": "P3",
+      "channel": "email",
+      "category": "bug",
+      "customer_id": "C0148",
+      "agent_id": "A01"
+    },
+    {
+      "ticket_id": "T03496",
+      "subject": "Export stops before completion",
+      "status": "open",
+      "priority": "P4",
+      "channel": "web",
+      "category": "bug",
+      "customer_id": "C0131",
+      "agent_id": "A03"
+    },
+    {
+      "ticket_id": "T01671",
+      "subject": "Find archived conversations",
+      "status": "pending",
+      "priority": "P4",
+      "channel": "chat",
+      "category": "how-to",
+      "customer_id": "C0064",
+      "agent_id": "A01"
+    },
+    {
+      "ticket_id": "T01742",
+      "subject": "Credit missing from next invoice",
+      "status": "resolved",
+      "priority": "P3",
+      "channel": "API",
+      "category": "billing",
+      "customer_id": "C0111",
+      "agent_id": "A01"
+    },
+    {
+      "ticket_id": "T01070",
+      "subject": "Webhook delivery is delayed",
+      "status": "in progress",
+      "priority": "P3",
+      "channel": "API",
+      "category": "bug",
+      "customer_id": "C0120",
+      "agent_id": "A06"
+    },
+    {
+      "ticket_id": "T01884",
+      "subject": "Credit missing from next invoice",
+      "status": "resolved",
+      "priority": "P2",
+      "channel": "API",
+      "category": "billing",
+      "customer_id": "C0279",
+      "agent_id": "A04"
+    },
+    {
+      "ticket_id": "T01487",
+      "subject": "Invite a read-only reviewer",
+      "status": "resolved",
+      "priority": "P2",
+      "channel": "web",
+      "category": "how-to",
+      "customer_id": "C0051",
+      "agent_id": "A04"
+    },
+    {
+      "ticket_id": "T01166",
+      "subject": "Invite a read-only reviewer",
+      "status": "resolved",
+      "priority": "P1",
+      "channel": "email",
+      "category": "how-to",
+      "customer_id": "C0060",
+      "agent_id": "A02"
+    },
+    {
+      "ticket_id": "T01848",
+      "subject": "Tax line needs explanation",
+      "status": "resolved",
+      "priority": "P3",
+      "channel": "email",
+      "category": "billing",
+      "customer_id": "C0196",
+      "agent_id": "A06"
+    },
+    {
+      "ticket_id": "T01289",
+      "subject": "Dashboard filter resets",
+      "status": "resolved",
+      "priority": "P4",
+      "channel": "web",
+      "category": "bug",
+      "customer_id": "C0271",
+      "agent_id": "A06"
+    },
+    {
+      "ticket_id": "T02477",
+      "subject": "Seat count differs from invoice",
+      "status": "resolved",
+      "priority": "P3",
+      "channel": "web",
+      "category": "billing",
+      "customer_id": "C0242",
+      "agent_id": "A06"
+    },
+    {
+      "ticket_id": "T01958",
+      "subject": "Renewal total changed",
+      "status": "pending",
+      "priority": "P3",
+      "channel": "web",
+      "category": "billing",
+      "customer_id": "C0045",
+      "agent_id": "A07"
+    },
+    {
+      "ticket_id": "T01001",
+      "subject": "Tax line needs explanation",
+      "status": "resolved",
+      "priority": "P3",
+      "channel": "chat",
+      "category": "billing",
+      "customer_id": "C0296",
+      "agent_id": "A02"
+    }
+  ],
+  "page": 2,
+  "page_size": 25,
+  "total": 4000
+}

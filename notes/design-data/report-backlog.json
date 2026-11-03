@@ -1,0 +1,41 @@
+{
+  "report": "backlog",
+  "rows": [
+    {
+      "status": "in progress",
+      "tickets": 147,
+      "no_first_reply": 6,
+      "no_first_reply_past_target": 5,
+      "avg_age_hours": "1865.04",
+      "age_counted": 147,
+      "age_missing": 0
+    },
+    {
+      "status": "open",
+      "tickets": 172,
+      "no_first_reply": 8,
+      "no_first_reply_past_target": 7,
+      "avg_age_hours": "2001.89",
+      "age_counted": 172,
+      "age_missing": 0
+    },
+    {
+      "status": "pending",
+      "tickets": 156,
+      "no_first_reply": 10,
+      "no_first_reply_past_target": 4,
+      "avg_age_hours": "1983.12",
+      "age_counted": 156,
+      "age_missing": 0
+    },
+    {
+      "status": "All",
+      "tickets": 475,
+      "no_first_reply": 24,
+      "no_first_reply_past_target": 16,
+      "avg_age_hours": "1953.37",
+      "age_counted": 475,
+      "age_missing": 0
+    }
+  ]
+}

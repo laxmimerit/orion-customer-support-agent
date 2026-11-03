@@ -1,0 +1,69 @@
+{
+  "ticket": {
+    "ticket_id": "T00727",
+    "customer_id": "C0086",
+    "agent_id": "A03",
+    "category": "account access",
+    "priority": "P2",
+    "status": "resolved",
+    "channel": "web",
+    "component": "Identity",
+    "subject": "Invite link expired",
+    "body": "Invite link expired. We use the scale plan with 8 seats. Several people cannot complete an important workflow today. We have a temporary workaround, but it takes considerable manual work. Workspace reference C0086; case demo-00727. Please explain the next step and any workaround.",
+    "sla_response_hours": "3.0000",
+    "sla_resolution_hours": "24.0000",
+    "first_response_hours": "7.9600",
+    "resolution_hours": "25.5800",
+    "csat": 4,
+    "reopened_count": 0,
+    "escalated": 0,
+    "sentiment": "urgent",
+    "plan_id": "scale",
+    "industry": "Finance tools",
+    "region": "Americas",
+    "company_size": "11-50"
+  },
+  "customer": {
+    "customer_id": "C0086",
+    "company": "Fern Platform 086",
+    "industry": "Finance tools",
+    "country": "United States",
+    "region": "Americas",
+    "company_size": "11-50",
+    "plan_id": "scale",
+    "seats": 8,
+    "acquisition_source": "search"
+  },
+  "messages": [
+    {
+      "message_id": "M007386",
+      "ticket_id": "T00727",
+      "author_role": "customer",
+      "body": "Invite link expired. We use the scale plan with 8 seats. Several people cannot complete an important workflow today. We have a temporary workaround, but it takes considerable manual work. Workspace reference C0086; case demo-00727. Please explain the next step and any workaround."
+    },
+    {
+      "message_id": "M007387",
+      "ticket_id": "T00727",
+      "author_role": "agent",
+      "body": "Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials."
+    },
+    {
+      "message_id": "M007388",
+      "ticket_id": "T00727",
+      "author_role": "customer",
+      "body": "Thank you. Please confirm whether this also applies to our other team. Follow-up 2."
+    },
+    {
+      "message_id": "M007389",
+      "ticket_id": "T00727",
+      "author_role": "agent",
+      "body": "Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials."
+    },
+    {
+      "message_id": "M007390",
+      "ticket_id": "T00727",
+      "author_role": "customer",
+      "body": "Thank you. Please confirm whether this also applies to our other team. Follow-up 3."
+    }
+  ]
+}

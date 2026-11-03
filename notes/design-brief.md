@@ -133,5 +133,3 @@ Check each item on the running app.
 | 24 | Reports | 1280px | Load the page | Exactly five report panels, named as in the API, each figure with a unit, and no export control |
 | 25 | Ticket queue, Case page, Reports | Any record | Scan the page | No dates, times or agent names appear anywhere; company, plan and seats appear only in the case page's Customer panel |
 | 26 | Ticket queue | Breadcrumb | Inspect its computed colour | #626f78 if the 4.5:1 text colours were accepted, #7a8b96 if the live colours were kept |
-
-Direction chosen: Desk direction · Opus 5.5, because it shows every value the brief doesn't give as a labelled placeholder instead of inventing or mislabelling it.

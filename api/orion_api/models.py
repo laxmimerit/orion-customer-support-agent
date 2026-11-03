@@ -109,6 +109,81 @@ class SearchResults(BaseModel):
     items: list[SearchHit]
 
 
+# Reports (api/reports/*.sql). Field names and order are the SQL column names; each file's header
+# defines its columns. Averages are exact decimal strings rounded to 2 places, null when nothing is counted.
+
+class VolumeRow(BaseModel):
+    month: str | None
+    tickets: int
+    resolved: int
+    unresolved: int
+    status_missing: int
+
+
+class BacklogRow(BaseModel):
+    status: str
+    tickets: int
+    no_first_reply: int
+    no_first_reply_past_target: int
+    oldest_created_at: UtcDatetime | None
+    avg_age_hours: Decimal | None
+    age_counted: int
+    age_missing: int
+
+
+class Breakdown(BaseModel):
+    tickets: int
+    resolved: int
+    unresolved: int
+    status_missing: int
+    avg_first_response_hours: Decimal | None
+    first_response_counted: int
+    first_response_missing: int
+    avg_resolution_hours: Decimal | None
+    resolution_counted: int
+    resolution_missing: int
+    avg_csat: Decimal | None
+    csat_counted: int
+    csat_missing: int
+
+
+class PriorityKey(BaseModel):
+    priority: str | None
+
+
+class CategoryKey(BaseModel):
+    category: str | None
+
+
+# The key base comes last so its field comes first, as in the SQL.
+class PriorityRow(Breakdown, PriorityKey):
+    pass
+
+
+class CategoryRow(Breakdown, CategoryKey):
+    pass
+
+
+class FirstReplyRow(BaseModel):
+    priority: str | None
+    tickets: int
+    met: int
+    missed: int
+    no_first_reply: int
+    no_target: int
+    avg_csat_met: Decimal | None
+    csat_met_counted: int
+    csat_met_missing: int
+    avg_csat_missed: Decimal | None
+    csat_missed_counted: int
+    csat_missed_missing: int
+
+
+class Report[Row: BaseModel](BaseModel):
+    report: str
+    rows: list[Row]
+
+
 class TableCount(BaseModel):
     table: str
     rows: int

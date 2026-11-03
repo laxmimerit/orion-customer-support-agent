@@ -10,7 +10,8 @@ from .conftest import ADMIN, AGENT, SETTINGS, auth
 def test_every_route_is_under_api_apart_from_docs(client):
     docs = {"/", "/docs", "/docs/oauth2-redirect", "/redoc", "/openapi.json"}
     paths = {route.path for route in client.app.routes} - docs
-    assert paths == {"/api/tickets", "/api/tickets/{ticket_id}", "/api/search", "/api/admin/status"}
+    reports = {f"/api/reports/{name}" for name in ("volume", "backlog", "priority", "category", "first-reply")}
+    assert paths == {"/api/tickets", "/api/tickets/{ticket_id}", "/api/search", "/api/admin/status", *reports}
 
 
 def test_every_route_is_get_only(client):
@@ -28,7 +29,8 @@ def test_root_opens_the_docs(client):
     assert client.get("/docs").status_code == 200
 
 
-@pytest.mark.parametrize("path", ["/api/tickets", "/api/tickets/T00727", "/api/search?q=T00727", "/api/admin/status"])
+@pytest.mark.parametrize("path", ["/api/tickets", "/api/tickets/T00727", "/api/search?q=T00727", "/api/admin/status",
+                                  "/api/reports/first-reply"])
 def test_a_token_is_required(client, path):
     response = client.get(path)
     assert response.status_code == 401

@@ -35,11 +35,35 @@ MESSAGES = [
 ]
 
 
+# Report rows shaped like the SQL output. Numbers are from orion_desk (first_reply's All row; B12 evidence).
+FIRST_REPLY_ALL = {
+    "priority": "All", "tickets": 4000, "met": 2451, "missed": 1525, "no_first_reply": 24, "no_target": 0,
+    "avg_csat_met": Decimal("4.40"), "csat_met_counted": 1426, "csat_met_missing": 727,
+    "avg_csat_missed": Decimal("2.90"), "csat_missed_counted": 903, "csat_missed_missing": 469,
+}
+# A group with nothing rated: the average is null, not 0 (M07).
+FIRST_REPLY_UNRATED = {
+    "priority": None, "tickets": 2, "met": 1, "missed": 0, "no_first_reply": 1, "no_target": 0,
+    "avg_csat_met": None, "csat_met_counted": 0, "csat_met_missing": 1,
+    "avg_csat_missed": None, "csat_missed_counted": 0, "csat_missed_missing": 0,
+}
+BACKLOG_ALL = {
+    "status": "All", "tickets": 475, "no_first_reply": 24, "no_first_reply_past_target": 16,
+    "oldest_created_at": datetime(2026, 1, 1, 1, 53), "avg_age_hours": Decimal("1953.37"),
+    "age_counted": 475, "age_missing": 0,
+}
+REPORT_ROWS = {"first_reply": [FIRST_REPLY_UNRATED, FIRST_REPLY_ALL], "backlog": [BACKLOG_ALL]}
+
+
 class FakeStore:
     database = "orion_desk"
 
     def __init__(self):
         self.calls = []
+
+    def report(self, name):
+        self.calls.append(("report", name))
+        return REPORT_ROWS.get(name, [])
 
     def ticket_page(self, limit, offset):
         self.calls.append(("ticket_page", limit, offset))

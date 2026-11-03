@@ -19,8 +19,10 @@ from psycopg_pool import PoolTimeout
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from .embedding import Embedder
-from .models import AdminStatus, ErrorResponse, SearchResults, TicketDetail, TicketPage
+from .models import (AdminStatus, BacklogRow, CategoryRow, ErrorResponse, FirstReplyRow, PriorityRow, Report,
+                     SearchResults, TicketDetail, TicketPage, VolumeRow)
 from .settings import load_settings
+from .store import report_description
 
 log = logging.getLogger("orion_api")
 bearer = HTTPBearer(auto_error=False, description="ORION_AGENT_TOKEN, or ORION_ADMIN_TOKEN for admin routes")
@@ -66,6 +68,23 @@ def store(request: Request):
 
 def embedder(request: Request):
     return request.app.state.embedder
+
+
+# Read-only reports: URL path, SQL file in api/reports, row model, summary.
+REPORT_ROUTES = (
+    ("volume", "volume", VolumeRow, "Tickets created per month, resolved and unresolved"),
+    ("backlog", "backlog", BacklogRow, "Unresolved tickets by status, aged at the data snapshot"),
+    ("priority", "priority", PriorityRow, "Tickets, response times and satisfaction by priority"),
+    ("category", "category", CategoryRow, "Tickets, response times and satisfaction by category"),
+    ("first-reply", "first_reply", FirstReplyRow,
+     "First replies met and missed against each ticket's own target, with satisfaction"),
+)
+
+
+def report_route(name):
+    def route(_: str = Depends(role), db=Depends(store)):
+        return {"report": name, "rows": db.report(name)}
+    return route
 
 
 def create_app(settings=None, store_instance=None, embedder_instance=None):
@@ -168,6 +187,11 @@ def create_app(settings=None, store_instance=None, embedder_instance=None):
         if ticket is not None:
             return {"query": q, "match": "exact_id", "items": [ticket]}
         return {"query": q, "match": "semantic", "items": db.nearest(model.query(q), priority, limit)}
+
+    for path, name, row, summary in REPORT_ROUTES:
+        app.get(f"/api/reports/{path}", response_model=Report[row], tags=["reports"],
+                responses=errors(401, 503), summary=summary, description=report_description(name),
+                name=f"report_{name}")(report_route(name))
 
     @app.get("/api/admin/status", response_model=AdminStatus, tags=["admin"],
              responses=errors(401, 403, 503), summary="Row count of every table (admin token only)")

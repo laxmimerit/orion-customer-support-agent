@@ -2,11 +2,11 @@
 from fastapi.testclient import TestClient
 import pytest
 
-from orion_api.main import create_app
+from orion_api.main import REPORT_ROUTES, create_app
 from orion_api.settings import load_settings
 
 from orion_api.embedding import MODEL, as_vector
-from orion_api.store import nearest_query
+from orion_api.store import REPORTS, nearest_query
 
 from .conftest import auth
 
@@ -119,3 +119,84 @@ def test_search_plans_use_hnsw_unfiltered_and_the_priority_index_filtered(live):
             return "\n".join(row["QUERY PLAN"] for row in rows)
         assert "HNSW Scan using search_embeddings_hnsw" in plan(None)
         assert "Index Scan using search_embeddings_priority" in plan("P1")
+
+
+# Reports (api/reports). Expected numbers are from the B12 evidence file and investigation.md.
+
+def report(client, settings, path):
+    response = client.get(f"/api/reports/{path}", headers=auth(settings.agent_token))
+    assert response.status_code == 200
+    return response.json()["rows"]
+
+
+def test_each_report_returns_exactly_its_model_columns(live):
+    client, _ = live
+    with client.app.state.store.pool.connection() as db:
+        for _, name, row, _ in REPORT_ROUTES:
+            cursor = db.execute(REPORTS[name])
+            assert [column.name for column in cursor.description] == list(row.model_fields), name
+
+
+def test_every_average_counts_what_it_leaves_out(live):
+    client, settings = live
+    averages = {"priority": ("first_response", "resolution", "csat"), "category": ("first_response", "resolution", "csat"),
+                "backlog": ("age",)}
+    for path, names in averages.items():
+        for row in report(client, settings, path):
+            for name in names:
+                assert row[f"{name}_counted"] + row[f"{name}_missing"] == row["tickets"], (path, name, row)
+    for row in report(client, settings, "first-reply"):
+        assert row["met"] + row["missed"] + row["no_first_reply"] + row["no_target"] == row["tickets"]
+        # Unresolved tickets can't be rated yet, so they are neither counted nor missing.
+        assert row["csat_met_counted"] + row["csat_met_missing"] <= row["met"]
+        assert row["csat_missed_counted"] + row["csat_missed_missing"] <= row["missed"]
+
+
+def test_totals_match_the_ticket_table(live):
+    client, settings = live
+    for path in ("volume", "priority", "category"):
+        rows = report(client, settings, path)
+        total, groups = rows[-1], rows[:-1]
+        assert (total["tickets"], total["resolved"], total["unresolved"], total["status_missing"]) == (4000, 3525, 475, 0)
+        assert sum(row["tickets"] for row in groups) == 4000, path
+    assert [row["month"] for row in report(client, settings, "volume")] == [
+        "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "All"]
+    backlog = report(client, settings, "backlog")[-1]
+    assert (backlog["status"], backlog["tickets"], backlog["no_first_reply"]) == ("All", 475, 24)
+
+
+def test_first_reply_report_matches_the_b12_evidence(live):
+    client, settings = live
+    rows = {row["priority"]: row for row in report(client, settings, "first-reply")}
+    evidence = {  # priority: rated met n, avg, rated missed n, avg
+        "P1": (140, "4.09", 73, "2.68"), "P2": (320, "4.28", 213, "2.85"), "P3": (703, "4.46", 447, "2.97"),
+        "P4": (263, "4.52", 170, "2.90"), "All": (1426, "4.40", 903, "2.90"),
+    }
+    resolved_unrated = {"P1": 107, "P2": 297, "P3": 586, "P4": 206, "All": 1196}
+    for priority, expected in evidence.items():
+        row = rows[priority]
+        assert (row["csat_met_counted"], row["avg_csat_met"], row["csat_missed_counted"], row["avg_csat_missed"]) == expected
+        assert row["csat_met_missing"] + row["csat_missed_missing"] == resolved_unrated[priority]
+    assert (rows["All"]["csat_met_missing"], rows["All"]["csat_missed_missing"]) == (727, 469)
+    assert (rows["All"]["no_first_reply"], rows["All"]["no_target"]) == (24, 0)
+
+
+def test_b12_headline_rated_and_unrated(live):
+    # B12 evidence: met 1,426 at 4.40, missed 903 at 2.90; 2,329 rated of 3,525 resolved; 1,196 resolved unrated.
+    client, settings = live
+    first_reply = report(client, settings, "first-reply")[-1]
+    resolved = report(client, settings, "priority")[-1]["resolved"]
+    assert (first_reply["csat_met_counted"], first_reply["avg_csat_met"]) == (1426, "4.40")
+    assert (first_reply["csat_missed_counted"], first_reply["avg_csat_missed"]) == (903, "2.90")
+    rated = first_reply["csat_met_counted"] + first_reply["csat_missed_counted"]
+    unrated = first_reply["csat_met_missing"] + first_reply["csat_missed_missing"]
+    assert (rated, resolved, unrated) == (2329, 3525, 1196)
+    assert rated + unrated == resolved
+
+
+def test_category_report_matches_the_design_stat_strip(live):
+    # DESIGN.md: 526 account access tickets; 17.65 h average first reply; 522 with a first reply; 4 with none.
+    client, settings = live
+    row = next(row for row in report(client, settings, "category") if row["category"] == "account access")
+    assert (row["tickets"], row["avg_first_response_hours"], row["first_response_counted"],
+            row["first_response_missing"]) == (526, "17.65", 522, 4)

@@ -3,6 +3,8 @@
 Every session and transaction is READ ONLY, so a write is refused by the
 database itself. TLS certificates are verified, as in tools/orion_db.py.
 """
+from pathlib import Path
+
 import certifi
 from psycopg import sql
 from psycopg.rows import dict_row
@@ -48,6 +50,22 @@ ORDER BY hits.distance, hits.doc_id"""
 def nearest_query(priority):
     where = "\n    WHERE priority = %(priority)s" if priority else ""
     return NEAREST.format(dim=DIMENSIONS, where=where)
+
+
+# Reports: one checked SQL file each in api/reports, read once at import. No parameters are passed,
+# so nothing from a request reaches the SQL.
+REPORTS_DIR = Path(__file__).resolve().parents[1] / "reports"
+REPORTS = {path.stem: path.read_text() for path in sorted(REPORTS_DIR.glob("*.sql"))}
+
+
+def report_description(name):
+    """The file's leading comment block, for the API docs."""
+    lines = []
+    for line in REPORTS[name].splitlines():
+        if not line.startswith("--"):
+            break
+        lines.append(line[3:] if line.startswith("-- ") else line[2:])
+    return "\n".join(lines)
 
 
 TABLES = ("SELECT table_name FROM information_schema.tables "
@@ -107,6 +125,11 @@ class Store:
         with self.pool.connection() as db:
             return db.execute(nearest_query(priority),
                               {"vector": as_vector(vector), "priority": priority, "limit": limit}).fetchall()
+
+    def report(self, name):
+        """Rows of api/reports/<name>.sql, in the order the file sorts them."""
+        with self.pool.connection() as db:
+            return db.execute(REPORTS[name]).fetchall()
 
     def table_counts(self):
         with self.pool.connection() as db:

@@ -38,6 +38,7 @@
       "status_missing": 0
     },
     {
+      "month": "All",
       "tickets": 4000,
       "resolved": 3525,
       "unresolved": 475,

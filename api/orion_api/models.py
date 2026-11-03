@@ -5,7 +5,7 @@ Nulls stay null (M07). Hours and other NUMERIC values are exact decimal strings
 """
 from datetime import UTC, date, datetime
 from decimal import Decimal
-from typing import Annotated
+from typing import Annotated, Literal
 
 from pydantic import AfterValidator, BaseModel
 
@@ -91,6 +91,22 @@ class TicketDetail(BaseModel):
     ticket: Ticket
     customer: Customer | None
     messages: list[Message]
+
+
+class SearchHit(BaseModel):
+    kind: Literal["ticket", "article"]
+    id: str
+    title: str | None
+    status: str | None
+    priority: str | None
+    category: str | None
+    similarity: float | None  # 1 - cosine distance; null for an exact ID match
+
+
+class SearchResults(BaseModel):
+    query: str
+    match: Literal["exact_id", "semantic"]
+    items: list[SearchHit]
 
 
 class TableCount(BaseModel):

@@ -55,6 +55,34 @@ class FakeStore:
     def table_counts(self):
         return [{"table": "messages", "rows": 36694}, {"table": "tickets", "rows": 4000}]
 
+    def exact_ticket(self, q):
+        self.calls.append(("exact_ticket", q))
+        if q != "T00727":
+            return None
+        return {"kind": "ticket", "id": "T00727", "title": T00727["subject"], "status": "resolved",
+                "priority": "P2", "category": "account access", "similarity": None}
+
+    def nearest(self, vector, priority, limit):
+        self.calls.append(("nearest", vector, priority, limit))
+        hits = [
+            {"kind": "ticket", "id": "T00727", "title": T00727["subject"], "status": "resolved",
+             "priority": "P2", "category": "account access", "similarity": 0.81},
+            {"kind": "article", "id": "KB004", "title": "Resend an invitation", "status": None,
+             "priority": None, "category": "account access", "similarity": 0.74},
+        ]
+        return [hit for hit in hits if priority in (None, hit["priority"])][:limit]
+
+
+class FakeEmbedder:
+    """Stands in for fastembed: no model download, a fixed 768-value vector."""
+
+    def __init__(self):
+        self.queries = []
+
+    def query(self, text):
+        self.queries.append(text)
+        return [0.0] * 767 + [1.0]
+
 
 @pytest.fixture
 def fake_store():
@@ -62,8 +90,13 @@ def fake_store():
 
 
 @pytest.fixture
-def client(fake_store):
-    with TestClient(create_app(SETTINGS, fake_store), raise_server_exceptions=False) as test_client:
+def fake_embedder():
+    return FakeEmbedder()
+
+
+@pytest.fixture
+def client(fake_store, fake_embedder):
+    with TestClient(create_app(SETTINGS, fake_store, fake_embedder), raise_server_exceptions=False) as test_client:
         yield test_client
 
 

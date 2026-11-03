@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager
 from http import HTTPStatus
 import logging
 import secrets
+from typing import Literal
 
 from fastapi import Depends, FastAPI, Path, Query, Request
 from fastapi.exceptions import RequestValidationError
@@ -17,7 +18,8 @@ import psycopg
 from psycopg_pool import PoolTimeout
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from .models import AdminStatus, ErrorResponse, TicketDetail, TicketPage
+from .embedding import Embedder
+from .models import AdminStatus, ErrorResponse, SearchResults, TicketDetail, TicketPage
 from .settings import load_settings
 
 log = logging.getLogger("orion_api")
@@ -62,8 +64,12 @@ def store(request: Request):
     return request.app.state.store
 
 
-def create_app(settings=None, store_instance=None):
-    """Build the app. Tests pass their own settings and store; uvicorn passes neither."""
+def embedder(request: Request):
+    return request.app.state.embedder
+
+
+def create_app(settings=None, store_instance=None, embedder_instance=None):
+    """Build the app. Tests pass their own settings, store and embedder; uvicorn passes none."""
     settings = settings or load_settings()
 
     @asynccontextmanager
@@ -87,6 +93,7 @@ def create_app(settings=None, store_instance=None):
         lifespan=lifespan,
     )
     app.state.settings = settings
+    app.state.embedder = embedder_instance or Embedder()
     if store_instance is not None:
         app.state.store = store_instance
 
@@ -140,6 +147,27 @@ def create_app(settings=None, store_instance=None):
         if detail is None:
             raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
         return detail
+
+    @app.get("/api/search", response_model=SearchResults, tags=["search"], responses=errors(401, 422, 503),
+             summary="Find tickets and help articles by meaning, or one ticket by its exact ID")
+    def search(
+        q: str = Query(min_length=1, max_length=500, description="Words to search for, or an exact ticket ID"),
+        priority: Literal["P1", "P2", "P3", "P4"] | None = Query(None, description="Only tickets with this priority"),
+        limit: int = Query(10, ge=1, le=50),
+        _: str = Depends(role),
+        db=Depends(store),
+        model=Depends(embedder),
+    ):
+        """If `q` (trimmed) is exactly a ticket ID, case-sensitive as in M01, only that ticket comes back,
+        whatever the filter. Otherwise `q` is embedded locally and the nearest tickets and articles are
+        returned by cosine similarity. A priority filter leaves articles out, since they have no priority."""
+        q = q.strip()
+        if not q:
+            raise ApiError(422, "invalid_request", "The query is empty.")
+        ticket = db.exact_ticket(q)
+        if ticket is not None:
+            return {"query": q, "match": "exact_id", "items": [ticket]}
+        return {"query": q, "match": "semantic", "items": db.nearest(model.query(q), priority, limit)}
 
     @app.get("/api/admin/status", response_model=AdminStatus, tags=["admin"],
              responses=errors(401, 403, 503), summary="Row count of every table (admin token only)")

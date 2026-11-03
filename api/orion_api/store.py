@@ -8,6 +8,7 @@ from psycopg import sql
 from psycopg.rows import dict_row
 from psycopg_pool import ConnectionPool
 
+from .embedding import DIMENSIONS, as_vector
 from .models import Customer, Message, Ticket, TicketSummary
 
 
@@ -26,6 +27,29 @@ CUSTOMER = sql.SQL("SELECT {} FROM customers WHERE customer_id = %s").format(col
 MESSAGES = sql.SQL(
     "SELECT {} FROM messages WHERE ticket_id = %s ORDER BY created_at ASC NULLS FIRST, message_id"
 ).format(columns(Message))
+# Search (plan increment 8). The inner query keeps the shape HNSW needs:
+# ORDER BY embedding <=> vector LIMIT k on search_embeddings alone; titles are joined afterwards.
+EXACT_ID = ("SELECT 'ticket' AS kind, ticket_id AS id, subject AS title, status, priority, category, "
+            "NULL::float8 AS similarity FROM tickets WHERE ticket_id = %(q)s")
+NEAREST = """WITH hits AS (
+    SELECT doc_id, kind, source_id, embedding <=> %(vector)s::vector({dim}) AS distance
+    FROM search_embeddings{where}
+    ORDER BY embedding <=> %(vector)s::vector({dim})
+    LIMIT %(limit)s
+)
+SELECT hits.kind, hits.source_id AS id, COALESCE(t.subject, a.title) AS title, t.status, t.priority,
+       COALESCE(t.category, a.category) AS category, 1 - hits.distance AS similarity
+FROM hits
+LEFT JOIN tickets t ON hits.kind = 'ticket' AND t.ticket_id = hits.source_id
+LEFT JOIN knowledge_articles a ON hits.kind = 'article' AND a.article_id = hits.source_id
+ORDER BY hits.distance, hits.doc_id"""
+
+
+def nearest_query(priority):
+    where = "\n    WHERE priority = %(priority)s" if priority else ""
+    return NEAREST.format(dim=DIMENSIONS, where=where)
+
+
 TABLES = ("SELECT table_name FROM information_schema.tables "
           "WHERE table_schema = 'public' AND table_type = 'BASE TABLE' ORDER BY table_name")
 
@@ -72,6 +96,17 @@ class Store:
                 customer = db.execute(CUSTOMER, (ticket["customer_id"],)).fetchone()
             messages = db.execute(MESSAGES, (ticket_id,)).fetchall()
             return {"ticket": ticket, "customer": customer, "messages": messages}
+
+    def exact_ticket(self, q):
+        """The ticket whose ID is exactly q (case-sensitive, M01), as a search hit; None otherwise."""
+        with self.pool.connection() as db:
+            return db.execute(EXACT_ID, {"q": q}).fetchone()
+
+    def nearest(self, vector, priority, limit):
+        """The limit closest tickets and articles by cosine distance; only tickets when priority is given."""
+        with self.pool.connection() as db:
+            return db.execute(nearest_query(priority),
+                              {"vector": as_vector(vector), "priority": priority, "limit": limit}).fetchall()
 
     def table_counts(self):
         with self.pool.connection() as db:

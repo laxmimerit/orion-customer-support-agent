@@ -5,6 +5,9 @@ import pytest
 from orion_api.main import create_app
 from orion_api.settings import load_settings
 
+from orion_api.embedding import MODEL, as_vector
+from orion_api.store import nearest_query
+
 from .conftest import auth
 
 pytestmark = pytest.mark.live
@@ -60,10 +63,59 @@ def test_admin_status_matches_adr_counts(live):
     assert client.get("/api/admin/status", headers=auth(settings.agent_token)).status_code == 403
     body = client.get("/api/admin/status", headers=auth(settings.admin_token)).json()
     assert body["database"] == settings.pg_database
-    assert {row["table"]: row["rows"] for row in body["tables"]} == ADR_COUNTS
+    # The 15 migrated tables, plus increment 8's search_embeddings (one row per ticket and article).
+    assert {row["table"]: row["rows"] for row in body["tables"]} == {**ADR_COUNTS, "search_embeddings": 4040}
 
 
 def test_sessions_are_read_only(live):
     client, _ = live
     with client.app.state.store.pool.connection() as db:
         assert db.execute("SHOW transaction_read_only").fetchone()["transaction_read_only"] == "on"
+
+
+# Plan increment 8: search. These load the local embedding model (cached after the first run).
+
+def test_search_exact_id_returns_only_that_ticket(live):
+    client, settings = live
+    body = client.get("/api/search?q=T00727", headers=auth(settings.agent_token)).json()
+    assert body["match"] == "exact_id"
+    assert [(item["kind"], item["id"]) for item in body["items"]] == [("ticket", "T00727")]
+
+
+def test_search_finds_other_wording(live):
+    # B04: "invitation" finds the tickets the legacy "invite" search finds, T00727 among them.
+    client, settings = live
+    body = client.get("/api/search?q=invitation", headers=auth(settings.agent_token)).json()
+    assert body["match"] == "semantic" and len(body["items"]) == 10
+    assert "T00727" in [item["id"] for item in body["items"]]
+
+
+def test_search_priority_filter_returns_only_those_tickets(live):
+    client, settings = live
+    body = client.get("/api/search?q=invitation%20link%20expired&priority=P1",
+                      headers=auth(settings.agent_token)).json()
+    assert len(body["items"]) == 10
+    assert {(item["kind"], item["priority"]) for item in body["items"]} == {("ticket", "P1")}
+
+
+def test_every_ticket_and_article_is_embedded_with_one_model(live):
+    client, _ = live
+    with client.app.state.store.pool.connection() as db:
+        rows = db.execute("SELECT kind, COUNT(*) AS n FROM search_embeddings GROUP BY kind").fetchall()
+        assert {row["kind"]: row["n"] for row in rows} == {"ticket": 4000, "article": 40}
+        assert db.execute("SELECT array_agg(DISTINCT model) AS m FROM search_embeddings").fetchone()["m"] == [MODEL]
+        indexes = {r["indexname"]: r["indexdef"] for r in db.execute(
+            "SELECT indexname, indexdef FROM pg_indexes WHERE tablename = 'search_embeddings'").fetchall()}
+        assert "USING hnsw (embedding vector_cosine_ops)" in indexes["search_embeddings_hnsw"]
+
+
+def test_search_plans_use_hnsw_unfiltered_and_the_priority_index_filtered(live):
+    client, _ = live
+    vector = as_vector(client.app.state.embedder.query("invitation link expired"))
+    with client.app.state.store.pool.connection() as db:
+        def plan(priority):
+            rows = db.execute("EXPLAIN " + nearest_query(priority),
+                              {"vector": vector, "priority": priority, "limit": 10}).fetchall()
+            return "\n".join(row["QUERY PLAN"] for row in rows)
+        assert "HNSW Scan using search_embeddings_hnsw" in plan(None)
+        assert "Index Scan using search_embeddings_priority" in plan("P1")

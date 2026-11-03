@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "orion-api",
+      "runtimeExecutable": "uv",
+      "runtimeArgs": ["run", "--directory", "api", "uvicorn", "orion_api.main:create_app", "--factory", "--host", "127.0.0.1", "--port", "8000"],
+      "port": 8000
+    },
+    {
+      "name": "orion-web",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "web", "run", "dev"],
+      "port": 3000
+    }
+  ]
+}

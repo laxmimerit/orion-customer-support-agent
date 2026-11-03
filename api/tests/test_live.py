@@ -139,12 +139,17 @@ def test_each_report_returns_exactly_its_model_columns(live):
 
 def test_every_average_counts_what_it_leaves_out(live):
     client, settings = live
-    averages = {"priority": ("first_response", "resolution", "csat"), "category": ("first_response", "resolution", "csat"),
+    averages = {"priority": ("first_response", "resolution"), "category": ("first_response", "resolution"),
                 "backlog": ("age",)}
     for path, names in averages.items():
         for row in report(client, settings, path):
             for name in names:
                 assert row[f"{name}_counted"] + row[f"{name}_missing"] == row["tickets"], (path, name, row)
+    # Unresolved tickets can't be rated yet, so satisfaction counts resolved tickets only.
+    for path in ("priority", "category"):
+        for row in report(client, settings, path):
+            assert row["csat_counted"] + row["csat_missing"] == row["resolved"], (path, row)
+        assert report(client, settings, path)[-1]["csat_missing"] == 1196, path
     for row in report(client, settings, "first-reply"):
         assert row["met"] + row["missed"] + row["no_first_reply"] + row["no_target"] == row["tickets"]
         # Unresolved tickets can't be rated yet, so they are neither counted nor missing.

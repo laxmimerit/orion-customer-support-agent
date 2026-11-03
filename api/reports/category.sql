@@ -6,8 +6,9 @@
 --
 -- Every average leaves out tickets where the value is not recorded, never counting them as zero (M07).
 -- For each one, <name>_counted tickets are in the average and <name>_missing are left out;
--- <name>_counted + <name>_missing = tickets. Unresolved tickets have no resolution time, so they are
--- among resolution_missing; unrated tickets are among csat_missing.
+-- <name>_counted + <name>_missing = tickets, except satisfaction. Unresolved tickets have no resolution
+-- time, so they are among resolution_missing. csat_missing counts resolved tickets with no rating only:
+-- unresolved tickets cannot be rated yet, so csat_counted + csat_missing = resolved.
 SELECT CASE WHEN GROUPING(category) = 1 THEN 'All' ELSE category END AS category,
        COUNT(*) AS tickets,
        COUNT(*) FILTER (WHERE status = 'resolved') AS resolved,
@@ -21,7 +22,7 @@ SELECT CASE WHEN GROUPING(category) = 1 THEN 'All' ELSE category END AS category
        COUNT(*) - COUNT(resolution_hours) AS resolution_missing,
        ROUND(AVG(csat), 2) AS avg_csat,
        COUNT(csat) AS csat_counted,
-       COUNT(*) - COUNT(csat) AS csat_missing
+       COUNT(*) FILTER (WHERE status = 'resolved' AND csat IS NULL) AS csat_missing
 FROM tickets
 GROUP BY GROUPING SETS ((category), ())
 ORDER BY GROUPING(category), category NULLS LAST

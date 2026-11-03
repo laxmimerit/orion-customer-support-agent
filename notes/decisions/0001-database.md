@@ -1,6 +1,6 @@
 # 0001. Database for the replacement desk
 
-- **Status:** Proposed
+- **Status:** Accepted on 2026-11-03, after all 14 migration checks below passed (`tools/reconcile.py`)
 - **Date:** 2026-11-02
 - **Decision:** Build the replacement on its own PostgreSQL-compatible TiDB Cloud Starter instance, as the separate development database. Leave the legacy MySQL-compatible TiDB database as it is. Do not move production onto it while the service is in preview.
 
@@ -62,7 +62,7 @@ Checked in TiDB's official docs on 2026-11-02 (links under Sources).
   - Statements time out after 60 s by default. `NUMERIC` keeps at most 28 fractional digits. Text must be UTF-8.
   - `COPY` supports text and CSV only.
   - The catalog surface is incomplete, and `information_schema.views` is missing.
-- **Migration paths.** The only documented ways in are `pg_dump`, `psql` and `\copy` from a PostgreSQL source ([Migrate from PostgreSQL](https://docs.pingcap.com/tidbcloud/import-with-psql/)). The docs give no path from MySQL-compatible TiDB, and backups can't be restored across protocols. We would export CSV from `orion_lab` ourselves and load it with `\copy`.
+- **Migration paths.** The only documented ways in are `pg_dump`, `psql` and `\copy` from a PostgreSQL source ([Migrate from PostgreSQL](https://docs.pingcap.com/tidbcloud/import-with-psql/)). The docs give no path from MySQL-compatible TiDB, and backups can't be restored across protocols. So we copy it with our own script: `tools/migrate.py` reads all 15 tables from one consistent snapshot of `orion_lab` through the SELECT-only reader. It creates `orion_desk` with the same column types, nulls and keys, and loads it with `COPY … FROM STDIN` (text format). `tools/reconcile.py` then runs the checks below on both databases. Both scripts run with `uv run`, and `--replace` reloads the tables for a fresh run.
 - **Vectors and full-text.** pgvector-compatible vector search (HNSW only) and full-text search are available. Full-text silently ignores `:*` prefix matching and weight modifiers.
 
 ## Options compared
@@ -72,7 +72,7 @@ Checked in TiDB's official docs on 2026-11-02 (links under Sources).
 | Readiness | Public preview, no SLA, not for production | What we run today | Depends on the provider. Standard PostgreSQL is mature |
 | Keeps legacy records untouched (M06) | Yes, a separate instance | Yes, if we use a separate database or instance | Yes, separate everywhere |
 | Driver and SQL changes | `pymysql` → a PostgreSQL driver. Rewrite MySQL-only SQL (`TIMESTAMPDIFF` and others) | None | Same as A |
-| Moving the data | MySQL → CSV → `\copy`, which we write and check ourselves | Copy within TiDB (no protocol change) | Same as A, with standard PostgreSQL tooling on the target |
+| Moving the data | MySQL → `COPY` through our own script (`tools/migrate.py`), which we write and check ourselves | Copy within TiDB (no protocol change) | Same as A, with standard PostgreSQL tooling on the target |
 | PostgreSQL fidelity | Partial (see the preview list above) | Not applicable | Full |
 | Vendor, console, operations | One vendor (TiDB Cloud) for legacy and replacement | One vendor | A second vendor and account to run |
 | Region and network | `us-east-1` only, public endpoint only | Today's region and options (not checked here) | Whatever the provider offers |
@@ -119,31 +119,31 @@ Each item compares the new PostgreSQL-compatible database with `orion_lab` as ex
 1. **The source wasn't touched.** Only `SELECT` ran against `orion_lab`. The export used a read-only account, or the account's permissions were checked first (investigation Unknown 5). Record when the export was taken (Unknown 7).
 2. **Totals match for all 15 tables in `orion_lab`,** including the 4 the app doesn't read today. At export time, read each table's count from `orion_lab` with `SELECT COUNT(*)` and write it in the table below. Then count each table again in the new database. The two counts must be equal.
 
-   The manifest column holds the counts recorded for baseline `orion-legacy-v1`. They are **not yet confirmed against the database**. If a live count differs from the manifest, the live count is the one the new database must match, and the difference is noted here with its reason.
+   The manifest column holds the counts recorded for baseline `orion-legacy-v1`. If a live count differs from the manifest, the live count is the one the new database must match, and the difference is noted here with its reason. The export was taken at 2026-11-03 13:04:32 UTC. Every live count matched the manifest, and every new-database count matched the live count.
 
    | Table | Manifest (`orion-legacy-v1`) | `orion_lab` at export | New database |
    |---|---:|---:|---:|
-   | `plans` | 3 | | |
-   | `agents` | 9 | | |
-   | `customers` | 300 | | |
-   | `subscriptions` | 300 | | |
-   | `tickets` | 4000 | | |
-   | `messages` | 36694 | | |
-   | `invoices` | 1800 | | |
-   | `ticket_events` | 7525 | | |
-   | `releases` | 12 | | |
-   | `incidents` | 1 | | |
-   | `sla_policy` | 12 | | |
-   | `knowledge_articles` | 40 | | |
-   | `company_documents` | 5 | | |
-   | `staff_requests` | 4 | | |
-   | `lab_metadata` | 1 | | |
+   | `plans` | 3 | 3 | 3 |
+   | `agents` | 9 | 9 | 9 |
+   | `customers` | 300 | 300 | 300 |
+   | `subscriptions` | 300 | 300 | 300 |
+   | `tickets` | 4000 | 4000 | 4000 |
+   | `messages` | 36694 | 36694 | 36694 |
+   | `invoices` | 1800 | 1800 | 1800 |
+   | `ticket_events` | 7525 | 7525 | 7525 |
+   | `releases` | 12 | 12 | 12 |
+   | `incidents` | 1 | 1 | 1 |
+   | `sla_policy` | 12 | 12 | 12 |
+   | `knowledge_articles` | 40 | 40 | 40 |
+   | `company_documents` | 5 | 5 | 5 |
+   | `staff_requests` | 4 | 4 | 4 |
+   | `lab_metadata` | 1 | 1 | 1 |
 
    Also check that `orion_lab` holds exactly these 15 tables and no others, and check the subtotals the investigation relied on: 3525 resolved tickets, 483 that missed the resolution target, 226 that missed both targets.
 3. **Identifiers are unchanged.** Every `ticket_id`, `customer_id`, `agent_id` and `message_id` is present, with the same text, case and no added padding. `T00727` opens exactly T00727 (M01).
 4. **Relationships hold.** Every ticket's customer exists. Every message's ticket exists. Every `agent_id` that isn't null exists in `agents`. T00727 still shows customer C0086, agent Clara (A03) and its 5 messages, M007386 to M007390 (M02).
 5. **Dates are the same UTC values to the second.** T00727 shows created 2026-06-28 03:34:00, first response 11:31:36 and resolved 2026-06-29 05:08:48. No time-zone shift during export or import, whatever the column type.
-6. **Nulls stay null.** Per-column null counts match for every table, and the CSV round trip doesn't turn `NULL` into `''` or `0`. In particular, a missing satisfaction score or first-response time stays not recorded (M07; for example, T01841's satisfaction).
+6. **Nulls stay null.** Per-column null counts match for every table, and the load doesn't turn `NULL` into `''` or `0`. In particular, a missing satisfaction score or first-response time stays not recorded (M07; for example, T01841's satisfaction).
 7. **Numbers keep their precision.** Hours keep 4 decimals: 7.9600 and 25.5800 for T00727, and the 3.0000 and 24.0000 targets. Money columns in `invoices` match exactly. The ported checks give the same results: the timestamp-based durations equal the stored hours.
 8. **Ordering matches.** The queue (`created_at DESC, ticket_id`), the priority sort, messages (`created_at, message_id`) and especially the customer list (`ORDER BY company`, where Fern Platform 086 is row 163) come back in the same order under the new database's bytewise default. Any difference needs an explicit collation or sort key.
 9. **Filters and search behave the same.** Status, priority and owner filters give the same counts. That needs case-sensitive `=` to match today's results. The legacy subject search still finds 265 tickets for "invite" and 0 for "invitation". The `!` escape works for subjects that contain `%`, `_` and `!`.

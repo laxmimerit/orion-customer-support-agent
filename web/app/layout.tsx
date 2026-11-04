@@ -20,7 +20,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="frame">
           <aside className="side" aria-label="Desk navigation">
             <Link className="side-logo" href="/" aria-label="Orion desk, ticket queue">
-              <Image src="/orion-logo.png" alt="Orion" width={98} height={24} priority />
+              {/* Served as the file itself: /_next/image answers 404 on the Vercel deployment. */}
+              <Image src="/orion-logo.png" alt="Orion" width={98} height={24} priority unoptimized />
             </Link>
             <div className="side-navs">
               <SidebarNav />

@@ -49,11 +49,11 @@ export default async function Settings() {
                 </dd>
               </dl>
               <div className="settings-routes">
-                <span className="settings-routes-label">{info.ok ? `Routes · ${info.data.routes.length}` : "Routes"}</span>
+                <span id="settings-routes-label" className="settings-routes-label">{info.ok ? `Routes · ${info.data.routes.length}` : "Routes"}</span>
                 {!info.ok && <p className="is-failed">The API did not list its routes.</p>}
                 {info.ok && info.data.routes.length === 0 && <p>{NOT_RECORDED}</p>}
                 {info.ok && info.data.routes.length > 0 && (
-                  <ul>{info.data.routes.map((route) => <li key={route}><code>{route}</code></li>)}</ul>
+                  <ul role="list" aria-labelledby="settings-routes-label">{info.data.routes.map((route) => <li key={route}><code>{route}</code></li>)}</ul>
                 )}
               </div>
             </div>

@@ -3,17 +3,17 @@
 import { Fragment } from "react";
 
 import { ApiProblemPanel, PriorityTile } from "@/components/desk";
-import { WhenTables } from "@/components/report-tables";
+import { ScrollBox, WhenTables } from "@/components/report-tables";
 import type { ApiProblem, BacklogRow, CategoryRow, FirstReplyRow, PriorityRow, VolumeRow } from "@/lib/api";
 import { NOT_RECORDED, plural, sentenceCase } from "@/lib/format";
 import {
-  backlogHeadline, categoryHeadline, categoryName, categorySpotlight, daysText, firstReplyHeadline, hoursLabel, hoursText, num,
-  percentText, periodHeadline, periodsFrom, priorityHeadline, priorityName, ratingCountNote, ratingGap, ratingText,
-  ratio, rounded, soleHighest, soleLowest, splitTotal, undatedTickets, type Kpi,
+  METRICS, backlogHeadline, categoryHeadline, categoryName, categorySpotlight, daysText, firstReplyHeadline, hoursText, num,
+  percentText, periodHeadline, periodsFrom, priorityHeadline, priorityName, ratingAxis, ratingCountNote, ratingGap, ratingLabel,
+  ratingText, ratio, soleHighest, soleLowest, splitTotal, stripNotes, undatedTickets, type Kpi, type Metric, type StripNote,
 } from "@/lib/report-text";
 
 function ReportCard({ id, eyebrow, title, children }: {
-  id: string; eyebrow: string; title: string; children: React.ReactNode;
+  id: string; eyebrow: string; title: React.ReactNode; children: React.ReactNode;
 }) {
   return (
     <section className="card rp-card" aria-labelledby={id}>
@@ -26,10 +26,11 @@ function ReportCard({ id, eyebrow, title, children }: {
   );
 }
 
-// One report failed: its section says so and the rest of the page stays.
+// One report failed: its section says so and the rest of the page stays. The hidden words keep each failed
+// section's name apart in a screen reader's list of regions.
 export function ReportProblem({ id, eyebrow, problem }: { id: string; eyebrow: string; problem: ApiProblem }) {
   return (
-    <ReportCard id={id} eyebrow={eyebrow} title="This report did not load">
+    <ReportCard id={id} eyebrow={eyebrow} title={<>This report did not load<span className="visually-hidden">: {eyebrow}</span></>}>
       <ApiProblemPanel problem={problem} title="The desk API did not return this report" />
     </ReportCard>
   );
@@ -63,12 +64,28 @@ function ratingPosition(rating: number) {
   return Math.min(100, Math.max(0, ((rating - 1) / 4) * 100));
 }
 
+// Rating points: value labels closer than this would touch, so the late one drops under the line.
+const BELL_LABEL_CLEARANCE = 0.35;
+
+function BellMark({ value, tone, label, count, under = false }: {
+  value: number; tone: string; label: string; count: number; under?: boolean;
+}) {
+  const left = `${ratingPosition(value).toFixed(2)}%`;
+  const text = ratingLabel(value);
+  return (
+    <>
+      <span className={`rp-dot rp-mark ${tone}`} style={{ left }} title={`${label} · ${text} from ${count} ratings`} />
+      <span className={`rp-bell-value ${tone}${under ? " is-under" : ""}`} style={{ left }}>{text}</span>
+    </>
+  );
+}
+
 function Dumbbell({ row }: { row: FirstReplyRow }) {
   const name = priorityName(row.priority);
   const met = num(row.avg_csat_met);
   const missed = num(row.avg_csat_missed);
   const gaps = [missed === null && "Late", met === null && "On time"].filter(Boolean);
-  const tooClose = met !== null && missed !== null && Math.abs(met - missed) < 0.35;
+  const tooClose = met !== null && missed !== null && Math.abs(met - missed) < BELL_LABEL_CLEARANCE;
   return (
     <div className="rp-bell">
       <span className="rp-bell-name">{name}</span>
@@ -77,23 +94,11 @@ function Dumbbell({ row }: { row: FirstReplyRow }) {
         {met !== null && missed !== null && (
           <div className={`rp-bell-line${met < missed ? " is-reversed" : ""}`} style={{
             left: `${ratingPosition(Math.min(met, missed)).toFixed(2)}%`,
-            width: `${(Math.abs(ratingPosition(met) - ratingPosition(missed))).toFixed(2)}%`,
+            width: `${Math.abs(ratingPosition(met) - ratingPosition(missed)).toFixed(2)}%`,
           }} />
         )}
-        {missed !== null && (
-          <>
-            <span className="rp-dot rp-mark is-amber" style={{ left: `${ratingPosition(missed).toFixed(2)}%` }}
-              title={`${name} · late · ${missed.toFixed(2)} from ${row.csat_missed_counted} ratings`} />
-            <span className={`rp-bell-value is-amber${tooClose ? " is-under" : ""}`} style={{ left: `${ratingPosition(missed).toFixed(2)}%` }}>{missed.toFixed(2)}</span>
-          </>
-        )}
-        {met !== null && (
-          <>
-            <span className="rp-dot rp-mark is-teal" style={{ left: `${ratingPosition(met).toFixed(2)}%` }}
-              title={`${name} · on time · ${met.toFixed(2)} from ${row.csat_met_counted} ratings`} />
-            <span className="rp-bell-value is-teal" style={{ left: `${ratingPosition(met).toFixed(2)}%` }}>{met.toFixed(2)}</span>
-          </>
-        )}
+        {missed !== null && <BellMark value={missed} tone="is-amber" label={`${name} · late`} count={row.csat_missed_counted} under={tooClose} />}
+        {met !== null && <BellMark value={met} tone="is-teal" label={`${name} · on time`} count={row.csat_met_counted} />}
         {gaps.length > 0 && <span className="rp-bell-none">{gaps.join(" and ")}: {NOT_RECORDED}</span>}
       </div>
     </div>
@@ -119,9 +124,12 @@ export function FirstReplyFinding({ report }: { report: FirstReplyRow[] }) {
         <span className="rp-eyebrow is-teal">First reply and satisfaction</span>
         <div className="rp-hero-claim">
           {gap
-            ? <span className={`rp-hero-number${gap.hundredths < 0 ? " is-down" : ""}`}>{gap.text}</span>
-            : <span className="rp-hero-none">{NOT_RECORDED}</span>}
-          <h2 id="rp-finding-title" className="rp-hero-title">rating points when the first reply is late</h2>
+            ? <span className={`rp-hero-number${gap.hundredths < 0 ? " is-down" : ""}`} aria-hidden="true">{gap.text}</span>
+            : <span className="rp-hero-none" aria-hidden="true">{NOT_RECORDED}</span>}
+          <h2 id="rp-finding-title" className="rp-hero-title">
+            <span className="visually-hidden">{gap ? `${gap.spoken} ` : `${NOT_RECORDED}: `}</span>
+            rating points when the first reply is late
+          </h2>
         </div>
         <div className="rp-hero-tiles">
           <HeroTile tone="is-teal" label="On time" value={total?.avg_csat_met ?? null} />
@@ -148,12 +156,12 @@ export function FirstReplyFinding({ report }: { report: FirstReplyRow[] }) {
           </>
         )}
         <WhenTables>
-          <div className="rp-table-box">
+          <ScrollBox className="rp-table-box" label="Average rating by priority table">
             <table className="rp-table">
               <caption className="visually-hidden">Average rating by priority, on-time and late first reply</caption>
               <thead><tr><th scope="col">Priority</th><th scope="col">On time</th><th scope="col">Ratings</th><th scope="col">Late</th><th scope="col">Ratings</th></tr></thead>
               <tbody>
-                {[...rows, ...(total ? [total] : [])].map((row) => (
+                {report.map((row) => (
                   <tr key={row.priority ?? "none"}>
                     <th scope="row">{priorityName(row.priority)}</th>
                     <td>{ratingText(row.avg_csat_met)}</td>
@@ -164,14 +172,17 @@ export function FirstReplyFinding({ report }: { report: FirstReplyRow[] }) {
                 ))}
               </tbody>
             </table>
-          </div>
+          </ScrollBox>
         </WhenTables>
       </div>
     </section>
   );
 }
 
-const PERIOD_BAR_MAX = 162;
+// Room above a bar for its value label. A bar's limit is its chart's CSS height less this; the phone
+// layout of .rp-periods keeps the limit and spends its extra height on the average tag.
+const BAR_HEADROOM = 38;
+const PERIOD_BAR_MAX = 200 - BAR_HEADROOM;
 
 export function UnresolvedByPeriod({ report }: { report: VolumeRow[] }) {
   const { total, rows } = splitTotal(report, "month");
@@ -181,18 +192,19 @@ export function UnresolvedByPeriod({ report }: { report: VolumeRow[] }) {
   const top = soleHighest(periods, (period) => period.share);
   const peak = Math.max(average ?? 0, ...periods.map((period) => period.share ?? 0));
   const pxPerShare = peak > 0 ? PERIOD_BAR_MAX / peak : 0;
-  const alt = periods.map((period) => `Period ${period.n} ${percentText(period.share, 1)}`).join(", ");
+  const barPx = (share: number) => Math.round(share * pxPerShare);
+  const alt = periods.map((period) => `Period ${period.n} ${percentText(period.share, 1)}, ${period.unresolved} of ${period.tickets}`).join("; ");
   return (
     <ReportCard id="rp-volume-title" eyebrow="Unresolved by period" title={periodHeadline(periods)}>
       {periods.length === 0 ? <NoRows /> : (
-        <div className="rp-scroll">
+        <ScrollBox className="rp-scroll" label="Unresolved share by period chart">
           <div className="rp-periods-box" style={{ "--rp-cols": periods.length } as React.CSSProperties}>
             <div className="rp-periods" role="img"
               aria-label={`Share of each period's tickets still unresolved: ${alt}${average === null ? "" : `; average ${percentText(average, 1)}`}.`}>
               {average !== null && (
                 <>
-                  <div className="rp-avg-line" style={{ bottom: `${Math.round(average * pxPerShare)}px` }} />
-                  <span className="rp-avg-tag" style={{ bottom: `${Math.round(average * pxPerShare) + 4}px` }}>avg {percentText(average, 1)}</span>
+                  <div className="rp-avg-line" style={{ bottom: `${barPx(average)}px` }} />
+                  <span className="rp-avg-tag" style={{ bottom: `${barPx(average) + 4}px` }}>avg {percentText(average, 1)}</span>
                 </>
               )}
               {periods.map((period) => (
@@ -200,13 +212,13 @@ export function UnresolvedByPeriod({ report }: { report: VolumeRow[] }) {
                   <span className={`rp-period-value${period === top ? " is-top" : ""}${period.share === null ? " is-none" : ""}`}>{percentText(period.share, 1)}</span>
                   {period.share !== null && (
                     <span className={`rp-period-bar rp-mark${period === top ? " is-top" : ""}`}
-                      style={{ height: `${Math.round(period.share * pxPerShare)}px` }}
+                      style={{ height: `${barPx(period.share)}px` }}
                       title={`Period ${period.n} · ${period.unresolved} of ${period.tickets} unresolved`} />
                   )}
                 </div>
               ))}
             </div>
-            <div className="rp-period-labels">
+            <div className="rp-period-labels" aria-hidden="true">
               {periods.map((period) => (
                 <div key={period.n}>
                   <span className="rp-period-n">{period.n}</span>
@@ -215,7 +227,7 @@ export function UnresolvedByPeriod({ report }: { report: VolumeRow[] }) {
               ))}
             </div>
           </div>
-        </div>
+        </ScrollBox>
       )}
       <span className="rp-note">
         Periods in report order; dates are left out.
@@ -269,110 +281,28 @@ export function FirstReplyRings({ report, waits }: { report: FirstReplyRow[]; wa
   );
 }
 
-type Metric = {
-  label: string;
-  read: (row: CategoryRow) => number | null;
-  text: (value: number) => string;
-  span: (low: number, high: number) => string;
-  axis: (values: number[]) => [number, number];
-  range: (low: number, high: number) => string;
-};
+// A server component cannot measure text, so note widths are estimated: the strip's width on a 375px
+// phone, and the average character of .rp-strip-note's 12px bold text.
+const NOTE_STRIP_WIDTH = 300;
+const NOTE_CHAR_WIDTH = 6.8;
+const NOTE_GAP = 6;
 
-function hoursAxis(values: number[]): [number, number] {
-  const most = Math.max(...values);
-  return [0, most > 10 ? Math.ceil(most / 10) * 10 : Math.max(1, Math.ceil(most))];
-}
-
-const METRICS: Metric[] = [
-  {
-    label: "First reply",
-    read: (row) => num(row.avg_first_response_hours),
-    text: hoursLabel,
-    span: (low, high) => `${rounded(low).toFixed(1)}–${hoursLabel(high)}`,
-    axis: hoursAxis,
-    range: (low, high) => `${low}–${high} hours`,
-  },
-  {
-    label: "Resolution",
-    read: (row) => num(row.avg_resolution_hours),
-    text: hoursLabel,
-    span: (low, high) => `${rounded(low).toFixed(1)}–${hoursLabel(high)}`,
-    axis: hoursAxis,
-    range: (low, high) => `${low}–${high} hours`,
-  },
-  {
-    label: "Rating",
-    read: (row) => num(row.avg_csat),
-    text: (value) => value.toFixed(2),
-    span: (low, high) => `${low.toFixed(2)}–${high.toFixed(2)}`,
-    axis: (values) => {
-      const low = Math.floor(Math.min(...values));
-      const high = Math.ceil(Math.max(...values));
-      return low === high ? [low - 1, high] : [low, high];
-    },
-    range: (low, high) => `${low.toFixed(1)}–${high.toFixed(1)}`,
-  },
-];
-
-type StripNote = { text: string; position: number; tone: string };
-
-// Lays notes out for the narrowest strip (a phone): one that would touch another drops below the line.
+// Lays notes out for a phone's strip: one that would touch another drops below the line.
 function placeNotes(notes: StripNote[]) {
-  const narrowest = 300;
   const taken: [number, number][] = [];
   return notes.map((note) => {
-    const width = Math.ceil(note.text.length * 6.8);
-    const centre = Math.min(narrowest - width / 2, Math.max(width / 2, (note.position / 100) * narrowest));
-    const start = centre - width / 2 - 6;
-    const end = centre + width / 2 + 6;
+    const width = Math.ceil(note.text.length * NOTE_CHAR_WIDTH);
+    const centre = Math.min(NOTE_STRIP_WIDTH - width / 2, Math.max(width / 2, (note.position / 100) * NOTE_STRIP_WIDTH));
+    const start = centre - width / 2 - NOTE_GAP;
+    const end = centre + width / 2 + NOTE_GAP;
     const under = taken.some(([from, to]) => start < to && from < end);
     if (!under) taken.push([start, end]);
     return { ...note, width, under };
   });
 }
 
-function stripNotes(metric: Metric, rows: CategoryRow[], spotlight: CategoryRow | null, at: (value: number) => number) {
-  const notes: StripNote[] = [];
-  const picked = spotlight && metric.read(spotlight);
-  if (spotlight && picked !== null) {
-    notes.push({ text: `${categoryName(spotlight.category)} ${metric.text(picked)}`, position: at(picked), tone: "is-amber" });
-  }
-  const others = rows.filter((row) => row !== spotlight)
-    .flatMap((row) => {
-      const value = metric.read(row);
-      return value === null ? [] : [{ name: categoryName(row.category), value }];
-    })
-    .sort((a, b) => a.value - b.value);
-  // One category sitting well away from the rest gets its own note instead of stretching the range.
-  const span = at(1) - at(0);
-  const apart = (a: number, b: number) => (b - a) * span >= 10;
-  let group = others;
-  const alone: typeof others = [];
-  if (others.length >= 3) {
-    if (apart(others[others.length - 2].value, others[others.length - 1].value)) {
-      alone.push(others[others.length - 1]);
-      group = others.slice(0, -1);
-    } else if (apart(others[0].value, others[1].value)) {
-      alone.push(others[0]);
-      group = others.slice(1);
-    }
-  }
-  if (group.length > 0) {
-    const low = group[0].value;
-    const high = group[group.length - 1].value;
-    const lead = spotlight ? "Others" : "All";
-    const text = metric.text(low) === metric.text(high) ? metric.text(low) : metric.span(low, high);
-    notes.push({ text: `${lead} ${text}`, position: at((low + high) / 2), tone: "is-teal" });
-  }
-  alone.forEach((item) => notes.push({ text: `${item.name} ${metric.text(item.value)}`, position: at(item.value), tone: "is-teal" }));
-  return placeNotes(notes);
-}
-
 function Strip({ metric, rows, spotlight }: { metric: Metric; rows: CategoryRow[]; spotlight: CategoryRow | null }) {
-  const values = rows.flatMap((row) => {
-    const value = metric.read(row);
-    return value === null ? [] : [value];
-  });
+  const values = rows.map(metric.read).filter((value) => value !== null);
   const [low, high] = values.length > 0 ? metric.axis(values) : [0, 1];
   const at = (value: number) => ((value - low) / (high - low)) * 100;
   const most = Math.max(...rows.map((row) => row.tickets), 1);
@@ -393,14 +323,15 @@ function Strip({ metric, rows, spotlight }: { metric: Metric; rows: CategoryRow[
           const value = metric.read(row);
           if (value === null) return null;
           const name = categoryName(row.category);
+          const dot = `${size(row.tickets).toFixed(1)}px`;
           return (
             <span key={row.category ?? "none"} className={`rp-strip-dot rp-mark${row === spotlight ? " is-spot" : ""}`}
               title={`${name} · ${metric.text(value)} · ${row.tickets} tickets`}
-              style={{ left: `${at(value).toFixed(2)}%`, width: `${size(row.tickets).toFixed(1)}px`, height: `${size(row.tickets).toFixed(1)}px` }} />
+              style={{ left: `${at(value).toFixed(2)}%`, width: dot, height: dot }} />
           );
         })}
-        {values.length > 0 && stripNotes(metric, rows, spotlight, at).map((note) => (
-          <span key={note.text} className={`rp-strip-note ${note.tone}${note.under ? " is-under" : ""}`} style={{
+        {values.length > 0 && placeNotes(stripNotes(metric, rows, spotlight, at)).map((note) => (
+          <span key={note.text} className={`rp-strip-note ${note.spotlit ? "is-amber" : "is-teal"}${note.under ? " is-under" : ""}`} style={{
             width: `${note.width}px`,
             left: `clamp(0px, calc(${note.position.toFixed(2)}% - ${note.width / 2}px), calc(100% - ${note.width}px))`,
           }}>{note.text}</span>
@@ -428,7 +359,7 @@ export function CategoryStrips({ report }: { report: CategoryRow[] }) {
         </>
       )}
       <WhenTables>
-        <div className="rp-table-box">
+        <ScrollBox className="rp-table-box" label="Averages by category table">
           <table className="rp-table">
             <caption className="visually-hidden">Tickets, first reply, resolution and rating by category</caption>
             <thead><tr><th scope="col">Category</th><th scope="col">Tickets</th><th scope="col">First reply</th><th scope="col">Resolution</th><th scope="col">Rating</th></tr></thead>
@@ -444,7 +375,7 @@ export function CategoryStrips({ report }: { report: CategoryRow[] }) {
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollBox>
       </WhenTables>
     </ReportCard>
   );
@@ -456,11 +387,26 @@ function statusTone(status: string) {
   return STATUS_SQUARES[status.toLowerCase()] ?? "is-other";
 }
 
+function BacklogKeyItem({ tone, count, label, sub }: { tone: string; count: number; label: string; sub: string }) {
+  return (
+    <div className="rp-backlog-item">
+      <span className={`rp-square-key ${tone}`} aria-hidden="true" />
+      <span className="rp-backlog-text">
+        <span className="rp-backlog-n">{count}</span>
+        <span className="rp-backlog-label">{label}</span>
+        <span className="rp-backlog-sub">{sub}</span>
+      </span>
+    </div>
+  );
+}
+
 export function BacklogWaffle({ report }: { report: BacklogRow[] }) {
   const { total, rows } = splitTotal(report, "status");
-  const pastTarget = total?.no_first_reply_past_target ?? rows.reduce((sum, row) => sum + row.no_first_reply_past_target, 0);
-  const noReply = total?.no_first_reply ?? rows.reduce((sum, row) => sum + row.no_first_reply, 0);
-  const waiting = total?.tickets ?? rows.reduce((sum, row) => sum + row.tickets, 0);
+  const counted = (key: "tickets" | "no_first_reply" | "no_first_reply_past_target") =>
+    total?.[key] ?? rows.reduce((sum, row) => sum + row[key], 0);
+  const pastTarget = counted("no_first_reply_past_target");
+  const noReply = counted("no_first_reply");
+  const waiting = counted("tickets");
   const alt = `${waiting} unresolved tickets, one square each: ${rows.map((row) => `${row.tickets} ${row.status}`).join(", ")}. `
     + `${pastTarget} ${pastTarget === 1 ? "has" : "have"} no first reply and ${pastTarget === 1 ? "is" : "are"} past target.`;
   return (
@@ -473,26 +419,15 @@ export function BacklogWaffle({ report }: { report: BacklogRow[] }) {
             )))}
           </div>
           <div className="rp-backlog-key">
-            {rows.map((row) => (
-              <div key={row.status} className="rp-backlog-item">
-                <span className={`rp-square-key ${statusTone(row.status)}`} aria-hidden="true" />
-                <span className="rp-backlog-text">
-                  <span className="rp-backlog-n">{row.tickets}</span>
-                  <span className="rp-backlog-label">{sentenceCase(row.status)}</span>
-                  <span className="rp-backlog-sub">
-                    {daysText(row.avg_age_hours) ? `${daysText(row.avg_age_hours)} old` : `Age: ${NOT_RECORDED}`}
-                  </span>
-                </span>
-              </div>
-            ))}
-            <div className="rp-backlog-item">
-              <span className="rp-square-key is-late" aria-hidden="true" />
-              <span className="rp-backlog-text">
-                <span className="rp-backlog-n">{pastTarget}</span>
-                <span className="rp-backlog-label">No first reply</span>
-                <span className="rp-backlog-sub">{noReply === pastTarget ? "past target" : `past target, of ${noReply} unanswered`}</span>
-              </span>
-            </div>
+            {rows.map((row) => {
+              const age = daysText(row.avg_age_hours);
+              return (
+                <BacklogKeyItem key={row.status} tone={statusTone(row.status)} count={row.tickets}
+                  label={sentenceCase(row.status)} sub={age ? `${age} old` : `Age: ${NOT_RECORDED}`} />
+              );
+            })}
+            <BacklogKeyItem tone="is-late" count={pastTarget} label="No first reply"
+              sub={noReply === pastTarget ? "past target" : `past target, of ${noReply} unanswered`} />
           </div>
           {total && total.age_missing > 0 && (
             <span className="rp-note">Average age from {total.age_counted} tickets; {total.age_missing} have no recorded age.</span>
@@ -503,7 +438,7 @@ export function BacklogWaffle({ report }: { report: BacklogRow[] }) {
   );
 }
 
-const WAIT_BAR_MAX = 132;
+const WAIT_BAR_MAX = 170 - BAR_HEADROOM;
 
 function WaitBars({ rows }: { rows: PriorityRow[] }) {
   const most = Math.max(...rows.map((row) => num(row.avg_first_response_hours) ?? 0));
@@ -533,36 +468,22 @@ function WaitBars({ rows }: { rows: PriorityRow[] }) {
 
 function PriorityLabels({ rows }: { rows: PriorityRow[] }) {
   return (
-    <div className="rp-priority-labels">
+    <div className="rp-priority-labels" aria-hidden="true">
       {rows.map((row) => <span key={row.priority ?? "none"}>{priorityName(row.priority)}</span>)}
     </div>
   );
 }
 
-// A zoomed axis in half points around the real values, with faint lines between. Marks are dots, not
-// bars, so the zoom does not exaggerate a length.
-function ratingAxis(values: number[]) {
-  const least = Math.min(...values);
-  const most = Math.max(...values);
-  const low = Math.floor(least * 2) / 2 === least ? least - 0.5 : Math.floor(least * 2) / 2;
-  const high = Math.ceil(most * 2) / 2 === most ? most + 0.5 : Math.ceil(most * 2) / 2;
-  const step = high - low <= 0.5 ? 0.2 : 0.5;
-  const ticks: number[] = [];
-  for (let tick = Math.floor(low / step + 1) * step; tick < high - 0.001; tick += step) {
-    ticks.push(Math.round(tick * 10) / 10);
-  }
-  return { low, high, ticks };
-}
-
 const RATING_PLOT = 126;
 const RATING_FLOOR = 10;
+// .rp-rating-dot is 18px, so its radius centres it on the rating; its value sits 5px above the dot.
+const RATING_DOT_RADIUS = 9;
+const RATING_VALUE_LIFT = RATING_DOT_RADIUS + 5;
+const RATING_TICK_LIFT = 2;
 
 function RatingDots({ rows }: { rows: PriorityRow[] }) {
   const read = (row: PriorityRow) => num(row.avg_csat);
-  const values = rows.flatMap((row) => {
-    const value = read(row);
-    return value === null ? [] : [value];
-  });
+  const values = rows.map(read).filter((value) => value !== null);
   const axis = values.length > 0 ? ratingAxis(values) : { low: 0, high: 1, ticks: [] };
   const height = (rating: number) => RATING_FLOOR + Math.round(((rating - axis.low) / (axis.high - axis.low)) * RATING_PLOT);
   const worst = soleLowest(rows, read);
@@ -574,7 +495,7 @@ function RatingDots({ rows }: { rows: PriorityRow[] }) {
         {axis.ticks.map((tick) => (
           <Fragment key={tick}>
             <span className="rp-rating-rule" style={{ bottom: `${height(tick)}px` }} />
-            <span className="rp-rating-tick" style={{ bottom: `${height(tick) + 2}px` }}>{tick.toFixed(1)}</span>
+            <span className="rp-rating-tick" style={{ bottom: `${height(tick) + RATING_TICK_LIFT}px` }}>{tick.toFixed(1)}</span>
           </Fragment>
         ))}
         {rows.map((row) => {
@@ -584,9 +505,9 @@ function RatingDots({ rows }: { rows: PriorityRow[] }) {
             <div key={row.priority ?? "none"} className="rp-rating">
               {rating === null ? <span className="rp-rating-none">{NOT_RECORDED}</span> : (
                 <>
-                  <span className={`rp-rating-value ${tone}`} style={{ bottom: `${height(rating) + 14}px` }}>{rating.toFixed(2)}</span>
-                  <span className={`rp-rating-dot rp-mark ${tone}`} style={{ bottom: `${height(rating) - 9}px` }}
-                    title={`${priorityName(row.priority)} · ${rating.toFixed(2)} from ${row.csat_counted} ratings`} />
+                  <span className={`rp-rating-value ${tone}`} style={{ bottom: `${height(rating) + RATING_VALUE_LIFT}px` }}>{ratingLabel(rating)}</span>
+                  <span className={`rp-rating-dot rp-mark ${tone}`} style={{ bottom: `${height(rating) - RATING_DOT_RADIUS}px` }}
+                    title={`${priorityName(row.priority)} · ${ratingLabel(rating)} from ${row.csat_counted} ratings`} />
                 </>
               )}
             </div>

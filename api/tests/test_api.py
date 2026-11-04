@@ -1,5 +1,7 @@
 """API behaviour against a fake store: no network, no database."""
+import psycopg
 import pytest
+from psycopg_pool import PoolTimeout
 
 from orion_api.main import create_app, split_owner
 from orion_api.settings import load_settings
@@ -12,7 +14,7 @@ def test_every_route_is_under_api_apart_from_docs(client):
     paths = {route.path for route in client.app.routes} - docs
     reports = {f"/api/reports/{name}" for name in ("volume", "backlog", "priority", "category", "first-reply")}
     pages = {"/api/customers", "/api/customers/{customer_id}", "/api/knowledge", "/api/knowledge/{article_id}",
-             "/api/company"}
+             "/api/company", "/api/tickets/{ticket_id}/knowledge"}
     assert paths == {"/api/tickets", "/api/tickets/{ticket_id}", "/api/search", "/api/admin/status", *reports, *pages}
 
 
@@ -33,7 +35,8 @@ def test_root_opens_the_docs(client):
 
 @pytest.mark.parametrize("path", ["/api/tickets", "/api/tickets/T00727", "/api/search?q=T00727", "/api/admin/status",
                                   "/api/reports/first-reply", "/api/customers", "/api/customers/C0086",
-                                  "/api/knowledge", "/api/knowledge/KB022", "/api/company"])
+                                  "/api/knowledge", "/api/knowledge/KB022", "/api/company",
+                                  "/api/tickets/T00727/knowledge"])
 def test_a_token_is_required(client, path):
     response = client.get(path)
     assert response.status_code == 401
@@ -210,6 +213,75 @@ def test_article_shape(client):
     }
 
 
+def test_ticket_articles_list_every_match_without_the_body(client):
+    response = client.get("/api/tickets/T00727/knowledge", headers=auth(AGENT))
+    assert response.status_code == 200
+    assert response.json() == {"total": 2, "items": [
+        {"article_id": "KB004", "title": "Invite link expired", "category": "account access"},
+        {"article_id": "KB034", "title": "Invite link expired", "category": "account access"},
+    ]}
+
+
+def test_ticket_with_no_matching_article_has_an_empty_list(client):
+    response = client.get("/api/tickets/T00201/knowledge", headers=auth(AGENT))
+    assert response.status_code == 200
+    assert response.json() == {"total": 0, "items": []}
+
+
+@pytest.mark.parametrize("ticket_id", ["T99999", "t00727", "T00727 "])
+def test_ticket_articles_of_an_unknown_or_inexact_id_is_404(client, ticket_id):
+    response = client.get(f"/api/tickets/{ticket_id}/knowledge", headers=auth(AGENT))
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "ticket_not_found"
+
+
+def test_ticket_articles_id_over_32_characters_is_422(client):
+    response = client.get(f"/api/tickets/{'X' * 33}/knowledge", headers=auth(AGENT))
+    assert response.status_code == 422
+    assert response.json()["error"]["code"] == "invalid_request"
+    assert client.get(f"/api/tickets/{'X' * 32}/knowledge", headers=auth(AGENT)).status_code == 404
+
+
+def test_unknown_ticket_articles_404_body_names_the_id(client):
+    response = client.get("/api/tickets/T99999/knowledge", headers=auth(AGENT))
+    assert response.json() == {"error": {"status": 404, "code": "ticket_not_found",
+                                         "message": "No ticket has the ID 'T99999'."}}
+
+
+def test_admin_token_reads_ticket_articles_too(client):
+    response = client.get("/api/tickets/T00727/knowledge", headers=auth(ADMIN))
+    assert response.status_code == 200
+    assert response.json() == client.get("/api/tickets/T00727/knowledge", headers=auth(AGENT)).json()
+
+
+@pytest.mark.parametrize("error", [PoolTimeout("couldn't get a connection to db.example"),
+                                   psycopg.OperationalError("could not connect to db.example")])
+def test_ticket_articles_database_outage_is_503(client, fake_store, error):
+    def down(*args):
+        raise error
+    fake_store.ticket_articles = down
+    response = client.get("/api/tickets/T00727/knowledge", headers=auth(AGENT))
+    assert response.status_code == 503
+    assert response.json() == {"error": {"status": 503, "code": "database_unavailable",
+                                         "message": "The database did not answer. Try again shortly."}}
+    assert "db.example" not in response.text
+
+
+def test_ticket_articles_openapi_declares_its_errors_and_summary_shape(client):
+    schema = client.get("/openapi.json").json()
+    operation = schema["paths"]["/api/tickets/{ticket_id}/knowledge"]["get"]
+    assert operation["tags"] == ["tickets"]
+    assert operation["summary"] == "Help articles titled exactly as the ticket's subject"
+    assert set(operation["responses"]) == {"200", "401", "404", "422", "503"}
+    assert operation["parameters"] == [{"name": "ticket_id", "in": "path", "required": True,
+                                        "schema": {"type": "string", "maxLength": 32, "title": "Ticket Id"}}]
+    components = schema["components"]["schemas"]
+    listing = components["Listing_ArticleSummary_"]
+    assert listing["required"] == ["total", "items"]
+    assert listing["properties"]["items"]["items"] == {"$ref": "#/components/schemas/ArticleSummary"}
+    assert set(components["ArticleSummary"]["properties"]) == {"article_id", "title", "category"}
+
+
 def test_company_shape_and_owner_split(client):
     response = client.get("/api/company", headers=auth(AGENT))
     assert response.status_code == 200
@@ -231,7 +303,7 @@ def test_owner_splits_at_the_first_separator_only():
 
 
 @pytest.mark.parametrize("path", ["/api/customers", "/api/customers/C0086", "/api/knowledge", "/api/knowledge/KB022",
-                                  "/api/company"])
+                                  "/api/company", "/api/tickets/T00727/knowledge"])
 def test_no_email_or_date_field_reaches_a_page_route(client, path):
     response = client.get(path, headers=auth(AGENT))
     assert response.status_code == 200

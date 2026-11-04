@@ -60,6 +60,9 @@ CUSTOMER_INVOICES = sql.SQL("SELECT {} FROM invoices WHERE customer_id = %s ORDE
 # Knowledge. A related ticket's subject equals the article title exactly.
 ARTICLE_LIST = sql.SQL("SELECT {} FROM knowledge_articles ORDER BY article_id").format(columns(ArticleSummary))
 ARTICLE = sql.SQL("SELECT {} FROM knowledge_articles WHERE article_id = %s").format(columns(ArticleText))
+TICKET_SUBJECT = "SELECT subject FROM tickets WHERE ticket_id = %s"
+TICKET_ARTICLES = sql.SQL("SELECT {} FROM knowledge_articles WHERE title = %s ORDER BY article_id").format(
+    columns(ArticleSummary))
 RELATED_TICKET_COUNT = "SELECT COUNT(*) AS n FROM tickets WHERE subject = %s"
 RELATED_TICKETS = sql.SQL(
     "SELECT {} FROM tickets WHERE subject = %s "
@@ -195,6 +198,14 @@ class Store:
                                     "items": db.execute(RELATED_TICKETS, title).fetchall()},
                 "more_in_category": db.execute(MORE_IN_CATEGORY, (article["category"], article_id)).fetchall(),
             }
+
+    def ticket_articles(self, ticket_id):
+        """Articles titled exactly as the ticket's subject, by ID; None if the ticket ID is unknown."""
+        with self.pool.connection() as db:
+            ticket = db.execute(TICKET_SUBJECT, (ticket_id,)).fetchone()
+            if ticket is None:
+                return None
+            return db.execute(TICKET_ARTICLES, (ticket["subject"],)).fetchall()
 
     def company(self):
         """Company documents and staff requests, each by ID."""

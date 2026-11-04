@@ -89,11 +89,16 @@ export default async function CasePage({ params }: Props) {
 }
 
 function CasePills({ ticket }: { ticket: Ticket }) {
-  const named = (label: string, value: string | null) => value ?? `${label}: ${NOT_RECORDED}`;
+  // A recorded value shows alone, so its label is there for screen readers only.
+  const named = (label: string, value: string | null) => value === null
+    ? `${label}: ${NOT_RECORDED}`
+    : <><span className="visually-hidden">{label}: </span>{value}</>;
   const sentiment = ticket.sentiment?.toLowerCase();
   return (
     <div className="case-pills">
+      <span className="visually-hidden">Status: </span>
       <StatusPill status={ticket.status} />
+      <span className="visually-hidden">Priority: </span>
       <PriorityTile priority={ticket.priority} />
       <span className="pill">{named("Category", ticket.category && sentenceCase(ticket.category))}</span>
       <span className="pill">{named("Component", ticket.component)}</span>

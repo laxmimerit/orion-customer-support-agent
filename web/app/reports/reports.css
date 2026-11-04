@@ -29,7 +29,7 @@
   white-space: nowrap;
 }
 .rp-toggle:hover { background: var(--hover); }
-.rp-toggle[aria-pressed="true"] { border-color: var(--navy); background: var(--navy); color: var(--on-navy); }
+.rp-toggle.is-on { border-color: var(--navy); background: var(--navy); color: var(--on-navy); }
 
 /* Headline numbers. The clip hides the divider of whichever tile starts a row. */
 .rp-kpis {
@@ -87,6 +87,9 @@
 .rp-table tbody th { padding: 9px 14px; font-weight: 600; text-align: left; white-space: nowrap; }
 .rp-table td { padding: 9px 14px; white-space: nowrap; }
 .rp-table td.is-soft { color: var(--ink-muted); }
+
+/* A sideways scroller takes focus only while it overflows (ScrollBox). The transparent outline shows in forced colours. */
+.rp-scroll:focus-visible, .rp-table-box:focus-visible { outline: 3px solid transparent; box-shadow: var(--focus-ring); }
 
 /* The finding */
 .rp-hero {

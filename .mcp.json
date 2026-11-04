@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "tidb-lab": {
+      "type": "stdio",
+      "command": "uv",
+      "args": ["run", "tools/run_tidb_mcp.py"]
+    }
+  }
+}

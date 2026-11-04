@@ -69,6 +69,11 @@ KB022_DETAIL = {
     "related_tickets": {"total": 111, "items": [{**T00727, "subject": KB022["title"]}]},
     "more_in_category": [KB004],
 }
+# Two articles share this title in orion_desk. The body is here to prove the response model drops it.
+INVITE_ARTICLES = [
+    {"article_id": article_id, "title": "Invite link expired", "category": "account access", "body": "Article body"}
+    for article_id in ("KB004", "KB034")
+]
 COMPANY_SECTIONS = [
     {"document_id": "DOC001", "title": "Joining", "owner": "Maya · Product", "body": "Body"},
     {"document_id": "DOC002", "title": "Workflow", "owner": "Leena", "body": "Body"},
@@ -132,6 +137,9 @@ class FakeStore:
 
     def article(self, article_id):
         return KB022_DETAIL if article_id == "KB022" else None
+
+    def ticket_articles(self, ticket_id):
+        return {"T00727": INVITE_ARTICLES, "T00201": []}.get(ticket_id)
 
     def company(self):
         return COMPANY_SECTIONS, STAFF_REQUESTS

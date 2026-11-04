@@ -171,7 +171,8 @@ export function CaseClock({ status, replyTarget, reply, resolveTarget, resolved 
         </div>
       )}
 
-      <ul className="clock-legend">
+      {/* The axis label already says all of this, so a screen reader hears it once. */}
+      <ul className="clock-legend" aria-hidden={axis > 0 || undefined}>
         {stages.map((stage) => (
           <li key={stage.doneText} className="clock-entry">
             <span className={`clock-dot is-${stage.tone}`} aria-hidden="true" />

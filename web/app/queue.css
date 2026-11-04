@@ -99,6 +99,8 @@
   font-size: 13px;
   font-weight: 600;
 }
+/* The usual ring nearly disappears on navy. */
+.queue-filter button:focus-visible { box-shadow: 0 0 0 3px var(--teal-soft); }
 
 /* Lanes */
 .queue-now { display: flex; flex-direction: column; gap: 18px; }
@@ -142,6 +144,8 @@
   border-radius: inherit;
   background: transparent;
 }
+/* Drawn inside the edge, so it stays apart from the selection ring outside it. */
+.queue-pick:focus-visible { box-shadow: inset var(--focus-ring); }
 .queue-subject { position: relative; z-index: 1; color: var(--ink-strong); }
 .queue-subject:hover { color: var(--teal-deep); }
 
@@ -292,6 +296,8 @@
   text-align: left;
 }
 .queue-done-toggle:hover { background: var(--hover); }
+/* Drawn inside the edge, because the list card clips anything outside it. */
+.queue-done-toggle:focus-visible { box-shadow: inset var(--focus-ring); }
 .queue-done-title { font-size: 15px; font-weight: 700; }
 .queue-done-count { font-size: 13px; color: var(--ink-muted); }
 .queue-done-action { margin-left: auto; font-size: 13px; font-weight: 600; color: var(--teal-ink); }
@@ -341,6 +347,8 @@
 .queue-cell.is-pending { background: var(--amber-soft); color: var(--amber-deep); }
 .queue-cell.is-done { background: var(--neutral-soft); color: var(--neutral-tile-ink); }
 .queue-cell[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--navy); }
+/* The ring goes inside the navy one, so a pressed cell still reads as pressed. */
+.queue-cell[aria-pressed="true"]:focus-visible { box-shadow: var(--focus-ring), 0 0 0 3px var(--surface), 0 0 0 5px var(--navy); }
 
 .queue-glance-key { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 11.5px; color: var(--ink-2); }
 .queue-glance-key > span { display: inline-flex; align-items: center; gap: 6px; }

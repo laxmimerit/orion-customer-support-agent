@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
 
-import { SidebarNav } from "@/components/sidebar-nav";
+import { SidebarNav, SkipLink } from "@/components/sidebar-nav";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
@@ -17,6 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={inter.variable}>
       <body>
+        <SkipLink />
         <div className="frame">
           <aside className="side" aria-label="Desk navigation">
             <Link className="side-logo" href="/" aria-label="Orion desk, ticket queue">
@@ -27,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <SidebarNav />
             </div>
           </aside>
-          <div className="column">{children}</div>
+          <div className="column" id="content" tabIndex={-1}>{children}</div>
         </div>
       </body>
     </html>

@@ -8,7 +8,7 @@ from orion_api.settings import load_settings
 from orion_api.embedding import MODEL, as_vector
 from orion_api.models import CustomerListItem, CustomerSubscription, CustomerTicket, StaffRequest
 from orion_api.store import (CUSTOMER_LIST, CUSTOMER_SUBSCRIPTION, CUSTOMER_TICKETS, REPORTS, STAFF_REQUESTS,
-                             nearest_query)
+                             TICKET_ARTICLES, nearest_query)
 
 from .conftest import auth, private_keys
 
@@ -195,6 +195,42 @@ def test_article_has_its_tickets_and_the_rest_of_its_category(live):
     others = [item["article_id"] for item in body["more_in_category"]]
     assert others == sorted(others) and "KB022" not in others
     assert {item["category"] for item in body["more_in_category"]} == {"account access"}
+
+
+def test_ticket_articles_match_the_subject_exactly(live):
+    client, settings = live
+    # Two articles share T00727's subject, and nothing records which applies (backlog B03): both are listed.
+    assert page(client, settings, "/api/tickets/T00727/knowledge") == {"total": 2, "items": [
+        {"article_id": "KB004", "title": "Invite link expired", "category": "account access"},
+        {"article_id": "KB034", "title": "Invite link expired", "category": "account access"},
+    ]}
+    with client.app.state.store.pool.connection() as db:
+        one_match = db.execute("SELECT MIN(ticket_id) AS id FROM tickets WHERE subject = 'Role change not applied'"
+                               ).fetchone()["id"]
+    assert [item["article_id"] for item in page(client, settings, f"/api/tickets/{one_match}/knowledge")["items"]] == ["KB022"]
+    # T00201 is "CSV download ends early": no article has that title.
+    assert page(client, settings, "/api/tickets/T00201/knowledge") == {"total": 0, "items": []}
+    assert client.get("/api/tickets/t00727/knowledge", headers=auth(settings.agent_token)).status_code == 404
+
+
+def test_store_ticket_articles_is_none_only_for_an_unknown_ticket(live):
+    client, _ = live
+    store = client.app.state.store
+    assert store.ticket_articles("T99999") is None
+    assert store.ticket_articles("t00727") is None  # case-sensitive ticket lookup (M01)
+    assert store.ticket_articles("T00201") == []  # a known ticket with no matching title is an empty list
+    assert [row["article_id"] for row in store.ticket_articles("T00727")] == ["KB004", "KB034"]
+
+
+def test_article_title_match_is_exact_and_sorted_by_id(live):
+    client, _ = live
+    with client.app.state.store.pool.connection() as db:
+        def ids(title):
+            return [row["article_id"] for row in db.execute(TICKET_ARTICLES, (title,)).fetchall()]
+        assert ids("Invite link expired") == ["KB004", "KB034"]
+        assert ids("invite link expired") == []  # case-sensitive
+        assert ids("Invite link expired ") == []  # trailing space is not trimmed
+        assert ids("INVITE LINK EXPIRED") == []
 
 
 def test_company_splits_owners_and_keeps_every_row(live):

@@ -176,6 +176,17 @@ def create_app(settings=None, store_instance=None, embedder_instance=None):
             raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
         return detail
 
+    @app.get("/api/tickets/{ticket_id}/knowledge", response_model=Listing[ArticleSummary], tags=["tickets"],
+             responses=errors(401, 404, 422, 503), summary="Help articles titled exactly as the ticket's subject")
+    def list_ticket_articles(ticket_id: str = Path(max_length=32), _: str = Depends(role), db=Depends(store)):
+        """Exact, case-sensitive ID lookup (M01). Articles are by ID. An article matches when its title equals the
+        ticket's subject, the rule `related_tickets` uses. Every match is listed, because nothing records which of
+        two articles with one title applies. A ticket with no match has an empty list."""
+        items = db.ticket_articles(ticket_id)
+        if items is None:
+            raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
+        return {"total": len(items), "items": items}
+
     @app.get("/api/search", response_model=SearchResults, tags=["search"], responses=errors(401, 422, 503),
              summary="Find tickets and help articles by meaning, or one ticket by its exact ID")
     def search(

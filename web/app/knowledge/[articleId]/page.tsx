@@ -33,8 +33,8 @@ function ArticleSearchBar() {
 
 function RelatedTickets({ tickets }: { tickets: Article["related_tickets"] }) {
   return (
-    <section className="card card-pad">
-      <h2 className="card-title">Tickets with this subject</h2>
+    <section className="card card-pad" aria-labelledby="article-tickets-heading">
+      <h2 id="article-tickets-heading" className="card-title">Tickets with this subject</h2>
       {tickets.items.length === 0 ? (
         <p className="article-panel-note">No tickets share this subject.</p>
       ) : (
@@ -66,8 +66,8 @@ function RelatedTickets({ tickets }: { tickets: Article["related_tickets"] }) {
 
 function MoreInCategory({ category, articles }: { category: string | null; articles: Article["more_in_category"] }) {
   return (
-    <section className="card card-pad">
-      <h2 className="card-title">More in {category ? sentenceCase(category) : "this category"}</h2>
+    <section className="card card-pad" aria-labelledby="article-more-heading">
+      <h2 id="article-more-heading" className="card-title">More in {category ? sentenceCase(category) : "this category"}</h2>
       {articles.length === 0 ? (
         <p className="article-panel-note">No other articles in this category.</p>
       ) : (

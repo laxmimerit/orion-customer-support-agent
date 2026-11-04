@@ -1,0 +1,32 @@
+{
+  "description": "Block env files from commits and run the offline API tests after edits under api/",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(*commit*)",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/block-env-commit.sh",
+            "onFailure": "block",
+            "statusMessage": "Checking the commit for env files"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/run-api-tests.sh",
+            "timeout": 120,
+            "statusMessage": "Running the API tests"
+          }
+        ]
+      }
+    ]
+  }
+}

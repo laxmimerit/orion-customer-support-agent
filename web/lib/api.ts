@@ -258,6 +258,11 @@ async function get<T>(route: string, authorised = true): Promise<Result<T>> {
       message: typeof error?.message === "string" ? error.message : `The API answered ${response.status}.`,
     } };
   }
+  // A proxy or a missed route can answer 200 with a page of HTML. That is a failure, not empty data.
+  if (body === null) {
+    return { ok: false, problem: { status: response.status, code: "unexpected_response",
+      message: `The API answered ${response.status}, but the reply was not JSON.` } };
+  }
   return { ok: true, data: body as T };
 }
 
@@ -269,7 +274,10 @@ export function ticketDetail(ticketId: string) {
   return get<TicketDetail>(`/api/tickets/${encodeURIComponent(ticketId)}`);
 }
 
-export function searchDesk(query: string, limit = 25) {
+// The most hits one search returns. A full page means there may be more, so it is not a total.
+export const SEARCH_LIMIT = 25;
+
+export function searchDesk(query: string, limit = SEARCH_LIMIT) {
   return get<SearchResults>(`/api/search?q=${encodeURIComponent(query)}&limit=${limit}`);
 }
 

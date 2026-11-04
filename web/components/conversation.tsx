@@ -24,12 +24,14 @@ export function Conversation({ messages, request, company, agentId }: {
     ? [{ message_id: "request", author_role: "customer", body: request }]
     : messages;
   const shown = who === "all" ? thread : thread.filter((message) => message.author_role === who);
-  const count = openingOnly ? "opening request only" : plural(messages.length, "message");
+  const total = plural(thread.length, "message");
+  const count = openingOnly ? "opening request only"
+    : who === "all" || thread.length === 0 ? total : `${shown.length} of ${total}`;
   const emptyTitle = thread.length === 0 ? "No messages recorded" : `No ${who} messages`;
   // One string, so a screen reader hears the whole line each time the filter changes.
   const filterResult = shown.length === 0
     ? emptyTitle
-    : `Showing ${shown.length} of ${plural(thread.length, "message")}${who === "all" ? "" : ` from the ${who}`}`;
+    : `Showing ${shown.length} of ${total}${who === "all" ? "" : ` from the ${who}`}`;
 
   return (
     <section className="card case-conv" aria-labelledby="conv-title">

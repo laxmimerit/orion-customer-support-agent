@@ -9,11 +9,15 @@ import { ApiProblemPanel, ChannelIcon, Crumbs, Facts, PageHead, PriorityTile, St
 import { BackIcon } from "@/components/icons";
 import { SimilarLoading, SimilarTickets } from "@/components/similar-tickets";
 import { type Customer, type Ticket, ticketDetail } from "@/lib/api";
+import { queueHref, queuePage } from "@/lib/detail-pages";
 import { NOT_RECORDED, channelLabel, initial, orNotRecorded, plural, sentenceCase } from "@/lib/format";
 
 import "./case.css";
 
-type Props = { params: Promise<{ ticketId: string }> };
+type Props = {
+  params: Promise<{ ticketId: string }>;
+  searchParams: Promise<{ queue?: string | string[] }>;
+};
 
 function decodeId(raw: string) {
   try {
@@ -31,8 +35,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: ticketId };
 }
 
-export default async function CasePage({ params }: Props) {
+export default async function CasePage({ params, searchParams }: Props) {
   const ticketId = decodeId((await params).ticketId);
+  const queue = queueHref(queuePage((await searchParams).queue));
   const result = await ticketDetail(ticketId);
 
   if (!result.ok) {
@@ -42,7 +47,7 @@ export default async function CasePage({ params }: Props) {
       <>
         <TicketSearchBar />
         <main className="page is-detail case-page">
-          <Crumbs parent="Tickets" href="/" current={ticketId} />
+          <Crumbs parent="Tickets" href={queue} current={ticketId} />
           <PageHead title={ticketId} />
           <ApiProblemPanel problem={result.problem} retryTarget="this ticket" />
         </main>
@@ -56,7 +61,7 @@ export default async function CasePage({ params }: Props) {
     <>
       <TicketSearchBar />
       <main className="page is-detail case-page">
-        <Crumbs parent="Tickets" href="/" current={ticket.ticket_id} />
+        <Crumbs parent="Tickets" href={queue} current={ticket.ticket_id} />
 
         <section className="card case-hero" aria-labelledby="case-title">
           <div className="case-head">
@@ -64,7 +69,7 @@ export default async function CasePage({ params }: Props) {
               <h1 id="case-title" className="page-title">{ticket.ticket_id} · {ticket.subject ?? "No subject recorded"}</h1>
               <CasePills ticket={ticket} />
             </div>
-            <Link className="button" href="/"><BackIcon />Back to queue</Link>
+            <Link className="button" href={queue}><BackIcon />Back to queue</Link>
           </div>
           <CaseClock
             status={ticket.status}

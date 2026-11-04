@@ -19,6 +19,7 @@ import {
   searchDesk,
   ticketPage,
 } from "@/lib/api";
+import { queuePage } from "@/lib/detail-pages";
 import { NOT_RECORDED, hoursShort, orNotRecorded, percent, plural, sentenceCase } from "@/lib/format";
 import "./queue.css";
 
@@ -36,8 +37,7 @@ export default async function TicketQueue({ searchParams }: {
 }) {
   const params = await searchParams;
   const query = oneValue(params.q).trim();
-  const requested = Number(oneValue(params.page) || "1");
-  const page = Number.isInteger(requested) && requested >= 1 ? Math.min(requested, 100_000) : 1;
+  const page = queuePage(params.page);
 
   const reports = [backlogReport(), firstReplyReport(), priorityReport()] as const;
 

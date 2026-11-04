@@ -10,6 +10,7 @@ import { AlertIcon, CheckIcon, FilterIcon, ForwardIcon } from "@/components/icon
 import { RetryButton } from "@/components/retry-button";
 import { SearchField } from "@/components/search";
 import type { TicketPage, TicketSummary } from "@/lib/api";
+import { queueHref, ticketHref } from "@/lib/detail-pages";
 import { NOT_RECORDED, channelLabel, duration, isResolved, orNotRecorded, plural, sentenceCase } from "@/lib/format";
 import { lateLabel, slaResult, toHours } from "@/lib/sla";
 
@@ -123,7 +124,7 @@ export function Queue({ items, page, page_size, total, description, children }: 
     if (window.matchMedia("(max-width: 799px)").matches) panel.current?.scrollIntoView({ block: "start" });
   }
 
-  const rowProps = { selectedId: selected?.ticket_id ?? null, onPick: pick };
+  const rowProps = { page, selectedId: selected?.ticket_id ?? null, onPick: pick };
   const [cellPriority, cellStatus] = cell ? cell.split("|") : ["", ""];
 
   return (
@@ -268,6 +269,7 @@ export function Queue({ items, page, page_size, total, description, children }: 
               <div className="queue-panel-anchor" ref={panel}>
                 <Preview
                   ticket={selected}
+                  page={page}
                   similar={all.filter((ticket) =>
                     ticket.subject !== null && ticket.subject === selected.subject && ticket.ticket_id !== selected.ticket_id)}
                   onPick={pick}
@@ -296,10 +298,10 @@ function NoTickets({ total, pages }: { total: number; pages: number }) {
 
 function PageLink({ page, disabled, children }: { page: number; disabled: boolean; children: React.ReactNode }) {
   if (disabled) return <span className="button" role="link" aria-disabled="true">{children}</span>;
-  return <Link className="button" href={page === 1 ? "/" : `/?page=${page}`}>{children}</Link>;
+  return <Link className="button" href={queueHref(page)}>{children}</Link>;
 }
 
-type RowProps = { ticket: QueueTicket; selectedId: string | null; onPick: (ticketId: string) => void };
+type RowProps = { ticket: QueueTicket; page: number; selectedId: string | null; onPick: (ticketId: string) => void };
 
 // Covers the whole row or card to select it. The subject link sits above it and opens the ticket.
 function PickButton({ ticket, selected, onPick }: { ticket: TicketSummary; selected: boolean; onPick: (id: string) => void }) {
@@ -309,9 +311,9 @@ function PickButton({ ticket, selected, onPick }: { ticket: TicketSummary; selec
   );
 }
 
-function SubjectLink({ ticket, className }: { ticket: TicketSummary; className: string }) {
+function SubjectLink({ ticket, page, className }: { ticket: TicketSummary; page: number; className: string }) {
   return (
-    <Link className={`queue-subject ${className}`} href={`/tickets/${encodeURIComponent(ticket.ticket_id)}`} prefetch={false}>
+    <Link className={`queue-subject ${className}`} href={ticketHref(ticket.ticket_id, page)} prefetch={false}>
       {subjectOf(ticket)}
     </Link>
   );
@@ -344,7 +346,7 @@ function LateMark({ ticket }: { ticket: TicketSummary }) {
   return label && <span className="queue-late"><AlertIcon size={13} />{label}</span>;
 }
 
-function NowCard({ ticket, selectedId, onPick }: RowProps) {
+function NowCard({ ticket, page, selectedId, onPick }: RowProps) {
   const selected = ticket.ticket_id === selectedId;
   const tone = selected ? " is-selected" : ticket.priority === "P1" ? " is-p1" : " is-p2";
   return (
@@ -355,7 +357,7 @@ function NowCard({ ticket, selectedId, onPick }: RowProps) {
         <PriorityTile priority={ticket.priority} size="lg" />
         <span className="queue-card-status"><StatusPill status={ticket.status} /></span>
       </span>
-      <SubjectLink ticket={ticket} className="queue-card-title" />
+      <SubjectLink ticket={ticket} page={page} className="queue-card-title" />
       <span className="row-sub">
         <strong>{ticket.ticket_id}</strong> · {categoryLabel(ticket.category)} · {orNotRecorded(ticket.customer_id)}
       </span>
@@ -368,7 +370,7 @@ function NowCard({ ticket, selectedId, onPick }: RowProps) {
   );
 }
 
-function QueueRow({ ticket, selectedId, onPick }: RowProps) {
+function QueueRow({ ticket, page, selectedId, onPick }: RowProps) {
   const selected = ticket.ticket_id === selectedId;
   return (
     <div className={`row queue-row${selected ? " is-selected" : ""}`}>
@@ -378,7 +380,7 @@ function QueueRow({ ticket, selectedId, onPick }: RowProps) {
         <PriorityTile priority={ticket.priority} />
       </span>
       <span className="row-text">
-        <SubjectLink ticket={ticket} className="queue-row-title" />
+        <SubjectLink ticket={ticket} page={page} className="queue-row-title" />
         <span className="row-sub queue-clip">
           <strong>{ticket.ticket_id}</strong> · {categoryLabel(ticket.category)} · {orNotRecorded(ticket.customer_id)}
           {" · "}{channelLabel(ticket.channel)}
@@ -394,7 +396,7 @@ function QueueRow({ ticket, selectedId, onPick }: RowProps) {
   );
 }
 
-function MiniRow({ ticket, selectedId, onPick, lead, detail, end }: RowProps & {
+function MiniRow({ ticket, page, selectedId, onPick, lead, detail, end }: RowProps & {
   lead: React.ReactNode; detail: React.ReactNode; end?: React.ReactNode;
 }) {
   const selected = ticket.ticket_id === selectedId;
@@ -403,7 +405,7 @@ function MiniRow({ ticket, selectedId, onPick, lead, detail, end }: RowProps & {
       <PickButton ticket={ticket} selected={selected} onPick={onPick} />
       {lead}
       <span className="queue-mini-text">
-        <SubjectLink ticket={ticket} className="queue-mini-title" />
+        <SubjectLink ticket={ticket} page={page} className="queue-mini-title" />
         <span className="queue-mini-sub">{ticket.ticket_id} · {detail}</span>
         <LateMark ticket={ticket} />
       </span>
@@ -454,8 +456,8 @@ function Glance({ tickets, cell, onCell }: {
   );
 }
 
-function Preview({ ticket, similar, onPick }: {
-  ticket: QueueTicket; similar: QueueTicket[]; onPick: (ticketId: string) => void;
+function Preview({ ticket, page, similar, onPick }: {
+  ticket: QueueTicket; page: number; similar: QueueTicket[]; onPick: (ticketId: string) => void;
 }) {
   const [attempt, setAttempt] = useState(0);
   const [loaded, setLoaded] = useState<{ key: string; result: PreviewResult } | null>(null);
@@ -533,7 +535,7 @@ function Preview({ ticket, similar, onPick }: {
         </div>
       )}
 
-      <Link className="button is-primary" href={`/tickets/${encodeURIComponent(ticketId)}`} prefetch={false}>
+      <Link className="button is-primary" href={ticketHref(ticketId, page)} prefetch={false}>
         Open case<ForwardIcon />
       </Link>
     </section>

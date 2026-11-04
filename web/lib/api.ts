@@ -258,6 +258,11 @@ async function get<T>(route: string, authorised = true): Promise<Result<T>> {
       message: typeof error?.message === "string" ? error.message : `The API answered ${response.status}.`,
     } };
   }
+  // A proxy or a missed route can answer 200 with a page of HTML. That is a failure, not empty data.
+  if (body === null) {
+    return { ok: false, problem: { status: response.status, code: "unexpected_response",
+      message: `The API answered ${response.status}, but the reply was not JSON.` } };
+  }
   return { ok: true, data: body as T };
 }
 

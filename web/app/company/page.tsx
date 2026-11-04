@@ -85,7 +85,7 @@ export default async function CompanyPage() {
             {sections.length === 0 ? (
               <div className="card empty"><p className="empty-title">No handbook sections recorded</p></div>
             ) : (
-              <article className="card company-sections">
+              <article className="card company-sections" aria-label="Handbook sections">
                 {sections.map((section, index) => (
                   <Section key={section.document_id} section={section} anchor={anchorOf(index)} />
                 ))}

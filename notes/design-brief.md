@@ -100,7 +100,7 @@ The queue is a ranked triage view of the 25 tickets on the current page: cards f
    - **Priority**: chip.
    - **Agent**: agent ID.
 7. **Caption and paging**: the caption reads "1–25 of 4000, in API order", followed by the note "Ranked within this page by status and priority.", with Previous and Next controls beside it.
-8. **Empty state**: "No tickets match." with a one-line way to recover.
+8. **Empty state**: "No tickets match." with a one-line way to recover, shown only when the API returns no results. A meaning search normally returns its nearest tickets however weak the match, so this is rare.
 9. **Density**: at 1280 × 800, the first line of cards and at least three What's next rows are visible without scrolling.
 
 **Ranking**
@@ -122,10 +122,37 @@ The desk ranks the 25 tickets it already has for the page. Which tickets are on 
 ### Search results (on the Ticket queue page)
 
 - Rows only, with the same columns as What's next. No cards and no ranking: results stay in the order the API returns them.
-- The caption names the query and the count, for example `3 results for "invite link expired"`.
+- The section heading reads "Search results".
+- The caption names the query and the count: `1 result for "T00727"`, `10 results for "invitation", in relevance order`, or `10 results for "invitation" at P2, in relevance order`.
 - An exact ticket ID returns that ticket alone.
 - A meaning search lists results in the API's relevance order, and the caption says so.
 - The priority filter narrows the results. Clear returns the queue to page 1.
+
+**Every search row**
+
+The API's search answer holds each ticket's ID, subject, status, priority and category only. The desk shows that and says what is missing:
+
+- **Note under the caption**: "Found by exact ID." or "Found by meaning.", then "This answer holds each ticket’s ID, subject, status, priority and category; customer, channel and agent are not in it."
+- **Under the subject**: "category · channel not in this answer", then "Found by exact ID" or "Found by meaning".
+- **Customer and Agent**: read "Not in this answer". This differs from "Not recorded", where the API returned the field with no value.
+- The similarity score is not shown.
+
+**Help articles in results**
+
+A meaning search with no priority filter can return help articles among the tickets. They stay in the API's order and count towards the caption's total. A priority filter leaves them out.
+
+- Each article is a row with its KB ID and title as plain text, not a link: the desk has no article page. Do not design one.
+- **Under the title**: "category · Help article", then "Found by meaning".
+- **Customer, Status, Priority and Agent**: read "Not a ticket", with no pill or chip.
+
+**ID not found**
+
+When the query has the shape of a ticket ID, the letter T in either case and five digits, and the API answers with `"match": "semantic"`, no ticket has that ID. The API has returned the closest tickets by meaning instead. The desk keeps those results and says what they are, as in the design's States page ("Queue · ID not found"):
+
+- **Caption**: `No ticket has the ID "T09999" · 10 results by meaning`, with the query and count from the answer.
+- **Line beneath it**: "No ticket has that ID, so the API returned the 10 tickets closest to it by meaning instead."
+- **Note**: "Found by meaning, in relevance order. This answer holds each ticket’s ID, subject, status, priority and category; customer, channel and agent are not in it."
+- **Rows**: as for every search row, in the API's order.
 
 ### Case page
 
@@ -176,6 +203,33 @@ As in DESIGN.md section 7, with the source changed from the trace to the API, an
 - Backlog's oldest ticket date is never shown.
 - Charts have no controls: no zoom, range, series toggles or download.
 
+### States
+
+As on the design's States page.
+
+**Queue · loading**
+
+- The top bar, heading, notice and toolbar show as normal. The summary strip, three cards and six rows show as #E2E8F0 placeholder blocks, with no values, real or invented.
+- The caption reads "Loading tickets from the Orion desk API", followed by "Ranked within this page by status and priority once loaded." What's next reads "Loading".
+- Previous and Next are disabled.
+
+**Queue · desk API down**
+
+- When the API does not answer, or answers 503, the top bar, heading, notice and toolbar stay. The summary strip, cards and rows go.
+- One card takes their place, announced as an alert: the heading "Tickets can’t be shown", then "The Orion desk API isn’t responding, so the queue can’t load. Reload the page to try again."
+
+**Queue · token refused**
+
+- When the API answers 401, the page keeps the same frame and shows one alert card: the heading "The desk’s access was refused", then "The Orion desk API refused this desk’s token, so no tickets can be shown. Ask whoever manages the desk’s API access for a new token."
+- Beneath it, a facts list shows Status, Code and Message from the API's error answer, as returned.
+- The token itself never appears, on the page or in its source.
+
+**Case · resolved, no rating (T00790)**
+
+- This is the case page with both targets met and no CSAT. Nothing in its layout changes.
+- CSAT reads "Not recorded", by the rule for missing values.
+- Each wait bar fills in #0E4F41 up to the time taken, with the target tick at the end of the bar. The key shows "Within target" only.
+
 ## Narrow widths
 
 - **768px**: the summary strip, toolbar and cards wrap without overlapping.
@@ -199,10 +253,10 @@ Check each item on the running app.
 | 3 | Ticket queue | 1280px | Read the What's next column headers | Exactly: Ticket / subject, Customer, Status, Priority, Agent |
 | 4 | Ticket queue | T01970 row | Read the row | Shows exactly T01970, "Export stops before completion", "bug · web", C0272, Open, P3, A03; no target, wait, company, plan or seats |
 | 5 | Ticket queue | 1280 × 800 | Load the page | All 3 cards and at least three What's next rows visible without scrolling |
-| 6 | Ticket queue | T00727 | Search "T00727" | No cards and exactly one row: T00727 "Invite link expired", "account access · web", C0086, Resolved, P2, A03; no target, wait, company, plan or seats |
-| 7 | Ticket queue | T00727 | Search "invite link expired" | T00727 appears on the first page of results; the caption shows the count and the query |
+| 6 | Ticket queue | T00727 | Search "T00727" | No cards and exactly one row, under the caption `1 result for "T00727"`: T00727 "Invite link expired", "account access · channel not in this answer", "Found by exact ID", Resolved, P2; Customer and Agent read "Not in this answer"; no target, wait, company, plan or seats |
+| 7 | Ticket queue | T00727 | Search "invitation" | T00727 is the first row; the caption reads `10 results for "invitation", in relevance order` |
 | 8 | Ticket queue | T00727 | Search "invite" with priority P2 | Every row shows P2, and T00727 is among them |
-| 9 | Ticket queue | 1280px | Search "zzqx" | Shows "No tickets match." with a way to recover; Clear restores "1–25 of 4000, in API order" and the cards |
+| 9 | Ticket queue | T09999 at 1280px | Search "T09999" | Caption reads `No ticket has the ID "T09999" · 10 results by meaning`, then the line and note set out under ID not found; 10 rows from T00244 to T00767, no cards; Clear restores "1–25 of 4000, in API order" and the cards |
 | 10 | Ticket queue | 1280px | Press Next | Caption reads "26–50 of 4000, in API order"; the tickets differ from page 1 and follow the same ranking |
 | 11 | Ticket queue | Any card or row | Hover the customer ID | It is not a link; only the subject is |
 | 12 | Case page | T00727 | Load the page | Breadcrumb reads "Ticket queue / T00727", and its first part opens the queue; title "T00727 · Invite link expired"; ribbon "account access · Identity · Via web" |
@@ -228,7 +282,7 @@ Check each item on the running app.
 | 32 | Ticket queue | Page 1 at 1280px | Scan cards, rows and notes | No rank numbers, scores or per-ticket reasons; no "most urgent", "oldest" or "longest waiting"; nothing claims to cover more than this page |
 | 33 | Ticket queue | Page 4 | Load the page | The section reads "Nothing on this page needs an agent now." and What's next still lists the page's tickets |
 | 34 | Every page | 1280px | Read the top bar | Orion logo, "Service Desk", then Ticket queue and Reports with the current page in #0E4F41 and a 2px #098278 underline; each link opens its page; no search, counts, account menu, agent name, date or clock; no sidebar |
-| 35 | Ticket queue | T00727 | Search "invite link expired" and compare with the API's results | Rows only, in the API's order, with no ranking applied |
+| 35 | Ticket queue | T00727 | Search "invitation" and compare with the API's results | Rows only, in the API's order, with no ranking applied |
 | 36 | Reports | volume | Read the chart | Six stacked bars with no month labels and no time axis; the first shows 581 resolved and 83 unresolved; the total of 4000 tickets is a figure, not a bar; the note reads "One bar per calendar month, in API order." |
 | 37 | Reports | backlog | Read the chart | Three bars in API order: in progress 147, open 172, pending 156; the total of 475 is a figure, not a bar; no oldest ticket date anywhere |
 | 38 | Reports | priority | Read the charts | Four bars per chart, P1 to P4; tickets, hours and CSAT on separate charts; P1 average first reply 1.50 h from 352 tickets; P1 average CSAT "3.61 from 213 tickets, 107 not recorded" |
@@ -243,3 +297,16 @@ Check each item on the running app.
 | 47 | Case page | T00727 | Read the conversation | Customer bubbles left on the surface colour; agent bubbles right in #0E4F41 with #F7F7FF text; no times, read receipts or download links |
 | 48 | Reports | Any chart | Inspect the series | Resolved and met #0E4F41, unresolved and single-series bars #098278, missed #EF4444, no first reply #64748B; stacked segments have a 2px gap |
 | 49 | Every page | Any record | Scan the page | The reference's product name, trend indicators, notification badges, lead scores, kanban cards and channel stripes do not appear; the Orion logo is unchanged |
+| 50 | Ticket queue | T09999, first row | Read the row | Shows exactly T00244, "Missing rows in downloaded CSV", "bug · channel not in this answer", "Found by meaning", Resolved, P3; Customer and Agent read "Not in this answer"; no similarity score |
+| 51 | Ticket queue | 1280px | Search "zzqx" | 10 rows in the API's relevance order, with the caption `10 results for "zzqx", in relevance order`; no ID not found message and no "No tickets match." |
+| 52 | Ticket queue | 1280px | Search "t00727" in lower case | Caption reads `No ticket has the ID "t00727" · 10 results by meaning`, because IDs are case-sensitive |
+| 53 | Ticket queue | Search "invitation" with priority P2 | Read the caption, note and rows | Caption reads `10 results for "invitation" at P2, in relevance order`; the note starts "Found by meaning."; every row reads "Found by meaning" and "Not in this answer" for Customer and Agent |
+| 54 | Ticket queue | Loading, with the API's answer held back | Load the page | Placeholder blocks for the summary strip, three cards and six rows; no values shown; caption reads "Loading tickets from the Orion desk API", then "Ranked within this page by status and priority once loaded."; Previous and Next disabled |
+| 55 | Ticket queue | `ORION_API_URL` set to a closed port | Load the page | Top bar, heading, notice and toolbar show; no summary strip, cards or rows; one alert card, "Tickets can’t be shown", with the reload line |
+| 56 | Ticket queue | `ORION_AGENT_TOKEN` set to a wrong value | Load the page | One alert card, "The desk’s access was refused"; facts read Status 401, Code invalid_token, Message "The token is not valid."; no tickets shown |
+| 57 | Ticket queue | Wrong token, as in 56 | Search the page and its source for the token sent | It appears nowhere |
+| 58 | Case page | T00790 | Read the heading and both tiles | Title "T00790 · Role change not applied"; ribbon "account access · Identity · Via chat"; "First reply: target met", target 9 h, waited 6 h, bar filled about 66.7%; "Resolution: target met", target 72 h, took 24.73 h, bar filled about 34.3%; tick at the end of both bars; the key shows "Within target" only |
+| 59 | Case page | T00790 | Read the Ticket facts and conversation | Resolved, P3, A02, chat, account access, Identity, positive, CSAT "Not recorded", reopened 0, escalated 0; header reads "8 messages", customer messages labelled C0086, agent messages labelled A02 |
+| 60 | Ticket queue | KB009 | Search "how do I export tickets" | KB009 then KB039 are the first two rows, then T02368; the caption counts all 10 |
+| 61 | Ticket queue | KB009 row | Read the row and hover the title | KB009, "Export monthly ticket history" as plain text with no link, "how-to · Help article", "Found by meaning"; Customer, Status, Priority and Agent read "Not a ticket", with no pill or chip |
+| 62 | Ticket queue | KB009 | Search "how do I export tickets" with priority P2 | Every row is a ticket showing P2; no help articles |

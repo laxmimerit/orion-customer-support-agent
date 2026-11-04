@@ -1,0 +1,87 @@
+{
+  "ticket": {
+    "ticket_id": "T00790",
+    "customer_id": "C0086",
+    "agent_id": "A02",
+    "category": "account access",
+    "priority": "P3",
+    "status": "resolved",
+    "channel": "chat",
+    "component": "Identity",
+    "subject": "Role change not applied",
+    "body": "Role change not applied. We use the scale plan with 8 seats. One person is affected. Normal operations continue using a workaround; we can address this in the next few days. Workspace reference C0086; case demo-00790. Please explain the next step and any workaround.",
+    "sla_response_hours": "9.0000",
+    "sla_resolution_hours": "72.0000",
+    "first_response_hours": "6.0000",
+    "resolution_hours": "24.7300",
+    "csat": null,
+    "reopened_count": 0,
+    "escalated": 0,
+    "sentiment": "positive",
+    "plan_id": "scale",
+    "industry": "Finance tools",
+    "region": "Americas",
+    "company_size": "11-50"
+  },
+  "customer": {
+    "customer_id": "C0086",
+    "company": "Fern Platform 086",
+    "industry": "Finance tools",
+    "country": "United States",
+    "region": "Americas",
+    "company_size": "11-50",
+    "plan_id": "scale",
+    "seats": 8,
+    "acquisition_source": "search"
+  },
+  "messages": [
+    {
+      "message_id": "M007883",
+      "ticket_id": "T00790",
+      "author_role": "customer",
+      "body": "Role change not applied. We use the scale plan with 8 seats. One person is affected. Normal operations continue using a workaround; we can address this in the next few days. Workspace reference C0086; case demo-00790. Please explain the next step and any workaround."
+    },
+    {
+      "message_id": "M007884",
+      "ticket_id": "T00790",
+      "author_role": "agent",
+      "body": "Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials."
+    },
+    {
+      "message_id": "M007885",
+      "ticket_id": "T00790",
+      "author_role": "customer",
+      "body": "That addresses the immediate issue. How should we avoid it next time? Follow-up 2."
+    },
+    {
+      "message_id": "M007886",
+      "ticket_id": "T00790",
+      "author_role": "agent",
+      "body": "Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials."
+    },
+    {
+      "message_id": "M007887",
+      "ticket_id": "T00790",
+      "author_role": "customer",
+      "body": "I tried those steps and have a follow-up about the workspace setting. Follow-up 3."
+    },
+    {
+      "message_id": "M007888",
+      "ticket_id": "T00790",
+      "author_role": "agent",
+      "body": "Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials."
+    },
+    {
+      "message_id": "M007889",
+      "ticket_id": "T00790",
+      "author_role": "customer",
+      "body": "The issue is still reproducible; I have attached more context. Follow-up 4."
+    },
+    {
+      "message_id": "M007890",
+      "ticket_id": "T00790",
+      "author_role": "agent",
+      "body": "Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials."
+    }
+  ]
+}

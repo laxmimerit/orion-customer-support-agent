@@ -1,0 +1,96 @@
+{
+  "query": "T09999",
+  "match": "semantic",
+  "items": [
+    {
+      "kind": "ticket",
+      "id": "T00244",
+      "title": "Missing rows in downloaded CSV",
+      "status": "resolved",
+      "priority": "P3",
+      "category": "bug",
+      "similarity": 0.5004485617087059
+    },
+    {
+      "kind": "ticket",
+      "id": "T00294",
+      "title": "Missing rows in downloaded CSV",
+      "status": "resolved",
+      "priority": "P1",
+      "category": "bug",
+      "similarity": 0.4995982734160971
+    },
+    {
+      "kind": "ticket",
+      "id": "T03758",
+      "title": "SSO login loops",
+      "status": "resolved",
+      "priority": "P1",
+      "category": "account access",
+      "similarity": 0.49530227636696456
+    },
+    {
+      "kind": "ticket",
+      "id": "T00242",
+      "title": "Only part of the export arrives",
+      "status": "resolved",
+      "priority": "P3",
+      "category": "bug",
+      "similarity": 0.4945298822186368
+    },
+    {
+      "kind": "ticket",
+      "id": "T00243",
+      "title": "Ticket export is truncated",
+      "status": "resolved",
+      "priority": "P3",
+      "category": "bug",
+      "similarity": 0.4942747084855772
+    },
+    {
+      "kind": "ticket",
+      "id": "T00245",
+      "title": "Export does not include all tickets",
+      "status": "resolved",
+      "priority": "P3",
+      "category": "bug",
+      "similarity": 0.4937177545204966
+    },
+    {
+      "kind": "ticket",
+      "id": "T03835",
+      "title": "SSO login loops",
+      "status": "resolved",
+      "priority": "P4",
+      "category": "account access",
+      "similarity": 0.48981862845164725
+    },
+    {
+      "kind": "ticket",
+      "id": "T02067",
+      "title": "SSO login loops",
+      "status": "resolved",
+      "priority": "P4",
+      "category": "account access",
+      "similarity": 0.4826321745791158
+    },
+    {
+      "kind": "ticket",
+      "id": "T03270",
+      "title": "Webhook delivery is delayed",
+      "status": "resolved",
+      "priority": "P4",
+      "category": "bug",
+      "similarity": 0.48022917400786747
+    },
+    {
+      "kind": "ticket",
+      "id": "T00767",
+      "title": "Webhook delivery is delayed",
+      "status": "resolved",
+      "priority": "P3",
+      "category": "bug",
+      "similarity": 0.4793965493485737
+    }
+  ]
+}

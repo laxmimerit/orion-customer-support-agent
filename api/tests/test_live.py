@@ -197,6 +197,22 @@ def test_article_has_its_tickets_and_the_rest_of_its_category(live):
     assert {item["category"] for item in body["more_in_category"]} == {"account access"}
 
 
+def test_ticket_articles_match_the_subject_exactly(live):
+    client, settings = live
+    # Two articles share T00727's subject, and nothing records which applies (backlog B03): both are listed.
+    assert page(client, settings, "/api/tickets/T00727/knowledge") == {"total": 2, "items": [
+        {"article_id": "KB004", "title": "Invite link expired", "category": "account access"},
+        {"article_id": "KB034", "title": "Invite link expired", "category": "account access"},
+    ]}
+    with client.app.state.store.pool.connection() as db:
+        one_match = db.execute("SELECT MIN(ticket_id) AS id FROM tickets WHERE subject = 'Role change not applied'"
+                               ).fetchone()["id"]
+    assert [item["article_id"] for item in page(client, settings, f"/api/tickets/{one_match}/knowledge")["items"]] == ["KB022"]
+    # T00201 is "CSV download ends early": no article has that title.
+    assert page(client, settings, "/api/tickets/T00201/knowledge") == {"total": 0, "items": []}
+    assert client.get("/api/tickets/t00727/knowledge", headers=auth(settings.agent_token)).status_code == 404
+
+
 def test_company_splits_owners_and_keeps_every_row(live):
     client, settings = live
     body = page(client, settings, "/api/company")

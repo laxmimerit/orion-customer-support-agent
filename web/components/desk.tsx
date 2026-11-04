@@ -76,7 +76,12 @@ const PRIORITY_TILES: Record<string, string> = { P1: "tile-p1", P2: "tile-p2", P
 
 export function PriorityTile({ priority, size }: { priority: string | null; size?: "sm" | "lg" }) {
   const tone = (priority && PRIORITY_TILES[priority]) || "tile-none";
-  return <span className={`tile ${tone}${size ? ` is-${size}` : ""}`}>{priority ?? "None"}</span>;
+  return (
+    <span className={`tile ${tone}${size ? ` is-${size}` : ""}`}>
+      <span className="visually-hidden">Priority </span>
+      {priority ?? "None"}
+    </span>
+  );
 }
 
 export function ChannelIcon({ channel }: { channel: string | null }) {

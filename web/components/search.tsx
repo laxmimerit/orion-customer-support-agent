@@ -52,8 +52,9 @@ export function SearchField({ label, placeholder, value, onChange, action, param
         value={value}
         onChange={onChange ? (event) => onChange(event.target.value) : undefined}
         autoComplete="off"
+        aria-keyshortcuts={shortcut ? "/" : undefined}
       />
-      {shortcut && <kbd>/</kbd>}
+      {shortcut && <kbd aria-hidden="true">/</kbd>}
     </form>
   );
 }

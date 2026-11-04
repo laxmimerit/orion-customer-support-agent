@@ -22,6 +22,18 @@ function NavLink({ item, pathname }: { item: (typeof MAIN)[number]; pathname: st
   );
 }
 
+// Moves focus itself: a plain jump to #content adds a history entry that the router cannot go Back to.
+export function SkipLink() {
+  function skip(event: React.MouseEvent<HTMLAnchorElement>) {
+    const column = document.getElementById("content");
+    if (!column) return;
+    event.preventDefault();
+    column.focus({ preventScroll: true });
+    column.scrollIntoView();
+  }
+  return <a className="skip-link" href="#content" onClick={skip}>Skip to content</a>;
+}
+
 export function SidebarNav() {
   const pathname = usePathname();
   const settings = { href: "/settings", label: "Settings", Icon: SettingsIcon, matches: (path: string) => path.startsWith("/settings") };

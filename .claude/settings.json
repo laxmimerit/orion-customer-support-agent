@@ -2,6 +2,14 @@
   "worktree": {
     "baseRef": "head"
   },
+  "permissions": {
+    "deny": [
+      "mcp__tidb-lab__db_execute",
+      "mcp__tidb-lab__db_create_user",
+      "mcp__tidb-lab__db_remove_user",
+      "mcp__tidb-lab__switch_database"
+    ]
+  },
   "hooks": {
     "PreToolUse": [
       {

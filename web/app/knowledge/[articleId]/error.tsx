@@ -12,7 +12,7 @@ export default function ArticleError({ retry }: { retry: () => void }) {
         <div>
           <p className="problem-title">This article could not be shown</p>
           <p className="problem-text">Something went wrong while opening this page.</p>
-          <RetryButton onRetry={retry} />
+          <RetryButton target="this article" onRetry={retry} />
         </div>
       </div>
     </main>

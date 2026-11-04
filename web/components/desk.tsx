@@ -108,8 +108,8 @@ export function Facts({ items }: { items: [string, React.ReactNode][] }) {
 }
 
 // Shown in place of a page's data when the API refuses or does not answer.
-export function ApiProblemPanel({ problem, title = "The desk API did not return this page" }: {
-  problem: ApiProblem; title?: string;
+export function ApiProblemPanel({ problem, title = "The desk API did not return this page", retryTarget }: {
+  problem: ApiProblem; title?: string; retryTarget: string;
 }) {
   return (
     <div className="problem" role="alert">
@@ -118,7 +118,7 @@ export function ApiProblemPanel({ problem, title = "The desk API did not return 
         <p className="problem-title">{title}</p>
         <p className="problem-text">{problem.message}</p>
         <p className="problem-code">{problem.status ? `HTTP ${problem.status} · ` : ""}{problem.code}</p>
-        <RetryButton />
+        <RetryButton target={retryTarget} />
       </div>
     </div>
   );

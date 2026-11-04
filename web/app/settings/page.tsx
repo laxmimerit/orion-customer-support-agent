@@ -26,8 +26,8 @@ export default async function Settings() {
           </span>
         </div>
 
-        {!info.ok && <ApiProblemPanel problem={info.problem} title="The desk API did not return its details" />}
-        {info.ok && !tickets.ok && <ApiProblemPanel problem={tickets.problem} title="The desk API did not return ticket access" />}
+        {!info.ok && <ApiProblemPanel problem={info.problem} title="The desk API did not return its details" retryTarget="the desk details" />}
+        {info.ok && !tickets.ok && <ApiProblemPanel problem={tickets.problem} title="The desk API did not return ticket access" retryTarget="ticket access" />}
 
         <section className="settings-section" aria-labelledby="settings-models">
           <h2 id="settings-models">Models &amp; APIs</h2>

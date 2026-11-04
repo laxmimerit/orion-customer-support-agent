@@ -23,7 +23,11 @@ function decodeId(raw: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  return { title: decodeId((await params).customerId) };
+  const customerId = decodeId((await params).customerId);
+  const result = await customerProfile(customerId);
+  // notFound() here as well as in the page: a title returned from here would beat the one in not-found.tsx.
+  if (!result.ok && (result.problem.status === 404 || result.problem.status === 422)) notFound();
+  return { title: customerId };
 }
 
 export default async function CustomerPage({ params }: Props) {
@@ -38,7 +42,7 @@ export default async function CustomerPage({ params }: Props) {
         <main className="page is-detail cprof-page">
           <Crumbs parent="Customers" href="/customers" current={customerId} />
           <PageHead title={customerId} />
-          <ApiProblemPanel problem={result.problem} />
+          <ApiProblemPanel problem={result.problem} retryTarget="this customer" />
         </main>
       </>
     );

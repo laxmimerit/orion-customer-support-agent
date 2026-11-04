@@ -465,7 +465,9 @@ input::placeholder { color: var(--ink-placeholder); }
 .problem-title { font-size: 15px; font-weight: 700; color: var(--ink-strong); }
 .problem-text { margin-top: 4px; font-size: 14px; color: var(--ink-2); overflow-wrap: anywhere; }
 .problem-code { margin-top: 4px; font-size: 12.5px; color: var(--ink-muted); }
-.problem .button { margin-top: 14px; }
+.problem > div { min-width: 0; }
+/* Retry buttons name what they reload, so a long name wraps instead of widening the panel. */
+.problem .button { height: auto; min-height: 40px; margin-top: 14px; padding-block: 8px; white-space: normal; }
 
 .skeleton { display: flex; flex-direction: column; gap: 24px; }
 .skeleton-title { display: flex; flex-direction: column; gap: 10px; }
@@ -531,6 +533,7 @@ input::placeholder { color: var(--ink-placeholder); }
   .card-head { padding: 16px 18px; }
   .row { padding: 12px 14px; }
   .chip, .button, .segmented button { height: 44px; }
+  .problem .button { min-height: 44px; }
   .crumbs a { display: inline-flex; align-items: center; min-height: 44px; }
 }
 

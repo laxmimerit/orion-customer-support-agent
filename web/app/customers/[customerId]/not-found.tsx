@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { Crumbs, TicketSearchBar } from "@/components/desk";
 
 import "./customer.css";
+
+export const metadata: Metadata = { title: "Customer not found" };
 
 export default function CustomerNotFound() {
   return (

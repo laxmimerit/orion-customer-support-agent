@@ -77,9 +77,9 @@ Status pills: Open is indigo, In progress is teal, Pending is amber, Resolved is
 ## 5. States
 
 - **Loading.** Each route has a `loading.tsx` using `PageLoading`: a pulsing outline of the page, announced to screen readers. The pulse stops under `prefers-reduced-motion`.
-- **API errors.** `ApiProblemPanel` replaces the data and keeps the heading. It shows the message, the code and a Try again button.
+- **API errors.** `ApiProblemPanel` replaces the data and keeps the heading. It shows the message, the code and a button that names what it reloads, such as Reload the ticket queue.
 - **Crashes.** Each route has an `error.tsx` boundary.
-- **Not found.** Tickets, customers and articles have their own page, and a 404 or 422 from the API lands there.
+- **Not found.** Tickets, customers and articles have their own page and tab title, and a 404 or 422 from the API lands there.
 - **Empty.** Every filtered list says nothing matched and how to recover.
 
 ## 6. Phones

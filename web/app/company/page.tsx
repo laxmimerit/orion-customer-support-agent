@@ -58,7 +58,7 @@ export default async function CompanyPage() {
         <TicketSearchBar />
         <main className="page company-page">
           <PageHead title={TITLE} description={DESCRIPTION} />
-          <ApiProblemPanel problem={result.problem} />
+          <ApiProblemPanel problem={result.problem} retryTarget="the company handbook" />
         </main>
       </>
     );

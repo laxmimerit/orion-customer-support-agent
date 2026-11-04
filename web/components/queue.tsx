@@ -498,7 +498,7 @@ function Preview({ ticket, similar, onPick }: {
             <div>
               <p className="problem-title">The targets for {ticketId} did not load</p>
               <p className="problem-text">{result.message}</p>
-              <RetryButton onRetry={() => setAttempt((count) => count + 1)} />
+              <RetryButton target={`the targets for ${ticketId}`} onRetry={() => setAttempt((count) => count + 1)} />
             </div>
           </div>
         )}

@@ -25,7 +25,7 @@ export default async function Reports() {
         <TicketSearchBar />
         <main className="page">
           <PageHead title={TITLE} description={DESCRIPTION} />
-          <ApiProblemPanel problem={volume.problem} title="The desk API did not return the reports" />
+          <ApiProblemPanel problem={volume.problem} title="The desk API did not return the reports" retryTarget="the reports" />
         </main>
       </>
     );

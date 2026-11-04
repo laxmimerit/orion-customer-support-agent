@@ -31,7 +31,7 @@ function ReportCard({ id, eyebrow, title, children }: {
 export function ReportProblem({ id, eyebrow, problem }: { id: string; eyebrow: string; problem: ApiProblem }) {
   return (
     <ReportCard id={id} eyebrow={eyebrow} title={<>This report did not load<span className="visually-hidden">: {eyebrow}</span></>}>
-      <ApiProblemPanel problem={problem} title="The desk API did not return this report" />
+      <ApiProblemPanel problem={problem} title="The desk API did not return this report" retryTarget={`the “${eyebrow}” report`} />
     </ReportCard>
   );
 }

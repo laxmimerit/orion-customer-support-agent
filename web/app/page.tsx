@@ -65,7 +65,7 @@ export default async function TicketQueue({ searchParams }: {
         <main className="page">
           <PageHead title="Ticket queue" description={QUEUE_DESCRIPTION} />
           {pulse}
-          <ApiProblemPanel problem={tickets.problem} />
+          <ApiProblemPanel problem={tickets.problem} retryTarget="the ticket queue" />
         </main>
       </>
     );
@@ -230,7 +230,7 @@ function SearchSection({ query, results }: { query: string; results: Result<Sear
           <h2 id="queue-results-title">Results for “{query}”</h2>
           {back}
         </div>
-        <ApiProblemPanel problem={results.problem} title="The desk API did not return these results" />
+        <ApiProblemPanel problem={results.problem} title="The desk API did not return these results" retryTarget="the search results" />
       </section>
     );
   }

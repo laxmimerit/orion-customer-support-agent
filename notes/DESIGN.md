@@ -76,7 +76,7 @@ Status pills: Open is indigo, In progress is teal, Pending is amber, Resolved is
 
 ## 5. States
 
-- **Loading.** Each route has a `loading.tsx` using `PageLoading`: a pulsing outline of the page, announced to screen readers. The pulse stops under `prefers-reduced-motion`.
+- **Loading.** Each list and board route has a `loading.tsx` using `PageLoading`: a pulsing outline of the page, announced to screen readers. The pulse stops under `prefers-reduced-motion`. Ticket, customer and article pages have none, and no `loading.tsx` may sit above them, which is why the lists keep theirs in route groups: a loading state starts the stream and fixes the status at 200, so a missing record could not answer 404. While one of those pages opens, `DetailPending` shows a thin bar at the top of the window and announces the same wait to screen readers.
 - **API errors.** `ApiProblemPanel` replaces the data and keeps the heading. It shows the message, the code and a button that names what it reloads, such as Reload the ticket queue.
 - **Crashes.** Each route has an `error.tsx` boundary.
 - **Not found.** Tickets, customers and articles have their own page and tab title, and a 404 or 422 from the API lands there.

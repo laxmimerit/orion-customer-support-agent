@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
 
+import { DetailPending } from "@/components/detail-pending";
 import { SidebarNav, SkipLink } from "@/components/sidebar-nav";
 import "./globals.css";
 
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={inter.variable}>
       <body>
         <SkipLink />
+        <DetailPending />
         <div className="frame">
           <aside className="side" aria-label="Desk navigation">
             <Link className="side-logo" href="/" aria-label="Orion desk, ticket queue">

@@ -125,13 +125,13 @@ export function ApiProblemPanel({ problem, title = "The desk API did not return 
 }
 
 // The body of a route's loading.tsx. `label` is read out; `shape` roughly matches the page to come.
-export function PageLoading({ label, shape = ["block", "tall"], detail = false }: {
-  label: string; shape?: ("block" | "tall")[]; detail?: boolean;
+export function PageLoading({ label, shape = ["block", "tall"] }: {
+  label: string; shape?: ("block" | "tall")[];
 }) {
   return (
     <>
       <TopBar />
-      <main className={`page${detail ? " is-detail" : ""}`}>
+      <main className="page">
         <div className="skeleton" role="status" aria-busy="true" aria-live="polite">
           <span className="visually-hidden">{label}</span>
           <div className="skeleton-title" aria-hidden="true">

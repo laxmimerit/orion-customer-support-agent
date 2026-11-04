@@ -5,8 +5,10 @@ import type { BacklogRow, Breakdown, CategoryRow, FirstReplyRow, PriorityRow, Vo
 import { NOT_RECORDED, asPercent, hoursShort, rounded, sentenceCase } from "@/lib/format";
 
 // Averages arrive as decimal strings. Null stays null, so a missing value is never drawn as 0.
+// A blank string counts as missing too: Number("  ") is 0, which would invent a figure.
 export function num(value: string | number | null | undefined) {
-  if (value === null || value === undefined || value === "") return null;
+  if (value === null || value === undefined) return null;
+  if (typeof value === "string" && value.trim() === "") return null;
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : null;
 }

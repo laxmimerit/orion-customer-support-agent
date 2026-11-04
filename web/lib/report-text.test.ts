@@ -113,6 +113,17 @@ describe("num", () => {
     expect(num("")).toBeNull();
   });
 
+  it("treats a string of only whitespace as missing, not 0", () => {
+    expect(num(" ")).toBeNull();
+    expect(num("   ")).toBeNull();
+    expect(num("\t\n ")).toBeNull();
+  });
+
+  it("still parses a number with surrounding spaces", () => {
+    expect(num(" 4.10 ")).toBe(4.1);
+    expect(num(" 0 ")).toBe(0);
+  });
+
   it("gives null for anything that is not a finite number", () => {
     expect(num("not a number")).toBeNull();
     expect(num("Infinity")).toBeNull();

@@ -2,6 +2,10 @@
   "worktree": {
     "baseRef": "head"
   },
+  "statusLine": {
+    "type": "command",
+    "command": "input=$(cat); win=$(jq -r '.autoCompactWindow // empty' ~/.claude/settings.json 2>/dev/null); cost=$(echo \"$input\" | jq -r '.cost.total_cost_usd // 0'); ctx=$(echo \"$input\" | jq -r --arg win \"$win\" '.context_window as $c | ($c.current_usage // empty) as $u | ([($win | tonumber? // $c.context_window_size), $c.context_window_size] | min) as $w | ((($u.input_tokens + $u.cache_creation_input_tokens + $u.cache_read_input_tokens) * 100 / $w + 0.5 | floor | tostring) + \"%\")'); printf 'Cost: $%.2f | Context used: %s' \"$cost\" \"${ctx:---}\""
+  },
   "permissions": {
     "deny": [
       "mcp__tidb-lab__db_execute",

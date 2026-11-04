@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { ApiProblemPanel, Facts, Notice, PageHeading, Panel, PriorityChip, StatusPill } from "@/components/desk";
-import { type Customer, type Message, type Ticket, ticketDetail } from "@/lib/api";
-import { NOT_RECORDED, hours, initials, orNotRecorded } from "@/lib/format";
+import { CaseClock } from "@/components/case-clock";
+import { Conversation } from "@/components/conversation";
+import { ApiProblemPanel, ChannelIcon, Crumbs, Facts, PageHead, PriorityTile, StatusPill, TicketSearchBar } from "@/components/desk";
+import { BackIcon } from "@/components/icons";
+import { type Customer, type Ticket, ticketDetail } from "@/lib/api";
+import { NOT_RECORDED, channelLabel, initial, orNotRecorded, plural, sentenceCase } from "@/lib/format";
+
+import "./case.css";
 
 type Props = { params: Promise<{ ticketId: string }> };
 
@@ -28,170 +34,136 @@ export default async function CasePage({ params }: Props) {
     if (result.problem.status === 404 || result.problem.status === 422) notFound();
     return (
       <>
-        <PageHeading crumbs={[{ label: "Ticket queue", href: "/" }, { label: ticketId }]} title={ticketId} />
-        <ApiProblemPanel problem={result.problem} />
+        <TicketSearchBar />
+        <main className="page is-detail case-page">
+          <Crumbs parent="Tickets" href="/" current={ticketId} />
+          <PageHead title={ticketId} />
+          <ApiProblemPanel problem={result.problem} />
+        </main>
       </>
     );
   }
 
   const { ticket, customer, messages } = result.data;
-  const ribbon = [ticket.category, ticket.component, ticket.channel && `Via ${ticket.channel}`].filter(Boolean).join(" · ");
 
   return (
     <>
-      <PageHeading
-        crumbs={[{ label: "Ticket queue", href: "/" }, { label: ticket.ticket_id }]}
-        title={`${ticket.ticket_id} · ${ticket.subject ?? "No subject recorded"}`}
-      >
-        {ribbon && <div className="ribbon">{ribbon}</div>}
-      </PageHeading>
+      <TicketSearchBar />
+      <main className="page is-detail case-page">
+        <Crumbs parent="Tickets" href="/" current={ticket.ticket_id} />
 
-      <Notice lead="Read-only.">
-        Every value here comes from the Orion desk API. Messages are shown in order, oldest first, without times.
-      </Notice>
-
-      <div className="case-row">
-        <div className="case-main">
-          <Panel id="summary" title="Request summary">
-            <p className="panel-body request">{ticket.body ?? "No request text recorded."}</p>
-          </Panel>
-
-          <Panel id="targets" title="Service targets">
-            <div className="targets">
-              <TargetTile label="First reply" doneLabel="Waited" target={ticket.sla_response_hours} done={ticket.first_response_hours} />
-              <TargetTile label="Resolution" doneLabel="Took" target={ticket.sla_resolution_hours} done={ticket.resolution_hours} />
+        <section className="card case-hero" aria-labelledby="case-title">
+          <div className="case-head">
+            <div className="case-heading">
+              <h1 id="case-title" className="page-title">{ticket.ticket_id} · {ticket.subject ?? "No subject recorded"}</h1>
+              <CasePills ticket={ticket} />
             </div>
-            <p className="panel-note">Bar: time taken. Tick: target. All figures are in hours.</p>
-          </Panel>
+            <Link className="button" href="/"><BackIcon />Back to queue</Link>
+          </div>
+          <CaseClock
+            status={ticket.status}
+            replyTarget={ticket.sla_response_hours}
+            reply={ticket.first_response_hours}
+            resolveTarget={ticket.sla_resolution_hours}
+            resolved={ticket.resolution_hours}
+          />
+        </section>
 
-          <Conversation messages={messages} customer={customer} />
+        <div className="split">
+          <div className="split-main">
+            <Conversation
+              messages={messages}
+              request={ticket.body}
+              company={customer?.company ?? null}
+              agentId={ticket.agent_id}
+            />
+          </div>
+          <aside className="split-rail" aria-label="Case details">
+            <CustomerCard customer={customer} customerId={ticket.customer_id} />
+            <TicketCard ticket={ticket} />
+          </aside>
         </div>
-
-        <aside className="case-side" aria-label="Ticket and customer">
-          <Panel id="ticket" title="Ticket">
-            <TicketFacts ticket={ticket} />
-          </Panel>
-          <Panel id="customer" title="Customer">
-            <CustomerFacts customer={customer} customerId={ticket.customer_id} />
-          </Panel>
-        </aside>
-      </div>
-
-      <footer className="footer">Prototype. Targets and times taken are in hours.</footer>
+      </main>
     </>
   );
 }
 
-function TargetTile({ label, doneLabel, target, done }: {
-  label: string; doneLabel: string; target: string | null; done: string | null;
-}) {
-  const targetValue = target === null ? null : Number(target);
-  const doneValue = done === null ? null : Number(done);
-  const comparable = targetValue !== null && doneValue !== null;
-  const missed = comparable && doneValue > targetValue;
-  const outcome = !comparable
-    ? (done === null ? `${doneLabel.toLowerCase()} not recorded` : "no target recorded")
-    : missed ? "target missed" : "target met";
-  // The track is the larger of the two, so the tick shows where the target fell.
-  const scale = comparable ? Math.max(doneValue, targetValue) || 1 : 1;
-
+function CasePills({ ticket }: { ticket: Ticket }) {
+  const named = (label: string, value: string | null) => value ?? `${label}: ${NOT_RECORDED}`;
+  const sentiment = ticket.sentiment?.toLowerCase();
   return (
-    <div className={`target ${missed ? "tone-missed" : comparable ? "tone-met" : "tone-priority"}`}>
-      <div className="target-title">{label}: {outcome}</div>
-      <div className="target-figures">
-        <div>
-          <div className="target-label">Target</div>
-          <div className={`target-value${target === null ? " is-missing" : ""}`}>{target === null ? NOT_RECORDED : hours(target)}</div>
-        </div>
-        <div>
-          <div className="target-label">{doneLabel}</div>
-          <div className={`target-value${done === null ? " is-missing" : ""}`}>{done === null ? NOT_RECORDED : hours(done)}</div>
-        </div>
-      </div>
-      {comparable && (
-        <div className="bar" aria-hidden="true">
-          <div className="bar-fill" style={{ width: `${(doneValue / scale) * 100}%` }} />
-          <div className="bar-tick" style={{ left: `calc(${(targetValue / scale) * 100}% - 1px)` }} />
-        </div>
-      )}
+    <div className="case-pills">
+      <StatusPill status={ticket.status} />
+      <PriorityTile priority={ticket.priority} />
+      <span className="pill">{named("Category", ticket.category && sentenceCase(ticket.category))}</span>
+      <span className="pill">{named("Component", ticket.component)}</span>
+      <span className="pill">
+        <ChannelIcon channel={ticket.channel} />
+        {named("Channel", ticket.channel && channelLabel(ticket.channel))}
+      </span>
+      <span className={`pill ${sentiment ? `case-sentiment-${sentiment}` : "tone-missing"}`}>
+        Sentiment: {sentiment ?? NOT_RECORDED}
+      </span>
     </div>
   );
 }
 
-function Conversation({ messages, customer }: { messages: Message[]; customer: Customer | null }) {
-  // Messages carry a role but no author ID, so agent replies are not attributed to a named agent.
-  const customerName = customer?.company ?? "Customer";
-  const count = messages.length === 1 ? "1 message" : `${messages.length} messages`;
+function CustomerCard({ customer, customerId }: { customer: Customer | null; customerId: string | null }) {
+  const company = customer?.company ?? null;
+  const plan = customer?.plan_id
+    ? [sentenceCase(customer.plan_id), customer.seats === null ? null : plural(customer.seats, "seat")].filter(Boolean).join(" · ")
+    : NOT_RECORDED;
+  const location = [customer?.country, customer?.region].filter(Boolean).join(" · ");
 
   return (
-    <Panel id="conversation" title="Conversation" meta={`${count}, oldest first`}>
-      {messages.length === 0 && <p className="empty">No messages recorded for this ticket.</p>}
-      {messages.map((message, index) => {
-        const isAgent = message.author_role === "agent";
-        const isCustomer = message.author_role === "customer";
-        const author = isAgent ? "Agent" : isCustomer ? customerName : "Role not recorded";
-        return (
-          <article key={message.message_id} className="message">
-            <div className={`avatar${isAgent ? " is-agent" : ""}`} aria-hidden="true">
-              {isAgent ? "AG" : initials(author)}
-            </div>
-            <div className="message-content">
-              <div className="message-meta">
-                <span className="message-author">{author}</span>
-                <span className="message-role">
-                  {isCustomer ? "Customer · " : ""}Message {index + 1} · {message.message_id}
-                </span>
-              </div>
-              <p className="message-body">{message.body ?? "No text recorded."}</p>
-            </div>
-          </article>
-        );
-      })}
-    </Panel>
-  );
-}
-
-function TicketFacts({ ticket }: { ticket: Ticket }) {
-  return (
-    <Facts items={[
-      ["Status", <StatusPill key="status" status={ticket.status} />],
-      ["Priority", <PriorityChip key="priority" priority={ticket.priority} />],
-      ["Assigned to", orNotRecorded(ticket.agent_id)],
-      ["Channel", orNotRecorded(ticket.channel)],
-      ["Category", orNotRecorded(ticket.category)],
-      ["Component", orNotRecorded(ticket.component)],
-      ["Sentiment", orNotRecorded(ticket.sentiment)],
-      ["CSAT", orNotRecorded(ticket.csat)],
-      ["Reopened", orNotRecorded(ticket.reopened_count)],
-      ["Escalated", orNotRecorded(ticket.escalated)],
-    ]} />
-  );
-}
-
-function CustomerFacts({ customer, customerId }: { customer: Customer | null; customerId: string | null }) {
-  if (customer === null) {
-    return (
-      <p className="panel-body">
-        {customerId ? `No customer record for ${customerId}.` : "No customer is recorded on this ticket."}
-      </p>
-    );
-  }
-  const plan = customer.plan_id === null ? NOT_RECORDED
-    : customer.seats === null ? customer.plan_id : `${customer.plan_id} · ${customer.seats} seats`;
-  const location = [customer.country, customer.region].filter(Boolean).join(" · ") || NOT_RECORDED;
-
-  return (
-    <>
-      <div className="account-name">{customer.company ?? "Company not recorded"}</div>
+    <div className="card card-pad case-customer">
+      <div className="case-company">
+        <span className="case-company-mark" aria-hidden="true">{initial(company)}</span>
+        <div className="case-company-text">
+          <h2 className="case-company-name">
+            {customer
+              ? <Link href={`/customers/${encodeURIComponent(customer.customer_id)}`}>{company ?? NOT_RECORDED}</Link>
+              : NOT_RECORDED}
+          </h2>
+          <p className="case-company-id">Customer {orNotRecorded(customerId)}</p>
+        </div>
+      </div>
       <Facts items={[
-        ["Customer id", customer.customer_id],
         ["Plan", plan],
-        ["Industry", orNotRecorded(customer.industry)],
-        ["Company size", orNotRecorded(customer.company_size)],
-        ["Location", location],
-        ["Acquired through", orNotRecorded(customer.acquisition_source)],
-        ["Contact", orNotRecorded(customer.contact_email)],
+        ["Industry", orNotRecorded(customer?.industry)],
+        ["Location", orNotRecorded(location)],
+        ["Company size", orNotRecorded(customer?.company_size?.replace("-", "–"))],
+        ["Found Orion via", customer?.acquisition_source ? sentenceCase(customer.acquisition_source) : NOT_RECORDED],
       ]} />
-    </>
+    </div>
+  );
+}
+
+function TicketCard({ ticket }: { ticket: Ticket }) {
+  const { reopened_count: reopened, escalated } = ticket;
+  return (
+    <div className="card card-pad">
+      <h2 className="card-title">Ticket</h2>
+      <Facts items={[
+        ["Agent", orNotRecorded(ticket.agent_id)],
+        ["Component", orNotRecorded(ticket.component)],
+        ["Reopened", reopened === null ? NOT_RECORDED : plural(reopened, "time")],
+        ["Escalated", escalated === null ? NOT_RECORDED : escalated > 0 ? "Yes" : "No"],
+      ]} />
+      <div className="case-rating">
+        <span className="case-rating-label">Customer rating</span>
+        <Rating csat={ticket.csat} />
+      </div>
+    </div>
+  );
+}
+
+function Rating({ csat }: { csat: number | null }) {
+  if (csat === null) return <strong className="case-rating-none">{NOT_RECORDED}</strong>;
+  return (
+    <span className="case-rating-bars" role="img" aria-label={`Rated ${csat} out of 5`}>
+      {[1, 2, 3, 4, 5].map((step) => <span key={step} className={`case-rating-bar${step <= csat ? " is-on" : ""}`} />)}
+      <strong>{csat} / 5</strong>
+    </span>
   );
 }

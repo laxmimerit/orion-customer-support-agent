@@ -36,7 +36,7 @@ export function apiAddress() {
 }
 
 // Response shapes from api/orion_api/models.py. Hours are exact decimal strings ("7.9600").
-// Timestamps exist in the API but are never read here: the desk shows no dates or times.
+// Timestamps and contact emails exist on some API routes but are dropped here: the desk shows neither.
 export type TicketSummary = {
   ticket_id: string;
   subject: string | null;
@@ -72,7 +72,6 @@ export type Customer = {
   company_size: string | null;
   plan_id: string | null;
   seats: number | null;
-  contact_email: string | null;
   acquisition_source: string | null;
 };
 
@@ -80,11 +79,158 @@ export type Message = { message_id: string; author_role: string | null; body: st
 
 export type TicketDetail = { ticket: Ticket; customer: Customer | null; messages: Message[] };
 
+export type SearchHit = {
+  kind: "ticket" | "article";
+  id: string;
+  title: string | null;
+  status: string | null;
+  priority: string | null;
+  category: string | null;
+  similarity: number | null;
+};
+
+export type SearchResults = { query: string; match: "exact_id" | "semantic"; items: SearchHit[] };
+
+// Customers, as in api/orion_api/models.py. Money is an exact decimal string ("99.0000").
+export type CustomerListItem = {
+  customer_id: string;
+  company: string | null;
+  plan: string | null;
+  seats: number | null;
+  region: string | null;
+  industry: string | null;
+  active_cases: number;
+  all_cases: number;
+};
+
+export type CustomerList = { total: number; items: CustomerListItem[] };
+
+export type CustomerTicket = {
+  ticket_id: string;
+  subject: string | null;
+  component: string | null;
+  channel: string | null;
+  priority: string | null;
+  status: string | null;
+  assigned_to: string | null;
+  team: string | null;
+};
+
+export type Invoice = {
+  seats: number | null;
+  unit_price_usd: string | null;
+  total_usd: string | null;
+  status: string | null;
+};
+
+export type CustomerProfile = {
+  customer_id: string;
+  company: string | null;
+  account_details: {
+    industry: string | null;
+    country: string | null;
+    region: string | null;
+    company_size: string | null;
+  };
+  subscription: { subscription_id: string; plan: string | null; seats: number | null; status: string | null } | null;
+  support_history: { total: number; items: CustomerTicket[] };
+  invoice_history: Invoice[];
+};
+
+export type ArticleSummary = { article_id: string; title: string | null; category: string | null };
+
+export type KnowledgeList = { total: number; items: ArticleSummary[] };
+
+export type ArticleTicket = {
+  ticket_id: string;
+  customer_id: string | null;
+  priority: string | null;
+  status: string | null;
+};
+
+export type Article = ArticleSummary & {
+  body: string | null;
+  related_tickets: { total: number; items: ArticleTicket[] };
+  more_in_category: ArticleSummary[];
+};
+
+export type CompanySection = {
+  document_id: string;
+  title: string | null;
+  owner: string | null;
+  team: string | null;
+  body: string | null;
+};
+
+export type StaffRequest = { request_id: string; title: string | null; requested_by: string | null; body: string | null };
+
+export type Company = { sections: CompanySection[]; staff_requests: StaffRequest[] };
+
+// Reports. Averages are exact decimal strings, null when nothing is counted. Volume rows and the
+// backlog carry a month and an oldest date on the API; the desk numbers periods and shows neither.
+export type Report<Row> = { report: string; rows: Row[] };
+
+export type VolumeRow = { month: string | null; tickets: number; resolved: number; unresolved: number; status_missing: number };
+
+export type BacklogRow = {
+  status: string;
+  tickets: number;
+  no_first_reply: number;
+  no_first_reply_past_target: number;
+  avg_age_hours: string | null;
+  age_counted: number;
+  age_missing: number;
+};
+
+export type Breakdown = {
+  tickets: number;
+  resolved: number;
+  unresolved: number;
+  status_missing: number;
+  avg_first_response_hours: string | null;
+  first_response_counted: number;
+  first_response_missing: number;
+  avg_resolution_hours: string | null;
+  resolution_counted: number;
+  resolution_missing: number;
+  avg_csat: string | null;
+  csat_counted: number;
+  csat_missing: number;
+};
+
+export type PriorityRow = Breakdown & { priority: string | null };
+
+export type CategoryRow = Breakdown & { category: string | null };
+
+export type FirstReplyRow = {
+  priority: string | null;
+  tickets: number;
+  met: number;
+  missed: number;
+  no_first_reply: number;
+  no_target: number;
+  avg_csat_met: string | null;
+  csat_met_counted: number;
+  csat_met_missing: number;
+  avg_csat_missed: string | null;
+  csat_missed_counted: number;
+  csat_missed_missing: number;
+};
+
 export type ApiInfo = { title: string; version: string; routes: string[] };
 
 export type ApiProblem = { status: number | null; code: string; message: string };
 
 export type Result<T> = { ok: true; data: T } | { ok: false; problem: ApiProblem };
+
+// Older routes also return these. They are dropped here so that no page can pass them on to the browser.
+const LEFT_OUT = new Set([
+  "created_at", "first_response_at", "resolved_at", "oldest_created_at", "signup_date", "contact_email",
+]);
+
+function parseBody(text: string) {
+  return JSON.parse(text, (key, value) => (LEFT_OUT.has(key) ? undefined : value));
+}
 
 async function get<T>(route: string, authorised = true): Promise<Result<T>> {
   const { baseUrl, token } = settings();
@@ -103,7 +249,7 @@ async function get<T>(route: string, authorised = true): Promise<Result<T>> {
     return { ok: false, problem: { status: null, code: "api_unreachable",
       message: `The desk API at ${baseUrl} did not answer. Start it with the orion-api launch configuration.` } };
   }
-  const body = await response.json().catch(() => null);
+  const body = await response.text().then(parseBody).catch(() => null);
   if (!response.ok) {
     const error = body?.error;
     return { ok: false, problem: {
@@ -121,6 +267,50 @@ export function ticketPage(page: number, pageSize: number) {
 
 export function ticketDetail(ticketId: string) {
   return get<TicketDetail>(`/api/tickets/${encodeURIComponent(ticketId)}`);
+}
+
+export function searchDesk(query: string, limit = 25) {
+  return get<SearchResults>(`/api/search?q=${encodeURIComponent(query)}&limit=${limit}`);
+}
+
+export function customerList() {
+  return get<CustomerList>("/api/customers");
+}
+
+export function customerProfile(customerId: string) {
+  return get<CustomerProfile>(`/api/customers/${encodeURIComponent(customerId)}`);
+}
+
+export function knowledgeList() {
+  return get<KnowledgeList>("/api/knowledge");
+}
+
+export function knowledgeArticle(articleId: string) {
+  return get<Article>(`/api/knowledge/${encodeURIComponent(articleId)}`);
+}
+
+export function companyHandbook() {
+  return get<Company>("/api/company");
+}
+
+export function volumeReport() {
+  return get<Report<VolumeRow>>("/api/reports/volume");
+}
+
+export function backlogReport() {
+  return get<Report<BacklogRow>>("/api/reports/backlog");
+}
+
+export function priorityReport() {
+  return get<Report<PriorityRow>>("/api/reports/priority");
+}
+
+export function categoryReport() {
+  return get<Report<CategoryRow>>("/api/reports/category");
+}
+
+export function firstReplyReport() {
+  return get<Report<FirstReplyRow>>("/api/reports/first-reply");
 }
 
 export async function apiInfo(): Promise<Result<ApiInfo>> {

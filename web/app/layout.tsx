@@ -1,33 +1,32 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import Image from "next/image";
+import Link from "next/link";
 
 import { SidebarNav } from "@/components/sidebar-nav";
 import "./globals.css";
 
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+
 export const metadata: Metadata = {
-  title: { default: "Orion Service Desk", template: "%s · Orion Service Desk" },
-  description: "Orion customer operations: ticket queue, case pages and settings.",
+  title: { default: "Orion desk", template: "%s · Orion desk" },
+  description: "Orion customer operations: tickets, customers, knowledge, reports and the company handbook.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={inter.variable}>
       <body>
         <div className="frame">
-          <header className="masthead">
-            <Image className="masthead-logo" src="/orion-logo.png" alt="Orion" width={120} height={30} priority />
-            <div className="masthead-product">
-              <strong>Service Desk</strong>
-              <span>Customer operations</span>
-            </div>
-            <div className="masthead-tag">PROTOTYPE</div>
-          </header>
-          <div className="body-row">
-            <aside className="sidebar">
+          <aside className="side" aria-label="Desk navigation">
+            <Link className="side-logo" href="/" aria-label="Orion desk, ticket queue">
+              <Image src="/orion-logo.png" alt="Orion" width={98} height={24} priority />
+            </Link>
+            <div className="side-navs">
               <SidebarNav />
-            </aside>
-            <main className="main">{children}</main>
-          </div>
+            </div>
+          </aside>
+          <div className="column">{children}</div>
         </div>
       </body>
     </html>

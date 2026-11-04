@@ -1,0 +1,112 @@
+/* Customer profile: the overview card, support history and the account rail. */
+
+.cprof-hero { padding: 30px 32px; display: flex; flex-direction: column; gap: 28px; }
+.cprof-identity { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; }
+.cprof-avatar {
+  width: 60px;
+  height: 60px;
+  flex: none;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: var(--teal);
+  color: var(--on-color);
+  font-size: 26px;
+  font-weight: 800;
+}
+.cprof-name { flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.cprof-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-muted); }
+.cprof-pill { height: 24px; }
+.cprof-plan.is-starter { background: var(--indigo-pill); color: var(--indigo-ink); }
+.cprof-plan.is-growth { background: var(--teal-pill); color: var(--teal-ink); }
+.cprof-plan.is-scale { background: var(--navy); color: var(--on-navy); }
+
+.cprof-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px;
+  background: var(--line-soft);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.cprof-stat { padding: 16px 20px; background: var(--surface-soft); }
+.cprof-stat-label { font-size: 12px; color: var(--ink-muted); }
+.cprof-stat-value { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink-strong); }
+.cprof-stat-value span { font-size: 14px; font-weight: 600; letter-spacing: 0; color: var(--ink-muted); }
+.cprof-stat-value.is-warn { color: var(--amber-ink); }
+.cprof-stat-value.is-missing { font-size: 15px; line-height: 39px; font-weight: 600; letter-spacing: 0; }
+
+/* Support history */
+.cprof-history { overflow: hidden; }
+.cprof-rows { padding: 12px 16px 18px; display: flex; flex-direction: column; gap: 8px; }
+.cprof-row { position: relative; gap: 8px 16px; }
+
+/* The subject link covers the whole row, so the row is the touch target. */
+.cprof-link::after { content: ""; position: absolute; inset: 0; border-radius: 12px; }
+.cprof-link:focus-visible { box-shadow: none; }
+.cprof-link:focus-visible::after { box-shadow: var(--focus-ring); }
+
+.cprof-row-end { flex: none; display: flex; align-items: center; gap: 14px; }
+.cprof-owner {
+  width: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 12.5px;
+  text-align: right;
+  color: var(--ink-muted);
+  overflow-wrap: anywhere;
+}
+.cprof-owner strong { font-weight: 600; color: var(--ink); }
+.cprof-none { padding: 40px 0; text-align: center; font-size: 13px; color: var(--ink-muted); }
+.card-pad .cprof-none { padding: 8px 0; text-align: left; }
+
+/* Rail */
+.cprof-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.cprof-status-active { color: var(--teal-ink); }
+
+/* Invoices. The tile colour follows the status, and the word is always there. */
+.cprof-invoices { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+.cprof-invoice {
+  min-width: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--neutral-pill);
+  color: var(--ink-2);
+}
+.cprof-invoice-status { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; }
+.cprof-invoice-status svg { flex: none; }
+.cprof-invoice-total { font-size: 14px; font-weight: 700; color: var(--ink-strong); }
+.cprof-invoice-line { font-size: 11px; color: var(--ink-2); overflow-wrap: anywhere; }
+.cprof-invoice.is-paid { background: var(--teal-pill); }
+.cprof-invoice.is-paid .cprof-invoice-status { color: var(--teal-ink); }
+.cprof-invoice.is-paid .cprof-invoice-total { color: var(--teal-deep); }
+.cprof-invoice.is-overdue { background: var(--red-pill); }
+.cprof-invoice.is-overdue .cprof-invoice-status,
+.cprof-invoice.is-overdue .cprof-invoice-total { color: var(--red-ink); }
+.cprof-invoice-sum { font-size: 12.5px; color: var(--ink-2); }
+.cprof-invoice-sum strong { color: var(--ink-strong); }
+
+/* Tickets by component */
+.cprof-components { display: flex; flex-direction: column; gap: 10px; }
+.cprof-component { display: flex; align-items: center; gap: 10px; font-size: 12.5px; }
+.cprof-component-name { width: 84px; flex: none; color: var(--ink-2); overflow-wrap: anywhere; }
+.cprof-component strong { min-width: 16px; text-align: right; color: var(--ink-strong); }
+
+.cprof-not-found { margin-top: 10px; }
+.empty .cprof-not-found + .button { margin-top: 16px; }
+
+@media (max-width: 799px) {
+  .cprof-hero { padding: 20px; gap: 20px; }
+  .cprof-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cprof-stat { padding: 14px 16px; }
+  .cprof-history .segmented { width: 100%; }
+  .cprof-history .segmented button { flex: 1 1 0; height: 44px; padding: 0 6px; }
+  .cprof-rows { padding: 12px; }
+  .cprof-row-end { flex: 1 1 100%; min-width: 0; justify-content: space-between; }
+  .cprof-owner { width: auto; min-width: 0; align-items: flex-start; text-align: left; }
+  .cprof-page .button { height: 44px; }
+}

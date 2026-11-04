@@ -3,28 +3,37 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-// Only pages that exist are listed: no placeholder items.
-const ITEMS = [
-  { href: "/", label: "Tickets", glyph: "▤", matches: (path: string) => path === "/" || path.startsWith("/tickets") },
-  { href: "/settings", label: "Settings", glyph: "▦", matches: (path: string) => path.startsWith("/settings") },
+import { CompanyIcon, CustomersIcon, KnowledgeIcon, ReportsIcon, SettingsIcon, TicketsIcon } from "@/components/icons";
+
+const MAIN = [
+  { href: "/", label: "Tickets", Icon: TicketsIcon, matches: (path: string) => path === "/" || path.startsWith("/tickets") },
+  { href: "/customers", label: "Customers", Icon: CustomersIcon, matches: (path: string) => path.startsWith("/customers") },
+  { href: "/knowledge", label: "Knowledge", Icon: KnowledgeIcon, matches: (path: string) => path.startsWith("/knowledge") },
+  { href: "/reports", label: "Reports", Icon: ReportsIcon, matches: (path: string) => path.startsWith("/reports") },
+  { href: "/company", label: "Company", Icon: CompanyIcon, matches: (path: string) => path.startsWith("/company") },
 ];
+
+function NavLink({ item, pathname }: { item: (typeof MAIN)[number]; pathname: string }) {
+  return (
+    <Link href={item.href} className="side-link" aria-current={item.matches(pathname) ? "page" : undefined}>
+      <item.Icon />
+      {item.label}
+    </Link>
+  );
+}
 
 export function SidebarNav() {
   const pathname = usePathname();
+  const settings = { href: "/settings", label: "Settings", Icon: SettingsIcon, matches: (path: string) => path.startsWith("/settings") };
   return (
-    <nav className="nav" aria-label="Workspace">
-      <div className="nav-label">WORKSPACE</div>
-      {ITEMS.map((item) => (
-        <Link
-          key={item.href}
-          href={item.href}
-          className="nav-item"
-          aria-current={item.matches(pathname) ? "page" : undefined}
-        >
-          <span className="nav-glyph" aria-hidden="true">{item.glyph}</span>
-          {item.label}
-        </Link>
-      ))}
-    </nav>
+    <>
+      <nav className="side-nav" aria-label="Main">
+        <span className="side-nav-label">Workspace</span>
+        {MAIN.map((item) => <NavLink key={item.href} item={item} pathname={pathname} />)}
+      </nav>
+      <nav className="side-nav side-nav-foot" aria-label="Desk settings">
+        <NavLink item={settings} pathname={pathname} />
+      </nav>
+    </>
   );
 }

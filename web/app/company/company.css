@@ -1,0 +1,118 @@
+/* Company handbook. */
+
+.page.company-page { padding-bottom: 72px; gap: 36px; }
+
+.company-layout { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 32px 40px; }
+
+.company-toc {
+  flex: 1 1 200px;
+  max-width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.company-toc-label {
+  padding: 0 12px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.company-toc a {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+.company-toc a:hover { text-decoration: none; background: var(--teal-wash-hover); }
+.company-toc a.company-toc-requests { margin-top: 8px; font-weight: 600; color: var(--teal-ink); }
+
+.company-main { flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 40px; }
+
+.company-sections { padding: 12px 48px; }
+.company-section { padding: 36px 0; display: flex; flex-direction: column; gap: 14px; }
+.company-section + .company-section { border-top: 1px solid var(--line-soft); }
+
+.company-heading {
+  font-size: 22px;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--ink-strong);
+  overflow-wrap: anywhere;
+}
+
+.company-byline { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--ink-muted); }
+.company-byline strong { font-weight: 600; color: var(--ink); }
+.company-avatar {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: var(--teal-tint);
+  color: var(--teal-ink);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Long bodies stay in a readable measure, with their own paragraph breaks. */
+.company-body { max-width: 660px; display: flex; flex-direction: column; gap: 16px; }
+.company-body p {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--ink-body);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.company-requests { display: flex; flex-direction: column; gap: 18px; }
+.company-requests-desc { margin-top: 4px; font-size: 13.5px; color: var(--ink-muted); }
+.company-request-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 20px;
+}
+.company-request { padding: 24px 26px; display: flex; flex-direction: column; gap: 12px; }
+.pill.company-request-id { align-self: flex-start; height: 24px; font-weight: 700; }
+.company-request h3 {
+  font-size: 17px;
+  line-height: 1.3;
+  font-weight: 700;
+  color: var(--ink-strong);
+  overflow-wrap: anywhere;
+}
+.company-request-body { display: flex; flex-direction: column; gap: 12px; }
+.company-request-body p {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--ink-body);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.company-request-by { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line-soft); }
+
+/* Sticks only once it sits beside the content; stacked above it, it would cover the text. */
+@media (min-width: 1120px) {
+  .company-toc { position: sticky; top: 24px; }
+}
+
+@media (max-width: 799px) {
+  .page.company-page { padding-bottom: 48px; gap: 24px; }
+  .company-layout { gap: 24px; }
+
+  /* Full width above the content on phones, each link a full touch target. */
+  .company-toc { flex-basis: 100%; max-width: none; }
+  .company-toc a { display: flex; align-items: center; min-height: 44px; }
+
+  .company-main { gap: 28px; }
+  .company-sections { padding: 0 20px; }
+  .company-section { padding: 24px 0; }
+  .company-heading { font-size: 20px; }
+  .company-request { padding: 20px; }
+}

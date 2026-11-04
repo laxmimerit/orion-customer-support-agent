@@ -109,6 +109,109 @@ class SearchResults(BaseModel):
     items: list[SearchHit]
 
 
+class Listing[Item: BaseModel](BaseModel):
+    total: int
+    items: list[Item]
+
+
+# Customers, knowledge and company pages (web/lib/api.ts has the same names). These shapes carry no email
+# and no date or time field: rows are ordered by those columns in SQL, but they are never returned.
+# plan, assigned_to, team and requested_by are names from a join or a rename, not columns of the main table.
+
+class CustomerListItem(BaseModel):
+    customer_id: str
+    company: str | None
+    plan: str | None
+    seats: int | None
+    region: str | None
+    industry: str | None
+    active_cases: int
+    all_cases: int
+
+
+class AccountDetails(BaseModel):
+    industry: str | None
+    country: str | None
+    region: str | None
+    company_size: str | None
+
+
+class CustomerSubscription(BaseModel):
+    subscription_id: str
+    plan: str | None
+    seats: int | None
+    status: str | None
+
+
+class CustomerTicket(BaseModel):
+    ticket_id: str
+    subject: str | None
+    component: str | None
+    channel: str | None
+    priority: str | None
+    status: str | None
+    assigned_to: str | None
+    team: str | None
+
+
+class Invoice(BaseModel):
+    seats: int | None
+    unit_price_usd: Decimal | None
+    total_usd: Decimal | None
+    status: str | None
+
+
+class CustomerProfile(BaseModel):
+    customer_id: str
+    company: str | None
+    account_details: AccountDetails
+    subscription: CustomerSubscription | None
+    support_history: Listing[CustomerTicket]
+    invoice_history: list[Invoice]
+
+
+class ArticleSummary(BaseModel):
+    article_id: str
+    title: str | None
+    category: str | None
+
+
+class ArticleText(ArticleSummary):
+    body: str | None
+
+
+class ArticleTicket(BaseModel):
+    ticket_id: str
+    customer_id: str | None
+    priority: str | None
+    status: str | None
+
+
+class Article(ArticleText):
+    related_tickets: Listing[ArticleTicket]
+    more_in_category: list[ArticleSummary]
+
+
+class CompanySection(BaseModel):
+    document_id: str
+    title: str | None
+    owner: str | None
+    team: str | None
+    body: str | None
+
+
+class StaffRequest(BaseModel):
+    request_id: str
+    title: str | None
+    requested_by: str | None
+    body: str | None
+
+
+class Company(BaseModel):
+    sections: list[CompanySection]
+    staff_requests: list[StaffRequest]
+
+
 # Reports (api/reports/*.sql). Field names and order are the SQL column names; each file's header
 # defines its columns. Averages are exact decimal strings rounded to 2 places, null when nothing is counted.
 

@@ -1,0 +1,111 @@
+/* Customers list: the summary strip, the filters and the rows. */
+
+.clist-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.clist-cell {
+  min-width: 0;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--surface);
+}
+.clist-cell.is-chart { gap: 10px; }
+.clist-cell-label { font-size: 12.5px; font-weight: 500; color: var(--ink-muted); }
+.clist-figure {
+  font-size: 32px;
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink-strong);
+}
+.clist-note { font-size: 12px; color: var(--ink-muted); }
+
+/* By plan: one stacked bar and its legend. An unknown plan keeps the neutral mark. */
+.clist-planbar { display: flex; gap: 2px; height: 10px; border-radius: 4px; overflow: hidden; }
+.clist-mark { background: var(--neutral-mark); }
+.clist-mark.is-starter { background: var(--indigo); }
+.clist-mark.is-growth { background: var(--teal-fill); }
+.clist-mark.is-scale { background: var(--navy); }
+.clist-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; color: var(--ink-2); }
+.clist-legend li { display: inline-flex; align-items: center; gap: 6px; }
+.clist-legend .clist-mark { width: 8px; height: 8px; border-radius: 2px; }
+.clist-legend strong, .clist-region strong { color: var(--ink-strong); }
+
+/* By region: one bar each. */
+.clist-regions { display: flex; flex-direction: column; gap: 8px; }
+.clist-region { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+.clist-region-name { width: 64px; flex: none; color: var(--ink-2); overflow-wrap: anywhere; }
+.clist-region .bar-track { height: 6px; }
+.clist-region strong { min-width: 28px; text-align: right; }
+
+.clist-card { overflow: hidden; }
+.clist-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.clist-divider { width: 1px; height: 22px; background: var(--line); }
+.clist-caption { margin-left: auto; font-size: 12.5px; color: var(--ink-muted); }
+
+.clist-rows { padding: 12px 16px 16px; display: flex; flex-direction: column; gap: 8px; }
+.clist-row { position: relative; }
+.clist-avatar {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: var(--teal-tint);
+  color: var(--teal-ink);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* The company link covers the whole row, so the row is the touch target. */
+.clist-link::after { content: ""; position: absolute; inset: 0; border-radius: 12px; }
+.clist-link:focus-visible { box-shadow: none; }
+.clist-link:focus-visible::after { box-shadow: var(--focus-ring); }
+
+.clist-meta { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.clist-meta-text { font-size: 13px; color: var(--ink-2); white-space: nowrap; }
+.clist-meta-text strong { color: var(--ink-strong); }
+.clist-seats { min-width: 64px; }
+.clist-region-text { min-width: 72px; }
+.clist-cases { min-width: 64px; color: var(--ink-muted); }
+
+.clist-plan, .clist-active { justify-content: center; }
+.clist-plan { min-width: 76px; }
+.clist-plan.is-starter { background: var(--indigo-pill); color: var(--indigo-ink); }
+.clist-plan.is-growth { background: var(--teal-pill); color: var(--teal-ink); }
+.clist-plan.is-scale { background: var(--navy); color: var(--on-navy); }
+.clist-active { min-width: 82px; }
+
+.clist-more { display: flex; justify-content: center; padding: 4px 24px 24px; }
+
+@media (max-width: 1199px) {
+  .clist-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 799px) {
+  .clist-summary { grid-template-columns: minmax(0, 1fr); }
+  .clist-cell { padding: 18px 20px; }
+  .clist-filters { padding: 16px 18px; }
+  .clist-divider { display: none; }
+  .clist-caption { margin-left: 0; flex-basis: 100%; }
+  .clist-rows { padding: 12px; }
+  .clist-meta { flex: 1 1 100%; min-width: 0; }
+  .clist-more { padding: 4px 12px 16px; }
+  .clist-page .button { height: 44px; }
+}

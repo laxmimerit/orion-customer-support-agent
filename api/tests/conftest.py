@@ -1,5 +1,6 @@
 from datetime import date, datetime
 from decimal import Decimal
+import re
 
 from fastapi.testclient import TestClient
 import pytest
@@ -33,6 +34,47 @@ MESSAGES = [
     {"message_id": f"M00738{n}", "ticket_id": "T00727", "created_at": datetime(2026, 6, 28, n), "author_role": "customer", "body": "Hi"}
     for n in range(6, 11)
 ]
+
+
+# Customer, article and company rows. They keep emails and dates on purpose, as a wider row would:
+# the response models must drop them.
+C0086_ROW = {**C0086, "plan": "Growth", "active_cases": 4, "all_cases": 18}
+# No tickets and nothing recorded: counts are 0, everything else stays null.
+C0300_ROW = {"customer_id": "C0300", "company": None, "plan": None, "seats": None, "region": None,
+             "industry": None, "active_cases": 0, "all_cases": 0}
+C0086_PROFILE = {
+    "customer_id": "C0086", "company": C0086["company"], "account_details": C0086,
+    "subscription": {"subscription_id": "S0086", "plan": "Growth", "seats": 12, "status": "active",
+                     "started_at": date(2025, 1, 2)},
+    "support_history": {"total": 2, "items": [
+        {**T00727, "assigned_to": "Agent Three", "team": "Tier 2"},
+        {**T00727, "ticket_id": "T00001", "agent_id": None, "assigned_to": None, "team": None},
+    ]},
+    "invoice_history": [
+        {"invoice_id": "I0001", "month": "2026-01", "seats": 12, "unit_price_usd": Decimal("99.0000"),
+         "total_usd": Decimal("1188.0000"), "status": "paid"},
+        {"invoice_id": "I0002", "month": "2026-02", "seats": None, "unit_price_usd": None,
+         "total_usd": None, "status": None},
+    ],
+}
+C0300_PROFILE = {
+    "customer_id": "C0300", "company": None,
+    "account_details": {"industry": None, "country": None, "region": None, "company_size": None},
+    "subscription": None, "support_history": {"total": 0, "items": []}, "invoice_history": [],
+}
+KB022 = {"article_id": "KB022", "title": "Role change not applied", "category": "account access"}
+KB004 = {"article_id": "KB004", "title": "Resend an invitation", "category": "account access"}
+KB022_DETAIL = {
+    **KB022, "body": "Article body",
+    "related_tickets": {"total": 111, "items": [{**T00727, "subject": KB022["title"]}]},
+    "more_in_category": [KB004],
+}
+COMPANY_SECTIONS = [
+    {"document_id": "DOC001", "title": "Joining", "owner": "Maya · Product", "body": "Body"},
+    {"document_id": "DOC002", "title": "Workflow", "owner": "Leena", "body": "Body"},
+    {"document_id": "DOC003", "title": "Snapshot", "owner": None, "body": None},
+]
+STAFF_REQUESTS = [{"request_id": "REQ001", "title": "Find related cases", "requested_by": "Leena", "body": "Body"}]
 
 
 # Report rows shaped like the SQL output. Numbers are from orion_desk (first_reply's All row; B12 evidence).
@@ -78,6 +120,21 @@ class FakeStore:
 
     def table_counts(self):
         return [{"table": "messages", "rows": 36694}, {"table": "tickets", "rows": 4000}]
+
+    def customers(self):
+        return [C0086_ROW, C0300_ROW]
+
+    def customer(self, customer_id):
+        return {"C0086": C0086_PROFILE, "C0300": C0300_PROFILE}.get(customer_id)
+
+    def articles(self):
+        return [KB004, KB022]
+
+    def article(self, article_id):
+        return KB022_DETAIL if article_id == "KB022" else None
+
+    def company(self):
+        return COMPANY_SECTIONS, STAFF_REQUESTS
 
     def exact_ticket(self, q):
         self.calls.append(("exact_ticket", q))
@@ -126,3 +183,15 @@ def client(fake_store, fake_embedder):
 
 def auth(token):
     return {"Authorization": f"Bearer {token}"}
+
+
+PRIVATE_KEY = re.compile(r"email|date|month|_at$|(^|_)time")
+
+
+def private_keys(value):
+    """Every key in a JSON body, at any depth, that names an email, a date or a time."""
+    if isinstance(value, list):
+        return set().union(*map(private_keys, value))
+    if isinstance(value, dict):
+        return {key for key in value if PRIVATE_KEY.search(key)}.union(*map(private_keys, value.values()))
+    return set()

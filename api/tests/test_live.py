@@ -47,6 +47,14 @@ def test_t00727_with_customer_agent_and_messages_in_order(live):
     assert [m["message_id"] for m in body["messages"]] == ["M007386", "M007387", "M007388", "M007389", "M007390"]
 
 
+def test_snapshot_is_the_recorded_time(live):
+    # notes/trace-T00727.md: lab_metadata.snapshot_utc is 2026-06-30T23:59:59Z.
+    client, settings = live
+    response = client.get("/api/snapshot", headers=auth(settings.agent_token))
+    assert response.status_code == 200
+    assert response.json() == {"snapshot_utc": "2026-06-30T23:59:59Z"}
+
+
 def test_exact_id_only(live):
     client, settings = live
     assert client.get("/api/tickets/t00727", headers=auth(settings.agent_token)).status_code == 404

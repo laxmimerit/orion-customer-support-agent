@@ -287,6 +287,10 @@ class Report[Row: BaseModel](BaseModel):
     rows: list[Row]
 
 
+class Snapshot(BaseModel):
+    snapshot_utc: UtcDatetime | None
+
+
 class TableCount(BaseModel):
     table: str
     rows: int

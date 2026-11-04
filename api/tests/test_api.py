@@ -14,7 +14,7 @@ def test_every_route_is_under_api_apart_from_docs(client):
     paths = {route.path for route in client.app.routes} - docs
     reports = {f"/api/reports/{name}" for name in ("volume", "backlog", "priority", "category", "first-reply")}
     pages = {"/api/customers", "/api/customers/{customer_id}", "/api/knowledge", "/api/knowledge/{article_id}",
-             "/api/company", "/api/tickets/{ticket_id}/knowledge"}
+             "/api/company", "/api/snapshot", "/api/tickets/{ticket_id}/knowledge"}
     assert paths == {"/api/tickets", "/api/tickets/{ticket_id}", "/api/search", "/api/admin/status", *reports, *pages}
 
 
@@ -35,7 +35,7 @@ def test_root_opens_the_docs(client):
 
 @pytest.mark.parametrize("path", ["/api/tickets", "/api/tickets/T00727", "/api/search?q=T00727", "/api/admin/status",
                                   "/api/reports/first-reply", "/api/customers", "/api/customers/C0086",
-                                  "/api/knowledge", "/api/knowledge/KB022", "/api/company",
+                                  "/api/knowledge", "/api/knowledge/KB022", "/api/company", "/api/snapshot",
                                   "/api/tickets/T00727/knowledge"])
 def test_a_token_is_required(client, path):
     response = client.get(path)
@@ -295,6 +295,28 @@ def test_company_shape_and_owner_split(client):
                                    "body": "Body"}
     assert body["staff_requests"] == [{"request_id": "REQ001", "title": "Find related cases", "requested_by": "Leena",
                                        "body": "Body"}]
+
+
+# /api/snapshot is left out of test_no_email_or_date_field_reaches_a_page_route: a time is its whole answer,
+# as the creator asked, and the desk does not read it.
+def test_snapshot_says_when_the_data_was_taken_and_nothing_else(client):
+    response = client.get("/api/snapshot", headers=auth(AGENT))
+    assert response.status_code == 200
+    assert response.json() == {"snapshot_utc": "2026-06-30T23:59:59Z"}
+
+
+def test_snapshot_with_no_time_recorded_stays_null(client, fake_store):
+    fake_store.snapshot = lambda: {"snapshot_utc": None}
+    response = client.get("/api/snapshot", headers=auth(AGENT))
+    assert response.status_code == 200
+    assert response.json() == {"snapshot_utc": None}
+
+
+def test_no_snapshot_row_is_404(client, fake_store):
+    fake_store.snapshot = lambda: None
+    response = client.get("/api/snapshot", headers=auth(AGENT))
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "snapshot_not_found"
 
 
 def test_owner_splits_at_the_first_separator_only():

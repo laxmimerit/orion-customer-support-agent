@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import { CaseClock } from "@/components/case-clock";
 import { Conversation } from "@/components/conversation";
 import { ApiProblemPanel, ChannelIcon, Crumbs, Facts, PageHead, PriorityTile, StatusPill, TicketSearchBar } from "@/components/desk";
 import { BackIcon } from "@/components/icons";
+import { SimilarLoading, SimilarTickets } from "@/components/similar-tickets";
 import { type Customer, type Ticket, ticketDetail } from "@/lib/api";
 import { NOT_RECORDED, channelLabel, initial, orNotRecorded, plural, sentenceCase } from "@/lib/format";
 
@@ -83,6 +85,9 @@ export default async function CasePage({ params }: Props) {
             />
           </div>
           <aside className="split-rail" aria-label="Case details">
+            <Suspense key={ticket.ticket_id} fallback={<SimilarLoading />}>
+              <SimilarTickets ticketId={ticket.ticket_id} />
+            </Suspense>
             <CustomerCard customer={customer} customerId={ticket.customer_id} />
             <TicketCard ticket={ticket} />
           </aside>

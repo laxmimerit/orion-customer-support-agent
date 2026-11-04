@@ -192,6 +192,43 @@ class Article(ArticleText):
     more_in_category: list[ArticleSummary]
 
 
+# Similar tickets. message_count, last_author_role and last_body come from the ticket's messages;
+# matched_on names the fields a ticket shares with the one being read, and may be empty.
+class SimilarTicket(BaseModel):
+    ticket_id: str
+    priority: str | None
+    similarity: float  # 1 - cosine distance between the two tickets' stored embeddings
+    resolution_hours: Decimal | None
+    sla_resolution_hours: Decimal | None
+    first_response_hours: Decimal | None
+    csat: int | None
+    reopened_count: int | None
+    escalated: int | None
+    message_count: int
+    agent_id: str | None
+    plan_id: str | None
+    channel: str | None
+    last_author_role: str | None
+    last_body: str | None
+    matched_on: list[str]
+
+
+class ReplySummary(BaseModel):
+    distinct_replies: int
+    top_reply: str | None
+    top_reply_tickets: int
+    tickets_without_reply: int
+
+
+class SimilarTickets(BaseModel):
+    total: int
+    items: list[SimilarTicket]
+    matched_on: list[str]  # the fields all `total` tickets share
+    replies: ReplySummary
+    articles: list[ArticleSummary]
+    articles_read_same: bool
+
+
 class CompanySection(BaseModel):
     document_id: str
     title: str | None

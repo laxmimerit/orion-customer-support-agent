@@ -21,7 +21,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from .embedding import Embedder
 from .models import (AdminStatus, Article, ArticleSummary, BacklogRow, CategoryRow, Company, CustomerListItem,
                      CustomerProfile, ErrorResponse, FirstReplyRow, Listing, PriorityRow, Report, SearchResults,
-                     Snapshot, TicketDetail, TicketPage, VolumeRow)
+                     SimilarTickets, Snapshot, TicketDetail, TicketPage, VolumeRow)
 from .settings import load_settings
 from .store import report_description
 
@@ -186,6 +186,24 @@ def create_app(settings=None, store_instance=None, embedder_instance=None):
         if items is None:
             raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
         return {"total": len(items), "items": items}
+
+    @app.get("/api/tickets/{ticket_id}/similar", response_model=SimilarTickets, tags=["tickets"],
+             responses=errors(401, 404, 422, 503), summary="Resolved tickets closest to this one, with why each matched")
+    def list_similar_tickets(
+        ticket_id: str = Path(max_length=32),
+        limit: int = Query(10, ge=1, le=50),
+        _: str = Depends(role),
+        db=Depends(store),
+    ):
+        """Exact, case-sensitive ID lookup (M01). The ticket's stored embedding is compared with every other document;
+        the resolved tickets among its 50 nearest are returned, closest first. `total`, `matched_on` and `replies`
+        cover all of them, while `items` stops at `limit`. An item's `matched_on` may be empty: it is then close in
+        meaning only. `articles` are titled as the ticket's subject and contain the most used reply. A ticket with no stored
+        embedding has an empty list."""
+        similar = db.similar_tickets(ticket_id)
+        if similar is None:
+            raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
+        return {**similar, "items": similar["items"][:limit]}
 
     @app.get("/api/search", response_model=SearchResults, tags=["search"], responses=errors(401, 422, 503),
              summary="Find tickets and help articles by meaning, or one ticket by its exact ID")

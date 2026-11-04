@@ -74,6 +74,30 @@ INVITE_ARTICLES = [
     {"article_id": article_id, "title": "Invite link expired", "category": "account access", "body": "Article body"}
     for article_id in ("KB004", "KB034")
 ]
+# Wider than the response on purpose: subject and component are for matching, not for the panel.
+SIMILAR_ROW = {
+    "ticket_id": "T02576", "subject": "Invite link expired", "component": "Identity", "priority": "P2",
+    "plan_id": "scale", "channel": "chat", "agent_id": "A01", "resolution_hours": Decimal("9.9100"),
+    "sla_resolution_hours": Decimal("24.0000"), "first_response_hours": Decimal("2.3400"), "csat": None,
+    "reopened_count": 0, "escalated": 0, "similarity": 0.99, "message_count": 10, "last_author_role": "agent",
+    "last_body": "Reply", "matched_on": ["subject", "component", "priority", "plan_id"], "created_at": datetime(2026, 1, 1),
+}
+# Nothing recorded and nothing shared: it is close in meaning only.
+SIMILAR_BARE_ROW = {
+    "ticket_id": "T00002", "subject": None, "component": None, "priority": None, "plan_id": None, "channel": None,
+    "agent_id": None, "resolution_hours": None, "sla_resolution_hours": None, "first_response_hours": None,
+    "csat": None, "reopened_count": None, "escalated": None, "similarity": 0.91, "message_count": 0,
+    "last_author_role": None, "last_body": None, "matched_on": [],
+}
+SIMILAR = {
+    "total": 2, "items": [SIMILAR_ROW, SIMILAR_BARE_ROW], "matched_on": [],
+    "replies": {"distinct_replies": 1, "top_reply": "Reply", "top_reply_tickets": 1, "tickets_without_reply": 1},
+    "articles": INVITE_ARTICLES, "articles_read_same": True,
+}
+NO_SIMILAR = {
+    "total": 0, "items": [], "matched_on": [], "articles": [], "articles_read_same": False,
+    "replies": {"distinct_replies": 0, "top_reply": None, "top_reply_tickets": 0, "tickets_without_reply": 0},
+}
 COMPANY_SECTIONS = [
     {"document_id": "DOC001", "title": "Joining", "owner": "Maya · Product", "body": "Body"},
     {"document_id": "DOC002", "title": "Workflow", "owner": "Leena", "body": "Body"},
@@ -143,6 +167,9 @@ class FakeStore:
 
     def ticket_articles(self, ticket_id):
         return {"T00727": INVITE_ARTICLES, "T00201": []}.get(ticket_id)
+
+    def similar_tickets(self, ticket_id):
+        return {"T00727": SIMILAR, "T00201": NO_SIMILAR}.get(ticket_id)
 
     def company(self):
         return COMPANY_SECTIONS, STAFF_REQUESTS

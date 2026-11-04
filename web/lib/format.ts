@@ -40,6 +40,16 @@ export function plural(count: number, one: string, many = `${one}s`) {
   return `${count} ${count === 1 ? one : many}`;
 }
 
+// ["a", "b", "c"] -> "a, b and c".
+export function listOf(words: string[]) {
+  return words.length < 2 ? words.join("") : `${words.slice(0, -1).join(", ")} and ${words[words.length - 1]}`;
+}
+
+// ["subject", "plan_id"] -> "Same subject and plan". The names are the API's matched_on fields.
+export function matchedPhrase(fields: string[]) {
+  return `Same ${listOf(fields.map((field) => (field === "plan_id" ? "plan" : field)))}`;
+}
+
 // "Fern Platform 086" -> "F".
 export function initial(name: string | null) {
   return (name?.trim().charAt(0) || "?").toUpperCase();

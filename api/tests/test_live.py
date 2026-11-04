@@ -152,6 +152,47 @@ def test_hand_written_queries_return_exactly_their_model_columns(live):
             assert [column.name for column in cursor.description] == list(model.model_fields)
 
 
+def test_similar_tickets_for_t00727_are_resolved_closest_first_with_true_counts(live):
+    client, settings = live
+    body = page(client, settings, "/api/tickets/T00727/similar?limit=50")
+    ids = [item["ticket_id"] for item in body["items"]]
+    assert body["total"] == len(ids) == 45  # 50 nearest, none an article, five of them unresolved
+    assert "T00727" not in ids
+    assert ids[0] == "T02576"
+    scores = [item["similarity"] for item in body["items"]]
+    assert scores == sorted(scores, reverse=True)
+    assert body["matched_on"] == ["subject", "component"]
+    assert all({"subject", "component"} <= set(item["matched_on"]) for item in body["items"])
+    assert body["replies"] == {
+        "distinct_replies": 1, "top_reply_tickets": 45, "tickets_without_reply": 0,
+        "top_reply": "Verified the account through the approved recovery flow and confirmed access was restored "
+                     "without sharing credentials."}
+    assert [article["article_id"] for article in body["articles"]] == ["KB004", "KB034"]
+    assert body["articles_read_same"] is True
+    with client.app.state.store.pool.connection() as db:
+        rows = db.execute("SELECT ticket_id, status, plan_id, channel, priority FROM tickets WHERE ticket_id = ANY(%s)",
+                          (ids,)).fetchall()
+        counts = db.execute("SELECT ticket_id, COUNT(*) AS n FROM messages WHERE ticket_id = ANY(%s) GROUP BY ticket_id",
+                            (ids,)).fetchall()
+        last = db.execute("SELECT author_role, body FROM messages WHERE ticket_id = %s "
+                          "ORDER BY created_at DESC NULLS LAST, message_id DESC LIMIT 1", (ids[0],)).fetchone()
+    assert {row["status"] for row in rows} == {"resolved"}
+    assert {row["ticket_id"]: row["n"] for row in counts} == {item["ticket_id"]: item["message_count"]
+                                                              for item in body["items"]}
+    assert (body["items"][0]["last_author_role"], body["items"][0]["last_body"]) == (last["author_role"], last["body"])
+    source = {"priority": "P2", "plan_id": "scale", "channel": "web"}
+    by_id = {row["ticket_id"]: row for row in rows}
+    for item in body["items"]:
+        expected = [name for name, value in source.items() if by_id[item["ticket_id"]][name] == value]
+        assert item["matched_on"] == ["subject", "component", *expected]
+
+
+def test_similar_limit_caps_items_and_keeps_the_true_total(live):
+    client, settings = live
+    body = page(client, settings, "/api/tickets/T00727/similar?limit=3")
+    assert (body["total"], len(body["items"])) == (45, 3)
+
+
 def test_customer_list_counts_every_ticket_once(live):
     client, settings = live
     body = page(client, settings, "/api/customers")

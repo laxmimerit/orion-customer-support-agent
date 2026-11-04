@@ -149,6 +149,73 @@
 .case-rating-bar.is-on { background: var(--teal-fill); }
 .case-rating-none { font-size: 13px; font-weight: 600; color: var(--ink-strong); }
 
+/* Similar tickets, in the details rail. */
+.similar-head { padding: 20px 24px 16px; border-bottom: 1px solid var(--line-soft); display: flex; flex-direction: column; gap: 2px; }
+.similar-head h2 { font-size: 16px; font-weight: 700; color: var(--ink-strong); }
+.similar-head h2 span { font-weight: 500; color: var(--ink-muted); }
+.similar-head p { font-size: 12.5px; color: var(--ink-muted); }
+
+.similar-solved { padding: 18px 24px 20px; display: flex; flex-direction: column; gap: 12px; border-bottom: 1px solid var(--line-soft); }
+.similar-solved h3 { font-size: 14px; font-weight: 700; color: var(--ink-strong); }
+.similar-solved div p { font-size: 13px; color: var(--ink-2); }
+.similar-reply {
+  padding: 12px 14px;
+  border-radius: 14px 4px 14px 14px;
+  background: var(--teal-bubble);
+  color: var(--on-color);
+  font-size: 13.5px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.similar-articles { font-size: 12.5px; color: var(--ink-muted); }
+.similar-articles a { font-weight: 600; }
+
+.similar-list { padding: 16px 24px 20px; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.similar-row { border: 1px solid var(--line-row); border-radius: 12px; background: var(--surface); }
+.similar-row.is-open { border-color: var(--line-hover); }
+.similar-toggle {
+  width: 100%;
+  padding: 11px 14px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  cursor: pointer;
+}
+.similar-line { display: flex; align-items: center; gap: 8px; }
+.similar-line svg { flex: none; color: var(--ink-muted); }
+.similar-row.is-open .similar-line svg { transform: rotate(90deg); }
+.similar-id { font-size: 14.5px; font-weight: 600; color: var(--ink-strong); }
+.similar-match { margin-left: auto; font-size: 12px; color: var(--ink-muted); white-space: nowrap; }
+.similar-result { display: flex; flex-wrap: wrap; gap: 0 8px; font-size: 13px; font-weight: 600; }
+.similar-result .is-late { color: var(--amber-ink); }
+.similar-result .is-met { color: var(--teal-ink); }
+.similar-outcome, .similar-why { font-size: 12.5px; color: var(--ink-muted); }
+
+.similar-detail { margin: 0 14px; padding: 12px 0 14px; border-top: 1px solid var(--line-soft); display: flex; flex-direction: column; gap: 12px; }
+.similar-detail[hidden] { display: none; }
+.similar-detail .facts { gap: 10px 16px; }
+.similar-detail .facts dd { margin-top: 1px; font-size: 13px; }
+.similar-label { font-size: 12px; color: var(--ink-muted); }
+.similar-text { margin-top: 1px; font-size: 13px; overflow-wrap: anywhere; }
+.similar-open { align-self: flex-start; }
+
+.similar-empty { padding: 40px 24px; }
+.similar-empty .button { margin-top: 10px; }
+.similar-problem { padding: 16px; }
+.similar-loading { padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 12px; }
+.similar-bone-reply { height: 96px; border-radius: 14px; }
+.similar-bone-row { height: 76px; border-radius: 12px; }
+
+@media (min-width: 800px) {
+  .similar-open { height: 32px; }
+}
+
 @media (max-width: 799px) {
   .case-hero { padding: 20px; gap: 22px; }
   .case-page .button { height: 44px; }

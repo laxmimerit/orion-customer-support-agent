@@ -8,3 +8,4 @@
 - Learners copy the legacy branch for setup, then build the new backend, frontend, SQL reports and communication features on section branches that reach main through pull requests.
 - Introduce each tool before using it: purpose, reason, prerequisites, action, evidence and handoff.
 - Explain changes briefly and report checks actually performed.
+- If you can't check something where it really runs, report it as unverified and list what I should check.

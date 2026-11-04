@@ -25,6 +25,11 @@ export function Conversation({ messages, request, company, agentId }: {
     : messages;
   const shown = who === "all" ? thread : thread.filter((message) => message.author_role === who);
   const count = openingOnly ? "opening request only" : plural(messages.length, "message");
+  const emptyTitle = thread.length === 0 ? "No messages recorded" : `No ${who} messages`;
+  // One string, so a screen reader hears the whole line each time the filter changes.
+  const filterResult = shown.length === 0
+    ? emptyTitle
+    : `Showing ${shown.length} of ${plural(thread.length, "message")}${who === "all" ? "" : ` from the ${who}`}`;
 
   return (
     <section className="card case-conv" aria-labelledby="conv-title">
@@ -37,9 +42,12 @@ export function Conversation({ messages, request, company, agentId }: {
         </div>
       </div>
 
+      {/* Always mounted: a live region that arrives with its text often isn't read out. */}
+      <p className="visually-hidden" aria-live="polite" aria-atomic="true">{filterResult}</p>
+
       {shown.length === 0 ? (
-        <div className="empty" role="status">
-          <p className="empty-title">{thread.length === 0 ? "No messages recorded" : `No ${who} messages`}</p>
+        <div className="empty">
+          <p className="empty-title">{emptyTitle}</p>
           <p className="empty-hint">
             {thread.length === 0 ? "This ticket has no messages and no request text." : `This ticket has nothing from the ${who}.`}
           </p>

@@ -14,4 +14,4 @@ npm install --prefix web
 npm run --prefix web dev
 ```
 
-and open http://127.0.0.1:3000. `npm run --prefix web typecheck` and `npm run --prefix web build` check the code.
+and open http://127.0.0.1:3000. `npm run --prefix web typecheck`, `npm test --prefix web` and `npm run --prefix web build` check the code. The tests sit beside the code in `lib/` and run on Vitest, with no API or database.

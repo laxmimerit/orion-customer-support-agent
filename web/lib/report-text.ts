@@ -168,6 +168,13 @@ export function categorySpotlight(rows: CategoryRow[]) {
   return soleLowest(rows, (row) => num(row.avg_csat)) ?? soleLowest(rows, (row) => num(row.avg_first_response_hours));
 }
 
+// Read out when the tables open, naming the sections that hold one: a failed report has no table.
+export function tablesShownNotice(firstReply: boolean, category: boolean) {
+  const places = [firstReply && "the first reply and satisfaction section", category && "the categories section"]
+    .filter((place) => place !== false);
+  return `Tables shown in ${joined(places)}.`;
+}
+
 export function backlogHeadline(total: BacklogRow | null) {
   if (!total || total.tickets === 0) return "Nothing waiting";
   const age = daysText(total.avg_age_hours);
@@ -293,7 +300,10 @@ export function ratingGap(total: FirstReplyRow | null) {
   if (met === null || missed === null) return null;
   const hundredths = Math.round((missed - met) * 100);
   const sign = hundredths < 0 ? "−" : hundredths > 0 ? "+" : "";
-  return { hundredths, text: `${sign}${(Math.abs(hundredths) / 100).toFixed(2)}` };
+  const size = (Math.abs(hundredths) / 100).toFixed(2);
+  // `spoken` spells the sign, because some screen readers skip "−" and the direction is the whole claim.
+  const word = hundredths < 0 ? "minus " : hundredths > 0 ? "plus " : "";
+  return { hundredths, text: `${sign}${size}`, spoken: `${word}${size}` };
 }
 
 export function ratingCountNote(total: FirstReplyRow) {

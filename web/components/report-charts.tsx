@@ -3,7 +3,7 @@
 import { Fragment } from "react";
 
 import { ApiProblemPanel, PriorityTile } from "@/components/desk";
-import { WhenTables } from "@/components/report-tables";
+import { ScrollBox, WhenTables } from "@/components/report-tables";
 import type { ApiProblem, BacklogRow, CategoryRow, FirstReplyRow, PriorityRow, VolumeRow } from "@/lib/api";
 import { NOT_RECORDED, plural, sentenceCase } from "@/lib/format";
 import {
@@ -13,7 +13,7 @@ import {
 } from "@/lib/report-text";
 
 function ReportCard({ id, eyebrow, title, children }: {
-  id: string; eyebrow: string; title: string; children: React.ReactNode;
+  id: string; eyebrow: string; title: React.ReactNode; children: React.ReactNode;
 }) {
   return (
     <section className="card rp-card" aria-labelledby={id}>
@@ -26,10 +26,11 @@ function ReportCard({ id, eyebrow, title, children }: {
   );
 }
 
-// One report failed: its section says so and the rest of the page stays.
+// One report failed: its section says so and the rest of the page stays. The hidden words keep each failed
+// section's name apart in a screen reader's list of regions.
 export function ReportProblem({ id, eyebrow, problem }: { id: string; eyebrow: string; problem: ApiProblem }) {
   return (
-    <ReportCard id={id} eyebrow={eyebrow} title="This report did not load">
+    <ReportCard id={id} eyebrow={eyebrow} title={<>This report did not load<span className="visually-hidden">: {eyebrow}</span></>}>
       <ApiProblemPanel problem={problem} title="The desk API did not return this report" />
     </ReportCard>
   );
@@ -123,9 +124,12 @@ export function FirstReplyFinding({ report }: { report: FirstReplyRow[] }) {
         <span className="rp-eyebrow is-teal">First reply and satisfaction</span>
         <div className="rp-hero-claim">
           {gap
-            ? <span className={`rp-hero-number${gap.hundredths < 0 ? " is-down" : ""}`}>{gap.text}</span>
-            : <span className="rp-hero-none">{NOT_RECORDED}</span>}
-          <h2 id="rp-finding-title" className="rp-hero-title">rating points when the first reply is late</h2>
+            ? <span className={`rp-hero-number${gap.hundredths < 0 ? " is-down" : ""}`} aria-hidden="true">{gap.text}</span>
+            : <span className="rp-hero-none" aria-hidden="true">{NOT_RECORDED}</span>}
+          <h2 id="rp-finding-title" className="rp-hero-title">
+            <span className="visually-hidden">{gap ? `${gap.spoken} ` : `${NOT_RECORDED}: `}</span>
+            rating points when the first reply is late
+          </h2>
         </div>
         <div className="rp-hero-tiles">
           <HeroTile tone="is-teal" label="On time" value={total?.avg_csat_met ?? null} />
@@ -152,7 +156,7 @@ export function FirstReplyFinding({ report }: { report: FirstReplyRow[] }) {
           </>
         )}
         <WhenTables>
-          <div className="rp-table-box">
+          <ScrollBox className="rp-table-box" label="Average rating by priority table">
             <table className="rp-table">
               <caption className="visually-hidden">Average rating by priority, on-time and late first reply</caption>
               <thead><tr><th scope="col">Priority</th><th scope="col">On time</th><th scope="col">Ratings</th><th scope="col">Late</th><th scope="col">Ratings</th></tr></thead>
@@ -168,7 +172,7 @@ export function FirstReplyFinding({ report }: { report: FirstReplyRow[] }) {
                 ))}
               </tbody>
             </table>
-          </div>
+          </ScrollBox>
         </WhenTables>
       </div>
     </section>
@@ -189,11 +193,11 @@ export function UnresolvedByPeriod({ report }: { report: VolumeRow[] }) {
   const peak = Math.max(average ?? 0, ...periods.map((period) => period.share ?? 0));
   const pxPerShare = peak > 0 ? PERIOD_BAR_MAX / peak : 0;
   const barPx = (share: number) => Math.round(share * pxPerShare);
-  const alt = periods.map((period) => `Period ${period.n} ${percentText(period.share, 1)}`).join(", ");
+  const alt = periods.map((period) => `Period ${period.n} ${percentText(period.share, 1)}, ${period.unresolved} of ${period.tickets}`).join("; ");
   return (
     <ReportCard id="rp-volume-title" eyebrow="Unresolved by period" title={periodHeadline(periods)}>
       {periods.length === 0 ? <NoRows /> : (
-        <div className="rp-scroll">
+        <ScrollBox className="rp-scroll" label="Unresolved share by period chart">
           <div className="rp-periods-box" style={{ "--rp-cols": periods.length } as React.CSSProperties}>
             <div className="rp-periods" role="img"
               aria-label={`Share of each period's tickets still unresolved: ${alt}${average === null ? "" : `; average ${percentText(average, 1)}`}.`}>
@@ -214,7 +218,7 @@ export function UnresolvedByPeriod({ report }: { report: VolumeRow[] }) {
                 </div>
               ))}
             </div>
-            <div className="rp-period-labels">
+            <div className="rp-period-labels" aria-hidden="true">
               {periods.map((period) => (
                 <div key={period.n}>
                   <span className="rp-period-n">{period.n}</span>
@@ -223,7 +227,7 @@ export function UnresolvedByPeriod({ report }: { report: VolumeRow[] }) {
               ))}
             </div>
           </div>
-        </div>
+        </ScrollBox>
       )}
       <span className="rp-note">
         Periods in report order; dates are left out.
@@ -355,7 +359,7 @@ export function CategoryStrips({ report }: { report: CategoryRow[] }) {
         </>
       )}
       <WhenTables>
-        <div className="rp-table-box">
+        <ScrollBox className="rp-table-box" label="Averages by category table">
           <table className="rp-table">
             <caption className="visually-hidden">Tickets, first reply, resolution and rating by category</caption>
             <thead><tr><th scope="col">Category</th><th scope="col">Tickets</th><th scope="col">First reply</th><th scope="col">Resolution</th><th scope="col">Rating</th></tr></thead>
@@ -371,7 +375,7 @@ export function CategoryStrips({ report }: { report: CategoryRow[] }) {
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollBox>
       </WhenTables>
     </ReportCard>
   );
@@ -464,7 +468,7 @@ function WaitBars({ rows }: { rows: PriorityRow[] }) {
 
 function PriorityLabels({ rows }: { rows: PriorityRow[] }) {
   return (
-    <div className="rp-priority-labels">
+    <div className="rp-priority-labels" aria-hidden="true">
       {rows.map((row) => <span key={row.priority ?? "none"}>{priorityName(row.priority)}</span>)}
     </div>
   );

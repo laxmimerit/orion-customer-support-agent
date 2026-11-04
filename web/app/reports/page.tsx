@@ -6,7 +6,7 @@ import {
 } from "@/components/report-charts";
 import { TablesProvider, TablesToggle } from "@/components/report-tables";
 import { backlogReport, categoryReport, firstReplyReport, priorityReport, volumeReport } from "@/lib/api";
-import { kpisFrom, splitTotal } from "@/lib/report-text";
+import { kpisFrom, splitTotal, tablesShownNotice } from "@/lib/report-text";
 import "./reports.css";
 
 export const metadata: Metadata = { title: "Team reports" };
@@ -46,7 +46,7 @@ export default async function Reports() {
           <PageHead title={TITLE} description={DESCRIPTION}>
             <div className="rp-head-tools">
               {tickets !== undefined && <span className="rp-scope">All {tickets} tickets</span>}
-              {(firstReply.ok || category.ok) && <TablesToggle />}
+              {(firstReply.ok || category.ok) && <TablesToggle shownNotice={tablesShownNotice(firstReply.ok, category.ok)} />}
             </div>
           </PageHead>
 

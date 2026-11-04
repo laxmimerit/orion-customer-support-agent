@@ -53,6 +53,8 @@
 }
 .kb-item:hover { background: var(--page); text-decoration: none; }
 .kb-item:hover .kb-item-title { text-decoration: underline; }
+/* Lifted so the next row's top line does not paint over the ring. */
+.kb-item:focus-visible { position: relative; }
 .kb-item-id { flex: none; width: 48px; font-size: 12px; font-weight: 600; color: var(--ink-muted); }
 .kb-item-title { min-width: 0; font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
 

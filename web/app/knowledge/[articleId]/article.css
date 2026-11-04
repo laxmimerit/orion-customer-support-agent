@@ -52,6 +52,9 @@
 .article-more-id { flex: none; width: 46px; font-size: 12px; font-weight: 600; color: var(--ink-muted); }
 .article-more-title { min-width: 0; overflow-wrap: anywhere; }
 
+/* Lifted so the next row's top line does not paint over the ring. */
+.article-more:focus-visible, .article-ticket a:focus-visible { position: relative; }
+
 @media (max-width: 799px) {
   .article-card { padding: 24px 20px 28px; gap: 18px; }
   .article-title { font-size: 26px; }

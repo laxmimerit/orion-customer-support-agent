@@ -12,16 +12,17 @@ from typing import Literal
 
 from fastapi import Depends, FastAPI, Path, Query, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.responses import JSONResponse, RedirectResponse, StreamingResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 import psycopg
 from psycopg_pool import PoolTimeout
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from .assistant import Assistant, case_text
 from .embedding import Embedder
 from .models import (AdminStatus, Article, ArticleSummary, BacklogRow, CategoryRow, Company, CustomerListItem,
-                     CustomerProfile, ErrorResponse, FirstReplyRow, Listing, PriorityRow, Report, SearchResults,
-                     SimilarTickets, Snapshot, TicketDetail, TicketPage, VolumeRow)
+                     CustomerProfile, ErrorResponse, FirstReplyRow, LanguageModels, Listing, PriorityRow, Report,
+                     SearchResults, SimilarTickets, Snapshot, TicketDetail, TicketPage, VolumeRow)
 from .settings import load_settings
 from .store import report_description
 
@@ -71,6 +72,13 @@ def embedder(request: Request):
     return request.app.state.embedder
 
 
+def assistant(request: Request):
+    return request.app.state.assistant
+
+
+EVENT_STREAM = {200: {"description": "A stream of `delta` events, then one `done` or `error`",
+                      "content": {"text/event-stream": {"schema": {"type": "string"}}}}}
+
 # Read-only reports: URL path, SQL file in api/reports, row model, summary.
 REPORT_ROUTES = (
     ("volume", "volume", VolumeRow, "Tickets created per month, resolved and unresolved"),
@@ -96,8 +104,8 @@ def split_owner(owner):
     return {"owner": name, "team": team if separator else None}
 
 
-def create_app(settings=None, store_instance=None, embedder_instance=None):
-    """Build the app. Tests pass their own settings, store and embedder; uvicorn passes none."""
+def create_app(settings=None, store_instance=None, embedder_instance=None, assistant_instance=None):
+    """Build the app. Tests pass their own settings, store, embedder and assistant; uvicorn passes none."""
     settings = settings or load_settings()
 
     @asynccontextmanager
@@ -122,6 +130,7 @@ def create_app(settings=None, store_instance=None, embedder_instance=None):
     )
     app.state.settings = settings
     app.state.embedder = embedder_instance or Embedder()
+    app.state.assistant = assistant_instance or Assistant(settings.openrouter_api_key)
     if store_instance is not None:
         app.state.store = store_instance
 
@@ -206,6 +215,31 @@ def create_app(settings=None, store_instance=None, embedder_instance=None):
             raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
         return {**similar, "items": similar["items"][:limit]}
 
+    @app.get("/api/tickets/{ticket_id}/ask", response_class=StreamingResponse, tags=["tickets"],
+             responses={**EVENT_STREAM, **errors(401, 404, 422, 503)},
+             summary="Ask the language model about one case, answered as a stream")
+    def ask_ticket(
+        ticket_id: str = Path(max_length=32),
+        q: str = Query(min_length=1, max_length=500, description="The agent's question"),
+        _: str = Depends(role),
+        db=Depends(store),
+        model=Depends(assistant),
+    ):
+        """Exact, case-sensitive ID lookup (M01). The ticket, its messages and its customer go to the language model,
+        without emails or dates. Nothing is stored or sent to the customer, so each question stands alone. Events:
+        `delta` has `text`; `done` has `complete`, false when the answer was cut short; `error` has the usual error
+        body, because the status is already sent. A 503 `model_not_configured` means no key is set."""
+        q = q.strip()
+        if not q:
+            raise ApiError(422, "invalid_request", "The question is empty.")
+        detail = db.ticket(ticket_id)
+        if detail is None:
+            raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
+        if not model.configured:
+            raise ApiError(503, "model_not_configured", "No language model is set up. OPENROUTER_API_KEY is missing.")
+        return StreamingResponse(model.answer(case_text(detail), q), media_type="text/event-stream",
+                                 headers={"Cache-Control": "no-store, no-transform"})
+
     @app.get("/api/search", response_model=SearchResults, tags=["search"], responses=errors(401, 422, 503),
              summary="Find tickets and help articles by meaning, or one ticket by its exact ID")
     def search(
@@ -275,6 +309,13 @@ def create_app(settings=None, store_instance=None, embedder_instance=None):
         if snapshot is None:
             raise ApiError(404, "snapshot_not_found", "No data snapshot is recorded.")
         return snapshot
+
+    # async, unlike the routes above: it reads no store, and only waits on the network through the async client.
+    @app.get("/api/language-models", response_model=LanguageModels, tags=["language-models"],
+             responses=errors(401), summary="The language model connection and the providers not set up")
+    async def get_language_models(_: str = Depends(role), model=Depends(assistant)):
+        """`state` comes from a live check of the key and the model, which uses no tokens. The key is never returned."""
+        return await model.connection()
 
     for path, name, row, summary in REPORT_ROUTES:
         app.get(f"/api/reports/{path}", response_model=Report[row], tags=["reports"],

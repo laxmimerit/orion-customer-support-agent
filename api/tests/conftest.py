@@ -5,6 +5,7 @@ import re
 from fastapi.testclient import TestClient
 import pytest
 
+from orion_api.assistant import frame
 from orion_api.main import create_app
 from orion_api.settings import Settings
 
@@ -207,6 +208,26 @@ class FakeEmbedder:
         return [0.0] * 767 + [1.0]
 
 
+class FakeAssistant:
+    """Stands in for the language model: no network, a fixed two-part answer."""
+
+    configured = True
+
+    def __init__(self):
+        self.asks = []
+
+    async def answer(self, case, question):
+        self.asks.append((case, question))
+        yield frame("delta", {"text": "Not "})
+        yield frame("delta", {"text": "recorded."})
+        yield frame("done", {"complete": True})
+
+    async def connection(self):
+        return {"connection": {"provider": "OpenRouter", "model": "test/model", "address": "https://example.invalid",
+                               "sdk": "Anthropic SDK", "state": "connected"},
+                "options": [{"provider": "Anthropic", "state": "not_set_up"}]}
+
+
 @pytest.fixture
 def fake_store():
     return FakeStore()
@@ -218,8 +239,14 @@ def fake_embedder():
 
 
 @pytest.fixture
-def client(fake_store, fake_embedder):
-    with TestClient(create_app(SETTINGS, fake_store, fake_embedder), raise_server_exceptions=False) as test_client:
+def fake_assistant():
+    return FakeAssistant()
+
+
+@pytest.fixture
+def client(fake_store, fake_embedder, fake_assistant):
+    app = create_app(SETTINGS, fake_store, fake_embedder, fake_assistant)
+    with TestClient(app, raise_server_exceptions=False) as test_client:
         yield test_client
 
 

@@ -3,13 +3,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import { AskPanel } from "@/components/ask-panel";
 import { CaseClock } from "@/components/case-clock";
 import { Conversation } from "@/components/conversation";
 import { ApiProblemPanel, ChannelIcon, Crumbs, Facts, PageHead, PriorityTile, StatusPill, TicketSearchBar } from "@/components/desk";
 import { BackIcon } from "@/components/icons";
 import { SimilarLoading, SimilarTickets } from "@/components/similar-tickets";
 import { type Customer, type Ticket, ticketDetail } from "@/lib/api";
-import { queueHref, queuePage } from "@/lib/detail-pages";
+import { decodeId, queueHref, queuePage } from "@/lib/detail-pages";
 import { NOT_RECORDED, channelLabel, initial, orNotRecorded, plural, sentenceCase } from "@/lib/format";
 
 import "./case.css";
@@ -18,14 +19,6 @@ type Props = {
   params: Promise<{ ticketId: string }>;
   searchParams: Promise<{ queue?: string | string[] }>;
 };
-
-function decodeId(raw: string) {
-  try {
-    return decodeURIComponent(raw);
-  } catch {
-    return raw;
-  }
-}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const ticketId = decodeId((await params).ticketId);
@@ -88,6 +81,7 @@ export default async function CasePage({ params, searchParams }: Props) {
               company={customer?.company ?? null}
               agentId={ticket.agent_id}
             />
+            <AskPanel key={ticket.ticket_id} ticketId={ticket.ticket_id} />
           </div>
           <aside className="split-rail" aria-label="Case details">
             <Suspense key={ticket.ticket_id} fallback={<SimilarLoading />}>

@@ -92,6 +92,9 @@
   border: 1px solid var(--line-row);
 }
 
+.settings-routes .settings-providers { flex-direction: column; gap: 8px; }
+.settings-providers li { align-items: center; justify-content: space-between; gap: 12px; font-size: 13.5px; color: var(--ink); }
+
 @media (max-width: 799px) {
   .settings-note { padding: 14px 16px; }
   .settings-panel { padding: 20px; }

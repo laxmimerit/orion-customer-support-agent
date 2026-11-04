@@ -1,7 +1,7 @@
 """Settings from the repository's .env (never committed). Values already in the environment win.
 
-Only the new database (PG_*) and the two access tokens are read. The legacy
-TIDB_* settings are ignored, so this API cannot reach orion_lab.
+Only the new database (PG_*), the two access tokens and the optional OPENROUTER_API_KEY
+are read. The legacy TIDB_* settings are ignored, so this API cannot reach orion_lab.
 """
 from dataclasses import dataclass
 import os
@@ -21,9 +21,10 @@ class Settings:
     agent_token: str
     admin_token: str
     pg_ssl_root_cert: str | None = None
+    openrouter_api_key: str | None = None
 
     def __repr__(self):
-        # Never show hosts, users, passwords or tokens in logs or tracebacks.
+        # Never show hosts, users, passwords, tokens or keys in logs or tracebacks.
         return "Settings(<redacted>)"
 
 
@@ -42,7 +43,7 @@ def read_env_file(path):
 
 def load_settings(path=ENV_FILE):
     values = read_env_file(path)
-    values.update({key: os.environ[key] for key in (*REQUIRED, "PG_PORT", "PG_SSL_ROOT_CERT") if key in os.environ})
+    values.update({key: os.environ[key] for key in (*REQUIRED, "PG_PORT", "PG_SSL_ROOT_CERT", "OPENROUTER_API_KEY") if key in os.environ})
     missing = [key for key in REQUIRED if not values.get(key)]
     if missing:
         raise RuntimeError("Missing settings in .env: " + ", ".join(missing))
@@ -53,4 +54,5 @@ def load_settings(path=ENV_FILE):
         pg_user=values["PG_USER"], pg_password=values["PG_PASSWORD"], pg_database=values["PG_DATABASE"],
         pg_ssl_root_cert=values.get("PG_SSL_ROOT_CERT") or None,
         agent_token=values["ORION_AGENT_TOKEN"], admin_token=values["ORION_ADMIN_TOKEN"],
+        openrouter_api_key=values.get("OPENROUTER_API_KEY") or None,
     )

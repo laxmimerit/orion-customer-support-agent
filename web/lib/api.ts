@@ -252,6 +252,14 @@ export type FirstReplyRow = {
   csat_missed_missing: number;
 };
 
+// The language model connection. The key stays with the API: no response carries it.
+export type ModelState = "connected" | "no_key" | "key_refused" | "model_unavailable" | "not_answering";
+
+export type LanguageModels = {
+  connection: { provider: string; model: string; address: string; sdk: string; state: ModelState };
+  options: { provider: string; state: "not_set_up" }[];
+};
+
 export type ApiInfo = { title: string; version: string; routes: string[] };
 
 export type ApiProblem = { status: number | null; code: string; message: string };
@@ -265,6 +273,15 @@ const LEFT_OUT = new Set([
 
 function parseBody(text: string) {
   return JSON.parse(text, (key, value) => (LEFT_OUT.has(key) ? undefined : value));
+}
+
+function refused(response: Response, body: { error?: { code?: unknown; message?: unknown } } | null): ApiProblem {
+  const error = body?.error;
+  return {
+    status: response.status,
+    code: typeof error?.code === "string" ? error.code : "unexpected_response",
+    message: typeof error?.message === "string" ? error.message : `The API answered ${response.status}.`,
+  };
 }
 
 async function get<T>(route: string, authorised = true): Promise<Result<T>> {
@@ -285,14 +302,7 @@ async function get<T>(route: string, authorised = true): Promise<Result<T>> {
       message: `The desk API at ${baseUrl} did not answer. Start it with the orion-api launch configuration.` } };
   }
   const body = await response.text().then(parseBody).catch(() => null);
-  if (!response.ok) {
-    const error = body?.error;
-    return { ok: false, problem: {
-      status: response.status,
-      code: typeof error?.code === "string" ? error.code : "unexpected_response",
-      message: typeof error?.message === "string" ? error.message : `The API answered ${response.status}.`,
-    } };
-  }
+  if (!response.ok) return { ok: false, problem: refused(response, body) };
   // A proxy or a missed route can answer 200 with a page of HTML. That is a failure, not empty data.
   if (body === null) {
     return { ok: false, problem: { status: response.status, code: "unexpected_response",
@@ -315,6 +325,40 @@ export const SIMILAR_SHOWN = 3;
 
 export function similarTickets(ticketId: string, limit = SIMILAR_SHOWN) {
   return get<SimilarTickets>(`/api/tickets/${encodeURIComponent(ticketId)}/similar?limit=${limit}`);
+}
+
+// The API's stream of answer events, passed on unread. Its events hold only the model's text, and the token stays
+// here. Longer than the 20 seconds in `get`: the model reasons first, and `signal` ends the call if the agent leaves.
+export async function askCase(ticketId: string, question: string, signal: AbortSignal): Promise<Result<ReadableStream<Uint8Array>>> {
+  const { baseUrl, token } = settings();
+  if (!token) {
+    return { ok: false, problem: { status: null, code: "missing_token",
+      message: "ORION_AGENT_TOKEN is not set in the environment or the repository's .env." } };
+  }
+  let response: Response;
+  try {
+    response = await fetch(`${baseUrl}/api/tickets/${encodeURIComponent(ticketId)}/ask?q=${encodeURIComponent(question)}`, {
+      cache: "no-store",
+      headers: { Authorization: `Bearer ${token}` },
+      signal: AbortSignal.any([signal, AbortSignal.timeout(180_000)]),
+    });
+  } catch {
+    return { ok: false, problem: { status: null, code: "api_unreachable",
+      message: `The desk API at ${baseUrl} did not answer. Start it with the orion-api launch configuration.` } };
+  }
+  if (!response.ok) {
+    const body = await response.json().catch(() => null);
+    return { ok: false, problem: refused(response, body) };
+  }
+  if (!response.body || !response.headers.get("content-type")?.startsWith("text/event-stream")) {
+    return { ok: false, problem: { status: response.status, code: "unexpected_response",
+      message: `The API answered ${response.status}, but the reply was not a stream.` } };
+  }
+  return { ok: true, data: response.body };
+}
+
+export function languageModels() {
+  return get<LanguageModels>("/api/language-models");
 }
 
 // The most hits one search returns. A full page means there may be more, so it is not a total.

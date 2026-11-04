@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { ApiProblemPanel, PageHead, TicketSearchBar } from "@/components/desk";
 import { LockIcon } from "@/components/icons";
-import { apiAddress, apiInfo, ticketPage } from "@/lib/api";
+import { type LanguageModels, type ModelState, type Result, apiAddress, apiInfo, languageModels, ticketPage } from "@/lib/api";
 import { NOT_RECORDED, orNotRecorded, plural } from "@/lib/format";
 import "./settings.css";
 
@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Settings" };
 
 // Nothing here is editable: each panel reports what the desk is connected to today.
 export default async function Settings() {
-  const [info, tickets] = await Promise.all([apiInfo(), ticketPage(1, 1)]);
+  const [info, tickets, models] = await Promise.all([apiInfo(), ticketPage(1, 1), languageModels()]);
 
   return (
     <>
@@ -21,8 +21,8 @@ export default async function Settings() {
         <div className="settings-note" role="note">
           <LockIcon size={18} strokeWidth={2} />
           <span>
-            <strong>Read-only.</strong> API details are read from the Orion desk API when the page opens.
-            Mail and models are not set up, so there is nothing to configure for them.
+            <strong>Read-only.</strong> API and language model details are read from the Orion desk API when the page opens.
+            Mail is not set up, so there is nothing to configure for it.
           </span>
         </div>
 
@@ -58,10 +58,7 @@ export default async function Settings() {
               </div>
             </div>
 
-            <div className="card settings-panel">
-              <PanelHead title="Language models"><NotSetUp /></PanelHead>
-              <p>No language model is connected. The desk does not draft, summarise or classify anything.</p>
-            </div>
+            <LanguageModelPanel models={models} />
           </div>
         </section>
 
@@ -87,6 +84,62 @@ export default async function Settings() {
         </section>
       </main>
     </>
+  );
+}
+
+const MODEL_STATES: Record<ModelState, { pill: string; tone: "is-answering" | "is-off" | "is-failed"; note: string }> = {
+  connected: { pill: "Connected", tone: "is-answering",
+    note: "OpenRouter accepted the key and lists the model. Checked when this page opened; no tokens are used." },
+  no_key: { pill: "Not set up", tone: "is-off",
+    note: "OPENROUTER_API_KEY is not set for the desk API, so the Ask panel on a case cannot answer." },
+  key_refused: { pill: "Key refused", tone: "is-failed", note: "OpenRouter refused the key in OPENROUTER_API_KEY." },
+  model_unavailable: { pill: "Model unavailable", tone: "is-failed", note: "OpenRouter does not list this model at the moment." },
+  not_answering: { pill: "Not answering", tone: "is-failed", note: "OpenRouter did not answer the check." },
+};
+
+function LanguageModelPanel({ models }: { models: Result<LanguageModels> }) {
+  if (!models.ok) {
+    return (
+      <div className="card settings-panel">
+        <PanelHead title="Language models"><Answering ok={false} /></PanelHead>
+        <p className="is-failed">{models.problem.message}</p>
+      </div>
+    );
+  }
+  const { connection, options } = models.data;
+  const state = MODEL_STATES[connection.state];
+  return (
+    <div className="card settings-panel is-api">
+      <PanelHead title="Language models">
+        <span className={`pill settings-pill ${state.tone}`}>
+          <span className="dot" aria-hidden="true" />
+          {state.pill}
+        </span>
+      </PanelHead>
+      <p className={state.tone === "is-failed" ? "is-failed" : undefined}>{state.note}</p>
+      <dl className="settings-facts">
+        <dt>Provider</dt>
+        <dd className="is-strong">{connection.provider}</dd>
+        <dt>Model</dt>
+        <dd><code>{connection.model}</code></dd>
+        <dt>Address</dt>
+        <dd><code>{connection.address}</code></dd>
+        <dt>Connected with</dt>
+        <dd>{connection.sdk}</dd>
+        <dt>Key</dt>
+        <dd>Held by the desk API. It is never sent to the web server or the browser.</dd>
+        <dt>Used by</dt>
+        <dd>The Ask panel on a case. Asking sends that ticket, its messages and its customer details to {connection.provider}, without emails or dates.</dd>
+      </dl>
+      <div className="settings-routes">
+        <span id="settings-providers-label" className="settings-routes-label">Other providers</span>
+        <ul role="list" aria-labelledby="settings-providers-label" className="settings-providers">
+          {options.map((option) => (
+            <li key={option.provider}><span>{option.provider}</span><NotSetUp /></li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 }
 

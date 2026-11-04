@@ -353,3 +353,22 @@ class ErrorDetail(BaseModel):
 
 class ErrorResponse(BaseModel):
     error: ErrorDetail
+
+
+# The language model connection. It names the provider and the model, and never holds the key.
+class ModelConnection(BaseModel):
+    provider: str
+    model: str
+    address: str
+    sdk: str
+    state: Literal["connected", "no_key", "key_refused", "model_unavailable", "not_answering"]
+
+
+class ModelOption(BaseModel):
+    provider: str
+    state: Literal["not_set_up"]
+
+
+class LanguageModels(BaseModel):
+    connection: ModelConnection
+    options: list[ModelOption]

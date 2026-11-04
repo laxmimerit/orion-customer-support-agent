@@ -1,3 +1,12 @@
+// An ID from the address. A broken escape is left as it came, for the lookup to refuse.
+export function decodeId(raw: string) {
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw;
+  }
+}
+
 const LOADING_LABELS = new Map([
   ["tickets", "Loading the case"],
   ["customers", "Loading customer"],

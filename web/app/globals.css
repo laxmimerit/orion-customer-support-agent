@@ -386,7 +386,7 @@ input::placeholder { color: var(--ink-placeholder); }
 .button.is-primary:hover { background: var(--teal-ink); color: var(--on-color); }
 /* A teal ring on a teal button only looks like a bigger button: the inner line separates them. */
 .button.is-primary:focus-visible { box-shadow: inset 0 0 0 2px var(--surface), var(--focus-ring); }
-.button[aria-disabled="true"] { color: var(--ink-placeholder); background: var(--surface-soft); pointer-events: none; }
+.button[aria-disabled="true"], .button:disabled { color: var(--ink-placeholder); background: var(--surface-soft); pointer-events: none; }
 
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip {

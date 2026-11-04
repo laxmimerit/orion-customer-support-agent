@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { ApiProblemPanel, Facts, Notice, PageHeading, Panel, PriorityChip, StatusPill } from "@/components/desk";
+import { ApiProblemPanel, Facts, PageHeading, Panel, PriorityChip, StatusPill } from "@/components/desk";
 import { type Customer, type Message, type Ticket, ticketDetail } from "@/lib/api";
-import { NOT_RECORDED, hours, initials, orNotRecorded } from "@/lib/format";
+import { NOT_RECORDED, orNotRecorded, trimDecimal } from "@/lib/format";
 
 type Props = { params: Promise<{ ticketId: string }> };
 
@@ -29,46 +29,46 @@ export default async function CasePage({ params }: Props) {
     return (
       <>
         <PageHeading crumbs={[{ label: "Ticket queue", href: "/" }, { label: ticketId }]} title={ticketId} />
-        <ApiProblemPanel problem={result.problem} />
+        <ApiProblemPanel
+          problem={result.problem}
+          heading="This case can’t be shown"
+          cannotLoad="this case can’t load"
+          refused="this case can’t be shown"
+        />
       </>
     );
   }
 
   const { ticket, customer, messages } = result.data;
-  const ribbon = [ticket.category, ticket.component, ticket.channel && `Via ${ticket.channel}`].filter(Boolean).join(" · ");
 
   return (
     <>
       <PageHeading
         crumbs={[{ label: "Ticket queue", href: "/" }, { label: ticket.ticket_id }]}
-        title={`${ticket.ticket_id} · ${ticket.subject ?? "No subject recorded"}`}
+        title={`${ticket.ticket_id} · ${orNotRecorded(ticket.subject)}`}
       >
-        {ribbon && <div className="ribbon">{ribbon}</div>}
+        <p className="ribbon">
+          {orNotRecorded(ticket.category)} · {orNotRecorded(ticket.component)} · Via {orNotRecorded(ticket.channel)}
+        </p>
       </PageHeading>
 
-      <Notice lead="Read-only.">
-        Every value here comes from the Orion desk API. Messages are shown in order, oldest first, without times.
-      </Notice>
-
-      <div className="case-row">
+      <div className="case-row c12">
         <div className="case-main">
           <Panel id="summary" title="Request summary">
-            <p className="panel-body request">{ticket.body ?? "No request text recorded."}</p>
+            <p className="panel-body">{orNotRecorded(ticket.body)}</p>
           </Panel>
 
-          <Panel id="targets" title="Service targets">
-            <div className="targets">
-              <TargetTile label="First reply" doneLabel="Waited" target={ticket.sla_response_hours} done={ticket.first_response_hours} />
-              <TargetTile label="Resolution" doneLabel="Took" target={ticket.sla_resolution_hours} done={ticket.resolution_hours} />
-            </div>
-            <p className="panel-note">Bar: time taken. Tick: target. All figures are in hours.</p>
-          </Panel>
+          <section className="targets" aria-labelledby="targets">
+            <h2 id="targets">Service targets</h2>
+            <TargetTile label="First reply" doneLabel="Waited" target={ticket.sla_response_hours} done={ticket.first_response_hours} />
+            <TargetTile label="Resolution" doneLabel="Took" target={ticket.sla_resolution_hours} done={ticket.resolution_hours} />
+          </section>
 
-          <Conversation messages={messages} customer={customer} />
+          <Conversation messages={messages} ticket={ticket} />
         </div>
 
-        <aside className="case-side" aria-label="Ticket and customer">
-          <Panel id="ticket" title="Ticket">
+        <aside className="case-side" aria-label="Case details">
+          <Panel id="ticket" title="Ticket facts">
             <TicketFacts ticket={ticket} />
           </Panel>
           <Panel id="customer" title="Customer">
@@ -76,77 +76,102 @@ export default async function CasePage({ params }: Props) {
           </Panel>
         </aside>
       </div>
-
-      <footer className="footer">Prototype. Targets and times taken are in hours.</footer>
     </>
+  );
+}
+
+function TargetFigure({ label, value }: { label: string; value: string | null }) {
+  return (
+    <div>
+      <dt>{label}</dt>
+      <dd>{value === null ? NOT_RECORDED : <>{trimDecimal(value)}<small>h</small></>}</dd>
+    </div>
   );
 }
 
 function TargetTile({ label, doneLabel, target, done }: {
   label: string; doneLabel: string; target: string | null; done: string | null;
 }) {
-  const targetValue = target === null ? null : Number(target);
-  const doneValue = done === null ? null : Number(done);
-  const comparable = targetValue !== null && doneValue !== null;
-  const missed = comparable && doneValue > targetValue;
-  const outcome = !comparable
-    ? (done === null ? `${doneLabel.toLowerCase()} not recorded` : "no target recorded")
-    : missed ? "target missed" : "target met";
+  const figures = (
+    <dl className="figs">
+      <TargetFigure label="Target" value={target} />
+      <TargetFigure label={doneLabel} value={done} />
+    </dl>
+  );
+
+  if (target === null || done === null) {
+    return (
+      <div className="panel tile">
+        <h3>{label}: <span className="pill tone-status">{NOT_RECORDED}</span></h3>
+        {figures}
+      </div>
+    );
+  }
+
+  const targetValue = Number(target);
+  const doneValue = Number(done);
+  const missed = doneValue > targetValue;
+  const outcome = missed ? "target missed" : "target met";
+  const verb = doneLabel.toLowerCase();
   // The track is the larger of the two, so the tick shows where the target fell.
-  const scale = comparable ? Math.max(doneValue, targetValue) || 1 : 1;
+  const scale = Math.max(targetValue, doneValue) || 1;
+  const percent = (value: number) => (value / scale * 100).toFixed(1);
+  const tick = percent(targetValue);
 
   return (
-    <div className={`target ${missed ? "tone-missed" : comparable ? "tone-met" : "tone-priority"}`}>
-      <div className="target-title">{label}: {outcome}</div>
-      <div className="target-figures">
-        <div>
-          <div className="target-label">Target</div>
-          <div className={`target-value${target === null ? " is-missing" : ""}`}>{target === null ? NOT_RECORDED : hours(target)}</div>
+    <div className="panel tile">
+      <h3>{label}: <span className={`pill ${missed ? "tone-missed" : "tone-met"}`}>{outcome}</span></h3>
+      {figures}
+      <div>
+        <div className="wait-wrap">
+          <span className="tick-label" style={{ left: `${tick}%`, transform: `translateX(${Number(tick) > 75 ? "-100%" : "-50%"})` }}>
+            Target {trimDecimal(target)} h
+          </span>
+          <div
+            className="wait"
+            role="img"
+            aria-label={`${label}: ${verb} ${trimDecimal(done)} hours against a ${trimDecimal(target)} hour target; ${outcome}`}
+          >
+            <span className="in" style={{ width: `calc(${percent(Math.min(doneValue, targetValue))}% - 1px)` }} />
+            {missed && <span className="over" style={{ width: `calc(${percent(doneValue - targetValue)}% - 1px)` }} />}
+            <span className="tick" style={{ left: `${tick}%` }} />
+          </div>
         </div>
-        <div>
-          <div className="target-label">{doneLabel}</div>
-          <div className={`target-value${done === null ? " is-missing" : ""}`}>{done === null ? NOT_RECORDED : hours(done)}</div>
-        </div>
+        <div className="wait-axis"><span>0 h</span><span>{trimDecimal(done)} h {verb}</span></div>
       </div>
-      {comparable && (
-        <div className="bar" aria-hidden="true">
-          <div className="bar-fill" style={{ width: `${(doneValue / scale) * 100}%` }} />
-          <div className="bar-tick" style={{ left: `calc(${(targetValue / scale) * 100}% - 1px)` }} />
-        </div>
-      )}
+      <div className="legend">
+        <span><i style={{ background: "var(--series-resolved)" }} />Within target</span>
+        {missed && <span><i style={{ background: "var(--series-missed)" }} />Past target</span>}
+      </div>
     </div>
   );
 }
 
-function Conversation({ messages, customer }: { messages: Message[]; customer: Customer | null }) {
-  // Messages carry a role but no author ID, so agent replies are not attributed to a named agent.
-  const customerName = customer?.company ?? "Customer";
+function Conversation({ messages, ticket }: { messages: Message[]; ticket: Ticket }) {
   const count = messages.length === 1 ? "1 message" : `${messages.length} messages`;
 
   return (
-    <Panel id="conversation" title="Conversation" meta={`${count}, oldest first`}>
-      {messages.length === 0 && <p className="empty">No messages recorded for this ticket.</p>}
-      {messages.map((message, index) => {
-        const isAgent = message.author_role === "agent";
-        const isCustomer = message.author_role === "customer";
-        const author = isAgent ? "Agent" : isCustomer ? customerName : "Role not recorded";
-        return (
-          <article key={message.message_id} className="message">
-            <div className={`avatar${isAgent ? " is-agent" : ""}`} aria-hidden="true">
-              {isAgent ? "AG" : initials(author)}
-            </div>
-            <div className="message-content">
-              <div className="message-meta">
-                <span className="message-author">{author}</span>
-                <span className="message-role">
-                  {isCustomer ? "Customer · " : ""}Message {index + 1} · {message.message_id}
+    <Panel id="conversation" title="Conversation" meta={count}>
+      {messages.length === 0 ? (
+        <p className="empty-line">No messages recorded for this ticket.</p>
+      ) : (
+        <ol className="thread">
+          {messages.map((message) => {
+            const isAgent = message.author_role === "agent";
+            const isCustomer = message.author_role === "customer";
+            return (
+              <li key={message.message_id} className={`msg ${isAgent ? "agent" : "cust"}`}>
+                <span className="who">
+                  {isAgent ? <><strong>{orNotRecorded(ticket.agent_id)}</strong> · Agent</>
+                    : isCustomer ? <><strong>{orNotRecorded(ticket.customer_id)}</strong> · Customer</>
+                    : <strong>{NOT_RECORDED}</strong>}
                 </span>
-              </div>
-              <p className="message-body">{message.body ?? "No text recorded."}</p>
-            </div>
-          </article>
-        );
-      })}
+                <p className="bubble">{orNotRecorded(message.body)}</p>
+              </li>
+            );
+          })}
+        </ol>
+      )}
     </Panel>
   );
 }
@@ -156,7 +181,7 @@ function TicketFacts({ ticket }: { ticket: Ticket }) {
     <Facts items={[
       ["Status", <StatusPill key="status" status={ticket.status} />],
       ["Priority", <PriorityChip key="priority" priority={ticket.priority} />],
-      ["Assigned to", orNotRecorded(ticket.agent_id)],
+      ["Assigned agent", orNotRecorded(ticket.agent_id)],
       ["Channel", orNotRecorded(ticket.channel)],
       ["Category", orNotRecorded(ticket.category)],
       ["Component", orNotRecorded(ticket.component)],
@@ -168,30 +193,14 @@ function TicketFacts({ ticket }: { ticket: Ticket }) {
   );
 }
 
+// Only these four customer fields are shown, whatever else the API returns.
 function CustomerFacts({ customer, customerId }: { customer: Customer | null; customerId: string | null }) {
-  if (customer === null) {
-    return (
-      <p className="panel-body">
-        {customerId ? `No customer record for ${customerId}.` : "No customer is recorded on this ticket."}
-      </p>
-    );
-  }
-  const plan = customer.plan_id === null ? NOT_RECORDED
-    : customer.seats === null ? customer.plan_id : `${customer.plan_id} · ${customer.seats} seats`;
-  const location = [customer.country, customer.region].filter(Boolean).join(" · ") || NOT_RECORDED;
-
   return (
-    <>
-      <div className="account-name">{customer.company ?? "Company not recorded"}</div>
-      <Facts items={[
-        ["Customer id", customer.customer_id],
-        ["Plan", plan],
-        ["Industry", orNotRecorded(customer.industry)],
-        ["Company size", orNotRecorded(customer.company_size)],
-        ["Location", location],
-        ["Acquired through", orNotRecorded(customer.acquisition_source)],
-        ["Contact", orNotRecorded(customer.contact_email)],
-      ]} />
-    </>
+    <Facts items={[
+      ["Customer ID", orNotRecorded(customer?.customer_id ?? customerId)],
+      ["Company", orNotRecorded(customer?.company)],
+      ["Plan", orNotRecorded(customer?.plan_id)],
+      ["Seats", orNotRecorded(customer?.seats)],
+    ]} />
   );
 }

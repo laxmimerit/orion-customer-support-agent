@@ -1,34 +1,31 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import Image from "next/image";
 
-import { SidebarNav } from "@/components/sidebar-nav";
+import { TopNav } from "@/components/top-nav";
 import "./globals.css";
+
+const inter = Inter({ subsets: ["latin"], weight: ["400", "600"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: { default: "Orion Service Desk", template: "%s · Orion Service Desk" },
-  description: "Orion customer operations: ticket queue, case pages and settings.",
+  description: "Orion customer operations: ticket queue, case pages and reports.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={inter.variable}>
       <body>
-        <div className="frame">
-          <header className="masthead">
-            <Image className="masthead-logo" src="/orion-logo.png" alt="Orion" width={120} height={30} priority />
-            <div className="masthead-product">
-              <strong>Service Desk</strong>
-              <span>Customer operations</span>
+        <header className="topbar">
+          <div className="topbar-in">
+            <div className="brand">
+              <Image src="/orion-logo.png" alt="Orion" width={114} height={28} priority />
+              <span className="product">Service Desk</span>
             </div>
-            <div className="masthead-tag">PROTOTYPE</div>
-          </header>
-          <div className="body-row">
-            <aside className="sidebar">
-              <SidebarNav />
-            </aside>
-            <main className="main">{children}</main>
+            <TopNav />
           </div>
-        </div>
+        </header>
+        <main className="page grid">{children}</main>
       </body>
     </html>
   );

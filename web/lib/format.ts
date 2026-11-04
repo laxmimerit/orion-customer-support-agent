@@ -11,14 +11,12 @@ export function sentenceCase(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
-// "7.9600" -> "7.96 h", "24.0000" -> "24 h". The decimal string is trimmed, never rounded.
-export function hours(value: string) {
-  const trimmed = value.includes(".") ? value.replace(/0+$/, "").replace(/\.$/, "") : value;
-  return `${trimmed} h`;
+// "7.9600" -> "7.96", "24.0000" -> "24". The decimal string is trimmed, never rounded.
+export function trimDecimal(value: string) {
+  return value.includes(".") ? value.replace(/0+$/, "").replace(/\.$/, "") : value;
 }
 
-// "Fern Platform 086" -> "FP".
-export function initials(name: string) {
-  const letters = name.split(/\s+/).filter((word) => /^[A-Za-z]/.test(word)).map((word) => word[0]);
-  return (letters.slice(0, 2).join("") || name.slice(0, 2)).toUpperCase();
+// "7.9600" -> "7.96 h".
+export function hours(value: string) {
+  return `${trimDecimal(value)} h`;
 }

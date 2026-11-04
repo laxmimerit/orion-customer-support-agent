@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { Facts, Notice, PageHeading, Panel } from "@/components/desk";
+import { Facts, PageHeading, Panel } from "@/components/desk";
 import { apiAddress, apiInfo, ticketPage } from "@/lib/api";
 
 export const metadata: Metadata = { title: "Settings" };
@@ -11,15 +11,15 @@ export default async function Settings() {
 
   return (
     <>
-      <PageHeading crumbs={[{ label: "Workspace" }, { label: "Settings" }]} title="Settings">
+      <PageHeading
+        crumbs={[{ label: "Workspace" }, { label: "Settings" }]}
+        title="Settings"
+        notice="Read-only. API details are read from the Orion desk API when the page opens. Mail and models are not set up, so there is nothing to configure for them."
+      >
         <p className="page-desc">What this desk is connected to. Nothing on this page can be changed yet.</p>
       </PageHeading>
 
-      <Notice lead="Read-only.">
-        API details are read from the Orion desk API when the page opens. Mail and models are not set up, so there is nothing to configure for them.
-      </Notice>
-
-      <section className="settings-section" aria-labelledby="models-apis">
+      <section className="settings-section c12" aria-labelledby="models-apis">
         <h2 id="models-apis">Models &amp; APIs</h2>
         <div className="settings-grid">
           <Panel id="desk-api" title="Orion desk API" meta={<Answering ok={info.ok && tickets.ok} />}>
@@ -43,7 +43,7 @@ export default async function Settings() {
         </div>
       </section>
 
-      <section className="settings-section" aria-labelledby="connections">
+      <section className="settings-section c12" aria-labelledby="connections">
         <h2 id="connections">Connections</h2>
         <div className="settings-grid">
           <Panel id="database" title="Desk database" meta={<Answering ok={tickets.ok} />}>

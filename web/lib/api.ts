@@ -80,6 +80,68 @@ export type Message = { message_id: string; author_role: string | null; body: st
 
 export type TicketDetail = { ticket: Ticket; customer: Customer | null; messages: Message[] };
 
+// One search answer item. The similarity score is in the API's answer but is not shown, so it is not read.
+export type SearchHit = {
+  kind: "ticket" | "article";
+  id: string;
+  title: string | null;
+  status: string | null;
+  priority: string | null;
+  category: string | null;
+};
+
+export type SearchResults = { query: string; match: "exact_id" | "semantic"; items: SearchHit[] };
+
+// Report rows from api/reports/*.sql. The row named "All" is the report's total.
+// Volume's month is read only to find that row, and backlog's oldest ticket date is never read.
+export type VolumeRow = { month: string | null; tickets: number; resolved: number; unresolved: number };
+
+export type BacklogRow = {
+  status: string;
+  tickets: number;
+  no_first_reply: number;
+  no_first_reply_past_target: number;
+  avg_age_hours: string | null;
+  age_counted: number;
+  age_missing: number;
+};
+
+export type Breakdown = {
+  tickets: number;
+  resolved: number;
+  unresolved: number;
+  avg_first_response_hours: string | null;
+  first_response_counted: number;
+  first_response_missing: number;
+  avg_resolution_hours: string | null;
+  resolution_counted: number;
+  resolution_missing: number;
+  avg_csat: string | null;
+  csat_counted: number;
+  csat_missing: number;
+};
+
+export type PriorityRow = Breakdown & { priority: string | null };
+
+export type CategoryRow = Breakdown & { category: string | null };
+
+export type FirstReplyRow = {
+  priority: string | null;
+  tickets: number;
+  met: number;
+  missed: number;
+  no_first_reply: number;
+  no_target: number;
+  avg_csat_met: string | null;
+  csat_met_counted: number;
+  csat_met_missing: number;
+  avg_csat_missed: string | null;
+  csat_missed_counted: number;
+  csat_missed_missing: number;
+};
+
+export type Report<Row> = { report: string; rows: Row[] };
+
 export type ApiInfo = { title: string; version: string; routes: string[] };
 
 export type ApiProblem = { status: number | null; code: string; message: string };
@@ -88,15 +150,11 @@ export type Result<T> = { ok: true; data: T } | { ok: false; problem: ApiProblem
 
 async function get<T>(route: string, authorised = true): Promise<Result<T>> {
   const { baseUrl, token } = settings();
-  if (authorised && !token) {
-    return { ok: false, problem: { status: null, code: "missing_token",
-      message: "ORION_AGENT_TOKEN is not set in the environment or the repository's .env." } };
-  }
   let response: Response;
   try {
     response = await fetch(baseUrl + route, {
       cache: "no-store",
-      headers: authorised ? { Authorization: `Bearer ${token}` } : {},
+      headers: authorised && token ? { Authorization: `Bearer ${token}` } : {},
       signal: AbortSignal.timeout(20_000),
     });
   } catch {
@@ -122,6 +180,18 @@ export function ticketPage(page: number, pageSize: number) {
 export function ticketDetail(ticketId: string) {
   return get<TicketDetail>(`/api/tickets/${encodeURIComponent(ticketId)}`);
 }
+
+export function search(query: string, priority: string | null) {
+  const params = new URLSearchParams({ q: query });
+  if (priority) params.set("priority", priority);
+  return get<SearchResults>(`/api/search?${params}`);
+}
+
+export const volumeReport = () => get<Report<VolumeRow>>("/api/reports/volume");
+export const backlogReport = () => get<Report<BacklogRow>>("/api/reports/backlog");
+export const priorityReport = () => get<Report<PriorityRow>>("/api/reports/priority");
+export const categoryReport = () => get<Report<CategoryRow>>("/api/reports/category");
+export const firstReplyReport = () => get<Report<FirstReplyRow>>("/api/reports/first-reply");
 
 export async function apiInfo(): Promise<Result<ApiInfo>> {
   const result = await get<{ info?: { title?: string; version?: string }; paths?: Record<string, unknown> }>(

@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { DetailPending } from "@/components/detail-pending";
+import { RouteFocus } from "@/components/route-focus";
 import { SidebarNav, SkipLink } from "@/components/sidebar-nav";
 import "./globals.css";
 
@@ -20,11 +21,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <SkipLink />
         <DetailPending />
+        <RouteFocus />
         <div className="frame">
           <aside className="side" aria-label="Desk navigation">
             <Link className="side-logo" href="/" aria-label="Orion desk, ticket queue">
-              {/* Served as the file itself: /_next/image answers 404 on the Vercel deployment. */}
-              <Image src="/orion-logo.png" alt="Orion" width={98} height={24} priority unoptimized />
+              {/* Served as the file itself: /_next/image answers 404 on the Vercel deployment. The file's own size; CSS sets 24px high. */}
+              <Image src="/orion-logo.png" alt="Orion" width={1040} height={256} priority unoptimized />
             </Link>
             <div className="side-navs">
               <SidebarNav />

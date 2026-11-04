@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { useId } from "react";
 
 import { CustomerHistory } from "@/components/customer-history";
 import { ApiProblemPanel, Crumbs, Facts, PageHead, TicketSearchBar } from "@/components/desk";
@@ -11,10 +12,22 @@ import {
 
 import "./customer.css";
 
-export const metadata: Metadata = { title: "Customer" };
+type Props = { params: Promise<{ customerId: string }> };
 
-export default async function CustomerPage({ params }: { params: Promise<{ customerId: string }> }) {
-  const { customerId } = await params;
+function decodeId(raw: string) {
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw;
+  }
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  return { title: decodeId((await params).customerId) };
+}
+
+export default async function CustomerPage({ params }: Props) {
+  const customerId = decodeId((await params).customerId);
   const result = await customerProfile(customerId);
 
   if (!result.ok) {
@@ -94,9 +107,11 @@ function Stat({ label, value, of, warn = false }: {
   label: string; value: number | null | undefined; of?: number; warn?: boolean;
 }) {
   const missing = value === null || value === undefined;
+  const labelId = useId();
+  // The label names the group, which ties it to the value. It stays readable because not every reader speaks group names.
   return (
-    <div className="cprof-stat">
-      <div className="cprof-stat-label">{label}</div>
+    <div className="cprof-stat" role="group" aria-labelledby={labelId}>
+      <div id={labelId} className="cprof-stat-label">{label}</div>
       <div className={`cprof-stat-value${missing ? " is-missing" : ""}${warn ? " is-warn" : ""}`}>
         {missing ? NOT_RECORDED : value}
         {!missing && of !== undefined && <span> of {of}</span>}

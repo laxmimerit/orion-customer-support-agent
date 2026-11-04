@@ -11,8 +11,8 @@ from psycopg.rows import dict_row
 from psycopg_pool import ConnectionPool
 
 from .embedding import DIMENSIONS, as_vector
-from .models import (AccountDetails, ArticleSummary, ArticleText, ArticleTicket, Customer, Invoice, Message, Ticket,
-                     TicketSummary)
+from .models import (AccountDetails, ArticleSummary, ArticleText, ArticleTicket, Customer, Invoice, Message, Snapshot,
+                     Ticket, TicketSummary)
 
 
 def columns(model):
@@ -97,6 +97,8 @@ def nearest_query(priority):
     return NEAREST.format(dim=DIMENSIONS, where=where)
 
 
+# lab_metadata has one row today; the order keeps the answer stable if a second baseline is ever added.
+SNAPSHOT = sql.SQL("SELECT {} FROM lab_metadata ORDER BY baseline_id LIMIT 1").format(columns(Snapshot))
 # Reports: one checked SQL file each in api/reports, read once at import. No parameters are passed,
 # so nothing from a request reaches the SQL.
 REPORTS_DIR = Path(__file__).resolve().parents[1] / "reports"
@@ -211,6 +213,11 @@ class Store:
         """Company documents and staff requests, each by ID."""
         with self.pool.connection() as db:
             return db.execute(COMPANY_SECTIONS).fetchall(), db.execute(STAFF_REQUESTS).fetchall()
+
+    def snapshot(self):
+        """When the lab data was taken; None if lab_metadata has no row."""
+        with self.pool.connection() as db:
+            return db.execute(SNAPSHOT).fetchone()
 
     def exact_ticket(self, q):
         """The ticket whose ID is exactly q (case-sensitive, M01), as a search hit; None otherwise."""

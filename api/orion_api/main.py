@@ -21,7 +21,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from .embedding import Embedder
 from .models import (AdminStatus, Article, ArticleSummary, BacklogRow, CategoryRow, Company, CustomerListItem,
                      CustomerProfile, ErrorResponse, FirstReplyRow, Listing, PriorityRow, Report, SearchResults,
-                     TicketDetail, TicketPage, VolumeRow)
+                     Snapshot, TicketDetail, TicketPage, VolumeRow)
 from .settings import load_settings
 from .store import report_description
 
@@ -246,6 +246,16 @@ def create_app(settings=None, store_instance=None, embedder_instance=None):
         sections, staff_requests = db.company()
         return {"sections": [{**row, **split_owner(row["owner"])} for row in sections],
                 "staff_requests": staff_requests}
+
+    @app.get("/api/snapshot", response_model=Snapshot, tags=["snapshot"], responses=errors(401, 404, 503),
+             summary="When the lab data snapshot was taken")
+    def get_snapshot(_: str = Depends(role), db=Depends(store)):
+        """The moment the lab data was frozen, in UTC. Reports age tickets at this time, not today. It is not when
+        the data was copied into orion_desk. `snapshot_utc` is null if the row records no time."""
+        snapshot = db.snapshot()
+        if snapshot is None:
+            raise ApiError(404, "snapshot_not_found", "No data snapshot is recorded.")
+        return snapshot
 
     for path, name, row, summary in REPORT_ROUTES:
         app.get(f"/api/reports/{path}", response_model=Report[row], tags=["reports"],

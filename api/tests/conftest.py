@@ -79,6 +79,9 @@ COMPANY_SECTIONS = [
     {"document_id": "DOC002", "title": "Workflow", "owner": "Leena", "body": "Body"},
     {"document_id": "DOC003", "title": "Snapshot", "owner": None, "body": None},
 ]
+# Wider than the response on purpose: only snapshot_utc may leave the API. The column is ISO text, as stored.
+LAB_METADATA = {"baseline_id": "orion-legacy-v1", "snapshot_utc": "2026-06-30T23:59:59Z", "fictional": 1,
+                "scenario": "Scenario"}
 STAFF_REQUESTS = [{"request_id": "REQ001", "title": "Find related cases", "requested_by": "Leena", "body": "Body"}]
 
 
@@ -143,6 +146,9 @@ class FakeStore:
 
     def company(self):
         return COMPANY_SECTIONS, STAFF_REQUESTS
+
+    def snapshot(self):
+        return LAB_METADATA
 
     def exact_ticket(self, q):
         self.calls.append(("exact_ticket", q))

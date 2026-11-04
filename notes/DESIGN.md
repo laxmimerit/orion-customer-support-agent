@@ -32,11 +32,12 @@ Status pills: Open is indigo, In progress is teal, Pending is amber, Resolved is
 
 **Type.** Inter 400 to 800 through `next/font`, 14px with line height 1.5, tabular figures (`tnum`, `cv11`). Page titles 28px bold (24px on phones).
 
-**Shape.** Cards 16px radius, rows 12px, controls 10px, pills 999px. Focus is a 3px ring, `rgba(9, 130, 120, .35)`.
+**Shape.** Cards 16px radius, rows 12px, controls 10px, pills 999px. Focus is a 3px solid teal ring, `--focus-ring`, with a transparent outline that forced colours paint in its place.
 
 ## 3. Frame
 
 - A 3px teal rule on top of the page.
+- **Skip link**, off-screen until the Tab key reaches it: the first stop on every page, moving focus to the column.
 - **Sidebar**, 232px and sticky: logo at 24px high, Workspace links (Tickets, Customers, Knowledge, Reports, Company) and Settings at the bottom. Items are 44px high; the active one has a teal wash and a 3px inset bar.
 - **Top bar**, at least 68px high: a search box up to 480px wide and a "View only" badge.
 - **Page**, up to 1120px wide, padding 40px 32px 64px, gap 32px. Detail pages use 36px at the top and a 28px gap.

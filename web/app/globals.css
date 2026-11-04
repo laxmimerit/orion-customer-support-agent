@@ -64,8 +64,9 @@
   --on-navy: #f3f6f6;
   --on-color: #fcfdfd;
 
-  --focus-ring: 0 0 0 3px rgba(9, 130, 120, 0.35);
+  --focus-ring: 0 0 0 3px var(--teal);
   --select-ring: 0 0 0 3px rgba(9, 130, 120, 0.16);
+  --segment-shadow: 0 1px 2px rgba(15, 36, 48, 0.12);
 
   --font-sans: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -93,8 +94,11 @@ button:not(:disabled) { cursor: pointer; }
 h1, h2, h3, p, dl, dd, ul, ol { margin: 0; }
 ul, ol { padding: 0; list-style: none; }
 
-a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
-  outline: none;
+/* The ring is a shadow so it follows each control's radius. Forced colours drop shadows and paint
+   the transparent outline instead. tabindex="-1" targets take focus from a link, not the Tab key: no ring. */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 3px solid transparent;
   box-shadow: var(--focus-ring);
 }
 
@@ -108,6 +112,20 @@ input::placeholder { color: var(--ink-placeholder); }
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
+
+/* Off-screen until the Tab key reaches it, so it never takes up room in the frame. */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 12px;
+  z-index: 10;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: var(--surface);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.skip-link:focus { top: 12px; }
 
 /* Frame: a 3px teal rule, the sidebar, and the column holding the top bar and the page. */
 .frame {
@@ -166,9 +184,11 @@ input::placeholder { color: var(--ink-placeholder); }
   background: var(--teal-wash);
   box-shadow: inset 3px 0 0 var(--teal);
 }
+.side-link[aria-current="page"]:focus-visible { box-shadow: inset 3px 0 0 var(--teal), var(--focus-ring); }
 .side-link svg { flex: none; }
 
 .column { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; }
+.column:focus { outline: none; }
 
 .topbar { background: var(--surface); border-bottom: 1px solid var(--line); }
 .topbar-inner {
@@ -212,7 +232,8 @@ input::placeholder { color: var(--ink-placeholder); }
   color: #5b6b75;
   transition: box-shadow 0.15s;
 }
-.search:focus-within { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(9, 130, 120, 0.2); }
+/* A text input matches :focus-visible on a click too, so click and Tab show the same ring. */
+.search:focus-within { border-color: var(--teal); outline: 3px solid transparent; box-shadow: var(--focus-ring); }
 .search input {
   flex: 1;
   height: 100%;
@@ -363,6 +384,8 @@ input::placeholder { color: var(--ink-placeholder); }
 .button:hover { background: var(--hover); color: var(--ink); text-decoration: none; }
 .button.is-primary { height: 44px; border: 0; background: var(--teal); color: var(--on-color); font-size: 14px; }
 .button.is-primary:hover { background: var(--teal-ink); color: var(--on-color); }
+/* A teal ring on a teal button only looks like a bigger button: the inner line separates them. */
+.button.is-primary:focus-visible { box-shadow: inset 0 0 0 2px var(--surface), var(--focus-ring); }
 .button[aria-disabled="true"] { color: var(--ink-placeholder); background: var(--surface-soft); pointer-events: none; }
 
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -394,11 +417,13 @@ input::placeholder { color: var(--ink-placeholder); }
   font-weight: 600;
 }
 .segmented button:hover { background: var(--teal-wash-hover); }
+.segmented button:focus-visible { position: relative; }
 .segmented button[aria-pressed="true"] {
   background: var(--surface);
   color: var(--ink-strong);
-  box-shadow: 0 1px 2px rgba(15, 36, 48, 0.12);
+  box-shadow: var(--segment-shadow);
 }
+.segmented button[aria-pressed="true"]:focus-visible { box-shadow: var(--segment-shadow), var(--focus-ring); }
 
 /* A list row */
 .row {
@@ -493,6 +518,7 @@ input::placeholder { color: var(--ink-placeholder); }
     letter-spacing: -0.01em;
   }
   .side-link[aria-current="page"] { box-shadow: inset 0 -3px 0 var(--teal); }
+  .side-link[aria-current="page"]:focus-visible { box-shadow: inset 0 -3px 0 var(--teal), var(--focus-ring); }
 
   .topbar-inner { padding: 10px 16px; min-height: 0; }
   .search { flex-basis: 100%; max-width: none; height: 44px; }

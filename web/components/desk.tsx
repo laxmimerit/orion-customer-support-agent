@@ -22,11 +22,11 @@ export function TopBar({ children }: { children?: React.ReactNode }) {
   );
 }
 
-// Top bar for pages with nothing of their own to search: Enter searches tickets on the queue.
+// Top bar for pages with nothing of their own to search: Enter searches tickets and help articles on the queue.
 export function TicketSearchBar() {
   return (
     <TopBar>
-      <SearchField label="Search tickets" placeholder="Search subject, ticket or customer" action="/" shortcut />
+      <SearchField label="Search tickets and help articles" placeholder="Search tickets and help articles" action="/" shortcut />
     </TopBar>
   );
 }

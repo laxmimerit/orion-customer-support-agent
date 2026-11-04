@@ -62,8 +62,8 @@ function SearchBar({ value, onChange }: { value: string; onChange: (value: strin
   return (
     <TopBar>
       <SearchField
-        label="Search tickets"
-        placeholder="Search subject, ticket or customer"
+        label="Search tickets and help articles"
+        placeholder="Search tickets and help articles"
         value={value}
         onChange={onChange}
         action="/"

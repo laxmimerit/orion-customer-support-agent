@@ -12,7 +12,7 @@ from psycopg_pool import ConnectionPool
 
 from .embedding import DIMENSIONS, as_vector
 from .models import (AccountDetails, ArticleSummary, ArticleText, ArticleTicket, Customer, Invoice, Message, Snapshot,
-                     Ticket, TicketSummary)
+                     Ticket)
 
 
 def columns(model):
@@ -22,9 +22,19 @@ def columns(model):
 
 # Legacy orders (store.py:59, 81) run on MySQL, which puts NULLs last on DESC and
 # first on ASC. PostgreSQL does the opposite, so say it explicitly.
-TICKET_PAGE = sql.SQL(
-    "SELECT {} FROM tickets ORDER BY created_at DESC NULLS LAST, ticket_id LIMIT %s OFFSET %s"
-).format(columns(TicketSummary))
+# Tickets are aged at the snapshot, as in reports/backlog.sql. The left join keeps every ticket, with a null age,
+# if no snapshot is recorded. Four places are enough to tell whole seconds apart, so rounding can't move a ticket
+# across its target.
+TICKET_PAGE = """WITH snapshot AS (
+    SELECT snapshot_utc::timestamptz AT TIME ZONE 'UTC' AS at FROM lab_metadata ORDER BY baseline_id LIMIT 1
+)
+SELECT t.ticket_id, t.subject, t.status, t.priority, t.channel, t.category, t.customer_id, t.agent_id, t.created_at,
+       t.sla_response_hours, t.sla_resolution_hours, t.first_response_hours, t.resolution_hours,
+       ROUND(EXTRACT(EPOCH FROM (s.at - t.created_at)) / 3600, 4) AS age_hours
+FROM tickets t
+LEFT JOIN snapshot s ON TRUE
+ORDER BY t.created_at DESC NULLS LAST, t.ticket_id
+LIMIT %s OFFSET %s"""
 TICKET = sql.SQL("SELECT {} FROM tickets WHERE ticket_id = %s").format(columns(Ticket))
 CUSTOMER = sql.SQL("SELECT {} FROM customers WHERE customer_id = %s").format(columns(Customer))
 MESSAGES = sql.SQL(

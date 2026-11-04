@@ -11,6 +11,7 @@ import { RetryButton } from "@/components/retry-button";
 import { SearchField } from "@/components/search";
 import type { TicketPage, TicketSummary } from "@/lib/api";
 import { NOT_RECORDED, channelLabel, duration, isResolved, orNotRecorded, plural, sentenceCase } from "@/lib/format";
+import { lateLabel, slaResult, toHours } from "@/lib/sla";
 
 type Lane = "now" | "next" | "pending" | "done" | "missing";
 type QueueTicket = TicketSummary & { lane: Lane; rank: number };
@@ -337,6 +338,12 @@ function AgentText({ agent }: { agent: string | null }) {
   return <><span className="visually-hidden">Agent </span>{orNotRecorded(agent)}</>;
 }
 
+// The words and the icon say it, so the colour is never the only sign.
+function LateMark({ ticket }: { ticket: TicketSummary }) {
+  const label = lateLabel(ticket);
+  return label && <span className="queue-late"><AlertIcon size={13} />{label}</span>;
+}
+
 function NowCard({ ticket, selectedId, onPick }: RowProps) {
   const selected = ticket.ticket_id === selectedId;
   const tone = selected ? " is-selected" : ticket.priority === "P1" ? " is-p1" : " is-p2";
@@ -352,6 +359,7 @@ function NowCard({ ticket, selectedId, onPick }: RowProps) {
       <span className="row-sub">
         <strong>{ticket.ticket_id}</strong> · {categoryLabel(ticket.category)} · {orNotRecorded(ticket.customer_id)}
       </span>
+      <LateMark ticket={ticket} />
       <span className="queue-card-foot">
         <span className="queue-channel"><ChannelIcon channel={ticket.channel} />{channelLabel(ticket.channel)}</span>
         <span className="queue-channel">Agent<AgentBadge agent={ticket.agent_id} /></span>
@@ -375,6 +383,7 @@ function QueueRow({ ticket, selectedId, onPick }: RowProps) {
           <strong>{ticket.ticket_id}</strong> · {categoryLabel(ticket.category)} · {orNotRecorded(ticket.customer_id)}
           {" · "}{channelLabel(ticket.channel)}
         </span>
+        <LateMark ticket={ticket} />
       </span>
       <span className="queue-row-end">
         <StatusPill status={ticket.status} fixed />
@@ -396,6 +405,7 @@ function MiniRow({ ticket, selectedId, onPick, lead, detail, end }: RowProps & {
       <span className="queue-mini-text">
         <SubjectLink ticket={ticket} className="queue-mini-title" />
         <span className="queue-mini-sub">{ticket.ticket_id} · {detail}</span>
+        <LateMark ticket={ticket} />
       </span>
       {end}
     </div>
@@ -530,10 +540,6 @@ function Preview({ ticket, similar, onPick }: {
   );
 }
 
-function hours(value: string | null) {
-  return value === null ? null : Number(value);
-}
-
 // Both bars share one scale, so a long first reply and a short resolution read true against each other.
 function SlaBars({ status, first_response_hours, sla_response_hours, resolution_hours, sla_resolution_hours }: {
   status: string | null;
@@ -542,10 +548,10 @@ function SlaBars({ status, first_response_hours, sla_response_hours, resolution_
   resolution_hours: string | null;
   sla_resolution_hours: string | null;
 }) {
-  const firstReply = hours(first_response_hours);
-  const firstTarget = hours(sla_response_hours);
-  const resolved = hours(resolution_hours);
-  const resolveTarget = hours(sla_resolution_hours);
+  const firstReply = toHours(first_response_hours);
+  const firstTarget = toHours(sla_response_hours);
+  const resolved = toHours(resolution_hours);
+  const resolveTarget = toHours(sla_resolution_hours);
   const scale = Math.max(firstReply ?? 0, firstTarget ?? 0, resolved ?? 0, resolveTarget ?? 0);
   // A ticket still in the queue has simply not got there yet; only a resolved one is missing a value.
   const closed = isResolved(status);
@@ -562,9 +568,8 @@ function SlaBars({ status, first_response_hours, sla_response_hours, resolution_
 function SlaBar({ label, spoken, missing, value, target, scale }: {
   label: string; spoken: string; missing: string; value: number | null; target: number | null; scale: number;
 }) {
-  const judged = value !== null && target !== null;
-  const met = judged && value <= target;
-  const verdict = judged ? (met ? " · met" : " · missed") : "";
+  const result = slaResult(value, target);
+  const verdict = result ? ` · ${result}` : "";
   const share = (part: number) => `${scale > 0 ? Math.round((part / scale) * 1000) / 10 : 0}%`;
   const took = value === null ? `${label}: ${missing}` : `${spoken} ${duration(value)}`;
   const against = target === null ? "no target recorded" : `against a ${duration(target)} target`;
@@ -573,12 +578,12 @@ function SlaBar({ label, spoken, missing, value, target, scale }: {
     <div className="queue-sla-item">
       <div className="queue-sla-line">
         <span>{label} <strong>{value === null ? missing : duration(value)}</strong></span>
-        <span className={judged ? (met ? "is-met" : "is-missed") : undefined}>
+        <span className={result ? `is-${result}` : undefined}>
           {target === null ? "No target recorded" : `target ${duration(target)}${verdict}`}
         </span>
       </div>
       <div className="queue-sla-track" role="img" aria-label={`${took}, ${against}`}>
-        {value !== null && <span className={`queue-sla-fill${judged && !met ? " is-missed" : ""}`} style={{ width: share(value) }} />}
+        {value !== null && <span className={`queue-sla-fill${result === "missed" ? " is-missed" : ""}`} style={{ width: share(value) }} />}
         {target !== null && <span className="queue-sla-mark" style={{ left: `calc(${share(target)} - 1px)` }} />}
       </div>
     </div>

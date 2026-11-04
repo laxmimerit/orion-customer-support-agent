@@ -163,7 +163,8 @@ def create_app(settings=None, store_instance=None, embedder_instance=None):
         _: str = Depends(role),
         db=Depends(store),
     ):
-        """Queue order as on the legacy desk: `created_at` newest first, then `ticket_id`."""
+        """Queue order as on the legacy desk: `created_at` newest first, then `ticket_id`. `age_hours` is the
+        ticket's age at the data snapshot, not today, and is null with no `created_at` or no snapshot."""
         total, items = db.ticket_page(page_size, (page - 1) * page_size)
         return {"items": items, "page": page, "page_size": page_size, "total": total}
 

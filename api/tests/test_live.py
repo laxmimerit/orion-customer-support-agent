@@ -6,9 +6,9 @@ from orion_api.main import REPORT_ROUTES, create_app
 from orion_api.settings import load_settings
 
 from orion_api.embedding import MODEL, as_vector
-from orion_api.models import CustomerListItem, CustomerSubscription, CustomerTicket, StaffRequest
+from orion_api.models import CustomerListItem, CustomerSubscription, CustomerTicket, StaffRequest, TicketSummary
 from orion_api.store import (CUSTOMER_LIST, CUSTOMER_SUBSCRIPTION, CUSTOMER_TICKETS, REPORTS, STAFF_REQUESTS,
-                             TICKET_ARTICLES, nearest_query)
+                             TICKET_ARTICLES, TICKET_PAGE, nearest_query)
 
 from .conftest import auth, private_keys
 
@@ -147,9 +147,22 @@ def test_hand_written_queries_return_exactly_their_model_columns(live):
         for query, params, model in ((CUSTOMER_LIST, (), CustomerListItem),
                                      (CUSTOMER_SUBSCRIPTION, ("C0086",), CustomerSubscription),
                                      (CUSTOMER_TICKETS, ("C0086",), CustomerTicket),
-                                     (STAFF_REQUESTS, (), StaffRequest)):
+                                     (STAFF_REQUESTS, (), StaffRequest),
+                                     (TICKET_PAGE, (1, 0), TicketSummary)):
             cursor = db.execute(query, params)
             assert [column.name for column in cursor.description] == list(model.model_fields)
+
+
+def test_ticket_ages_are_taken_at_the_snapshot_and_agree_with_the_backlog_report(live):
+    client, settings = live
+    total, rows = client.app.state.store.ticket_page(ADR_COUNTS["tickets"], 0)
+    assert total == len(rows) == ADR_COUNTS["tickets"]
+    assert [row["ticket_id"] for row in rows][:2] == ["T01970", "T02116"]  # newest first, as before the join
+    assert str(next(row for row in rows if row["ticket_id"] == "T00727")["age_hours"]) == "68.4331"
+    past_target = sum(row["status"] != "resolved" and row["first_response_hours"] is None
+                      and row["age_hours"] > row["sla_response_hours"] for row in rows)
+    backlog = client.get("/api/reports/backlog", headers=auth(settings.agent_token)).json()["rows"]
+    assert past_target == next(row for row in backlog if row["status"] == "All")["no_first_reply_past_target"] == 16
 
 
 def test_similar_tickets_for_t00727_are_resolved_closest_first_with_true_counts(live):

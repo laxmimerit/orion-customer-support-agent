@@ -4,6 +4,7 @@ import pytest
 from psycopg_pool import PoolTimeout
 
 from orion_api.main import create_app, split_owner
+from orion_api.models import TicketSummary
 from orion_api.settings import load_settings
 
 from .conftest import ADMIN, AGENT, SETTINGS, auth, private_keys
@@ -65,6 +66,23 @@ def test_ticket_list_is_paged(client, fake_store):
     assert body["items"][0]["ticket_id"] == "T00727"
     assert "body" not in body["items"][0]
     assert fake_store.calls == [("ticket_page", 10, 20)]
+
+
+def test_ticket_list_row_carries_its_targets_and_age(client):
+    item = client.get("/api/tickets", headers=auth(AGENT)).json()["items"][0]
+    assert item == {
+        "ticket_id": "T00727", "subject": "Invite link expired", "status": "resolved", "priority": "P2",
+        "channel": "web", "category": "account access", "customer_id": "C0086", "agent_id": "A03",
+        "created_at": "2026-06-28T03:34:00Z", "sla_response_hours": "3.0000", "sla_resolution_hours": "24.0000",
+        "first_response_hours": "7.9600", "resolution_hours": "25.5800", "age_hours": "68.4331",
+    }
+
+
+def test_ticket_list_row_with_nothing_recorded_stays_null(client, fake_store):
+    blank = {name: None for name in TicketSummary.model_fields} | {"ticket_id": "T00001"}
+    fake_store.ticket_page = lambda limit, offset: (1, [blank])
+    item = client.get("/api/tickets", headers=auth(AGENT)).json()["items"][0]
+    assert item == blank
 
 
 def test_ticket_list_defaults(client, fake_store):

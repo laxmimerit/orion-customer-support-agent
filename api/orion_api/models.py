@@ -18,6 +18,7 @@ def as_utc(value):
 UtcDatetime = Annotated[datetime, AfterValidator(as_utc)]
 
 
+# age_hours is computed, not a column: hours from created_at to the data snapshot, as in reports/backlog.sql.
 class TicketSummary(BaseModel):
     ticket_id: str
     subject: str | None
@@ -28,6 +29,11 @@ class TicketSummary(BaseModel):
     customer_id: str | None
     agent_id: str | None
     created_at: UtcDatetime | None
+    sla_response_hours: Decimal | None
+    sla_resolution_hours: Decimal | None
+    first_response_hours: Decimal | None
+    resolution_hours: Decimal | None
+    age_hours: Decimal | None
 
 
 class TicketPage(BaseModel):

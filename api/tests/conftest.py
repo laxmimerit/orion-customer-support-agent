@@ -141,9 +141,10 @@ class FakeStore:
 
     def ticket_page(self, limit, offset):
         self.calls.append(("ticket_page", limit, offset))
-        summary = {key: T00727[key] for key in ("ticket_id", "subject", "status", "priority", "channel",
-                                               "category", "customer_id", "agent_id", "created_at")}
-        return 4000, [summary] if offset < 4000 else []
+        summary = {key: T00727[key] for key in ("ticket_id", "subject", "status", "priority", "channel", "category",
+                                               "customer_id", "agent_id", "created_at", "sla_response_hours",
+                                               "sla_resolution_hours", "first_response_hours", "resolution_hours")}
+        return 4000, [summary | {"age_hours": Decimal("68.4331")}] if offset < 4000 else []
 
     def ticket(self, ticket_id):
         if ticket_id != "T00727":

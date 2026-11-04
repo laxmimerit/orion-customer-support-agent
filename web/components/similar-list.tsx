@@ -7,16 +7,10 @@ import { Facts, PriorityTile } from "@/components/desk";
 import { ChevronIcon, ForwardIcon } from "@/components/icons";
 import type { SimilarTicket } from "@/lib/api";
 import { NOT_RECORDED, channelLabel, duration, matchedPhrase, orNotRecorded, plural, sentenceCase } from "@/lib/format";
+import { slaResult, slaVerdict, toHours } from "@/lib/sla";
 
 function why(fields: string[]) {
   return fields.length > 0 ? matchedPhrase(fields) : "Close in meaning; no recorded field is the same";
-}
-
-function verdict(resolved: string | null, target: string | null) {
-  if (resolved === null || target === null) return null;
-  const gap = Number(resolved) - Number(target);
-  if (gap === 0) return { text: "On target", late: false };
-  return gap > 0 ? { text: `${duration(gap)} late`, late: true } : { text: `${duration(gap)} inside target`, late: false };
 }
 
 export function SimilarList({ items, topReply }: { items: SimilarTicket[]; topReply: string | null }) {
@@ -35,7 +29,9 @@ function Row({ item, topReply, isOpen, onToggle }: {
   item: SimilarTicket; topReply: string | null; isOpen: boolean; onToggle: () => void;
 }) {
   const detailId = useId();
-  const result = verdict(item.resolution_hours, item.sla_resolution_hours);
+  const resolved = toHours(item.resolution_hours);
+  const target = toHours(item.sla_resolution_hours);
+  const result = slaResult(resolved, target);
   const rating = item.csat === null ? NOT_RECORDED : `${item.csat} / 5`;
   const reopened = item.reopened_count === null ? NOT_RECORDED : plural(item.reopened_count, "time");
   const sameReply = item.last_author_role === "agent" && item.last_body !== null && item.last_body === topReply;
@@ -50,7 +46,7 @@ function Row({ item, topReply, isOpen, onToggle }: {
         </span>
         <span className="similar-result">
           <span>{item.resolution_hours === null ? `Resolution time: ${NOT_RECORDED}` : `Resolved in ${duration(item.resolution_hours)}`}</span>
-          {result && <span className={result.late ? "is-late" : "is-met"}>{result.text}</span>}
+          {result && <span className={result === "missed" ? "is-late" : "is-met"}>{slaVerdict(resolved, target)}</span>}
         </span>
         <span className="similar-outcome">Rating: {rating} · Reopened {reopened}</span>
         <span className="similar-why">{why(item.matched_on)}</span>

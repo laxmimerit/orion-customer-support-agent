@@ -3,6 +3,7 @@
 import { useLayoutEffect, useRef, useState } from "react";
 
 import { NOT_RECORDED, duration } from "@/lib/format";
+import { type SlaResult, isRunning, slaResult, slaVerdict, toHours } from "@/lib/sla";
 
 // Label widths are estimated on the wide side, so a doubtful fit falls back to the legend.
 const CHAR_PX = 7;
@@ -11,7 +12,7 @@ const ORIGIN_PX = 16;
 // The widest the axis gets. Used for the server render, until the real width is measured.
 const WIDE_PX = 992;
 
-type Tone = "missed" | "met" | "plain";
+type Tone = SlaResult | "plain";
 
 type Stage = {
   done: number | null;
@@ -26,33 +27,19 @@ type Stage = {
 type Label = { key: string; at: number; title: string; note?: string; tone?: Tone };
 type Placed = Label & { align: "" | "is-start" | "is-end"; left: number };
 
-const toHours = (value: string | null) => (value === null ? null : Number(value));
-
 const percent = (at: number) => `${(at * 100).toFixed(1)}%`;
-
-function gapText(hours: number) {
-  const text = duration(hours);
-  return text === "0m" ? "Under 1m" : text;
-}
-
-// The only place late or met is decided, and only with both numbers. On the target counts as met, as in the reports.
-function verdictFor(done: number, target: number) {
-  if (done === target) return "On target";
-  return done > target ? `${gapText(done - target)} late` : `${gapText(target - done)} inside target`;
-}
 
 function readStage(name: string, doneLabel: string, waiting: string, doneValue: string | null, targetValue: string | null): Stage {
   const done = toHours(doneValue);
   const target = toHours(targetValue);
-  const judged = done !== null && target !== null;
-  const tone: Tone = !judged ? "plain" : done > target ? "missed" : "met";
+  const tone: Tone = slaResult(done, target) ?? "plain";
   return {
     done,
     target,
     tone,
     doneText: done === null ? waiting : `${doneLabel} ${duration(done)}`,
     targetText: target === null ? "No target recorded" : `Target ${duration(target)}`,
-    verdict: judged ? verdictFor(done, target) : null,
+    verdict: slaVerdict(done, target),
     summary: done === null ? waiting.toLowerCase() : target === null ? `no ${name} target` : `${name} target ${tone}`,
   };
 }
@@ -111,7 +98,7 @@ export function CaseClock({ status, replyTarget, reply, resolveTarget, resolved 
   }, []);
 
   // A closed ticket with no time is a gap in the record; only an open one is still waiting.
-  const closed = status === null || status.toLowerCase() === "resolved";
+  const closed = !isRunning(status);
   const replyStage = readStage("first reply", "First reply",
     closed ? `First reply: ${NOT_RECORDED}` : "No first reply yet", reply, replyTarget);
   const resolveStage = readStage("resolution", "Resolved",

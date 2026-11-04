@@ -47,17 +47,18 @@ export type TicketSummary = {
   category: string | null;
   customer_id: string | null;
   agent_id: string | null;
-};
-
-export type TicketPage = { items: TicketSummary[]; page: number; page_size: number; total: number };
-
-export type Ticket = TicketSummary & {
-  component: string | null;
-  body: string | null;
   sla_response_hours: string | null;
   sla_resolution_hours: string | null;
   first_response_hours: string | null;
   resolution_hours: string | null;
+  age_hours: string | null;
+};
+
+export type TicketPage = { items: TicketSummary[]; page: number; page_size: number; total: number };
+
+export type Ticket = Omit<TicketSummary, "age_hours"> & {
+  component: string | null;
+  body: string | null;
   csat: number | null;
   reopened_count: number | null;
   escalated: number | null;

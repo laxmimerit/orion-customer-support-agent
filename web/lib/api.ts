@@ -274,7 +274,10 @@ export function ticketDetail(ticketId: string) {
   return get<TicketDetail>(`/api/tickets/${encodeURIComponent(ticketId)}`);
 }
 
-export function searchDesk(query: string, limit = 25) {
+// The most hits one search returns. A full page means there may be more, so it is not a total.
+export const SEARCH_LIMIT = 25;
+
+export function searchDesk(query: string, limit = SEARCH_LIMIT) {
   return get<SearchResults>(`/api/search?q=${encodeURIComponent(query)}&limit=${limit}`);
 }
 

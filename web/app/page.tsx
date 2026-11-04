@@ -15,6 +15,7 @@ import {
   backlogReport,
   firstReplyReport,
   priorityReport,
+  SEARCH_LIMIT,
   searchDesk,
   ticketPage,
 } from "@/lib/api";
@@ -238,7 +239,7 @@ function SearchSection({ query, results }: { query: string; results: Result<Sear
   return (
     <section className="card queue-results" aria-labelledby="queue-results-title">
       <div className="card-head">
-        <h2 id="queue-results-title">Results for “{query}” <span>· {plural(items.length, "result")}</span></h2>
+        <h2 id="queue-results-title">Results for “{query}” <span>· {items.length === SEARCH_LIMIT ? `Top ${SEARCH_LIMIT} results` : plural(items.length, "result")}</span></h2>
         {back}
       </div>
       {items.length ? (

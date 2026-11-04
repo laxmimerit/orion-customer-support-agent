@@ -1,17 +1,19 @@
 """API behaviour against a fake store: no network, no database."""
 import pytest
 
-from orion_api.main import create_app
+from orion_api.main import create_app, split_owner
 from orion_api.settings import load_settings
 
-from .conftest import ADMIN, AGENT, SETTINGS, auth
+from .conftest import ADMIN, AGENT, SETTINGS, auth, private_keys
 
 
 def test_every_route_is_under_api_apart_from_docs(client):
     docs = {"/", "/docs", "/docs/oauth2-redirect", "/redoc", "/openapi.json"}
     paths = {route.path for route in client.app.routes} - docs
     reports = {f"/api/reports/{name}" for name in ("volume", "backlog", "priority", "category", "first-reply")}
-    assert paths == {"/api/tickets", "/api/tickets/{ticket_id}", "/api/search", "/api/admin/status", *reports}
+    pages = {"/api/customers", "/api/customers/{customer_id}", "/api/knowledge", "/api/knowledge/{article_id}",
+             "/api/company"}
+    assert paths == {"/api/tickets", "/api/tickets/{ticket_id}", "/api/search", "/api/admin/status", *reports, *pages}
 
 
 def test_every_route_is_get_only(client):
@@ -30,7 +32,8 @@ def test_root_opens_the_docs(client):
 
 
 @pytest.mark.parametrize("path", ["/api/tickets", "/api/tickets/T00727", "/api/search?q=T00727", "/api/admin/status",
-                                  "/api/reports/first-reply"])
+                                  "/api/reports/first-reply", "/api/customers", "/api/customers/C0086",
+                                  "/api/knowledge", "/api/knowledge/KB022", "/api/company"])
 def test_a_token_is_required(client, path):
     response = client.get(path)
     assert response.status_code == 401
@@ -145,6 +148,112 @@ def test_database_outage_is_503(client, fake_store):
     assert response.status_code == 503
     assert response.json()["error"]["code"] == "database_unavailable"
     assert "db.example" not in response.text
+
+
+def test_customer_list_shape_and_zero_cases(client):
+    response = client.get("/api/customers", headers=auth(AGENT))
+    assert response.status_code == 200
+    assert response.json() == {"total": 2, "items": [
+        {"customer_id": "C0086", "company": "Fern Platform 086", "plan": "Growth", "seats": 12, "region": "EMEA",
+         "industry": "SaaS", "active_cases": 4, "all_cases": 18},
+        {"customer_id": "C0300", "company": None, "plan": None, "seats": None, "region": None, "industry": None,
+         "active_cases": 0, "all_cases": 0},
+    ]}
+
+
+def test_customer_profile_shape(client):
+    response = client.get("/api/customers/C0086", headers=auth(AGENT))
+    assert response.status_code == 200
+    assert response.json() == {
+        "customer_id": "C0086",
+        "company": "Fern Platform 086",
+        "account_details": {"industry": "SaaS", "country": "DE", "region": "EMEA", "company_size": "51-200"},
+        "subscription": {"subscription_id": "S0086", "plan": "Growth", "seats": 12, "status": "active"},
+        "support_history": {"total": 2, "items": [
+            {"ticket_id": "T00727", "subject": "Invite link expired", "component": "Identity", "channel": "web",
+             "priority": "P2", "status": "resolved", "assigned_to": "Agent Three", "team": "Tier 2"},
+            {"ticket_id": "T00001", "subject": "Invite link expired", "component": "Identity", "channel": "web",
+             "priority": "P2", "status": "resolved", "assigned_to": None, "team": None},
+        ]},
+        "invoice_history": [
+            {"seats": 12, "unit_price_usd": "99.0000", "total_usd": "1188.0000", "status": "paid"},
+            {"seats": None, "unit_price_usd": None, "total_usd": None, "status": None},
+        ],
+    }
+
+
+def test_customer_with_nothing_recorded_keeps_nulls(client):
+    body = client.get("/api/customers/C0300", headers=auth(AGENT)).json()
+    assert body["company"] is None
+    assert body["subscription"] is None
+    assert body["support_history"] == {"total": 0, "items": []}
+    assert body["invoice_history"] == []
+
+
+def test_knowledge_list_shape(client):
+    response = client.get("/api/knowledge", headers=auth(AGENT))
+    assert response.status_code == 200
+    assert response.json() == {"total": 2, "items": [
+        {"article_id": "KB004", "title": "Resend an invitation", "category": "account access"},
+        {"article_id": "KB022", "title": "Role change not applied", "category": "account access"},
+    ]}
+
+
+def test_article_shape(client):
+    response = client.get("/api/knowledge/KB022", headers=auth(AGENT))
+    assert response.status_code == 200
+    assert response.json() == {
+        "article_id": "KB022", "title": "Role change not applied", "category": "account access", "body": "Article body",
+        "related_tickets": {"total": 111, "items": [
+            {"ticket_id": "T00727", "customer_id": "C0086", "priority": "P2", "status": "resolved"}]},
+        "more_in_category": [{"article_id": "KB004", "title": "Resend an invitation", "category": "account access"}],
+    }
+
+
+def test_company_shape_and_owner_split(client):
+    response = client.get("/api/company", headers=auth(AGENT))
+    assert response.status_code == 200
+    body = response.json()
+    assert [(row["document_id"], row["owner"], row["team"]) for row in body["sections"]] == [
+        ("DOC001", "Maya", "Product"),
+        ("DOC002", "Leena", None),  # no separator: no team
+        ("DOC003", None, None),  # a null owner stays null
+    ]
+    assert body["sections"][0] == {"document_id": "DOC001", "title": "Joining", "owner": "Maya", "team": "Product",
+                                   "body": "Body"}
+    assert body["staff_requests"] == [{"request_id": "REQ001", "title": "Find related cases", "requested_by": "Leena",
+                                       "body": "Body"}]
+
+
+def test_owner_splits_at_the_first_separator_only():
+    assert split_owner("Arun · Engineering · Platform") == {"owner": "Arun", "team": "Engineering · Platform"}
+    assert split_owner("Arun·Engineering") == {"owner": "Arun·Engineering", "team": None}
+
+
+@pytest.mark.parametrize("path", ["/api/customers", "/api/customers/C0086", "/api/knowledge", "/api/knowledge/KB022",
+                                  "/api/company"])
+def test_no_email_or_date_field_reaches_a_page_route(client, path):
+    response = client.get(path, headers=auth(AGENT))
+    assert response.status_code == 200
+    assert private_keys(response.json()) == set()
+
+
+@pytest.mark.parametrize("path, code", [("/api/customers/C9999", "customer_not_found"),
+                                        ("/api/customers/c0086", "customer_not_found"),
+                                        ("/api/knowledge/KB999", "article_not_found"),
+                                        ("/api/knowledge/kb022", "article_not_found")])
+def test_unknown_customer_or_article_is_404(client, path, code):
+    response = client.get(path, headers=auth(AGENT))
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == code
+
+
+@pytest.mark.parametrize("path", ["/api/customers/", "/api/knowledge/"])
+def test_an_id_over_32_characters_is_422(client, path):
+    response = client.get(path + "X" * 33, headers=auth(AGENT))
+    assert response.status_code == 422
+    assert response.json()["error"]["code"] == "invalid_request"
+    assert client.get(path + "X" * 32, headers=auth(AGENT)).status_code == 404
 
 
 def test_settings_read_tokens_and_ignore_legacy_database(tmp_path, monkeypatch):

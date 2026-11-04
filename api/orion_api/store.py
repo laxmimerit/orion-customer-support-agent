@@ -11,7 +11,8 @@ from psycopg.rows import dict_row
 from psycopg_pool import ConnectionPool
 
 from .embedding import DIMENSIONS, as_vector
-from .models import Customer, Message, Ticket, TicketSummary
+from .models import (AccountDetails, ArticleSummary, ArticleText, ArticleTicket, Customer, Invoice, Message, Ticket,
+                     TicketSummary)
 
 
 def columns(model):
@@ -29,6 +30,47 @@ CUSTOMER = sql.SQL("SELECT {} FROM customers WHERE customer_id = %s").format(col
 MESSAGES = sql.SQL(
     "SELECT {} FROM messages WHERE ticket_id = %s ORDER BY created_at ASC NULLS FIRST, message_id"
 ).format(columns(Message))
+# Customers. Joined queries name their columns by hand; a live test checks they match the models.
+# A ticket with no status counts as active, so IS DISTINCT FROM keeps it (<> would drop the null).
+CUSTOMER_LIST = """SELECT c.customer_id, c.company, p.name AS plan, c.seats, c.region, c.industry,
+       COUNT(t.ticket_id) FILTER (WHERE t.status IS DISTINCT FROM 'resolved') AS active_cases,
+       COUNT(t.ticket_id) AS all_cases
+FROM customers c
+LEFT JOIN plans p ON p.plan_id = c.plan_id
+LEFT JOIN tickets t ON t.customer_id = c.customer_id
+GROUP BY c.customer_id, c.company, p.name, c.seats, c.region, c.industry
+ORDER BY c.company NULLS LAST, c.customer_id"""
+CUSTOMER_ACCOUNT = sql.SQL("SELECT customer_id, company, {} FROM customers WHERE customer_id = %s").format(
+    columns(AccountDetails))
+# Every customer has one subscription today; if that changes, the latest one started is shown.
+CUSTOMER_SUBSCRIPTION = """SELECT s.subscription_id, p.name AS plan, s.seats, s.status
+FROM subscriptions s
+LEFT JOIN plans p ON p.plan_id = s.plan_id
+WHERE s.customer_id = %s
+ORDER BY s.started_at DESC NULLS LAST, s.subscription_id
+LIMIT 1"""
+CUSTOMER_TICKETS = """SELECT t.ticket_id, t.subject, t.component, t.channel, t.priority, t.status,
+       a.name AS assigned_to, a.team
+FROM tickets t
+LEFT JOIN agents a ON a.agent_id = t.agent_id
+WHERE t.customer_id = %s
+ORDER BY t.created_at DESC NULLS LAST, t.ticket_id"""
+CUSTOMER_INVOICES = sql.SQL("SELECT {} FROM invoices WHERE customer_id = %s ORDER BY month, invoice_id").format(
+    columns(Invoice))
+# Knowledge. A related ticket's subject equals the article title exactly.
+ARTICLE_LIST = sql.SQL("SELECT {} FROM knowledge_articles ORDER BY article_id").format(columns(ArticleSummary))
+ARTICLE = sql.SQL("SELECT {} FROM knowledge_articles WHERE article_id = %s").format(columns(ArticleText))
+RELATED_TICKET_COUNT = "SELECT COUNT(*) AS n FROM tickets WHERE subject = %s"
+RELATED_TICKETS = sql.SQL(
+    "SELECT {} FROM tickets WHERE subject = %s "
+    "ORDER BY status IS NOT DISTINCT FROM 'resolved', created_at DESC NULLS LAST, ticket_id LIMIT 5"
+).format(columns(ArticleTicket))
+MORE_IN_CATEGORY = sql.SQL(
+    "SELECT {} FROM knowledge_articles WHERE category = %s AND article_id <> %s ORDER BY article_id"
+).format(columns(ArticleSummary))
+# Company. owner stays "Name · Team" here; main.py splits it.
+COMPANY_SECTIONS = "SELECT document_id, title, owner, body FROM company_documents ORDER BY document_id"
+STAFF_REQUESTS = "SELECT request_id, title, requester AS requested_by, body FROM staff_requests ORDER BY request_id"
 # Search (plan increment 8). The inner query keeps the shape HNSW needs:
 # ORDER BY embedding <=> vector LIMIT k on search_embeddings alone; titles are joined afterwards.
 EXACT_ID = ("SELECT 'ticket' AS kind, ticket_id AS id, subject AS title, status, priority, category, "
@@ -114,6 +156,50 @@ class Store:
                 customer = db.execute(CUSTOMER, (ticket["customer_id"],)).fetchone()
             messages = db.execute(MESSAGES, (ticket_id,)).fetchall()
             return {"ticket": ticket, "customer": customer, "messages": messages}
+
+    def customers(self):
+        """Every customer with plan name and case counts, in one query, by company."""
+        with self.pool.connection() as db:
+            return db.execute(CUSTOMER_LIST).fetchall()
+
+    def customer(self, customer_id):
+        """The customer's account, subscription, tickets newest first and invoices oldest first; None if unknown."""
+        with self.pool.connection() as db:
+            account = db.execute(CUSTOMER_ACCOUNT, (customer_id,)).fetchone()
+            if account is None:
+                return None
+            tickets = db.execute(CUSTOMER_TICKETS, (customer_id,)).fetchall()
+            return {
+                "customer_id": account["customer_id"],
+                "company": account["company"],
+                "account_details": account,
+                "subscription": db.execute(CUSTOMER_SUBSCRIPTION, (customer_id,)).fetchone(),
+                "support_history": {"total": len(tickets), "items": tickets},
+                "invoice_history": db.execute(CUSTOMER_INVOICES, (customer_id,)).fetchall(),
+            }
+
+    def articles(self):
+        with self.pool.connection() as db:
+            return db.execute(ARTICLE_LIST).fetchall()
+
+    def article(self, article_id):
+        """The article, up to 5 related tickets (unresolved, then newest) and its category's others; None if unknown."""
+        with self.pool.connection() as db:
+            article = db.execute(ARTICLE, (article_id,)).fetchone()
+            if article is None:
+                return None
+            title = (article["title"],)
+            return {
+                **article,
+                "related_tickets": {"total": db.execute(RELATED_TICKET_COUNT, title).fetchone()["n"],
+                                    "items": db.execute(RELATED_TICKETS, title).fetchall()},
+                "more_in_category": db.execute(MORE_IN_CATEGORY, (article["category"], article_id)).fetchall(),
+            }
+
+    def company(self):
+        """Company documents and staff requests, each by ID."""
+        with self.pool.connection() as db:
+            return db.execute(COMPANY_SECTIONS).fetchall(), db.execute(STAFF_REQUESTS).fetchall()
 
     def exact_ticket(self, q):
         """The ticket whose ID is exactly q (case-sensitive, M01), as a search hit; None otherwise."""

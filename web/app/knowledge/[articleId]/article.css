@@ -1,0 +1,66 @@
+/* One knowledge article and its side panels. */
+
+.article-card { padding: 40px 48px 48px; display: flex; flex-direction: column; gap: 24px; }
+.article-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.pill.article-category { background: var(--teal-tint); color: var(--teal-deep); }
+.article-id { font-size: 12.5px; font-weight: 600; color: var(--ink-muted); }
+.article-title {
+  font-size: 34px;
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--ink-strong);
+  overflow-wrap: anywhere;
+}
+.article-rule { width: 100%; height: 1px; margin: 0; border: 0; background: var(--line-soft); }
+
+.article-body { max-width: 660px; display: flex; flex-direction: column; gap: 16px; }
+.article-body p {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--ink-body);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.article-panel-note { font-size: 13px; color: var(--ink-muted); }
+
+.article-ticket {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line-soft);
+}
+.article-ticket-text { min-width: 0; display: flex; flex-direction: column; }
+.article-ticket-id { font-size: 13.5px; font-weight: 700; }
+.article-ticket-sub { font-size: 12px; color: var(--ink-muted); }
+.article-ticket-sub a { font-weight: 600; }
+
+.article-more {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line-soft);
+  font-size: 13.5px;
+}
+.article-more:hover { text-decoration: none; }
+.article-more:hover .article-more-title { text-decoration: underline; }
+.article-more-id { flex: none; width: 46px; font-size: 12px; font-weight: 600; color: var(--ink-muted); }
+.article-more-title { min-width: 0; overflow-wrap: anywhere; }
+
+@media (max-width: 799px) {
+  .article-card { padding: 24px 20px 28px; gap: 18px; }
+  .article-title { font-size: 26px; }
+
+  /* The breadcrumb link and both links in a ticket row get full-size touch targets. */
+  .article-page .crumbs { margin-block: -12px; }
+  .article-page .crumbs a { display: inline-block; padding-block: 12px; }
+
+  .article-ticket { flex-wrap: wrap; padding: 0; }
+  .article-ticket-text { flex-direction: row; align-items: center; gap: 10px; }
+  .article-ticket-id, .article-ticket-sub a { display: inline-block; min-width: 44px; padding-block: 12px; }
+}

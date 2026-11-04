@@ -1,0 +1,166 @@
+/* The case page: heading card, case clock, conversation and details rail. */
+
+.case-hero { padding: 30px 32px; display: flex; flex-direction: column; gap: 28px; }
+.case-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.case-heading { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+
+.case-pills { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.case-pills .tile { height: 26px; }
+.case-pills svg { width: 13px; height: 13px; flex: none; }
+.case-sentiment-urgent { background: var(--red-pill); color: var(--red-ink); }
+.case-sentiment-frustrated { background: var(--orange-pill); color: var(--orange-ink); }
+.case-sentiment-positive { background: var(--teal-pill); color: var(--teal-ink); }
+
+/* Case clock. --clock-y is where the bar sits; ticks, markers and labels follow it. */
+.clock { --clock-y: 40px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.clock-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; }
+.clock-title { font-size: 15px; font-weight: 600; color: var(--ink-strong); }
+.clock-meta { font-size: 12.5px; color: var(--ink-muted); }
+
+.clock-axis { position: relative; height: 100px; }
+.clock-bar { position: absolute; top: var(--clock-y); height: 10px; }
+.clock-track { left: 0; right: 0; border-radius: 999px; background: var(--neutral-track); }
+.clock-elapsed { left: 0; border-radius: 999px 0 0 999px; background: var(--teal-track); }
+.clock-over { background: var(--amber); }
+.clock-tick {
+  position: absolute;
+  top: calc(var(--clock-y) - 14px);
+  width: 2px;
+  height: 38px;
+  margin-left: -1px;
+  background: var(--navy);
+}
+.clock-marker, .clock-dot {
+  width: 16px;
+  height: 16px;
+  border: 3px solid var(--neutral-dot);
+  border-radius: 999px;
+  background: var(--surface);
+}
+.clock-marker { position: absolute; top: calc(var(--clock-y) - 3px); margin-left: -8px; }
+.clock-marker.is-missed, .clock-dot.is-missed { border-color: var(--amber); }
+.clock-marker.is-met, .clock-dot.is-met { border-color: var(--teal); }
+
+.clock-label { position: absolute; white-space: nowrap; transform: translateX(-50%); text-align: center; }
+.clock-label.is-start { left: 0; transform: none; text-align: left; }
+.clock-label.is-end { right: 0; transform: none; text-align: right; }
+.clock-label.is-target { top: 4px; font-size: 12px; font-weight: 600; color: var(--ink-2); }
+.clock-label.is-actual { top: calc(var(--clock-y) + 24px); font-size: 12.5px; line-height: 1.35; color: var(--ink); }
+.clock-label strong { display: block; }
+.clock-origin { position: absolute; left: 0; top: calc(var(--clock-y) + 24px); font-size: 12px; color: var(--ink-muted); }
+
+.clock-verdict { font-size: 12.5px; font-weight: 600; color: var(--ink-muted); }
+.clock-verdict.is-missed { color: var(--amber-ink); }
+.clock-verdict.is-met { color: var(--teal-ink); }
+
+/* The stacked legend: for close values, and always on phones. */
+.clock-legend { display: none; flex-direction: column; gap: 10px; margin-top: 4px; }
+.clock-entry { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 2px 10px; }
+.clock-dot { flex: none; margin-top: 3px; }
+.clock-entry-text { flex: 1 1 140px; min-width: 0; display: flex; flex-direction: column; font-size: 12.5px; color: var(--ink-muted); }
+.clock-entry-text strong { font-size: 13.5px; color: var(--ink); }
+
+.clock.is-tight { --clock-y: 14px; }
+.clock.is-tight .clock-axis { height: 38px; }
+.clock.is-tight .clock-label, .clock.is-tight .clock-origin { display: none; }
+.clock.is-tight .clock-legend { display: flex; }
+
+/* Conversation */
+.case-conv { overflow: hidden; }
+.conv-list { padding: 24px 28px 8px; display: flex; flex-direction: column; gap: 24px; }
+.conv-item { display: flex; gap: 12px; }
+.conv-item.is-agent { flex-direction: row-reverse; }
+.conv-avatar {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: var(--teal-tint);
+  color: var(--teal-deep);
+  font-size: 12px;
+  font-weight: 700;
+}
+.is-agent .conv-avatar { background: var(--navy); color: var(--on-navy); font-size: 10px; }
+.conv-col { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; max-width: 620px; min-width: 0; }
+.is-agent .conv-col { align-items: flex-end; }
+.conv-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 12.5px; color: var(--ink-muted); }
+.is-agent .conv-meta { justify-content: flex-end; }
+.conv-author { font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
+.conv-bubble {
+  padding: 12px 16px;
+  border: 1px solid var(--line-row);
+  border-radius: 4px 14px 14px 14px;
+  background: var(--page);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.is-agent .conv-bubble { border: 0; border-radius: 14px 4px 14px 14px; background: var(--teal-bubble); color: var(--on-color); }
+.conv-note {
+  margin: 12px 24px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px dashed var(--line-control);
+  border-radius: 12px;
+  background: var(--surface-soft);
+  color: var(--ink-2);
+  font-size: 13px;
+}
+.conv-note svg { flex: none; }
+
+/* Details rail */
+.case-customer { gap: 16px; }
+.case-company { display: flex; align-items: center; gap: 12px; }
+.case-company-mark {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: var(--teal);
+  color: var(--on-color);
+  font-size: 18px;
+  font-weight: 700;
+}
+.case-company-text { min-width: 0; }
+.case-company-name { font-size: 16px; font-weight: 700; color: var(--ink-strong); overflow-wrap: anywhere; }
+.case-company-id { font-size: 12.5px; color: var(--ink-muted); }
+
+.case-rating {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-soft);
+}
+.case-rating-label { font-size: 13px; color: var(--ink-2); }
+.case-rating-bars { display: inline-flex; align-items: center; gap: 4px; }
+.case-rating-bars strong { margin-left: 6px; font-size: 15px; color: var(--ink-strong); }
+.case-rating-bar { width: 18px; height: 8px; border-radius: 999px; background: var(--line); }
+.case-rating-bar.is-on { background: var(--teal-fill); }
+.case-rating-none { font-size: 13px; font-weight: 600; color: var(--ink-strong); }
+
+@media (max-width: 799px) {
+  .case-hero { padding: 20px; gap: 22px; }
+  .case-page .button { height: 44px; }
+  .case-page .crumbs a, .case-company-name a { display: inline-flex; align-items: center; min-height: 44px; }
+  .case-page .crumbs { min-height: 44px; }
+  .case-conv .segmented button { height: 44px; }
+
+  .clock { --clock-y: 14px; }
+  .clock-axis { height: 38px; }
+  .clock-label, .clock-origin { display: none; }
+  .clock-legend { display: flex; }
+
+  .conv-list { padding: 20px 16px 8px; }
+  .conv-note { margin: 12px 16px 16px; }
+}

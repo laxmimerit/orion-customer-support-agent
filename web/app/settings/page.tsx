@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 
-import { Facts, Notice, PageHeading, Panel } from "@/components/desk";
+import { ApiProblemPanel, PageHead, TicketSearchBar } from "@/components/desk";
+import { LockIcon } from "@/components/icons";
 import { apiAddress, apiInfo, ticketPage } from "@/lib/api";
+import { NOT_RECORDED, orNotRecorded, plural } from "@/lib/format";
+import "./settings.css";
 
 export const metadata: Metadata = { title: "Settings" };
 
@@ -11,68 +14,94 @@ export default async function Settings() {
 
   return (
     <>
-      <PageHeading crumbs={[{ label: "Workspace" }, { label: "Settings" }]} title="Settings">
-        <p className="page-desc">What this desk is connected to. Nothing on this page can be changed yet.</p>
-      </PageHeading>
+      <TicketSearchBar />
+      <main className="page">
+        <PageHead title="Settings" description="What this desk is connected to. Nothing on this page can be changed yet." />
 
-      <Notice lead="Read-only.">
-        API details are read from the Orion desk API when the page opens. Mail and models are not set up, so there is nothing to configure for them.
-      </Notice>
+        <div className="settings-note" role="note">
+          <LockIcon size={18} strokeWidth={2} />
+          <span>
+            <strong>Read-only.</strong> API details are read from the Orion desk API when the page opens.
+            Mail and models are not set up, so there is nothing to configure for them.
+          </span>
+        </div>
 
-      <section className="settings-section" aria-labelledby="models-apis">
-        <h2 id="models-apis">Models &amp; APIs</h2>
-        <div className="settings-grid">
-          <Panel id="desk-api" title="Orion desk API" meta={<Answering ok={info.ok && tickets.ok} />}>
-            <Facts items={[
-              ["Name", info.ok ? info.data.title : "Did not answer"],
-              ["Version", info.ok ? info.data.version : "Did not answer"],
-              ["Address", apiAddress()],
-              ["Access", "Agent token, read-only. It is held by the web server and never sent to the browser."],
-              ["Ticket access", tickets.ok ? `Allowed: ${tickets.data.total} tickets` : `${tickets.problem.code}: ${tickets.problem.message}`],
-              ["Routes", info.ok
-                ? <ul className="routes">{info.data.routes.map((route) => <li key={route}><code>{route}</code></li>)}</ul>
-                : info.problem.message],
-            ]} />
-          </Panel>
+        {!info.ok && <ApiProblemPanel problem={info.problem} title="The desk API did not return its details" />}
+        {info.ok && !tickets.ok && <ApiProblemPanel problem={tickets.problem} title="The desk API did not return ticket access" />}
 
-          <Panel id="models" title="Language models" meta={<NotSetUp />}>
-            <div className="panel-body">
+        <section className="settings-section" aria-labelledby="settings-models">
+          <h2 id="settings-models">Models &amp; APIs</h2>
+          <div className="settings-grid">
+            <div className="card settings-panel is-api">
+              <PanelHead title="Orion desk API"><Answering ok={info.ok} /></PanelHead>
+              <dl className="settings-facts">
+                <dt>Name</dt>
+                <dd className={info.ok ? "is-strong" : "is-failed"}>{info.ok ? orNotRecorded(info.data.title) : "Did not answer"}</dd>
+                <dt>Version</dt>
+                <dd className={info.ok ? "is-strong" : "is-failed"}>{info.ok ? orNotRecorded(info.data.version) : "Did not answer"}</dd>
+                <dt>Address</dt>
+                <dd><code>{apiAddress()}</code></dd>
+                <dt>Access</dt>
+                <dd>Agent token, read-only. It is held by the web server and never sent to the browser.</dd>
+                <dt>Ticket access</dt>
+                <dd className={tickets.ok ? "is-strong" : "is-failed"}>
+                  {tickets.ok ? `Allowed: ${plural(tickets.data.total, "ticket")}` : tickets.problem.message}
+                </dd>
+              </dl>
+              <div className="settings-routes">
+                <span className="settings-routes-label">{info.ok ? `Routes · ${info.data.routes.length}` : "Routes"}</span>
+                {!info.ok && <p className="is-failed">The API did not list its routes.</p>}
+                {info.ok && info.data.routes.length === 0 && <p>{NOT_RECORDED}</p>}
+                {info.ok && info.data.routes.length > 0 && (
+                  <ul>{info.data.routes.map((route) => <li key={route}><code>{route}</code></li>)}</ul>
+                )}
+              </div>
+            </div>
+
+            <div className="card settings-panel">
+              <PanelHead title="Language models"><NotSetUp /></PanelHead>
               <p>No language model is connected. The desk does not draft, summarise or classify anything.</p>
             </div>
-          </Panel>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      <section className="settings-section" aria-labelledby="connections">
-        <h2 id="connections">Connections</h2>
-        <div className="settings-grid">
-          <Panel id="database" title="Desk database" meta={<Answering ok={tickets.ok} />}>
-            <div className="panel-body">
-              <p>
-                {tickets.ok
-                  ? "Read through the Orion desk API, which opens it read-only. The web app has no database connection of its own."
-                  : `The API could not read it: ${tickets.problem.message}`}
-              </p>
+        <section className="settings-section" aria-labelledby="settings-connections">
+          <h2 id="settings-connections">Connections</h2>
+          <div className="settings-grid">
+            {/* The route list needs no database, so this panel goes by the ticket read instead. */}
+            <div className="card settings-panel">
+              <PanelHead title="Desk database"><Answering ok={tickets.ok} /></PanelHead>
+              {tickets.ok
+                ? <p>Read through the Orion desk API, which opens it read-only. The web app has no database connection of its own.</p>
+                : <p className="is-failed">It could not be read through the Orion desk API.</p>}
             </div>
-          </Panel>
 
-          <Panel id="mail" title="Customer mail" meta={<NotSetUp />}>
-            <div className="panel-body">
+            <div className="card settings-panel">
+              <PanelHead title="Customer mail"><NotSetUp /></PanelHead>
               <p>
                 No mail provider is connected. The desk cannot send or receive mail, and no reply leaves it.
                 The rules mail must follow are in <code>docs/communication-contract.md</code>.
               </p>
             </div>
-          </Panel>
-        </div>
-      </section>
+          </div>
+        </section>
+      </main>
     </>
+  );
+}
+
+function PanelHead({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="settings-panel-head">
+      <h3>{title}</h3>
+      {children}
+    </div>
   );
 }
 
 function Answering({ ok }: { ok: boolean }) {
   return (
-    <span className={`pill ${ok ? "tone-met" : "tone-missed"}`}>
+    <span className={`pill settings-pill ${ok ? "is-answering" : "is-failed"}`}>
       <span className="dot" aria-hidden="true" />
       {ok ? "Answering" : "Not answering"}
     </span>
@@ -80,5 +109,10 @@ function Answering({ ok }: { ok: boolean }) {
 }
 
 function NotSetUp() {
-  return <span className="chip tone-priority">Not set up</span>;
+  return (
+    <span className="pill settings-pill is-off">
+      <span className="dot" aria-hidden="true" />
+      Not set up
+    </span>
+  );
 }

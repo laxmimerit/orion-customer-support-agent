@@ -1,0 +1,6 @@
+{
+  "article_id": "KB022",
+  "title": "Role change not applied",
+  "category": "account access",
+  "body": "Purpose: role change not applied. Start by identifying the affected workspace and confirming the account role. Record the exact action, time and error message. Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials. Never ask for a password or API secret. If the result differs from the expected state, attach a redacted reproduction and escalate to the responsible team."
+}

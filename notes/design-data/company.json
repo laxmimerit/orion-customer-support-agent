@@ -1,0 +1,62 @@
+{
+  "title": "Company handbook",
+  "description": "Operating context, support policies and current improvement requests.",
+  "sections": [
+    {
+      "title": "Joining Orion engineering",
+      "owner": "Maya",
+      "team": "Product",
+      "body": "Orion operates a support desk for software teams. Support staff use the Classic desk to look up tickets, customers and conversations. Maya owns product decisions, Arun owns engineering and Leena coordinates customer operations. You are joining engineering to build an improved replacement. The original application source is outside your access; the hosted desk and your development database are your starting evidence."
+    },
+    {
+      "title": "Support workflow",
+      "owner": "Leena",
+      "team": "Customer operations",
+      "body": "A customer reports a problem and a support case receives a ticket identifier. Its customer identifier links the account; conversation messages link back to the ticket identifier. Agents read the thread and find relevant guidance before composing a response. The Classic desk provides access to existing support cases. The replacement must preserve these relationships. No outgoing reply may be sent automatically: a person must review and approve it."
+    },
+    {
+      "title": "Existing brand and interface",
+      "owner": "Maya",
+      "team": "Product",
+      "body": "Keep the original Orion orbit mark and company identity. The Classic desk uses a compact header, grey navigation, basic forms and dense tables. Staff need clearer hierarchy, fewer page changes and readable status cues. A redesign must preserve ticket identities and actual records. A different colour or chart is not evidence that the underlying result is correct."
+    },
+    {
+      "title": "Reading our development snapshot",
+      "owner": "Arun",
+      "team": "Engineering",
+      "body": "The reporting snapshot preserves the existing support history. All stored timestamps are UTC. A missing satisfaction score means no response was recorded, not zero. An absent first-response time means the response was not observed. Do not substitute zero. Service measures must state which records and observations they include. Plan list prices and recorded historical invoice prices are different facts."
+    },
+    {
+      "title": "Changes and responsibilities",
+      "owner": "Arun",
+      "team": "Engineering",
+      "body": "Inspect the Classic desk and your database copy, record observed behaviour, identify open questions and propose acceptance checks before building the replacement. Changing a backend framework or database needs a reason, a migration plan and checks of identifiers, relationships, dates, nulls and record totals. Use a separate development database for engineering changes and preserve the existing operational records. New functionality and generated documents must be verified against evidence."
+    }
+  ],
+  "staff_requests": [
+    {
+      "request_id": "REQ001",
+      "title": "Find related cases",
+      "requested_by": "Leena",
+      "body": "Subject search misses cases when customers describe the same issue in different words. Investigate a better retrieval experience and show why each proposed related case is relevant. Keep exact ticket lookup available."
+    },
+    {
+      "request_id": "REQ002",
+      "title": "Understand service performance",
+      "requested_by": "Maya",
+      "body": "The status report cannot answer how response times vary by channel, plan and period. Propose useful measures and explicit definitions. Check missing values and denominators against the underlying records."
+    },
+    {
+      "request_id": "REQ003",
+      "title": "Reduce navigation overhead",
+      "requested_by": "Leena",
+      "body": "Staff repeatedly move between the queue, customer page and conversation. Design a clearer workspace while preserving record identity, keyboard access and readable text."
+    },
+    {
+      "request_id": "REQ004",
+      "title": "Assist reply drafting",
+      "requested_by": "Arun",
+      "body": "Explore evidence-grounded draft replies using relevant tickets and knowledge articles. Show sources, handle insufficient evidence and retain human approval. Do not add automatic sending."
+    }
+  ]
+}

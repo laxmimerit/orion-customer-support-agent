@@ -6,9 +6,11 @@ from orion_api.main import REPORT_ROUTES, create_app
 from orion_api.settings import load_settings
 
 from orion_api.embedding import MODEL, as_vector
-from orion_api.store import REPORTS, nearest_query
+from orion_api.models import CustomerListItem, CustomerSubscription, CustomerTicket, StaffRequest
+from orion_api.store import (CUSTOMER_LIST, CUSTOMER_SUBSCRIPTION, CUSTOMER_TICKETS, REPORTS, STAFF_REQUESTS,
+                             nearest_query)
 
-from .conftest import auth
+from .conftest import auth, private_keys
 
 pytestmark = pytest.mark.live
 
@@ -119,6 +121,89 @@ def test_search_plans_use_hnsw_unfiltered_and_the_priority_index_filtered(live):
             return "\n".join(row["QUERY PLAN"] for row in rows)
         assert "HNSW Scan using search_embeddings_hnsw" in plan(None)
         assert "Index Scan using search_embeddings_priority" in plan("P1")
+
+
+# Customers, knowledge and company pages.
+
+def page(client, settings, path):
+    response = client.get(path, headers=auth(settings.agent_token))
+    assert response.status_code == 200
+    body = response.json()
+    assert private_keys(body) == set()
+    return body
+
+
+def test_hand_written_queries_return_exactly_their_model_columns(live):
+    client, _ = live
+    with client.app.state.store.pool.connection() as db:
+        for query, params, model in ((CUSTOMER_LIST, (), CustomerListItem),
+                                     (CUSTOMER_SUBSCRIPTION, ("C0086",), CustomerSubscription),
+                                     (CUSTOMER_TICKETS, ("C0086",), CustomerTicket),
+                                     (STAFF_REQUESTS, (), StaffRequest)):
+            cursor = db.execute(query, params)
+            assert [column.name for column in cursor.description] == list(model.model_fields)
+
+
+def test_customer_list_counts_every_ticket_once(live):
+    client, settings = live
+    body = page(client, settings, "/api/customers")
+    assert body["total"] == len(body["items"]) == 300
+    assert sum(item["all_cases"] for item in body["items"]) == 4000
+    assert sum(item["active_cases"] for item in body["items"]) == 475  # the backlog report's total
+    keys = [(item["company"], item["customer_id"]) for item in body["items"]]
+    assert keys == sorted(keys)
+    fern = next(item for item in body["items"] if item["customer_id"] == "C0086")
+    assert (fern["company"], fern["active_cases"], fern["all_cases"]) == ("Fern Platform 086", 4, 18)
+    assert fern["plan"] is not None
+
+
+def test_customer_profile_tickets_are_newest_first(live):
+    client, settings = live
+    body = page(client, settings, "/api/customers/C0086")
+    assert body["company"] == "Fern Platform 086"
+    assert body["subscription"]["plan"] is not None
+    history = body["support_history"]
+    assert history["total"] == len(history["items"]) == 18
+    assert all(item["assigned_to"] and item["team"] for item in history["items"])
+    ids = [item["ticket_id"] for item in history["items"]]
+    with client.app.state.store.pool.connection() as db:
+        created = {row["ticket_id"]: row["created_at"] for row in db.execute(
+            "SELECT ticket_id, created_at FROM tickets WHERE ticket_id = ANY(%s)", (ids,)).fetchall()}
+        totals = db.execute("SELECT total_usd FROM invoices WHERE customer_id = 'C0086' ORDER BY month").fetchall()
+    assert [created[ticket_id] for ticket_id in ids] == sorted(created.values(), reverse=True)
+    assert [invoice["total_usd"] for invoice in body["invoice_history"]] == [str(row["total_usd"]) for row in totals]
+    assert client.get("/api/customers/c0086", headers=auth(settings.agent_token)).status_code == 404
+
+
+def test_knowledge_list_is_by_id(live):
+    client, settings = live
+    body = page(client, settings, "/api/knowledge")
+    assert body["total"] == len(body["items"]) == 40
+    ids = [item["article_id"] for item in body["items"]]
+    assert ids == sorted(ids)
+
+
+def test_article_has_its_tickets_and_the_rest_of_its_category(live):
+    client, settings = live
+    body = page(client, settings, "/api/knowledge/KB022")
+    assert (body["title"], body["category"]) == ("Role change not applied", "account access")
+    assert body["body"]
+    related = body["related_tickets"]
+    assert related["total"] == 111 and len(related["items"]) == 5
+    resolved = [item["status"] == "resolved" for item in related["items"]]
+    assert resolved == sorted(resolved)  # unresolved first
+    others = [item["article_id"] for item in body["more_in_category"]]
+    assert others == sorted(others) and "KB022" not in others
+    assert {item["category"] for item in body["more_in_category"]} == {"account access"}
+
+
+def test_company_splits_owners_and_keeps_every_row(live):
+    client, settings = live
+    body = page(client, settings, "/api/company")
+    assert [row["document_id"] for row in body["sections"]] == [f"DOC00{n}" for n in range(1, 6)]
+    assert [row["request_id"] for row in body["staff_requests"]] == [f"REQ00{n}" for n in range(1, 5)]
+    assert (body["sections"][0]["owner"], body["sections"][0]["team"]) == ("Maya", "Product")
+    assert all(row["requested_by"] for row in body["staff_requests"])
 
 
 # Reports (api/reports). Expected numbers are from the B12 evidence file and investigation.md.

@@ -1,0 +1,275 @@
+{
+  "customer_id": "C0086",
+  "company": "Fern Platform 086",
+  "account_details": {
+    "industry": "Finance tools",
+    "country": "United States",
+    "region": "Americas",
+    "company_size": "11-50"
+  },
+  "subscription": {
+    "plan": "Scale",
+    "seats": 8,
+    "subscription_id": "SUB0086",
+    "status": "active"
+  },
+  "support_history": {
+    "total": 18,
+    "items": [
+      {
+        "ticket_id": "T00727",
+        "subject": "Invite link expired",
+        "component": "Identity",
+        "channel": "Web",
+        "account": "Fern Platform 086",
+        "plan": "Scale",
+        "priority": "P2",
+        "status": "Resolved",
+        "assigned_to": "Clara",
+        "team": "Customer success"
+      },
+      {
+        "ticket_id": "T00790",
+        "subject": "Role change not applied",
+        "component": "Identity",
+        "channel": "Chat",
+        "account": "Fern Platform 086",
+        "plan": "Scale",
+        "priority": "P3",
+        "status": "Resolved",
+        "assigned_to": "Ben",
+        "team": "Technical support"
+      },
+      {
+        "ticket_id": "T02183",
+        "subject": "Tax line needs explanation",
+        "component": "Billing",
+        "channel": "Email",
+        "account": "Fern Platform 086",
+        "plan": "Scale",
+        "priority": "P2",
+        "status": "Resolved",
+        "assigned_to": "Asha",
+        "team": "Customer care"
+      },
+      {
+        "ticket_id": "T01293",
+        "subject": "Set a reply template",
+        "component": "Workspace",
+        "channel": "Email",
+        "account": "Fern Platform 086",
+        "plan": "Scale",
+        "priority": "P3",
+        "status": "Resolved",
+        "assigned_to": "Ben",
+        "team": "Technical support"
+      },
+      {
+        "ticket_id": "T03247",
+        "subject": "Configure queue assignment",
+        "component": "Workspace",
+        "channel": "Email",
+        "account": "Fern Platform 086",
+        "plan": "Scale",
+        "priority": "P3",
+        "status": "Resolved",
+        "assigned_to": "Clara",
+        "team": "Customer success"
+      },
+      {
+        "ticket_id": "T02956",
+        "subject": "Add audit trail download",
+        "component": "Product",
+        "channel": "Web",
+        "account": "Fern Platform 086",
+        "plan": "Scale",
+        "priority": "P1",
+        "status": "Resolved",
+        "assigned_to": "Dev",
+        "team": "Customer care"
+      },
+      {
+        "ticket_id": "T01723",
+        "subject": "Configure queue assignment",
+        "component": "Workspace",
+        "channel": "Chat",
+        "account": "Fern Platform 086",
+        "plan": "Scale",
+        "priority": "P3",
+        "status": "Open",
+        "assigned_to": "Dev",
+        "team": "Customer care"
+      },
+      {
+        "ticket_id": "T02205",
+        "subject": "Add bulk reassignment",
+        "component": "Product",
+        "channel": "Email",
+        "account": "Fern Platform 086",
+        "plan": "Scale",
+        "priority": "P2",
+        "status": "Open",
+        "assigned_to": "Hana",
+        "team": "Technical support"
+      },
+      {
+        "ticket_id": "T02936",
+        "subject": "Role change not applied",
+        "component": "Identity",
+        "channel": "Web",
+        "account": "Fern Platform 086",
+        "plan": "Scale",
+        "priority": "P3",
+        "status": "Resolved",
+        "assigned_to": "Gabe",
+        "team": "Customer care"
+      },
+      {
+        "ticket_id": "T03614",
+        "subject": "Export stops before completion",
+        "component": "Dashboard",
+        "channel": "Email",
+        "account": "Fern Platform 086",
+        "plan": "Scale",
+        "priority": "P3",
+        "status": "In Progress",
+        "assigned_to": "Gabe",
+        "team": "Customer care"
+      },
+      {
+        "ticket_id": "T02747",
+        "subject": "Export stops before completion",
+        "component": "Dashboard",
+        "channel": "Web",
+        "account": "Fern Platform 086",
+        "plan": "Scale",
+        "priority": "P3",
+        "status": "Resolved",
+        "assigned_to": "Clara",
+        "team": "Customer success"
+      },
+      {
+        "ticket_id": "T03672",
+        "subject": "Webhook delivery is delayed",
+        "component": "Dashboard",
+        "channel": "Api",
+        "account": "Fern Platform 086",
+        "plan": "Scale",
+        "priority": "P2",
+        "status": "Resolved",
+        "assigned_to": "Elena",
+        "team": "Technical support"
+      },
+      {
+        "ticket_id": "T02981",
+        "subject": "Export monthly ticket history",
+        "component": "Workspace",
+        "channel": "Api",
+        "account": "Fern Platform 086",
+        "plan": "Scale",
+        "priority": "P3",
+        "status": "In Progress",
+        "assigned_to": "Ben",
+        "team": "Technical support"
+      },
+      {
+        "ticket_id": "T01764",
+        "subject": "Password reset email delayed",
+        "component": "Identity",
+        "channel": "Email",
+        "account": "Fern Platform 086",
+        "plan": "Scale",
+        "priority": "P3",
+        "status": "Resolved",
+        "assigned_to": "Asha",
+        "team": "Customer care"
+      },
+      {
+        "ticket_id": "T03660",
+        "subject": "Credit missing from next invoice",
+        "component": "Billing",
+        "channel": "Chat",
+        "account": "Fern Platform 086",
+        "plan": "Scale",
+        "priority": "P3",
+        "status": "Resolved",
+        "assigned_to": "Clara",
+        "team": "Customer success"
+      },
+      {
+        "ticket_id": "T03723",
+        "subject": "Saved view loses sorting",
+        "component": "Exports",
+        "channel": "Email",
+        "account": "Fern Platform 086",
+        "plan": "Scale",
+        "priority": "P3",
+        "status": "Resolved",
+        "assigned_to": "Hana",
+        "team": "Technical support"
+      },
+      {
+        "ticket_id": "T02511",
+        "subject": "Export monthly ticket history",
+        "component": "Workspace",
+        "channel": "Chat",
+        "account": "Fern Platform 086",
+        "plan": "Scale",
+        "priority": "P2",
+        "status": "Resolved",
+        "assigned_to": "Asha",
+        "team": "Customer care"
+      },
+      {
+        "ticket_id": "T02654",
+        "subject": "Renewal total changed",
+        "component": "Billing",
+        "channel": "Api",
+        "account": "Fern Platform 086",
+        "plan": "Scale",
+        "priority": "P4",
+        "status": "Resolved",
+        "assigned_to": "Clara",
+        "team": "Customer success"
+      }
+    ]
+  },
+  "invoice_history": [
+    {
+      "seats": 8,
+      "unit_price_usd": "99.00",
+      "total_usd": "792.00",
+      "status": "Paid"
+    },
+    {
+      "seats": 8,
+      "unit_price_usd": "99.00",
+      "total_usd": "792.00",
+      "status": "Paid"
+    },
+    {
+      "seats": 8,
+      "unit_price_usd": "99.00",
+      "total_usd": "792.00",
+      "status": "Paid"
+    },
+    {
+      "seats": 8,
+      "unit_price_usd": "99.00",
+      "total_usd": "792.00",
+      "status": "Paid"
+    },
+    {
+      "seats": 8,
+      "unit_price_usd": "99.00",
+      "total_usd": "792.00",
+      "status": "Paid"
+    },
+    {
+      "seats": 8,
+      "unit_price_usd": "99.00",
+      "total_usd": "792.00",
+      "status": "Paid"
+    }
+  ]
+}

@@ -19,8 +19,9 @@ from psycopg_pool import PoolTimeout
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from .embedding import Embedder
-from .models import (AdminStatus, BacklogRow, CategoryRow, ErrorResponse, FirstReplyRow, PriorityRow, Report,
-                     SearchResults, TicketDetail, TicketPage, VolumeRow)
+from .models import (AdminStatus, Article, ArticleSummary, BacklogRow, CategoryRow, Company, CustomerListItem,
+                     CustomerProfile, ErrorResponse, FirstReplyRow, Listing, PriorityRow, Report, SearchResults,
+                     TicketDetail, TicketPage, VolumeRow)
 from .settings import load_settings
 from .store import report_description
 
@@ -85,6 +86,14 @@ def report_route(name):
     def route(_: str = Depends(role), db=Depends(store)):
         return {"report": name, "rows": db.report(name)}
     return route
+
+
+def split_owner(owner):
+    """company_documents.owner holds "Name · Team". No separator means no team; a null owner stays null."""
+    if owner is None:
+        return {"owner": None, "team": None}
+    name, separator, team = owner.partition(" · ")
+    return {"owner": name, "team": team if separator else None}
 
 
 def create_app(settings=None, store_instance=None, embedder_instance=None):
@@ -187,6 +196,45 @@ def create_app(settings=None, store_instance=None, embedder_instance=None):
         if ticket is not None:
             return {"query": q, "match": "exact_id", "items": [ticket]}
         return {"query": q, "match": "semantic", "items": db.nearest(model.query(q), priority, limit)}
+
+    @app.get("/api/customers", response_model=Listing[CustomerListItem], tags=["customers"],
+             responses=errors(401, 503), summary="Every customer with plan and case counts, by company")
+    def list_customers(_: str = Depends(role), db=Depends(store)):
+        """`active_cases` counts tickets not resolved, a missing status included; `all_cases` counts every ticket."""
+        items = db.customers()
+        return {"total": len(items), "items": items}
+
+    @app.get("/api/customers/{customer_id}", response_model=CustomerProfile, tags=["customers"],
+             responses=errors(401, 404, 422, 503), summary="One customer with subscription, tickets and invoices")
+    def get_customer(customer_id: str = Path(max_length=32), _: str = Depends(role), db=Depends(store)):
+        """Exact, case-sensitive ID lookup. Tickets are newest first, invoices oldest first."""
+        profile = db.customer(customer_id)
+        if profile is None:
+            raise ApiError(404, "customer_not_found", f"No customer has the ID {customer_id!r}.")
+        return profile
+
+    @app.get("/api/knowledge", response_model=Listing[ArticleSummary], tags=["knowledge"],
+             responses=errors(401, 503), summary="Every help article, by ID")
+    def list_articles(_: str = Depends(role), db=Depends(store)):
+        items = db.articles()
+        return {"total": len(items), "items": items}
+
+    @app.get("/api/knowledge/{article_id}", response_model=Article, tags=["knowledge"],
+             responses=errors(401, 404, 422, 503), summary="One help article with related tickets")
+    def get_article(article_id: str = Path(max_length=32), _: str = Depends(role), db=Depends(store)):
+        """Related tickets have the article title as their exact subject: at most 5 here, unresolved first,
+        then newest, with `total` counting them all. `more_in_category` lists the category's other articles."""
+        article = db.article(article_id)
+        if article is None:
+            raise ApiError(404, "article_not_found", f"No article has the ID {article_id!r}.")
+        return article
+
+    @app.get("/api/company", response_model=Company, tags=["company"], responses=errors(401, 503),
+             summary="Company documents and staff requests")
+    def get_company(_: str = Depends(role), db=Depends(store)):
+        sections, staff_requests = db.company()
+        return {"sections": [{**row, **split_owner(row["owner"])} for row in sections],
+                "staff_requests": staff_requests}
 
     for path, name, row, summary in REPORT_ROUTES:
         app.get(f"/api/reports/{path}", response_model=Report[row], tags=["reports"],

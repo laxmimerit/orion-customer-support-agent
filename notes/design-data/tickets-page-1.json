@@ -1,0 +1,257 @@
+{
+  "items": [
+    {
+      "ticket_id": "T01970",
+      "subject": "Export stops before completion",
+      "status": "open",
+      "priority": "P3",
+      "channel": "web",
+      "category": "bug",
+      "customer_id": "C0272",
+      "agent_id": "A03"
+    },
+    {
+      "ticket_id": "T02116",
+      "subject": "Find archived conversations",
+      "status": "pending",
+      "priority": "P2",
+      "channel": "API",
+      "category": "how-to",
+      "customer_id": "C0011",
+      "agent_id": "A05"
+    },
+    {
+      "ticket_id": "T02960",
+      "subject": "Add bulk reassignment",
+      "status": "in progress",
+      "priority": "P3",
+      "channel": "chat",
+      "category": "feature request",
+      "customer_id": "C0083",
+      "agent_id": "A08"
+    },
+    {
+      "ticket_id": "T03390",
+      "subject": "Export stops before completion",
+      "status": "pending",
+      "priority": "P3",
+      "channel": "API",
+      "category": "bug",
+      "customer_id": "C0013",
+      "agent_id": "A03"
+    },
+    {
+      "ticket_id": "T03353",
+      "subject": "Webhook delivery is delayed",
+      "status": "pending",
+      "priority": "P4",
+      "channel": "API",
+      "category": "bug",
+      "customer_id": "C0071",
+      "agent_id": "A08"
+    },
+    {
+      "ticket_id": "T01319",
+      "subject": "Add audit trail download",
+      "status": "pending",
+      "priority": "P3",
+      "channel": "web",
+      "category": "feature request",
+      "customer_id": "C0096",
+      "agent_id": "A08"
+    },
+    {
+      "ticket_id": "T02210",
+      "subject": "Requests time out",
+      "status": "in progress",
+      "priority": "P1",
+      "channel": "chat",
+      "category": "outage",
+      "customer_id": "C0038",
+      "agent_id": "A03"
+    },
+    {
+      "ticket_id": "T02008",
+      "subject": "Dashboard filter resets",
+      "status": "in progress",
+      "priority": "P3",
+      "channel": "email",
+      "category": "bug",
+      "customer_id": "C0174",
+      "agent_id": "A05"
+    },
+    {
+      "ticket_id": "T03531",
+      "subject": "Add audit trail download",
+      "status": "pending",
+      "priority": "P3",
+      "channel": "API",
+      "category": "feature request",
+      "customer_id": "C0125",
+      "agent_id": "A04"
+    },
+    {
+      "ticket_id": "T01344",
+      "subject": "Support custom SLA calendars",
+      "status": "pending",
+      "priority": "P4",
+      "channel": "chat",
+      "category": "feature request",
+      "customer_id": "C0226",
+      "agent_id": "A01"
+    },
+    {
+      "ticket_id": "T03402",
+      "subject": "Add audit trail download",
+      "status": "pending",
+      "priority": "P4",
+      "channel": "chat",
+      "category": "feature request",
+      "customer_id": "C0075",
+      "agent_id": "A04"
+    },
+    {
+      "ticket_id": "T01431",
+      "subject": "Webhook delivery is delayed",
+      "status": "open",
+      "priority": "P3",
+      "channel": "web",
+      "category": "bug",
+      "customer_id": "C0102",
+      "agent_id": "A03"
+    },
+    {
+      "ticket_id": "T01517",
+      "subject": "SSO login loops",
+      "status": "pending",
+      "priority": "P3",
+      "channel": "email",
+      "category": "account access",
+      "customer_id": "C0017",
+      "agent_id": "A06"
+    },
+    {
+      "ticket_id": "T02402",
+      "subject": "Locked out after device change",
+      "status": "resolved",
+      "priority": "P3",
+      "channel": "chat",
+      "category": "account access",
+      "customer_id": "C0111",
+      "agent_id": "A05"
+    },
+    {
+      "ticket_id": "T02894",
+      "subject": "Invite a read-only reviewer",
+      "status": "open",
+      "priority": "P2",
+      "channel": "API",
+      "category": "how-to",
+      "customer_id": "C0280",
+      "agent_id": "A01"
+    },
+    {
+      "ticket_id": "T02288",
+      "subject": "Role change not applied",
+      "status": "open",
+      "priority": "P3",
+      "channel": "API",
+      "category": "account access",
+      "customer_id": "C0029",
+      "agent_id": "A06"
+    },
+    {
+      "ticket_id": "T02899",
+      "subject": "Invite a read-only reviewer",
+      "status": "pending",
+      "priority": "P2",
+      "channel": "chat",
+      "category": "how-to",
+      "customer_id": "C0129",
+      "agent_id": "A07"
+    },
+    {
+      "ticket_id": "T03087",
+      "subject": "SSO login loops",
+      "status": "in progress",
+      "priority": "P3",
+      "channel": "API",
+      "category": "account access",
+      "customer_id": "C0299",
+      "agent_id": "A01"
+    },
+    {
+      "ticket_id": "T01447",
+      "subject": "Renewal total changed",
+      "status": "open",
+      "priority": "P1",
+      "channel": "email",
+      "category": "billing",
+      "customer_id": "C0297",
+      "agent_id": "A06"
+    },
+    {
+      "ticket_id": "T01054",
+      "subject": "Dashboard filter resets",
+      "status": "resolved",
+      "priority": "P3",
+      "channel": "web",
+      "category": "bug",
+      "customer_id": "C0035",
+      "agent_id": "A03"
+    },
+    {
+      "ticket_id": "T01841",
+      "subject": "Invite link expired",
+      "status": "pending",
+      "priority": "P4",
+      "channel": "chat",
+      "category": "account access",
+      "customer_id": "C0175",
+      "agent_id": "A02"
+    },
+    {
+      "ticket_id": "T03778",
+      "subject": "Proration after plan upgrade",
+      "status": "resolved",
+      "priority": "P3",
+      "channel": "email",
+      "category": "billing",
+      "customer_id": "C0234",
+      "agent_id": "A05"
+    },
+    {
+      "ticket_id": "T00467",
+      "subject": "Export monthly ticket history",
+      "status": "pending",
+      "priority": "P4",
+      "channel": "chat",
+      "category": "how-to",
+      "customer_id": "C0016",
+      "agent_id": "A03"
+    },
+    {
+      "ticket_id": "T00371",
+      "subject": "Export monthly ticket history",
+      "status": "in progress",
+      "priority": "P3",
+      "channel": "API",
+      "category": "how-to",
+      "customer_id": "C0204",
+      "agent_id": "A07"
+    },
+    {
+      "ticket_id": "T00729",
+      "subject": "Add multilingual templates",
+      "status": "resolved",
+      "priority": "P3",
+      "channel": "API",
+      "category": "feature request",
+      "customer_id": "C0063",
+      "agent_id": "A07"
+    }
+  ],
+  "page": 1,
+  "page_size": 25,
+  "total": 4000
+}

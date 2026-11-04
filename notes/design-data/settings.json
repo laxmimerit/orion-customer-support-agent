@@ -1,0 +1,57 @@
+{
+  "title": "Settings",
+  "description": "What this desk is connected to. Nothing on this page can be changed yet.",
+  "notice": {
+    "lead": "Read-only.",
+    "text": "API details are read from the Orion desk API when the page opens. Mail and models are not set up, so there is nothing to configure for them."
+  },
+  "sections": [
+    {
+      "title": "Models & APIs",
+      "panels": [
+        {
+          "title": "Orion desk API",
+          "state": "Answering",
+          "facts": {
+            "Name": "Orion desk API",
+            "Version": "0.1.0",
+            "Address": "http://127.0.0.1:8000",
+            "Access": "Agent token, read-only. It is held by the web server and never sent to the browser.",
+            "Ticket access": "Allowed: 4000 tickets",
+            "Routes": [
+              "/api/tickets",
+              "/api/tickets/{ticket_id}",
+              "/api/search",
+              "/api/reports/volume",
+              "/api/reports/backlog",
+              "/api/reports/priority",
+              "/api/reports/category",
+              "/api/reports/first-reply",
+              "/api/admin/status"
+            ]
+          }
+        },
+        {
+          "title": "Language models",
+          "state": "Not set up",
+          "body": "No language model is connected. The desk does not draft, summarise or classify anything."
+        }
+      ]
+    },
+    {
+      "title": "Connections",
+      "panels": [
+        {
+          "title": "Desk database",
+          "state": "Answering",
+          "body": "Read through the Orion desk API, which opens it read-only. The web app has no database connection of its own."
+        },
+        {
+          "title": "Customer mail",
+          "state": "Not set up",
+          "body": "No mail provider is connected. The desk cannot send or receive mail, and no reply leaves it. The rules mail must follow are in docs/communication-contract.md."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "report": "first_reply",
+  "rows": [
+    {
+      "priority": "P1",
+      "tickets": 352,
+      "met": 230,
+      "missed": 122,
+      "no_first_reply": 0,
+      "no_target": 0,
+      "avg_csat_met": "4.09",
+      "csat_met_counted": 140,
+      "csat_met_missing": 72,
+      "avg_csat_missed": "2.68",
+      "csat_missed_counted": 73,
+      "csat_missed_missing": 35
+    },
+    {
+      "priority": "P2",
+      "tickets": 938,
+      "met": 558,
+      "missed": 380,
+      "no_first_reply": 0,
+      "no_target": 0,
+      "avg_csat_met": "4.28",
+      "csat_met_counted": 320,
+      "csat_met_missing": 170,
+      "avg_csat_missed": "2.85",
+      "csat_missed_counted": 213,
+      "csat_missed_missing": 127
+    },
+    {
+      "priority": "P3",
+      "tickets": 1970,
+      "met": 1214,
+      "missed": 742,
+      "no_first_reply": 14,
+      "no_target": 0,
+      "avg_csat_met": "4.46",
+      "csat_met_counted": 703,
+      "csat_met_missing": 357,
+      "avg_csat_missed": "2.97",
+      "csat_missed_counted": 447,
+      "csat_missed_missing": 229
+    },
+    {
+      "priority": "P4",
+      "tickets": 740,
+      "met": 449,
+      "missed": 281,
+      "no_first_reply": 10,
+      "no_target": 0,
+      "avg_csat_met": "4.52",
+      "csat_met_counted": 263,
+      "csat_met_missing": 128,
+      "avg_csat_missed": "2.90",
+      "csat_missed_counted": 170,
+      "csat_missed_missing": 78
+    },
+    {
+      "priority": "All",
+      "tickets": 4000,
+      "met": 2451,
+      "missed": 1525,
+      "no_first_reply": 24,
+      "no_target": 0,
+      "avg_csat_met": "4.40",
+      "csat_met_counted": 1426,
+      "csat_met_missing": 727,
+      "avg_csat_missed": "2.90",
+      "csat_missed_counted": 903,
+      "csat_missed_missing": 469
+    }
+  ]
+}

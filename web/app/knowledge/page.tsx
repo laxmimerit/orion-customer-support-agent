@@ -24,7 +24,7 @@ export default async function KnowledgePage({ searchParams }: Props) {
         <main className="page kb-page">
           <PageHead title="Knowledge base"
             description="Product guidance and troubleshooting references for customer support." />
-          <ApiProblemPanel problem={result.problem} />
+          <ApiProblemPanel problem={result.problem} retryTarget="the knowledge base" />
         </main>
       </>
     );

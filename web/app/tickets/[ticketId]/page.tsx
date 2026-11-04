@@ -22,7 +22,11 @@ function decodeId(raw: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  return { title: decodeId((await params).ticketId) };
+  const ticketId = decodeId((await params).ticketId);
+  const result = await ticketDetail(ticketId);
+  // notFound() here as well as in the page: a title returned from here would beat the one in not-found.tsx.
+  if (!result.ok && (result.problem.status === 404 || result.problem.status === 422)) notFound();
+  return { title: ticketId };
 }
 
 export default async function CasePage({ params }: Props) {
@@ -38,7 +42,7 @@ export default async function CasePage({ params }: Props) {
         <main className="page is-detail case-page">
           <Crumbs parent="Tickets" href="/" current={ticketId} />
           <PageHead title={ticketId} />
-          <ApiProblemPanel problem={result.problem} />
+          <ApiProblemPanel problem={result.problem} retryTarget="this ticket" />
         </main>
       </>
     );

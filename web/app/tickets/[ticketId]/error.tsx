@@ -3,7 +3,8 @@
 import { AlertIcon } from "@/components/icons";
 import { RetryButton } from "@/components/retry-button";
 
-export default function CaseError({ reset }: { error: Error; reset: () => void }) {
+// `retry` fetches the page again; `reset` would only redraw what already failed.
+export default function CaseError({ retry }: { retry: () => void }) {
   return (
     <main className="page is-detail">
       <div className="problem" role="alert">
@@ -11,7 +12,7 @@ export default function CaseError({ reset }: { error: Error; reset: () => void }
         <div>
           <p className="problem-title">This case could not be shown</p>
           <p className="problem-text">Something went wrong while opening this ticket. Nothing on it has changed.</p>
-          <RetryButton onRetry={reset} />
+          <RetryButton target="this ticket" onRetry={retry} />
         </div>
       </div>
     </main>

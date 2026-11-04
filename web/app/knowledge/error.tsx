@@ -12,7 +12,7 @@ export default function KnowledgeError({ retry }: { retry: () => void }) {
         <div>
           <p className="problem-title">The knowledge base could not be shown</p>
           <p className="problem-text">Something went wrong while opening this page.</p>
-          <RetryButton onRetry={retry} />
+          <RetryButton target="the knowledge base" onRetry={retry} />
         </div>
       </div>
     </main>

@@ -12,7 +12,7 @@ export default function QueueError({ retry }: { retry: () => void }) {
         <div>
           <p className="problem-title">The ticket queue could not be shown</p>
           <p className="problem-text">Something went wrong while opening this page.</p>
-          <RetryButton onRetry={retry} />
+          <RetryButton target="the ticket queue" onRetry={retry} />
         </div>
       </div>
     </main>

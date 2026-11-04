@@ -4,6 +4,7 @@ import "server-only";
 
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { cache } from "react";
 
 // Values already in the environment win over the repository's .env, as in api/orion_api/settings.py.
 // Only the API address and the agent token are read; the admin token stays with the API.
@@ -270,9 +271,10 @@ export function ticketPage(page: number, pageSize: number) {
   return get<TicketPage>(`/api/tickets?page=${page}&page_size=${pageSize}`);
 }
 
-export function ticketDetail(ticketId: string) {
-  return get<TicketDetail>(`/api/tickets/${encodeURIComponent(ticketId)}`);
-}
+// The detail lookups run twice per request, for the tab title and for the page. `cache` makes that one
+// API call, because the timeout signal in `get` opts out of the memoizing `fetch` would otherwise do.
+export const ticketDetail = cache((ticketId: string) =>
+  get<TicketDetail>(`/api/tickets/${encodeURIComponent(ticketId)}`));
 
 // The most hits one search returns. A full page means there may be more, so it is not a total.
 export const SEARCH_LIMIT = 25;
@@ -285,17 +287,15 @@ export function customerList() {
   return get<CustomerList>("/api/customers");
 }
 
-export function customerProfile(customerId: string) {
-  return get<CustomerProfile>(`/api/customers/${encodeURIComponent(customerId)}`);
-}
+export const customerProfile = cache((customerId: string) =>
+  get<CustomerProfile>(`/api/customers/${encodeURIComponent(customerId)}`));
 
 export function knowledgeList() {
   return get<KnowledgeList>("/api/knowledge");
 }
 
-export function knowledgeArticle(articleId: string) {
-  return get<Article>(`/api/knowledge/${encodeURIComponent(articleId)}`);
-}
+export const knowledgeArticle = cache((articleId: string) =>
+  get<Article>(`/api/knowledge/${encodeURIComponent(articleId)}`));
 
 export function companyHandbook() {
   return get<Company>("/api/company");

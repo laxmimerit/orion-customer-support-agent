@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { Crumbs, PageHead, TicketSearchBar } from "@/components/desk";
 
 import "./case.css";
+
+export const metadata: Metadata = { title: "Ticket not found" };
 
 export default function TicketNotFound() {
   return (

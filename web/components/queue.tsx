@@ -110,6 +110,7 @@ export function Queue({ items, page, page_size, total, description, children }: 
   const missingItems = lane("missing");
   const doneItems = lane("done");
   const showDone = doneOpen ?? narrowed;
+  const visible = showDone ? shown.length : shown.length - doneItems.length;
 
   const needCount = all.filter((ticket) => ticket.rank > 0).length;
   const nowCount = all.filter((ticket) => ticket.lane === "now").length;
@@ -136,6 +137,10 @@ export function Queue({ items, page, page_size, total, description, children }: 
         </PageHead>
 
         {children}
+
+        <p className="visually-hidden" role="status">
+          {plural(visible, "ticket")} shown on this page{cell && `, ${cellPriority} ${sentenceCase(cellStatus)} only`}
+        </p>
 
         {cell && (
           <div className="queue-filter">
@@ -196,7 +201,7 @@ export function Queue({ items, page, page_size, total, description, children }: 
                       {pendingItems.map((ticket) => (
                         <li key={ticket.ticket_id}>
                           <MiniRow ticket={ticket} {...rowProps} lead={<PriorityTile priority={ticket.priority} size="sm" />}
-                            detail={`${orNotRecorded(ticket.customer_id)} · ${orNotRecorded(ticket.agent_id)}`} />
+                            detail={<>{orNotRecorded(ticket.customer_id)} · <AgentText agent={ticket.agent_id} /></>} />
                         </li>
                       ))}
                     </ul>
@@ -214,7 +219,7 @@ export function Queue({ items, page, page_size, total, description, children }: 
                     {missingItems.map((ticket) => (
                       <li key={ticket.ticket_id}>
                         <MiniRow ticket={ticket} {...rowProps} lead={<PriorityTile priority={ticket.priority} size="sm" />}
-                          detail={`${orNotRecorded(ticket.customer_id)} · ${orNotRecorded(ticket.agent_id)}`}
+                          detail={<>{orNotRecorded(ticket.customer_id)} · <AgentText agent={ticket.agent_id} /></>}
                           end={<StatusPill status={ticket.status} />} />
                       </li>
                     ))}
@@ -224,7 +229,9 @@ export function Queue({ items, page, page_size, total, description, children }: 
 
               {all.length > 0 && (doneItems.length > 0 || !narrowed) && (
                 <div className="queue-done">
+                  {/* The list only exists while open, so the toggle only points at it then. */}
                   <button type="button" className="queue-done-toggle" aria-expanded={showDone}
+                    aria-controls={showDone ? "queue-done-list" : undefined}
                     onClick={() => setDoneOpen(!showDone)}>
                     <span className="queue-lane-dot is-done" />
                     <span className="queue-done-title">Resolved</span>
@@ -232,15 +239,15 @@ export function Queue({ items, page, page_size, total, description, children }: 
                     <span className="queue-done-action">{showDone ? "Hide" : "Show"}</span>
                   </button>
                   {showDone && (doneItems.length ? (
-                    <ul className="queue-minis is-done">
+                    <ul id="queue-done-list" className="queue-minis is-done">
                       {doneItems.map((ticket) => (
                         <li key={ticket.ticket_id}>
                           <MiniRow ticket={ticket} {...rowProps} lead={<span className="queue-check"><CheckIcon /></span>}
-                            detail={`${orNotRecorded(ticket.priority)} · ${orNotRecorded(ticket.agent_id)}`} />
+                            detail={<>{orNotRecorded(ticket.priority)} · <AgentText agent={ticket.agent_id} /></>} />
                         </li>
                       ))}
                     </ul>
-                  ) : <p className="queue-lane-empty">No resolved tickets on this page.</p>)}
+                  ) : <p id="queue-done-list" className="queue-lane-empty">No resolved tickets on this page.</p>)}
                 </div>
               )}
 
@@ -287,7 +294,7 @@ function NoTickets({ total, pages }: { total: number; pages: number }) {
 }
 
 function PageLink({ page, disabled, children }: { page: number; disabled: boolean; children: React.ReactNode }) {
-  if (disabled) return <span className="button" aria-disabled="true">{children}</span>;
+  if (disabled) return <span className="button" role="link" aria-disabled="true">{children}</span>;
   return <Link className="button" href={page === 1 ? "/" : `/?page=${page}`}>{children}</Link>;
 }
 
@@ -323,6 +330,11 @@ function AgentBadge({ agent, soft = false }: { agent: string | null; soft?: bool
       {agent ?? NOT_RECORDED}
     </span>
   );
+}
+
+// An agent ID inside a line of text. Only a screen reader needs the word.
+function AgentText({ agent }: { agent: string | null }) {
+  return <><span className="visually-hidden">Agent </span>{orNotRecorded(agent)}</>;
 }
 
 function NowCard({ ticket, selectedId, onPick }: RowProps) {
@@ -366,6 +378,7 @@ function QueueRow({ ticket, selectedId, onPick }: RowProps) {
       </span>
       <span className="queue-row-end">
         <StatusPill status={ticket.status} fixed />
+        <span className="visually-hidden">Agent </span>
         <AgentBadge agent={ticket.agent_id} soft />
       </span>
     </div>
@@ -373,7 +386,7 @@ function QueueRow({ ticket, selectedId, onPick }: RowProps) {
 }
 
 function MiniRow({ ticket, selectedId, onPick, lead, detail, end }: RowProps & {
-  lead: React.ReactNode; detail: string; end?: React.ReactNode;
+  lead: React.ReactNode; detail: React.ReactNode; end?: React.ReactNode;
 }) {
   const selected = ticket.ticket_id === selectedId;
   return (
@@ -400,7 +413,7 @@ function Glance({ tickets, cell, onCell }: {
         <h2 className="card-title">This page at a glance</h2>
         <span className="card-meta">Tap a cell to filter</span>
       </div>
-      <div className="queue-matrix">
+      <div className="queue-matrix" role="group" aria-label="Filter this page by priority and status">
         <span />
         {STATUSES.map((status) => <span key={status} className="queue-matrix-col">{sentenceCase(status)}</span>)}
         {PRIORITIES.map((priority) => [
@@ -453,6 +466,7 @@ function Preview({ ticket, similar, onPick }: {
 
   return (
     <section className="card queue-preview" aria-labelledby="queue-preview-title">
+      <p className="visually-hidden" role="status">Previewing {ticketId}, {subjectOf(ticket)}</p>
       <div className="queue-preview-head">
         <span className="queue-preview-id">{ticketId} · {channelLabel(ticket.channel)}</span>
         <h2 id="queue-preview-title">{subjectOf(ticket)}</h2>
@@ -499,7 +513,7 @@ function Preview({ ticket, similar, onPick }: {
               <li key={other.ticket_id}>
                 <button type="button" onClick={() => onPick(other.ticket_id)}>
                   <span>
-                    <strong>{other.ticket_id}</strong> · {orNotRecorded(other.customer_id)} · {orNotRecorded(other.agent_id)}
+                    <strong>{other.ticket_id}</strong> · {orNotRecorded(other.customer_id)} · <AgentText agent={other.agent_id} />
                   </span>
                   <StatusPill status={other.status} />
                 </button>

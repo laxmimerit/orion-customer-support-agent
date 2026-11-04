@@ -42,9 +42,14 @@ export function hoursText(value: string | null) {
   return hours === null ? NOT_RECORDED : hoursLabel(hours);
 }
 
+// 4.1 -> "4.10".
+export function ratingLabel(value: number) {
+  return value.toFixed(2);
+}
+
 export function ratingText(value: string | null) {
   const rating = num(value);
-  return rating === null ? NOT_RECORDED : rating.toFixed(2);
+  return rating === null ? NOT_RECORDED : ratingLabel(rating);
 }
 
 // 1944 hours -> "81 days". An age, so a duration and not a date.
@@ -131,10 +136,7 @@ export function firstReplyHeadline(total: FirstReplyRow | null, rows: FirstReply
   if (overall === null) return `First reply on target: ${NOT_RECORDED}`;
   const tenths = Math.round(overall * 10);
   const lead = `About ${tenths} in 10 on time`;
-  const shares = rows.flatMap((row) => {
-    const share = ratio(row.met, row.tickets);
-    return share === null ? [] : [share];
-  });
+  const shares = rows.map((row) => ratio(row.met, row.tickets)).filter((share) => share !== null);
   if (shares.length === 0) return lead;
   if (shares.every((share) => Math.round(share * 10) === tenths)) return `${lead}, at every priority`;
   return `${lead}, ${percentText(Math.min(...shares))} to ${percentText(Math.max(...shares))} by priority`;
@@ -156,7 +158,7 @@ export function categoryHeadline(rows: CategoryRow[]) {
   }
   const parts = [
     fastest && `Fastest reply: ${joined(fastest.rows.map((row) => categoryName(row.category)))} at ${hoursLabel(fastest.value)}`,
-    rated && `lowest rating: ${joined(rated.rows.map((row) => categoryName(row.category)))} at ${rated.value.toFixed(2)}`,
+    rated && `lowest rating: ${joined(rated.rows.map((row) => categoryName(row.category)))} at ${ratingLabel(rated.value)}`,
   ].filter((part) => part !== null);
   return parts.length > 0 ? sentenceCase(parts.join("; ")) : `Category averages: ${NOT_RECORDED}`;
 }
@@ -182,9 +184,106 @@ export function priorityHeadline(rows: PriorityRow[]) {
   }
   const parts = [
     shortest && `Shortest wait: ${joined(shortest.rows.map((row) => priorityName(row.priority)))} at ${hoursLabel(shortest.value)}`,
-    rated && `lowest rating: ${joined(rated.rows.map((row) => priorityName(row.priority)))} at ${rated.value.toFixed(2)}`,
+    rated && `lowest rating: ${joined(rated.rows.map((row) => priorityName(row.priority)))} at ${ratingLabel(rated.value)}`,
   ].filter((part) => part !== null);
   return parts.length > 0 ? sentenceCase(parts.join("; ")) : `Priority averages: ${NOT_RECORDED}`;
+}
+
+// One category strip: how it reads a row, words a value and picks its axis.
+export type Metric = {
+  label: string;
+  read: (row: CategoryRow) => number | null;
+  text: (value: number) => string;
+  span: (low: number, high: number) => string;
+  axis: (values: number[]) => [number, number];
+  range: (low: number, high: number) => string;
+};
+
+function hoursAxis(values: number[]): [number, number] {
+  const most = Math.max(...values);
+  return [0, most > 10 ? Math.ceil(most / 10) * 10 : Math.max(1, Math.ceil(most))];
+}
+
+// Whole rating points around the values, and never an axis with no width.
+function wholePointAxis(values: number[]): [number, number] {
+  const low = Math.floor(Math.min(...values));
+  const high = Math.ceil(Math.max(...values));
+  return low === high ? [low - 1, high] : [low, high];
+}
+
+const HOURS_METRIC = {
+  text: hoursLabel,
+  span: (low: number, high: number) => `${rounded(low).toFixed(1)}–${hoursLabel(high)}`,
+  axis: hoursAxis,
+  range: (low: number, high: number) => `${low}–${high} hours`,
+};
+
+export const METRICS: Metric[] = [
+  { label: "First reply", read: (row) => num(row.avg_first_response_hours), ...HOURS_METRIC },
+  { label: "Resolution", read: (row) => num(row.avg_resolution_hours), ...HOURS_METRIC },
+  {
+    label: "Rating",
+    read: (row) => num(row.avg_csat),
+    text: ratingLabel,
+    span: (low, high) => `${ratingLabel(low)}–${ratingLabel(high)}`,
+    axis: wholePointAxis,
+    range: (low, high) => `${low.toFixed(1)}–${high.toFixed(1)}`,
+  },
+];
+
+export type StripNote = { text: string; position: number; spotlit: boolean };
+
+// What a strip says in words: the spotlight category, then the others as one range. `at` turns a value
+// into a percentage along the strip.
+export function stripNotes(metric: Metric, rows: CategoryRow[], spotlight: CategoryRow | null, at: (value: number) => number) {
+  const notes: StripNote[] = [];
+  const picked = spotlight && metric.read(spotlight);
+  if (spotlight && picked !== null) {
+    notes.push({ text: `${categoryName(spotlight.category)} ${metric.text(picked)}`, position: at(picked), spotlit: true });
+  }
+  const others = rows.filter((row) => row !== spotlight)
+    .flatMap((row) => {
+      const value = metric.read(row);
+      return value === null ? [] : [{ name: categoryName(row.category), value }];
+    })
+    .sort((a, b) => a.value - b.value);
+  // One category sitting well away from the rest gets its own note instead of stretching the range.
+  const percentPerUnit = at(1) - at(0);
+  const apart = (a: number, b: number) => (b - a) * percentPerUnit >= 10;
+  let group = others;
+  let alone: (typeof others)[number] | undefined;
+  if (others.length >= 3) {
+    if (apart(others[others.length - 2].value, others[others.length - 1].value)) {
+      alone = others[others.length - 1];
+      group = others.slice(0, -1);
+    } else if (apart(others[0].value, others[1].value)) {
+      alone = others[0];
+      group = others.slice(1);
+    }
+  }
+  if (group.length > 0) {
+    const low = group[0].value;
+    const high = group[group.length - 1].value;
+    const lead = spotlight ? "Others" : "All";
+    const text = metric.text(low) === metric.text(high) ? metric.text(low) : metric.span(low, high);
+    notes.push({ text: `${lead} ${text}`, position: at((low + high) / 2), spotlit: false });
+  }
+  if (alone) notes.push({ text: `${alone.name} ${metric.text(alone.value)}`, position: at(alone.value), spotlit: false });
+  return notes;
+}
+
+// A zoomed axis in half points around the real values, with faint lines between. Marks are dots, not
+// bars, so the zoom does not exaggerate a length.
+export function ratingAxis(values: number[]) {
+  // The half point strictly below the lowest value and strictly above the highest.
+  const low = Math.ceil(Math.min(...values) * 2) / 2 - 0.5;
+  const high = Math.floor(Math.max(...values) * 2) / 2 + 0.5;
+  const step = high - low <= 0.5 ? 0.2 : 0.5;
+  const ticks: number[] = [];
+  for (let tick = Math.floor(low / step + 1) * step; tick < high - 0.001; tick += step) {
+    ticks.push(Math.round(tick * 10) / 10);
+  }
+  return { low, high, ticks };
 }
 
 // Late minus on time, in rating points. Null when either side has no ratings.

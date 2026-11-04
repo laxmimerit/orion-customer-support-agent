@@ -1,0 +1,207 @@
+{
+  "title": "Knowledge base",
+  "description": "Product guidance and troubleshooting references for customer support.",
+  "total": 40,
+  "items": [
+    {
+      "article_id": "KB001",
+      "title": "Seat count differs from invoice",
+      "category": "billing"
+    },
+    {
+      "article_id": "KB002",
+      "title": "Export stops before completion",
+      "category": "bug"
+    },
+    {
+      "article_id": "KB003",
+      "title": "Configure queue assignment",
+      "category": "how-to"
+    },
+    {
+      "article_id": "KB004",
+      "title": "Invite link expired",
+      "category": "account access"
+    },
+    {
+      "article_id": "KB005",
+      "title": "Add bulk reassignment",
+      "category": "feature request"
+    },
+    {
+      "article_id": "KB006",
+      "title": "Requests time out",
+      "category": "outage"
+    },
+    {
+      "article_id": "KB007",
+      "title": "Proration after plan upgrade",
+      "category": "billing"
+    },
+    {
+      "article_id": "KB008",
+      "title": "Attachment preview is blank",
+      "category": "bug"
+    },
+    {
+      "article_id": "KB009",
+      "title": "Export monthly ticket history",
+      "category": "how-to"
+    },
+    {
+      "article_id": "KB010",
+      "title": "Password reset email delayed",
+      "category": "account access"
+    },
+    {
+      "article_id": "KB011",
+      "title": "Support custom SLA calendars",
+      "category": "feature request"
+    },
+    {
+      "article_id": "KB012",
+      "title": "Agent workspace unavailable",
+      "category": "outage"
+    },
+    {
+      "article_id": "KB013",
+      "title": "Renewal total changed",
+      "category": "billing"
+    },
+    {
+      "article_id": "KB014",
+      "title": "Dashboard filter resets",
+      "category": "bug"
+    },
+    {
+      "article_id": "KB015",
+      "title": "Set a reply template",
+      "category": "how-to"
+    },
+    {
+      "article_id": "KB016",
+      "title": "SSO login loops",
+      "category": "account access"
+    },
+    {
+      "article_id": "KB017",
+      "title": "Add multilingual templates",
+      "category": "feature request"
+    },
+    {
+      "article_id": "KB018",
+      "title": "Messages cannot be sent",
+      "category": "outage"
+    },
+    {
+      "article_id": "KB019",
+      "title": "Credit missing from next invoice",
+      "category": "billing"
+    },
+    {
+      "article_id": "KB020",
+      "title": "Webhook delivery is delayed",
+      "category": "bug"
+    },
+    {
+      "article_id": "KB021",
+      "title": "Invite a read-only reviewer",
+      "category": "how-to"
+    },
+    {
+      "article_id": "KB022",
+      "title": "Role change not applied",
+      "category": "account access"
+    },
+    {
+      "article_id": "KB023",
+      "title": "Allow scheduled exports",
+      "category": "feature request"
+    },
+    {
+      "article_id": "KB024",
+      "title": "Search service unreachable",
+      "category": "outage"
+    },
+    {
+      "article_id": "KB025",
+      "title": "Tax line needs explanation",
+      "category": "billing"
+    },
+    {
+      "article_id": "KB026",
+      "title": "Saved view loses sorting",
+      "category": "bug"
+    },
+    {
+      "article_id": "KB027",
+      "title": "Find archived conversations",
+      "category": "how-to"
+    },
+    {
+      "article_id": "KB028",
+      "title": "Locked out after device change",
+      "category": "account access"
+    },
+    {
+      "article_id": "KB029",
+      "title": "Add audit trail download",
+      "category": "feature request"
+    },
+    {
+      "article_id": "KB030",
+      "title": "Queue updates stopped",
+      "category": "outage"
+    },
+    {
+      "article_id": "KB031",
+      "title": "Seat count differs from invoice",
+      "category": "billing"
+    },
+    {
+      "article_id": "KB032",
+      "title": "Export stops before completion",
+      "category": "bug"
+    },
+    {
+      "article_id": "KB033",
+      "title": "Configure queue assignment",
+      "category": "how-to"
+    },
+    {
+      "article_id": "KB034",
+      "title": "Invite link expired",
+      "category": "account access"
+    },
+    {
+      "article_id": "KB035",
+      "title": "Add bulk reassignment",
+      "category": "feature request"
+    },
+    {
+      "article_id": "KB036",
+      "title": "Requests time out",
+      "category": "outage"
+    },
+    {
+      "article_id": "KB037",
+      "title": "Proration after plan upgrade",
+      "category": "billing"
+    },
+    {
+      "article_id": "KB038",
+      "title": "Attachment preview is blank",
+      "category": "bug"
+    },
+    {
+      "article_id": "KB039",
+      "title": "Export monthly ticket history",
+      "category": "how-to"
+    },
+    {
+      "article_id": "KB040",
+      "title": "Password reset email delayed",
+      "category": "account access"
+    }
+  ]
+}

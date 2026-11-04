@@ -1,0 +1,3008 @@
+{
+  "title": "Customers",
+  "description": "Customer accounts, subscription details and support history.",
+  "total": 300,
+  "sort": "Company name · A–Z",
+  "items": [
+    {
+      "customer_id": "C0031",
+      "company": "Aster Cloud 031",
+      "plan": "Scale",
+      "seats": 22,
+      "region": "EMEA",
+      "industry": "Education",
+      "active_cases": 1,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0131",
+      "company": "Aster Cloud 131",
+      "plan": "Growth",
+      "seats": 13,
+      "region": "APAC",
+      "industry": "Education",
+      "active_cases": 1,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0231",
+      "company": "Aster Cloud 231",
+      "plan": "Starter",
+      "seats": 6,
+      "region": "Americas",
+      "industry": "Finance tools",
+      "active_cases": 0,
+      "all_cases": 8
+    },
+    {
+      "customer_id": "C0001",
+      "company": "Aster Labs 001",
+      "plan": "Growth",
+      "seats": 20,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 3,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0101",
+      "company": "Aster Labs 101",
+      "plan": "Starter",
+      "seats": 12,
+      "region": "APAC",
+      "industry": "Retail tech",
+      "active_cases": 1,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0201",
+      "company": "Aster Labs 201",
+      "plan": "Starter",
+      "seats": 18,
+      "region": "Americas",
+      "industry": "Logistics",
+      "active_cases": 1,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0041",
+      "company": "Aster Logic 041",
+      "plan": "Growth",
+      "seats": 12,
+      "region": "EMEA",
+      "industry": "Healthcare software",
+      "active_cases": 1,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0141",
+      "company": "Aster Logic 141",
+      "plan": "Growth",
+      "seats": 11,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 0,
+      "all_cases": 9
+    },
+    {
+      "customer_id": "C0241",
+      "company": "Aster Logic 241",
+      "plan": "Scale",
+      "seats": 21,
+      "region": "APAC",
+      "industry": "SaaS",
+      "active_cases": 0,
+      "all_cases": 10
+    },
+    {
+      "customer_id": "C0071",
+      "company": "Aster Metrics 071",
+      "plan": "Growth",
+      "seats": 11,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 3,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0171",
+      "company": "Aster Metrics 171",
+      "plan": "Starter",
+      "seats": 16,
+      "region": "EMEA",
+      "industry": "Education",
+      "active_cases": 2,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0271",
+      "company": "Aster Metrics 271",
+      "plan": "Scale",
+      "seats": 5,
+      "region": "Americas",
+      "industry": "Finance tools",
+      "active_cases": 1,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0081",
+      "company": "Aster Platform 081",
+      "plan": "Growth",
+      "seats": 4,
+      "region": "APAC",
+      "industry": "Healthcare software",
+      "active_cases": 5,
+      "all_cases": 17
+    },
+    {
+      "customer_id": "C0181",
+      "company": "Aster Platform 181",
+      "plan": "Starter",
+      "seats": 20,
+      "region": "Americas",
+      "industry": "SaaS",
+      "active_cases": 1,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0281",
+      "company": "Aster Platform 281",
+      "plan": "Starter",
+      "seats": 17,
+      "region": "Americas",
+      "industry": "SaaS",
+      "active_cases": 1,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0061",
+      "company": "Aster Software 061",
+      "plan": "Starter",
+      "seats": 18,
+      "region": "APAC",
+      "industry": "Finance tools",
+      "active_cases": 2,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0161",
+      "company": "Aster Software 161",
+      "plan": "Starter",
+      "seats": 5,
+      "region": "EMEA",
+      "industry": "Education",
+      "active_cases": 2,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0261",
+      "company": "Aster Software 261",
+      "plan": "Growth",
+      "seats": 4,
+      "region": "EMEA",
+      "industry": "Healthcare software",
+      "active_cases": 1,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0051",
+      "company": "Aster Studio 051",
+      "plan": "Growth",
+      "seats": 7,
+      "region": "Americas",
+      "industry": "Education",
+      "active_cases": 1,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0151",
+      "company": "Aster Studio 151",
+      "plan": "Starter",
+      "seats": 11,
+      "region": "EMEA",
+      "industry": "Education",
+      "active_cases": 0,
+      "all_cases": 7
+    },
+    {
+      "customer_id": "C0251",
+      "company": "Aster Studio 251",
+      "plan": "Starter",
+      "seats": 14,
+      "region": "EMEA",
+      "industry": "Education",
+      "active_cases": 2,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0011",
+      "company": "Aster Systems 011",
+      "plan": "Scale",
+      "seats": 10,
+      "region": "APAC",
+      "industry": "Logistics",
+      "active_cases": 2,
+      "all_cases": 20
+    },
+    {
+      "customer_id": "C0111",
+      "company": "Aster Systems 111",
+      "plan": "Scale",
+      "seats": 3,
+      "region": "Americas",
+      "industry": "Finance tools",
+      "active_cases": 1,
+      "all_cases": 20
+    },
+    {
+      "customer_id": "C0211",
+      "company": "Aster Systems 211",
+      "plan": "Starter",
+      "seats": 4,
+      "region": "APAC",
+      "industry": "Retail tech",
+      "active_cases": 2,
+      "all_cases": 8
+    },
+    {
+      "customer_id": "C0091",
+      "company": "Aster Tools 091",
+      "plan": "Starter",
+      "seats": 3,
+      "region": "APAC",
+      "industry": "Retail tech",
+      "active_cases": 2,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0191",
+      "company": "Aster Tools 191",
+      "plan": "Starter",
+      "seats": 20,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 0,
+      "all_cases": 9
+    },
+    {
+      "customer_id": "C0291",
+      "company": "Aster Tools 291",
+      "plan": "Growth",
+      "seats": 13,
+      "region": "EMEA",
+      "industry": "Education",
+      "active_cases": 1,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0021",
+      "company": "Aster Works 021",
+      "plan": "Starter",
+      "seats": 5,
+      "region": "EMEA",
+      "industry": "Retail tech",
+      "active_cases": 2,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0121",
+      "company": "Aster Works 121",
+      "plan": "Growth",
+      "seats": 11,
+      "region": "EMEA",
+      "industry": "Retail tech",
+      "active_cases": 4,
+      "all_cases": 21
+    },
+    {
+      "customer_id": "C0221",
+      "company": "Aster Works 221",
+      "plan": "Starter",
+      "seats": 16,
+      "region": "APAC",
+      "industry": "Retail tech",
+      "active_cases": 2,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0032",
+      "company": "Birch Cloud 032",
+      "plan": "Growth",
+      "seats": 7,
+      "region": "Americas",
+      "industry": "Education",
+      "active_cases": 1,
+      "all_cases": 17
+    },
+    {
+      "customer_id": "C0132",
+      "company": "Birch Cloud 132",
+      "plan": "Starter",
+      "seats": 12,
+      "region": "EMEA",
+      "industry": "Logistics",
+      "active_cases": 2,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0232",
+      "company": "Birch Cloud 232",
+      "plan": "Growth",
+      "seats": 8,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 1,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0002",
+      "company": "Birch Labs 002",
+      "plan": "Scale",
+      "seats": 4,
+      "region": "Americas",
+      "industry": "Finance tools",
+      "active_cases": 2,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0102",
+      "company": "Birch Labs 102",
+      "plan": "Growth",
+      "seats": 9,
+      "region": "APAC",
+      "industry": "Education",
+      "active_cases": 1,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0202",
+      "company": "Birch Labs 202",
+      "plan": "Scale",
+      "seats": 12,
+      "region": "Americas",
+      "industry": "Healthcare software",
+      "active_cases": 1,
+      "all_cases": 10
+    },
+    {
+      "customer_id": "C0042",
+      "company": "Birch Logic 042",
+      "plan": "Growth",
+      "seats": 11,
+      "region": "Americas",
+      "industry": "Finance tools",
+      "active_cases": 0,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0142",
+      "company": "Birch Logic 142",
+      "plan": "Starter",
+      "seats": 24,
+      "region": "APAC",
+      "industry": "SaaS",
+      "active_cases": 1,
+      "all_cases": 9
+    },
+    {
+      "customer_id": "C0242",
+      "company": "Birch Logic 242",
+      "plan": "Starter",
+      "seats": 15,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 2,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0072",
+      "company": "Birch Metrics 072",
+      "plan": "Growth",
+      "seats": 14,
+      "region": "APAC",
+      "industry": "Logistics",
+      "active_cases": 4,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0172",
+      "company": "Birch Metrics 172",
+      "plan": "Growth",
+      "seats": 12,
+      "region": "APAC",
+      "industry": "Education",
+      "active_cases": 4,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0272",
+      "company": "Birch Metrics 272",
+      "plan": "Starter",
+      "seats": 17,
+      "region": "APAC",
+      "industry": "Retail tech",
+      "active_cases": 1,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0082",
+      "company": "Birch Platform 082",
+      "plan": "Growth",
+      "seats": 8,
+      "region": "EMEA",
+      "industry": "Retail tech",
+      "active_cases": 1,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0182",
+      "company": "Birch Platform 182",
+      "plan": "Growth",
+      "seats": 20,
+      "region": "Americas",
+      "industry": "Finance tools",
+      "active_cases": 4,
+      "all_cases": 19
+    },
+    {
+      "customer_id": "C0282",
+      "company": "Birch Platform 282",
+      "plan": "Scale",
+      "seats": 24,
+      "region": "Americas",
+      "industry": "Finance tools",
+      "active_cases": 2,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0062",
+      "company": "Birch Software 062",
+      "plan": "Growth",
+      "seats": 20,
+      "region": "Americas",
+      "industry": "Finance tools",
+      "active_cases": 2,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0162",
+      "company": "Birch Software 162",
+      "plan": "Growth",
+      "seats": 9,
+      "region": "APAC",
+      "industry": "Healthcare software",
+      "active_cases": 0,
+      "all_cases": 10
+    },
+    {
+      "customer_id": "C0262",
+      "company": "Birch Software 262",
+      "plan": "Growth",
+      "seats": 24,
+      "region": "EMEA",
+      "industry": "Retail tech",
+      "active_cases": 3,
+      "all_cases": 19
+    },
+    {
+      "customer_id": "C0052",
+      "company": "Birch Studio 052",
+      "plan": "Growth",
+      "seats": 10,
+      "region": "APAC",
+      "industry": "Logistics",
+      "active_cases": 1,
+      "all_cases": 17
+    },
+    {
+      "customer_id": "C0152",
+      "company": "Birch Studio 152",
+      "plan": "Starter",
+      "seats": 15,
+      "region": "Americas",
+      "industry": "Logistics",
+      "active_cases": 3,
+      "all_cases": 18
+    },
+    {
+      "customer_id": "C0252",
+      "company": "Birch Studio 252",
+      "plan": "Starter",
+      "seats": 8,
+      "region": "Americas",
+      "industry": "Healthcare software",
+      "active_cases": 1,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0012",
+      "company": "Birch Systems 012",
+      "plan": "Growth",
+      "seats": 15,
+      "region": "EMEA",
+      "industry": "Retail tech",
+      "active_cases": 2,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0112",
+      "company": "Birch Systems 112",
+      "plan": "Starter",
+      "seats": 13,
+      "region": "Americas",
+      "industry": "Healthcare software",
+      "active_cases": 2,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0212",
+      "company": "Birch Systems 212",
+      "plan": "Starter",
+      "seats": 3,
+      "region": "EMEA",
+      "industry": "Healthcare software",
+      "active_cases": 2,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0092",
+      "company": "Birch Tools 092",
+      "plan": "Starter",
+      "seats": 20,
+      "region": "APAC",
+      "industry": "Education",
+      "active_cases": 3,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0192",
+      "company": "Birch Tools 192",
+      "plan": "Starter",
+      "seats": 16,
+      "region": "APAC",
+      "industry": "Education",
+      "active_cases": 2,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0292",
+      "company": "Birch Tools 292",
+      "plan": "Scale",
+      "seats": 19,
+      "region": "Americas",
+      "industry": "SaaS",
+      "active_cases": 0,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0022",
+      "company": "Birch Works 022",
+      "plan": "Growth",
+      "seats": 14,
+      "region": "Americas",
+      "industry": "Logistics",
+      "active_cases": 1,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0122",
+      "company": "Birch Works 122",
+      "plan": "Starter",
+      "seats": 23,
+      "region": "APAC",
+      "industry": "Finance tools",
+      "active_cases": 2,
+      "all_cases": 18
+    },
+    {
+      "customer_id": "C0222",
+      "company": "Birch Works 222",
+      "plan": "Starter",
+      "seats": 10,
+      "region": "EMEA",
+      "industry": "Finance tools",
+      "active_cases": 0,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0033",
+      "company": "Cedar Cloud 033",
+      "plan": "Growth",
+      "seats": 4,
+      "region": "APAC",
+      "industry": "Finance tools",
+      "active_cases": 1,
+      "all_cases": 9
+    },
+    {
+      "customer_id": "C0133",
+      "company": "Cedar Cloud 133",
+      "plan": "Starter",
+      "seats": 4,
+      "region": "APAC",
+      "industry": "Logistics",
+      "active_cases": 2,
+      "all_cases": 7
+    },
+    {
+      "customer_id": "C0233",
+      "company": "Cedar Cloud 233",
+      "plan": "Starter",
+      "seats": 9,
+      "region": "Americas",
+      "industry": "Education",
+      "active_cases": 2,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0003",
+      "company": "Cedar Labs 003",
+      "plan": "Growth",
+      "seats": 11,
+      "region": "EMEA",
+      "industry": "Education",
+      "active_cases": 2,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0103",
+      "company": "Cedar Labs 103",
+      "plan": "Growth",
+      "seats": 17,
+      "region": "APAC",
+      "industry": "Healthcare software",
+      "active_cases": 1,
+      "all_cases": 10
+    },
+    {
+      "customer_id": "C0203",
+      "company": "Cedar Labs 203",
+      "plan": "Starter",
+      "seats": 11,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 3,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0043",
+      "company": "Cedar Logic 043",
+      "plan": "Starter",
+      "seats": 13,
+      "region": "APAC",
+      "industry": "Retail tech",
+      "active_cases": 3,
+      "all_cases": 17
+    },
+    {
+      "customer_id": "C0143",
+      "company": "Cedar Logic 143",
+      "plan": "Starter",
+      "seats": 6,
+      "region": "APAC",
+      "industry": "Education",
+      "active_cases": 1,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0243",
+      "company": "Cedar Logic 243",
+      "plan": "Growth",
+      "seats": 10,
+      "region": "APAC",
+      "industry": "Retail tech",
+      "active_cases": 0,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0073",
+      "company": "Cedar Metrics 073",
+      "plan": "Scale",
+      "seats": 12,
+      "region": "Americas",
+      "industry": "Retail tech",
+      "active_cases": 1,
+      "all_cases": 7
+    },
+    {
+      "customer_id": "C0173",
+      "company": "Cedar Metrics 173",
+      "plan": "Starter",
+      "seats": 6,
+      "region": "EMEA",
+      "industry": "Retail tech",
+      "active_cases": 1,
+      "all_cases": 8
+    },
+    {
+      "customer_id": "C0273",
+      "company": "Cedar Metrics 273",
+      "plan": "Scale",
+      "seats": 13,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 2,
+      "all_cases": 18
+    },
+    {
+      "customer_id": "C0083",
+      "company": "Cedar Platform 083",
+      "plan": "Starter",
+      "seats": 17,
+      "region": "EMEA",
+      "industry": "Logistics",
+      "active_cases": 2,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0183",
+      "company": "Cedar Platform 183",
+      "plan": "Growth",
+      "seats": 14,
+      "region": "Americas",
+      "industry": "Finance tools",
+      "active_cases": 2,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0283",
+      "company": "Cedar Platform 283",
+      "plan": "Starter",
+      "seats": 21,
+      "region": "Americas",
+      "industry": "Healthcare software",
+      "active_cases": 1,
+      "all_cases": 18
+    },
+    {
+      "customer_id": "C0063",
+      "company": "Cedar Software 063",
+      "plan": "Growth",
+      "seats": 22,
+      "region": "EMEA",
+      "industry": "Logistics",
+      "active_cases": 2,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0163",
+      "company": "Cedar Software 163",
+      "plan": "Starter",
+      "seats": 15,
+      "region": "EMEA",
+      "industry": "Retail tech",
+      "active_cases": 1,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0263",
+      "company": "Cedar Software 263",
+      "plan": "Starter",
+      "seats": 7,
+      "region": "EMEA",
+      "industry": "Education",
+      "active_cases": 0,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0053",
+      "company": "Cedar Studio 053",
+      "plan": "Growth",
+      "seats": 12,
+      "region": "Americas",
+      "industry": "Healthcare software",
+      "active_cases": 1,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0153",
+      "company": "Cedar Studio 153",
+      "plan": "Growth",
+      "seats": 16,
+      "region": "EMEA",
+      "industry": "Healthcare software",
+      "active_cases": 2,
+      "all_cases": 20
+    },
+    {
+      "customer_id": "C0253",
+      "company": "Cedar Studio 253",
+      "plan": "Scale",
+      "seats": 6,
+      "region": "EMEA",
+      "industry": "Logistics",
+      "active_cases": 1,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0013",
+      "company": "Cedar Systems 013",
+      "plan": "Growth",
+      "seats": 7,
+      "region": "EMEA",
+      "industry": "Healthcare software",
+      "active_cases": 4,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0113",
+      "company": "Cedar Systems 113",
+      "plan": "Growth",
+      "seats": 3,
+      "region": "APAC",
+      "industry": "Education",
+      "active_cases": 4,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0213",
+      "company": "Cedar Systems 213",
+      "plan": "Starter",
+      "seats": 20,
+      "region": "Americas",
+      "industry": "SaaS",
+      "active_cases": 2,
+      "all_cases": 18
+    },
+    {
+      "customer_id": "C0093",
+      "company": "Cedar Tools 093",
+      "plan": "Starter",
+      "seats": 9,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 3,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0193",
+      "company": "Cedar Tools 193",
+      "plan": "Growth",
+      "seats": 9,
+      "region": "EMEA",
+      "industry": "Healthcare software",
+      "active_cases": 1,
+      "all_cases": 18
+    },
+    {
+      "customer_id": "C0293",
+      "company": "Cedar Tools 293",
+      "plan": "Starter",
+      "seats": 8,
+      "region": "EMEA",
+      "industry": "Finance tools",
+      "active_cases": 0,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0023",
+      "company": "Cedar Works 023",
+      "plan": "Growth",
+      "seats": 23,
+      "region": "EMEA",
+      "industry": "Education",
+      "active_cases": 0,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0123",
+      "company": "Cedar Works 123",
+      "plan": "Starter",
+      "seats": 8,
+      "region": "APAC",
+      "industry": "Logistics",
+      "active_cases": 1,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0223",
+      "company": "Cedar Works 223",
+      "plan": "Growth",
+      "seats": 6,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 2,
+      "all_cases": 17
+    },
+    {
+      "customer_id": "C0034",
+      "company": "Dune Cloud 034",
+      "plan": "Scale",
+      "seats": 14,
+      "region": "Americas",
+      "industry": "Logistics",
+      "active_cases": 2,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0134",
+      "company": "Dune Cloud 134",
+      "plan": "Starter",
+      "seats": 6,
+      "region": "Americas",
+      "industry": "Logistics",
+      "active_cases": 1,
+      "all_cases": 7
+    },
+    {
+      "customer_id": "C0234",
+      "company": "Dune Cloud 234",
+      "plan": "Scale",
+      "seats": 10,
+      "region": "Americas",
+      "industry": "Finance tools",
+      "active_cases": 2,
+      "all_cases": 18
+    },
+    {
+      "customer_id": "C0004",
+      "company": "Dune Labs 004",
+      "plan": "Starter",
+      "seats": 13,
+      "region": "APAC",
+      "industry": "Logistics",
+      "active_cases": 0,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0104",
+      "company": "Dune Labs 104",
+      "plan": "Growth",
+      "seats": 6,
+      "region": "APAC",
+      "industry": "Retail tech",
+      "active_cases": 0,
+      "all_cases": 9
+    },
+    {
+      "customer_id": "C0204",
+      "company": "Dune Labs 204",
+      "plan": "Starter",
+      "seats": 18,
+      "region": "Americas",
+      "industry": "Retail tech",
+      "active_cases": 1,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0044",
+      "company": "Dune Logic 044",
+      "plan": "Growth",
+      "seats": 24,
+      "region": "Americas",
+      "industry": "Finance tools",
+      "active_cases": 2,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0144",
+      "company": "Dune Logic 144",
+      "plan": "Growth",
+      "seats": 7,
+      "region": "Americas",
+      "industry": "SaaS",
+      "active_cases": 4,
+      "all_cases": 10
+    },
+    {
+      "customer_id": "C0244",
+      "company": "Dune Logic 244",
+      "plan": "Growth",
+      "seats": 13,
+      "region": "APAC",
+      "industry": "Retail tech",
+      "active_cases": 1,
+      "all_cases": 9
+    },
+    {
+      "customer_id": "C0074",
+      "company": "Dune Metrics 074",
+      "plan": "Growth",
+      "seats": 22,
+      "region": "Americas",
+      "industry": "Retail tech",
+      "active_cases": 0,
+      "all_cases": 9
+    },
+    {
+      "customer_id": "C0174",
+      "company": "Dune Metrics 174",
+      "plan": "Growth",
+      "seats": 20,
+      "region": "EMEA",
+      "industry": "Healthcare software",
+      "active_cases": 2,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0274",
+      "company": "Dune Metrics 274",
+      "plan": "Growth",
+      "seats": 13,
+      "region": "Americas",
+      "industry": "Healthcare software",
+      "active_cases": 3,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0084",
+      "company": "Dune Platform 084",
+      "plan": "Growth",
+      "seats": 24,
+      "region": "EMEA",
+      "industry": "Healthcare software",
+      "active_cases": 1,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0184",
+      "company": "Dune Platform 184",
+      "plan": "Growth",
+      "seats": 9,
+      "region": "EMEA",
+      "industry": "Logistics",
+      "active_cases": 3,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0284",
+      "company": "Dune Platform 284",
+      "plan": "Starter",
+      "seats": 16,
+      "region": "Americas",
+      "industry": "Logistics",
+      "active_cases": 3,
+      "all_cases": 18
+    },
+    {
+      "customer_id": "C0064",
+      "company": "Dune Software 064",
+      "plan": "Starter",
+      "seats": 16,
+      "region": "Americas",
+      "industry": "SaaS",
+      "active_cases": 2,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0164",
+      "company": "Dune Software 164",
+      "plan": "Starter",
+      "seats": 9,
+      "region": "EMEA",
+      "industry": "Healthcare software",
+      "active_cases": 0,
+      "all_cases": 9
+    },
+    {
+      "customer_id": "C0264",
+      "company": "Dune Software 264",
+      "plan": "Starter",
+      "seats": 9,
+      "region": "APAC",
+      "industry": "Education",
+      "active_cases": 0,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0054",
+      "company": "Dune Studio 054",
+      "plan": "Growth",
+      "seats": 21,
+      "region": "APAC",
+      "industry": "SaaS",
+      "active_cases": 5,
+      "all_cases": 24
+    },
+    {
+      "customer_id": "C0154",
+      "company": "Dune Studio 154",
+      "plan": "Scale",
+      "seats": 14,
+      "region": "EMEA",
+      "industry": "Finance tools",
+      "active_cases": 1,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0254",
+      "company": "Dune Studio 254",
+      "plan": "Growth",
+      "seats": 20,
+      "region": "APAC",
+      "industry": "Finance tools",
+      "active_cases": 0,
+      "all_cases": 6
+    },
+    {
+      "customer_id": "C0014",
+      "company": "Dune Systems 014",
+      "plan": "Starter",
+      "seats": 17,
+      "region": "Americas",
+      "industry": "Healthcare software",
+      "active_cases": 1,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0114",
+      "company": "Dune Systems 114",
+      "plan": "Starter",
+      "seats": 5,
+      "region": "APAC",
+      "industry": "SaaS",
+      "active_cases": 1,
+      "all_cases": 20
+    },
+    {
+      "customer_id": "C0214",
+      "company": "Dune Systems 214",
+      "plan": "Starter",
+      "seats": 3,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 2,
+      "all_cases": 10
+    },
+    {
+      "customer_id": "C0094",
+      "company": "Dune Tools 094",
+      "plan": "Scale",
+      "seats": 21,
+      "region": "Americas",
+      "industry": "Retail tech",
+      "active_cases": 2,
+      "all_cases": 9
+    },
+    {
+      "customer_id": "C0194",
+      "company": "Dune Tools 194",
+      "plan": "Starter",
+      "seats": 23,
+      "region": "EMEA",
+      "industry": "Finance tools",
+      "active_cases": 0,
+      "all_cases": 10
+    },
+    {
+      "customer_id": "C0294",
+      "company": "Dune Tools 294",
+      "plan": "Growth",
+      "seats": 20,
+      "region": "EMEA",
+      "industry": "Finance tools",
+      "active_cases": 2,
+      "all_cases": 9
+    },
+    {
+      "customer_id": "C0024",
+      "company": "Dune Works 024",
+      "plan": "Starter",
+      "seats": 22,
+      "region": "EMEA",
+      "industry": "Education",
+      "active_cases": 3,
+      "all_cases": 20
+    },
+    {
+      "customer_id": "C0124",
+      "company": "Dune Works 124",
+      "plan": "Growth",
+      "seats": 10,
+      "region": "EMEA",
+      "industry": "Finance tools",
+      "active_cases": 3,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0224",
+      "company": "Dune Works 224",
+      "plan": "Starter",
+      "seats": 7,
+      "region": "EMEA",
+      "industry": "Logistics",
+      "active_cases": 2,
+      "all_cases": 18
+    },
+    {
+      "customer_id": "C0035",
+      "company": "Ember Cloud 035",
+      "plan": "Scale",
+      "seats": 14,
+      "region": "APAC",
+      "industry": "Education",
+      "active_cases": 2,
+      "all_cases": 20
+    },
+    {
+      "customer_id": "C0135",
+      "company": "Ember Cloud 135",
+      "plan": "Starter",
+      "seats": 10,
+      "region": "APAC",
+      "industry": "Retail tech",
+      "active_cases": 1,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0235",
+      "company": "Ember Cloud 235",
+      "plan": "Starter",
+      "seats": 17,
+      "region": "APAC",
+      "industry": "Education",
+      "active_cases": 1,
+      "all_cases": 10
+    },
+    {
+      "customer_id": "C0005",
+      "company": "Ember Labs 005",
+      "plan": "Starter",
+      "seats": 24,
+      "region": "Americas",
+      "industry": "Retail tech",
+      "active_cases": 2,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0105",
+      "company": "Ember Labs 105",
+      "plan": "Growth",
+      "seats": 22,
+      "region": "EMEA",
+      "industry": "Logistics",
+      "active_cases": 2,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0205",
+      "company": "Ember Labs 205",
+      "plan": "Scale",
+      "seats": 24,
+      "region": "EMEA",
+      "industry": "Healthcare software",
+      "active_cases": 3,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0045",
+      "company": "Ember Logic 045",
+      "plan": "Starter",
+      "seats": 7,
+      "region": "Americas",
+      "industry": "SaaS",
+      "active_cases": 2,
+      "all_cases": 17
+    },
+    {
+      "customer_id": "C0145",
+      "company": "Ember Logic 145",
+      "plan": "Scale",
+      "seats": 13,
+      "region": "EMEA",
+      "industry": "Logistics",
+      "active_cases": 0,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0245",
+      "company": "Ember Logic 245",
+      "plan": "Growth",
+      "seats": 3,
+      "region": "Americas",
+      "industry": "SaaS",
+      "active_cases": 1,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0075",
+      "company": "Ember Metrics 075",
+      "plan": "Scale",
+      "seats": 18,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 2,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0175",
+      "company": "Ember Metrics 175",
+      "plan": "Starter",
+      "seats": 7,
+      "region": "APAC",
+      "industry": "Retail tech",
+      "active_cases": 2,
+      "all_cases": 7
+    },
+    {
+      "customer_id": "C0275",
+      "company": "Ember Metrics 275",
+      "plan": "Starter",
+      "seats": 22,
+      "region": "EMEA",
+      "industry": "Healthcare software",
+      "active_cases": 1,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0085",
+      "company": "Ember Platform 085",
+      "plan": "Scale",
+      "seats": 20,
+      "region": "Americas",
+      "industry": "Education",
+      "active_cases": 3,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0185",
+      "company": "Ember Platform 185",
+      "plan": "Starter",
+      "seats": 18,
+      "region": "EMEA",
+      "industry": "Logistics",
+      "active_cases": 4,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0285",
+      "company": "Ember Platform 285",
+      "plan": "Starter",
+      "seats": 13,
+      "region": "APAC",
+      "industry": "Healthcare software",
+      "active_cases": 0,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0065",
+      "company": "Ember Software 065",
+      "plan": "Growth",
+      "seats": 13,
+      "region": "APAC",
+      "industry": "SaaS",
+      "active_cases": 3,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0165",
+      "company": "Ember Software 165",
+      "plan": "Scale",
+      "seats": 16,
+      "region": "EMEA",
+      "industry": "Healthcare software",
+      "active_cases": 3,
+      "all_cases": 17
+    },
+    {
+      "customer_id": "C0265",
+      "company": "Ember Software 265",
+      "plan": "Starter",
+      "seats": 11,
+      "region": "Americas",
+      "industry": "Education",
+      "active_cases": 1,
+      "all_cases": 10
+    },
+    {
+      "customer_id": "C0055",
+      "company": "Ember Studio 055",
+      "plan": "Scale",
+      "seats": 19,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 0,
+      "all_cases": 20
+    },
+    {
+      "customer_id": "C0155",
+      "company": "Ember Studio 155",
+      "plan": "Growth",
+      "seats": 23,
+      "region": "Americas",
+      "industry": "Finance tools",
+      "active_cases": 1,
+      "all_cases": 10
+    },
+    {
+      "customer_id": "C0255",
+      "company": "Ember Studio 255",
+      "plan": "Growth",
+      "seats": 12,
+      "region": "Americas",
+      "industry": "SaaS",
+      "active_cases": 1,
+      "all_cases": 7
+    },
+    {
+      "customer_id": "C0015",
+      "company": "Ember Systems 015",
+      "plan": "Starter",
+      "seats": 11,
+      "region": "Americas",
+      "industry": "Logistics",
+      "active_cases": 2,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0115",
+      "company": "Ember Systems 115",
+      "plan": "Starter",
+      "seats": 8,
+      "region": "EMEA",
+      "industry": "Retail tech",
+      "active_cases": 0,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0215",
+      "company": "Ember Systems 215",
+      "plan": "Growth",
+      "seats": 20,
+      "region": "Americas",
+      "industry": "Finance tools",
+      "active_cases": 2,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0095",
+      "company": "Ember Tools 095",
+      "plan": "Growth",
+      "seats": 20,
+      "region": "APAC",
+      "industry": "Finance tools",
+      "active_cases": 1,
+      "all_cases": 9
+    },
+    {
+      "customer_id": "C0195",
+      "company": "Ember Tools 195",
+      "plan": "Starter",
+      "seats": 9,
+      "region": "Americas",
+      "industry": "Logistics",
+      "active_cases": 1,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0295",
+      "company": "Ember Tools 295",
+      "plan": "Growth",
+      "seats": 9,
+      "region": "APAC",
+      "industry": "Retail tech",
+      "active_cases": 4,
+      "all_cases": 22
+    },
+    {
+      "customer_id": "C0025",
+      "company": "Ember Works 025",
+      "plan": "Scale",
+      "seats": 13,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 1,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0125",
+      "company": "Ember Works 125",
+      "plan": "Growth",
+      "seats": 9,
+      "region": "APAC",
+      "industry": "Education",
+      "active_cases": 1,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0225",
+      "company": "Ember Works 225",
+      "plan": "Starter",
+      "seats": 11,
+      "region": "EMEA",
+      "industry": "Retail tech",
+      "active_cases": 2,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0036",
+      "company": "Fern Cloud 036",
+      "plan": "Starter",
+      "seats": 9,
+      "region": "Americas",
+      "industry": "SaaS",
+      "active_cases": 0,
+      "all_cases": 23
+    },
+    {
+      "customer_id": "C0136",
+      "company": "Fern Cloud 136",
+      "plan": "Growth",
+      "seats": 24,
+      "region": "Americas",
+      "industry": "Education",
+      "active_cases": 3,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0236",
+      "company": "Fern Cloud 236",
+      "plan": "Starter",
+      "seats": 9,
+      "region": "Americas",
+      "industry": "Healthcare software",
+      "active_cases": 0,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0006",
+      "company": "Fern Labs 006",
+      "plan": "Starter",
+      "seats": 3,
+      "region": "Americas",
+      "industry": "Logistics",
+      "active_cases": 2,
+      "all_cases": 19
+    },
+    {
+      "customer_id": "C0106",
+      "company": "Fern Labs 106",
+      "plan": "Growth",
+      "seats": 7,
+      "region": "APAC",
+      "industry": "Logistics",
+      "active_cases": 1,
+      "all_cases": 9
+    },
+    {
+      "customer_id": "C0206",
+      "company": "Fern Labs 206",
+      "plan": "Growth",
+      "seats": 21,
+      "region": "EMEA",
+      "industry": "Logistics",
+      "active_cases": 2,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0046",
+      "company": "Fern Logic 046",
+      "plan": "Starter",
+      "seats": 8,
+      "region": "EMEA",
+      "industry": "Healthcare software",
+      "active_cases": 2,
+      "all_cases": 19
+    },
+    {
+      "customer_id": "C0146",
+      "company": "Fern Logic 146",
+      "plan": "Starter",
+      "seats": 14,
+      "region": "EMEA",
+      "industry": "Education",
+      "active_cases": 1,
+      "all_cases": 10
+    },
+    {
+      "customer_id": "C0246",
+      "company": "Fern Logic 246",
+      "plan": "Scale",
+      "seats": 21,
+      "region": "EMEA",
+      "industry": "Finance tools",
+      "active_cases": 2,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0076",
+      "company": "Fern Metrics 076",
+      "plan": "Starter",
+      "seats": 23,
+      "region": "EMEA",
+      "industry": "Retail tech",
+      "active_cases": 0,
+      "all_cases": 8
+    },
+    {
+      "customer_id": "C0176",
+      "company": "Fern Metrics 176",
+      "plan": "Scale",
+      "seats": 18,
+      "region": "EMEA",
+      "industry": "Finance tools",
+      "active_cases": 2,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0276",
+      "company": "Fern Metrics 276",
+      "plan": "Starter",
+      "seats": 16,
+      "region": "APAC",
+      "industry": "Logistics",
+      "active_cases": 3,
+      "all_cases": 10
+    },
+    {
+      "customer_id": "C0086",
+      "company": "Fern Platform 086",
+      "plan": "Scale",
+      "seats": 8,
+      "region": "Americas",
+      "industry": "Finance tools",
+      "active_cases": 4,
+      "all_cases": 18
+    },
+    {
+      "customer_id": "C0186",
+      "company": "Fern Platform 186",
+      "plan": "Scale",
+      "seats": 6,
+      "region": "Americas",
+      "industry": "SaaS",
+      "active_cases": 2,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0286",
+      "company": "Fern Platform 286",
+      "plan": "Starter",
+      "seats": 18,
+      "region": "APAC",
+      "industry": "Healthcare software",
+      "active_cases": 0,
+      "all_cases": 10
+    },
+    {
+      "customer_id": "C0066",
+      "company": "Fern Software 066",
+      "plan": "Starter",
+      "seats": 18,
+      "region": "Americas",
+      "industry": "Logistics",
+      "active_cases": 1,
+      "all_cases": 10
+    },
+    {
+      "customer_id": "C0166",
+      "company": "Fern Software 166",
+      "plan": "Starter",
+      "seats": 3,
+      "region": "Americas",
+      "industry": "Education",
+      "active_cases": 3,
+      "all_cases": 10
+    },
+    {
+      "customer_id": "C0266",
+      "company": "Fern Software 266",
+      "plan": "Starter",
+      "seats": 6,
+      "region": "Americas",
+      "industry": "Logistics",
+      "active_cases": 0,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0056",
+      "company": "Fern Studio 056",
+      "plan": "Starter",
+      "seats": 3,
+      "region": "EMEA",
+      "industry": "Retail tech",
+      "active_cases": 2,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0156",
+      "company": "Fern Studio 156",
+      "plan": "Starter",
+      "seats": 11,
+      "region": "Americas",
+      "industry": "Logistics",
+      "active_cases": 1,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0256",
+      "company": "Fern Studio 256",
+      "plan": "Scale",
+      "seats": 24,
+      "region": "Americas",
+      "industry": "Education",
+      "active_cases": 0,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0016",
+      "company": "Fern Systems 016",
+      "plan": "Growth",
+      "seats": 9,
+      "region": "APAC",
+      "industry": "Logistics",
+      "active_cases": 2,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0116",
+      "company": "Fern Systems 116",
+      "plan": "Growth",
+      "seats": 8,
+      "region": "Americas",
+      "industry": "Healthcare software",
+      "active_cases": 0,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0216",
+      "company": "Fern Systems 216",
+      "plan": "Scale",
+      "seats": 3,
+      "region": "Americas",
+      "industry": "SaaS",
+      "active_cases": 1,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0096",
+      "company": "Fern Tools 096",
+      "plan": "Growth",
+      "seats": 13,
+      "region": "APAC",
+      "industry": "Logistics",
+      "active_cases": 2,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0196",
+      "company": "Fern Tools 196",
+      "plan": "Starter",
+      "seats": 16,
+      "region": "APAC",
+      "industry": "SaaS",
+      "active_cases": 2,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0296",
+      "company": "Fern Tools 296",
+      "plan": "Starter",
+      "seats": 22,
+      "region": "APAC",
+      "industry": "Retail tech",
+      "active_cases": 0,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0026",
+      "company": "Fern Works 026",
+      "plan": "Scale",
+      "seats": 21,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 4,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0126",
+      "company": "Fern Works 126",
+      "plan": "Growth",
+      "seats": 6,
+      "region": "EMEA",
+      "industry": "Finance tools",
+      "active_cases": 0,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0226",
+      "company": "Fern Works 226",
+      "plan": "Starter",
+      "seats": 4,
+      "region": "Americas",
+      "industry": "Logistics",
+      "active_cases": 2,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0037",
+      "company": "Grove Cloud 037",
+      "plan": "Growth",
+      "seats": 23,
+      "region": "Americas",
+      "industry": "Logistics",
+      "active_cases": 2,
+      "all_cases": 8
+    },
+    {
+      "customer_id": "C0137",
+      "company": "Grove Cloud 137",
+      "plan": "Growth",
+      "seats": 3,
+      "region": "EMEA",
+      "industry": "Logistics",
+      "active_cases": 2,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0237",
+      "company": "Grove Cloud 237",
+      "plan": "Growth",
+      "seats": 17,
+      "region": "APAC",
+      "industry": "Retail tech",
+      "active_cases": 2,
+      "all_cases": 17
+    },
+    {
+      "customer_id": "C0007",
+      "company": "Grove Labs 007",
+      "plan": "Starter",
+      "seats": 14,
+      "region": "EMEA",
+      "industry": "Healthcare software",
+      "active_cases": 3,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0107",
+      "company": "Grove Labs 107",
+      "plan": "Growth",
+      "seats": 24,
+      "region": "APAC",
+      "industry": "Education",
+      "active_cases": 1,
+      "all_cases": 9
+    },
+    {
+      "customer_id": "C0207",
+      "company": "Grove Labs 207",
+      "plan": "Growth",
+      "seats": 23,
+      "region": "Americas",
+      "industry": "Logistics",
+      "active_cases": 0,
+      "all_cases": 17
+    },
+    {
+      "customer_id": "C0047",
+      "company": "Grove Logic 047",
+      "plan": "Starter",
+      "seats": 4,
+      "region": "Americas",
+      "industry": "Retail tech",
+      "active_cases": 0,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0147",
+      "company": "Grove Logic 147",
+      "plan": "Growth",
+      "seats": 13,
+      "region": "APAC",
+      "industry": "Education",
+      "active_cases": 0,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0247",
+      "company": "Grove Logic 247",
+      "plan": "Growth",
+      "seats": 24,
+      "region": "EMEA",
+      "industry": "Logistics",
+      "active_cases": 3,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0077",
+      "company": "Grove Metrics 077",
+      "plan": "Starter",
+      "seats": 12,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 3,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0177",
+      "company": "Grove Metrics 177",
+      "plan": "Starter",
+      "seats": 19,
+      "region": "APAC",
+      "industry": "Finance tools",
+      "active_cases": 2,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0277",
+      "company": "Grove Metrics 277",
+      "plan": "Starter",
+      "seats": 20,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 4,
+      "all_cases": 19
+    },
+    {
+      "customer_id": "C0087",
+      "company": "Grove Platform 087",
+      "plan": "Starter",
+      "seats": 23,
+      "region": "EMEA",
+      "industry": "Finance tools",
+      "active_cases": 3,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0187",
+      "company": "Grove Platform 187",
+      "plan": "Scale",
+      "seats": 8,
+      "region": "Americas",
+      "industry": "Healthcare software",
+      "active_cases": 0,
+      "all_cases": 17
+    },
+    {
+      "customer_id": "C0287",
+      "company": "Grove Platform 287",
+      "plan": "Starter",
+      "seats": 12,
+      "region": "EMEA",
+      "industry": "Retail tech",
+      "active_cases": 1,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0067",
+      "company": "Grove Software 067",
+      "plan": "Starter",
+      "seats": 5,
+      "region": "APAC",
+      "industry": "Logistics",
+      "active_cases": 5,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0167",
+      "company": "Grove Software 167",
+      "plan": "Starter",
+      "seats": 16,
+      "region": "EMEA",
+      "industry": "Finance tools",
+      "active_cases": 0,
+      "all_cases": 8
+    },
+    {
+      "customer_id": "C0267",
+      "company": "Grove Software 267",
+      "plan": "Scale",
+      "seats": 20,
+      "region": "Americas",
+      "industry": "Education",
+      "active_cases": 1,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0057",
+      "company": "Grove Studio 057",
+      "plan": "Starter",
+      "seats": 23,
+      "region": "Americas",
+      "industry": "Healthcare software",
+      "active_cases": 0,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0157",
+      "company": "Grove Studio 157",
+      "plan": "Starter",
+      "seats": 18,
+      "region": "Americas",
+      "industry": "Retail tech",
+      "active_cases": 3,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0257",
+      "company": "Grove Studio 257",
+      "plan": "Growth",
+      "seats": 8,
+      "region": "APAC",
+      "industry": "Healthcare software",
+      "active_cases": 0,
+      "all_cases": 10
+    },
+    {
+      "customer_id": "C0017",
+      "company": "Grove Systems 017",
+      "plan": "Growth",
+      "seats": 5,
+      "region": "Americas",
+      "industry": "Retail tech",
+      "active_cases": 2,
+      "all_cases": 20
+    },
+    {
+      "customer_id": "C0117",
+      "company": "Grove Systems 117",
+      "plan": "Growth",
+      "seats": 4,
+      "region": "Americas",
+      "industry": "Finance tools",
+      "active_cases": 1,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0217",
+      "company": "Grove Systems 217",
+      "plan": "Growth",
+      "seats": 23,
+      "region": "APAC",
+      "industry": "SaaS",
+      "active_cases": 3,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0097",
+      "company": "Grove Tools 097",
+      "plan": "Scale",
+      "seats": 15,
+      "region": "EMEA",
+      "industry": "Logistics",
+      "active_cases": 2,
+      "all_cases": 19
+    },
+    {
+      "customer_id": "C0197",
+      "company": "Grove Tools 197",
+      "plan": "Growth",
+      "seats": 20,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 1,
+      "all_cases": 17
+    },
+    {
+      "customer_id": "C0297",
+      "company": "Grove Tools 297",
+      "plan": "Growth",
+      "seats": 21,
+      "region": "EMEA",
+      "industry": "Education",
+      "active_cases": 3,
+      "all_cases": 18
+    },
+    {
+      "customer_id": "C0027",
+      "company": "Grove Works 027",
+      "plan": "Scale",
+      "seats": 19,
+      "region": "APAC",
+      "industry": "Finance tools",
+      "active_cases": 0,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0127",
+      "company": "Grove Works 127",
+      "plan": "Growth",
+      "seats": 12,
+      "region": "Americas",
+      "industry": "Retail tech",
+      "active_cases": 2,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0227",
+      "company": "Grove Works 227",
+      "plan": "Starter",
+      "seats": 14,
+      "region": "EMEA",
+      "industry": "Healthcare software",
+      "active_cases": 4,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0038",
+      "company": "Harbor Cloud 038",
+      "plan": "Starter",
+      "seats": 12,
+      "region": "EMEA",
+      "industry": "Retail tech",
+      "active_cases": 2,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0138",
+      "company": "Harbor Cloud 138",
+      "plan": "Starter",
+      "seats": 5,
+      "region": "APAC",
+      "industry": "Finance tools",
+      "active_cases": 3,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0238",
+      "company": "Harbor Cloud 238",
+      "plan": "Starter",
+      "seats": 8,
+      "region": "APAC",
+      "industry": "SaaS",
+      "active_cases": 3,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0008",
+      "company": "Harbor Labs 008",
+      "plan": "Growth",
+      "seats": 13,
+      "region": "Americas",
+      "industry": "Education",
+      "active_cases": 1,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0108",
+      "company": "Harbor Labs 108",
+      "plan": "Starter",
+      "seats": 5,
+      "region": "EMEA",
+      "industry": "Finance tools",
+      "active_cases": 5,
+      "all_cases": 18
+    },
+    {
+      "customer_id": "C0208",
+      "company": "Harbor Labs 208",
+      "plan": "Growth",
+      "seats": 14,
+      "region": "EMEA",
+      "industry": "Finance tools",
+      "active_cases": 2,
+      "all_cases": 8
+    },
+    {
+      "customer_id": "C0048",
+      "company": "Harbor Logic 048",
+      "plan": "Growth",
+      "seats": 12,
+      "region": "Americas",
+      "industry": "Logistics",
+      "active_cases": 1,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0148",
+      "company": "Harbor Logic 148",
+      "plan": "Starter",
+      "seats": 12,
+      "region": "APAC",
+      "industry": "Finance tools",
+      "active_cases": 1,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0248",
+      "company": "Harbor Logic 248",
+      "plan": "Growth",
+      "seats": 8,
+      "region": "APAC",
+      "industry": "Healthcare software",
+      "active_cases": 0,
+      "all_cases": 8
+    },
+    {
+      "customer_id": "C0078",
+      "company": "Harbor Metrics 078",
+      "plan": "Starter",
+      "seats": 21,
+      "region": "APAC",
+      "industry": "Healthcare software",
+      "active_cases": 1,
+      "all_cases": 7
+    },
+    {
+      "customer_id": "C0178",
+      "company": "Harbor Metrics 178",
+      "plan": "Growth",
+      "seats": 23,
+      "region": "Americas",
+      "industry": "Retail tech",
+      "active_cases": 2,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0278",
+      "company": "Harbor Metrics 278",
+      "plan": "Starter",
+      "seats": 24,
+      "region": "APAC",
+      "industry": "SaaS",
+      "active_cases": 4,
+      "all_cases": 20
+    },
+    {
+      "customer_id": "C0088",
+      "company": "Harbor Platform 088",
+      "plan": "Starter",
+      "seats": 4,
+      "region": "Americas",
+      "industry": "Logistics",
+      "active_cases": 1,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0188",
+      "company": "Harbor Platform 188",
+      "plan": "Growth",
+      "seats": 10,
+      "region": "Americas",
+      "industry": "Healthcare software",
+      "active_cases": 0,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0288",
+      "company": "Harbor Platform 288",
+      "plan": "Scale",
+      "seats": 17,
+      "region": "APAC",
+      "industry": "Finance tools",
+      "active_cases": 3,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0068",
+      "company": "Harbor Software 068",
+      "plan": "Starter",
+      "seats": 9,
+      "region": "Americas",
+      "industry": "Logistics",
+      "active_cases": 1,
+      "all_cases": 5
+    },
+    {
+      "customer_id": "C0168",
+      "company": "Harbor Software 168",
+      "plan": "Starter",
+      "seats": 23,
+      "region": "APAC",
+      "industry": "Education",
+      "active_cases": 0,
+      "all_cases": 9
+    },
+    {
+      "customer_id": "C0268",
+      "company": "Harbor Software 268",
+      "plan": "Scale",
+      "seats": 11,
+      "region": "EMEA",
+      "industry": "Finance tools",
+      "active_cases": 1,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0058",
+      "company": "Harbor Studio 058",
+      "plan": "Starter",
+      "seats": 23,
+      "region": "EMEA",
+      "industry": "Healthcare software",
+      "active_cases": 4,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0158",
+      "company": "Harbor Studio 158",
+      "plan": "Growth",
+      "seats": 7,
+      "region": "APAC",
+      "industry": "SaaS",
+      "active_cases": 4,
+      "all_cases": 18
+    },
+    {
+      "customer_id": "C0258",
+      "company": "Harbor Studio 258",
+      "plan": "Starter",
+      "seats": 22,
+      "region": "Americas",
+      "industry": "Education",
+      "active_cases": 3,
+      "all_cases": 18
+    },
+    {
+      "customer_id": "C0018",
+      "company": "Harbor Systems 018",
+      "plan": "Growth",
+      "seats": 10,
+      "region": "Americas",
+      "industry": "SaaS",
+      "active_cases": 2,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0118",
+      "company": "Harbor Systems 118",
+      "plan": "Growth",
+      "seats": 5,
+      "region": "EMEA",
+      "industry": "Healthcare software",
+      "active_cases": 1,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0218",
+      "company": "Harbor Systems 218",
+      "plan": "Growth",
+      "seats": 8,
+      "region": "APAC",
+      "industry": "Education",
+      "active_cases": 0,
+      "all_cases": 8
+    },
+    {
+      "customer_id": "C0098",
+      "company": "Harbor Tools 098",
+      "plan": "Growth",
+      "seats": 10,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 2,
+      "all_cases": 17
+    },
+    {
+      "customer_id": "C0198",
+      "company": "Harbor Tools 198",
+      "plan": "Growth",
+      "seats": 15,
+      "region": "APAC",
+      "industry": "Healthcare software",
+      "active_cases": 0,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0298",
+      "company": "Harbor Tools 298",
+      "plan": "Starter",
+      "seats": 19,
+      "region": "Americas",
+      "industry": "SaaS",
+      "active_cases": 1,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0028",
+      "company": "Harbor Works 028",
+      "plan": "Starter",
+      "seats": 20,
+      "region": "APAC",
+      "industry": "SaaS",
+      "active_cases": 3,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0128",
+      "company": "Harbor Works 128",
+      "plan": "Scale",
+      "seats": 3,
+      "region": "APAC",
+      "industry": "Finance tools",
+      "active_cases": 0,
+      "all_cases": 8
+    },
+    {
+      "customer_id": "C0228",
+      "company": "Harbor Works 228",
+      "plan": "Starter",
+      "seats": 18,
+      "region": "Americas",
+      "industry": "SaaS",
+      "active_cases": 0,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0039",
+      "company": "Indigo Cloud 039",
+      "plan": "Starter",
+      "seats": 8,
+      "region": "APAC",
+      "industry": "Finance tools",
+      "active_cases": 4,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0139",
+      "company": "Indigo Cloud 139",
+      "plan": "Growth",
+      "seats": 8,
+      "region": "EMEA",
+      "industry": "Education",
+      "active_cases": 1,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0239",
+      "company": "Indigo Cloud 239",
+      "plan": "Scale",
+      "seats": 16,
+      "region": "APAC",
+      "industry": "Education",
+      "active_cases": 1,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0009",
+      "company": "Indigo Labs 009",
+      "plan": "Scale",
+      "seats": 18,
+      "region": "APAC",
+      "industry": "SaaS",
+      "active_cases": 1,
+      "all_cases": 17
+    },
+    {
+      "customer_id": "C0109",
+      "company": "Indigo Labs 109",
+      "plan": "Scale",
+      "seats": 11,
+      "region": "Americas",
+      "industry": "Retail tech",
+      "active_cases": 1,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0209",
+      "company": "Indigo Labs 209",
+      "plan": "Starter",
+      "seats": 11,
+      "region": "Americas",
+      "industry": "Logistics",
+      "active_cases": 1,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0049",
+      "company": "Indigo Logic 049",
+      "plan": "Starter",
+      "seats": 7,
+      "region": "APAC",
+      "industry": "Healthcare software",
+      "active_cases": 3,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0149",
+      "company": "Indigo Logic 149",
+      "plan": "Starter",
+      "seats": 8,
+      "region": "EMEA",
+      "industry": "Finance tools",
+      "active_cases": 2,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0249",
+      "company": "Indigo Logic 249",
+      "plan": "Growth",
+      "seats": 5,
+      "region": "Americas",
+      "industry": "Healthcare software",
+      "active_cases": 2,
+      "all_cases": 19
+    },
+    {
+      "customer_id": "C0079",
+      "company": "Indigo Metrics 079",
+      "plan": "Growth",
+      "seats": 4,
+      "region": "Americas",
+      "industry": "Healthcare software",
+      "active_cases": 0,
+      "all_cases": 4
+    },
+    {
+      "customer_id": "C0179",
+      "company": "Indigo Metrics 179",
+      "plan": "Scale",
+      "seats": 21,
+      "region": "APAC",
+      "industry": "Logistics",
+      "active_cases": 0,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0279",
+      "company": "Indigo Metrics 279",
+      "plan": "Starter",
+      "seats": 24,
+      "region": "Americas",
+      "industry": "Finance tools",
+      "active_cases": 0,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0089",
+      "company": "Indigo Platform 089",
+      "plan": "Scale",
+      "seats": 23,
+      "region": "APAC",
+      "industry": "Retail tech",
+      "active_cases": 6,
+      "all_cases": 19
+    },
+    {
+      "customer_id": "C0189",
+      "company": "Indigo Platform 189",
+      "plan": "Growth",
+      "seats": 6,
+      "region": "EMEA",
+      "industry": "Education",
+      "active_cases": 0,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0289",
+      "company": "Indigo Platform 289",
+      "plan": "Scale",
+      "seats": 13,
+      "region": "APAC",
+      "industry": "SaaS",
+      "active_cases": 1,
+      "all_cases": 8
+    },
+    {
+      "customer_id": "C0069",
+      "company": "Indigo Software 069",
+      "plan": "Starter",
+      "seats": 3,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 2,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0169",
+      "company": "Indigo Software 169",
+      "plan": "Growth",
+      "seats": 21,
+      "region": "APAC",
+      "industry": "SaaS",
+      "active_cases": 2,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0269",
+      "company": "Indigo Software 269",
+      "plan": "Starter",
+      "seats": 16,
+      "region": "EMEA",
+      "industry": "Healthcare software",
+      "active_cases": 1,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0059",
+      "company": "Indigo Studio 059",
+      "plan": "Scale",
+      "seats": 5,
+      "region": "Americas",
+      "industry": "Finance tools",
+      "active_cases": 1,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0159",
+      "company": "Indigo Studio 159",
+      "plan": "Growth",
+      "seats": 22,
+      "region": "EMEA",
+      "industry": "Logistics",
+      "active_cases": 0,
+      "all_cases": 8
+    },
+    {
+      "customer_id": "C0259",
+      "company": "Indigo Studio 259",
+      "plan": "Scale",
+      "seats": 13,
+      "region": "APAC",
+      "industry": "Retail tech",
+      "active_cases": 2,
+      "all_cases": 18
+    },
+    {
+      "customer_id": "C0019",
+      "company": "Indigo Systems 019",
+      "plan": "Growth",
+      "seats": 18,
+      "region": "EMEA",
+      "industry": "Healthcare software",
+      "active_cases": 1,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0119",
+      "company": "Indigo Systems 119",
+      "plan": "Starter",
+      "seats": 20,
+      "region": "EMEA",
+      "industry": "Logistics",
+      "active_cases": 0,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0219",
+      "company": "Indigo Systems 219",
+      "plan": "Growth",
+      "seats": 6,
+      "region": "APAC",
+      "industry": "Education",
+      "active_cases": 2,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0099",
+      "company": "Indigo Tools 099",
+      "plan": "Scale",
+      "seats": 15,
+      "region": "APAC",
+      "industry": "SaaS",
+      "active_cases": 1,
+      "all_cases": 8
+    },
+    {
+      "customer_id": "C0199",
+      "company": "Indigo Tools 199",
+      "plan": "Starter",
+      "seats": 15,
+      "region": "Americas",
+      "industry": "Logistics",
+      "active_cases": 0,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0299",
+      "company": "Indigo Tools 299",
+      "plan": "Growth",
+      "seats": 9,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 4,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0029",
+      "company": "Indigo Works 029",
+      "plan": "Starter",
+      "seats": 24,
+      "region": "APAC",
+      "industry": "Finance tools",
+      "active_cases": 3,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0129",
+      "company": "Indigo Works 129",
+      "plan": "Growth",
+      "seats": 22,
+      "region": "APAC",
+      "industry": "Finance tools",
+      "active_cases": 3,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0229",
+      "company": "Indigo Works 229",
+      "plan": "Starter",
+      "seats": 23,
+      "region": "Americas",
+      "industry": "Logistics",
+      "active_cases": 2,
+      "all_cases": 14
+    },
+    {
+      "customer_id": "C0040",
+      "company": "Juniper Cloud 040",
+      "plan": "Starter",
+      "seats": 10,
+      "region": "APAC",
+      "industry": "Finance tools",
+      "active_cases": 2,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0140",
+      "company": "Juniper Cloud 140",
+      "plan": "Scale",
+      "seats": 15,
+      "region": "Americas",
+      "industry": "Healthcare software",
+      "active_cases": 1,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0240",
+      "company": "Juniper Cloud 240",
+      "plan": "Growth",
+      "seats": 20,
+      "region": "EMEA",
+      "industry": "Healthcare software",
+      "active_cases": 1,
+      "all_cases": 15
+    },
+    {
+      "customer_id": "C0010",
+      "company": "Juniper Labs 010",
+      "plan": "Starter",
+      "seats": 18,
+      "region": "APAC",
+      "industry": "Retail tech",
+      "active_cases": 1,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0110",
+      "company": "Juniper Labs 110",
+      "plan": "Growth",
+      "seats": 21,
+      "region": "APAC",
+      "industry": "Finance tools",
+      "active_cases": 1,
+      "all_cases": 9
+    },
+    {
+      "customer_id": "C0210",
+      "company": "Juniper Labs 210",
+      "plan": "Scale",
+      "seats": 17,
+      "region": "Americas",
+      "industry": "Healthcare software",
+      "active_cases": 1,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0050",
+      "company": "Juniper Logic 050",
+      "plan": "Starter",
+      "seats": 23,
+      "region": "Americas",
+      "industry": "Education",
+      "active_cases": 1,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0150",
+      "company": "Juniper Logic 150",
+      "plan": "Growth",
+      "seats": 7,
+      "region": "Americas",
+      "industry": "Education",
+      "active_cases": 0,
+      "all_cases": 10
+    },
+    {
+      "customer_id": "C0250",
+      "company": "Juniper Logic 250",
+      "plan": "Starter",
+      "seats": 17,
+      "region": "APAC",
+      "industry": "Logistics",
+      "active_cases": 0,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0080",
+      "company": "Juniper Metrics 080",
+      "plan": "Scale",
+      "seats": 21,
+      "region": "Americas",
+      "industry": "Healthcare software",
+      "active_cases": 2,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0180",
+      "company": "Juniper Metrics 180",
+      "plan": "Starter",
+      "seats": 21,
+      "region": "APAC",
+      "industry": "Retail tech",
+      "active_cases": 3,
+      "all_cases": 11
+    },
+    {
+      "customer_id": "C0280",
+      "company": "Juniper Metrics 280",
+      "plan": "Starter",
+      "seats": 18,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 2,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0090",
+      "company": "Juniper Platform 090",
+      "plan": "Starter",
+      "seats": 12,
+      "region": "APAC",
+      "industry": "Logistics",
+      "active_cases": 0,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0190",
+      "company": "Juniper Platform 190",
+      "plan": "Growth",
+      "seats": 9,
+      "region": "Americas",
+      "industry": "SaaS",
+      "active_cases": 0,
+      "all_cases": 9
+    },
+    {
+      "customer_id": "C0290",
+      "company": "Juniper Platform 290",
+      "plan": "Scale",
+      "seats": 6,
+      "region": "APAC",
+      "industry": "SaaS",
+      "active_cases": 2,
+      "all_cases": 19
+    },
+    {
+      "customer_id": "C0070",
+      "company": "Juniper Software 070",
+      "plan": "Growth",
+      "seats": 5,
+      "region": "EMEA",
+      "industry": "Retail tech",
+      "active_cases": 0,
+      "all_cases": 10
+    },
+    {
+      "customer_id": "C0170",
+      "company": "Juniper Software 170",
+      "plan": "Starter",
+      "seats": 10,
+      "region": "EMEA",
+      "industry": "Finance tools",
+      "active_cases": 0,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0270",
+      "company": "Juniper Software 270",
+      "plan": "Starter",
+      "seats": 14,
+      "region": "Americas",
+      "industry": "Finance tools",
+      "active_cases": 1,
+      "all_cases": 13
+    },
+    {
+      "customer_id": "C0060",
+      "company": "Juniper Studio 060",
+      "plan": "Starter",
+      "seats": 10,
+      "region": "APAC",
+      "industry": "Healthcare software",
+      "active_cases": 0,
+      "all_cases": 8
+    },
+    {
+      "customer_id": "C0160",
+      "company": "Juniper Studio 160",
+      "plan": "Starter",
+      "seats": 11,
+      "region": "EMEA",
+      "industry": "Healthcare software",
+      "active_cases": 2,
+      "all_cases": 8
+    },
+    {
+      "customer_id": "C0260",
+      "company": "Juniper Studio 260",
+      "plan": "Starter",
+      "seats": 24,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 3,
+      "all_cases": 20
+    },
+    {
+      "customer_id": "C0020",
+      "company": "Juniper Systems 020",
+      "plan": "Growth",
+      "seats": 4,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 0,
+      "all_cases": 8
+    },
+    {
+      "customer_id": "C0120",
+      "company": "Juniper Systems 120",
+      "plan": "Growth",
+      "seats": 19,
+      "region": "EMEA",
+      "industry": "Finance tools",
+      "active_cases": 2,
+      "all_cases": 24
+    },
+    {
+      "customer_id": "C0220",
+      "company": "Juniper Systems 220",
+      "plan": "Starter",
+      "seats": 7,
+      "region": "APAC",
+      "industry": "SaaS",
+      "active_cases": 1,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0100",
+      "company": "Juniper Tools 100",
+      "plan": "Scale",
+      "seats": 13,
+      "region": "Americas",
+      "industry": "SaaS",
+      "active_cases": 0,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0200",
+      "company": "Juniper Tools 200",
+      "plan": "Starter",
+      "seats": 9,
+      "region": "APAC",
+      "industry": "Education",
+      "active_cases": 3,
+      "all_cases": 16
+    },
+    {
+      "customer_id": "C0300",
+      "company": "Juniper Tools 300",
+      "plan": "Starter",
+      "seats": 21,
+      "region": "EMEA",
+      "industry": "Retail tech",
+      "active_cases": 1,
+      "all_cases": 12
+    },
+    {
+      "customer_id": "C0030",
+      "company": "Juniper Works 030",
+      "plan": "Growth",
+      "seats": 5,
+      "region": "EMEA",
+      "industry": "SaaS",
+      "active_cases": 3,
+      "all_cases": 17
+    },
+    {
+      "customer_id": "C0130",
+      "company": "Juniper Works 130",
+      "plan": "Starter",
+      "seats": 8,
+      "region": "EMEA",
+      "industry": "Retail tech",
+      "active_cases": 4,
+      "all_cases": 17
+    },
+    {
+      "customer_id": "C0230",
+      "company": "Juniper Works 230",
+      "plan": "Starter",
+      "seats": 3,
+      "region": "APAC",
+      "industry": "Healthcare software",
+      "active_cases": 1,
+      "all_cases": 12
+    }
+  ]
+}

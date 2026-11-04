@@ -1,5 +1,7 @@
 """API behaviour against a fake store: no network, no database."""
+import psycopg
 import pytest
+from psycopg_pool import PoolTimeout
 
 from orion_api.main import create_app, split_owner
 from orion_api.settings import load_settings
@@ -238,6 +240,46 @@ def test_ticket_articles_id_over_32_characters_is_422(client):
     assert response.status_code == 422
     assert response.json()["error"]["code"] == "invalid_request"
     assert client.get(f"/api/tickets/{'X' * 32}/knowledge", headers=auth(AGENT)).status_code == 404
+
+
+def test_unknown_ticket_articles_404_body_names_the_id(client):
+    response = client.get("/api/tickets/T99999/knowledge", headers=auth(AGENT))
+    assert response.json() == {"error": {"status": 404, "code": "ticket_not_found",
+                                         "message": "No ticket has the ID 'T99999'."}}
+
+
+def test_admin_token_reads_ticket_articles_too(client):
+    response = client.get("/api/tickets/T00727/knowledge", headers=auth(ADMIN))
+    assert response.status_code == 200
+    assert response.json() == client.get("/api/tickets/T00727/knowledge", headers=auth(AGENT)).json()
+
+
+@pytest.mark.parametrize("error", [PoolTimeout("couldn't get a connection to db.example"),
+                                   psycopg.OperationalError("could not connect to db.example")])
+def test_ticket_articles_database_outage_is_503(client, fake_store, error):
+    def down(*args):
+        raise error
+    fake_store.ticket_articles = down
+    response = client.get("/api/tickets/T00727/knowledge", headers=auth(AGENT))
+    assert response.status_code == 503
+    assert response.json() == {"error": {"status": 503, "code": "database_unavailable",
+                                         "message": "The database did not answer. Try again shortly."}}
+    assert "db.example" not in response.text
+
+
+def test_ticket_articles_openapi_declares_its_errors_and_summary_shape(client):
+    schema = client.get("/openapi.json").json()
+    operation = schema["paths"]["/api/tickets/{ticket_id}/knowledge"]["get"]
+    assert operation["tags"] == ["tickets"]
+    assert operation["summary"] == "Help articles titled exactly as the ticket's subject"
+    assert set(operation["responses"]) == {"200", "401", "404", "422", "503"}
+    assert operation["parameters"] == [{"name": "ticket_id", "in": "path", "required": True,
+                                        "schema": {"type": "string", "maxLength": 32, "title": "Ticket Id"}}]
+    components = schema["components"]["schemas"]
+    listing = components["Listing_ArticleSummary_"]
+    assert listing["required"] == ["total", "items"]
+    assert listing["properties"]["items"]["items"] == {"$ref": "#/components/schemas/ArticleSummary"}
+    assert set(components["ArticleSummary"]["properties"]) == {"article_id", "title", "category"}
 
 
 def test_company_shape_and_owner_split(client):

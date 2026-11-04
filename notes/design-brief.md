@@ -56,6 +56,7 @@ The look follows `notes/reference-design.md`: its colours, Inter type, spacing, 
 - Agent bubbles use a #0E4F41 fill with #F7F7FF text, for the same reason.
 - The focus ring is solid #098278, not the reference's faint 35% tint.
 - Muted text is #607086 (4.71:1 on the page, 4.74:1 on the surface), not #64748B (4.44:1 and 4.46:1).
+- Secondary buttons keep a 1px #7C8A9E border (3.27:1 on the page, 3.29:1 on the surface), not #E2E8F0 (1.15:1 and 1.16:1), which is too faint to see. Their transparent background and 44px touch target follow the reference.
 
 **Left out of the reference, because the desk has no data or use for them**
 

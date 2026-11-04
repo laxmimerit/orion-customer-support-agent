@@ -82,8 +82,12 @@ export function CustomersList({ total, items, description }: {
             <FilterChips label="Plan" allLabel="All plans" options={plans} value={plan} onPick={pickPlan} />
             <span className="clist-divider" aria-hidden="true" />
             <FilterChips label="Region" allLabel="All regions" options={regions} value={region} onPick={pickRegion} />
-            <span className="clist-caption" aria-live="polite">
-              {rows.length} of {filtered.length} · {SORT_LABEL}
+            {/* Only the count is live, and read whole: React updates each number as its own text node. */}
+            <span className="clist-caption">
+              <span aria-live="polite" aria-atomic="true">
+                {rows.length} of {filtered.length}
+                <span className="visually-hidden"> {filtered.length === 1 ? "customer" : "customers"} shown</span>
+              </span> · {SORT_LABEL}
             </span>
           </div>
 
@@ -124,13 +128,13 @@ function Summary({ total, items, plans, regions }: {
 
   return (
     <section className="clist-summary" aria-label="Customer summary">
-      <div className="clist-cell">
-        <span className="clist-cell-label">Customers</span>
+      <div className="clist-cell" role="group" aria-labelledby="clist-customers-label">
+        <span id="clist-customers-label" className="clist-cell-label">Customers</span>
         <span className="clist-figure">{total}</span>
         <span className="clist-note">{plural(seats, "seat")} in all</span>
       </div>
-      <div className="clist-cell is-chart">
-        <span className="clist-cell-label">By plan</span>
+      <div className="clist-cell is-chart" role="group" aria-labelledby="clist-plan-label">
+        <span id="clist-plan-label" className="clist-cell-label">By plan</span>
         <div className="clist-planbar" role="img"
           aria-label={plans.map((plan) => `${plan.label} ${plan.count}`).join(", ")}>
           {plans.map((plan) => (
@@ -146,8 +150,8 @@ function Summary({ total, items, plans, regions }: {
           ))}
         </ul>
       </div>
-      <div className="clist-cell">
-        <span className="clist-cell-label">By region</span>
+      <div className="clist-cell" role="group" aria-labelledby="clist-region-label">
+        <span id="clist-region-label" className="clist-cell-label">By region</span>
         <ul className="clist-regions">
           {regions.map((region) => (
             <li key={region.label} className="clist-region">
@@ -160,8 +164,8 @@ function Summary({ total, items, plans, regions }: {
           ))}
         </ul>
       </div>
-      <div className="clist-cell">
-        <span className="clist-cell-label">Active cases</span>
+      <div className="clist-cell" role="group" aria-labelledby="clist-active-label">
+        <span id="clist-active-label" className="clist-cell-label">Active cases</span>
         <span className="clist-figure">{active}</span>
         <span className="clist-note">across {plural(withActive, "customer")} · {plural(allCases, "case")} in all</span>
       </div>

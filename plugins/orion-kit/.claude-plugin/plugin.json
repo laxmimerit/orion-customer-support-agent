@@ -1,0 +1,11 @@
+{
+  "name": "orion-kit",
+  "displayName": "Orion Kit",
+  "version": "1.0.0",
+  "description": "Orion desk skills, review and test agents, and safety hooks",
+  "author": {
+    "name": "laxmimerit"
+  },
+  "repository": "https://github.com/laxmimerit/orion-customer-support-agent",
+  "keywords": ["orion", "customer-support", "fastapi", "code-review", "testing"]
+}

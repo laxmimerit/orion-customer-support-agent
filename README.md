@@ -33,4 +33,8 @@ The course covers a new FastAPI backend, Next.js frontend, checked SQL analysis,
 
 A branch is not an access boundary: people with repository access can inspect both branches and history. The release will deliberately provide the inherited legacy source as well as the course implementation. Never commit private environment files, account passwords, provider keys or mailbox tokens on either branch.
 
+## Claude Code plugin
+
+This repository is also a Claude Code marketplace. It offers `orion-kit`, which bundles the Orion skills, agents and hooks for other teams. See [plugins/orion-kit/README.md](plugins/orion-kit/README.md) for what's inside and how to install it.
+
 Orion and its historical records are synthetic course material.

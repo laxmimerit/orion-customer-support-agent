@@ -1,0 +1,16 @@
+{
+  "name": "orion-desk-plugins",
+  "owner": {
+    "name": "laxmimerit"
+  },
+  "metadata": {
+    "description": "Claude Code plugins for teams working on the Orion customer support desk"
+  },
+  "plugins": [
+    {
+      "name": "orion-kit",
+      "source": "./plugins/orion-kit",
+      "description": "Orion desk skills, review and test agents, and safety hooks"
+    }
+  ]
+}

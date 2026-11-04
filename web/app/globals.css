@@ -12,7 +12,7 @@
   --ink-body: #1e3340;
   --ink-2: #3f505b;
   --ink-muted: #4a5a64;
-  --ink-placeholder: #5f6e77;
+  --ink-placeholder: #6b7a83;
 
   --line: #e1e7e8;
   --line-soft: #edf1f2;
@@ -188,7 +188,7 @@ input::placeholder { color: var(--ink-placeholder); }
 .side-link svg { flex: none; }
 
 .column { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; }
-.column:focus, main:focus { outline: none; }
+.column:focus { outline: none; }
 
 .topbar { background: var(--surface); border-bottom: 1px solid var(--line); }
 .topbar-inner {

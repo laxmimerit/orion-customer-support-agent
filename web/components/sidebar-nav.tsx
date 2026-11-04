@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { CompanyIcon, CustomersIcon, KnowledgeIcon, ReportsIcon, SettingsIcon, TicketsIcon } from "@/components/icons";
-import { focusMain } from "@/components/route-focus";
 
 const MAIN = [
   { href: "/", label: "Tickets", Icon: TicketsIcon, matches: (path: string) => path === "/" || path.startsWith("/tickets") },
@@ -23,14 +22,14 @@ function NavLink({ item, pathname }: { item: (typeof MAIN)[number]; pathname: st
   );
 }
 
-// Goes to <main>, past the search box. Moves focus itself: a plain jump to #content adds a history entry that the router cannot go Back to.
+// Moves focus itself: a plain jump to #content adds a history entry that the router cannot go Back to.
 export function SkipLink() {
   function skip(event: React.MouseEvent<HTMLAnchorElement>) {
-    const main = document.querySelector<HTMLElement>("main");
-    if (!main) return;
+    const column = document.getElementById("content");
+    if (!column) return;
     event.preventDefault();
-    focusMain(main, { preventScroll: true });
-    main.scrollIntoView();
+    column.focus({ preventScroll: true });
+    column.scrollIntoView();
   }
   return <a className="skip-link" href="#content" onClick={skip}>Skip to content</a>;
 }

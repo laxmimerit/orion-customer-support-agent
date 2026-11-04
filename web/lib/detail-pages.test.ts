@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { detailLoadingLabel, isBackToList } from "@/lib/detail-pages";
+import { detailLoadingLabel } from "@/lib/detail-pages";
 
 describe("detailLoadingLabel", () => {
   it.each([
@@ -55,25 +55,5 @@ describe("detailLoadingLabel", () => {
   it("does not take object built-ins for sections", () => {
     expect(detailLoadingLabel("/constructor/1")).toBeNull();
     expect(detailLoadingLabel("/__proto__/1")).toBeNull();
-  });
-});
-
-describe("isBackToList", () => {
-  it.each([
-    ["/tickets/TCK-1001", "/"],
-    ["/customers/CUST-1001", "/customers"],
-    ["/knowledge/KB-1001", "/knowledge"],
-  ])("is true from %s to its list %s", (from, to) => {
-    expect(isBackToList(from, to)).toBe(true);
-  });
-
-  it.each([
-    ["/", "/tickets/TCK-1001"],
-    ["/customers", "/customers/CUST-1001"],
-    ["/customers/CUST-1001", "/"],
-    ["/tickets/TCK-1001", "/customers/CUST-1001"],
-    ["/reports", "/"],
-  ])("is false from %s to %s", (from, to) => {
-    expect(isBackToList(from, to)).toBe(false);
   });
 });

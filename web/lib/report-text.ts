@@ -2,11 +2,13 @@
 // from the rows and printed only if it holds; otherwise a neutral line states the actual extremes.
 // Pure functions: no fetching, and the volume report's month is only ever tested, never shown.
 import type { BacklogRow, Breakdown, CategoryRow, FirstReplyRow, PriorityRow, VolumeRow } from "@/lib/api";
-import { NOT_RECORDED, hoursShort, sentenceCase } from "@/lib/format";
+import { NOT_RECORDED, asPercent, hoursShort, rounded, sentenceCase } from "@/lib/format";
 
 // Averages arrive as decimal strings. Null stays null, so a missing value is never drawn as 0.
+// A blank string counts as missing too: Number("  ") is 0, which would invent a figure.
 export function num(value: string | number | null | undefined) {
-  if (value === null || value === undefined || value === "") return null;
+  if (value === null || value === undefined) return null;
+  if (typeof value === "string" && value.trim() === "") return null;
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : null;
 }
@@ -23,18 +25,13 @@ export function ratio(part: number, whole: number) {
   return whole > 0 ? part / whole : null;
 }
 
-// Rounds half up on the decimal value: 17.65 -> 17.7, where toFixed gives 17.6 from the binary float.
-export function rounded(value: number, places = 1) {
-  return Number(`${Math.round(Number(`${value}e${places}`))}e-${places}`);
-}
-
 // 17.65 -> "17.7h".
 export function hoursLabel(value: number) {
-  return hoursShort(rounded(value));
+  return hoursShort(value);
 }
 
 export function percentText(share: number | null, places = 0) {
-  return share === null ? NOT_RECORDED : `${(share * 100).toFixed(places)}%`;
+  return share === null ? NOT_RECORDED : `${asPercent(share, places).toFixed(places)}%`;
 }
 
 export function hoursText(value: string | null) {
@@ -321,7 +318,7 @@ export function kpisFrom(sources: {
   const { volume, breakdown, firstReply } = sources;
   const counts = volume !== undefined ? volume : breakdown;
   const kpis: Kpi[] = [];
-  const whole = (share: number | null) => (share === null ? null : (share * 100).toFixed(0));
+  const whole = (share: number | null) => (share === null ? null : asPercent(share).toFixed(0));
   const fixed = (value: string | null | undefined, places: number) => {
     const parsed = num(value);
     return parsed === null ? null : rounded(parsed, places).toFixed(places);

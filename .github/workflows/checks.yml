@@ -1,4 +1,4 @@
-# Pull-request checks: the API tests that need no database, and the frontend build.
+# Pull-request checks: the API tests that need no database, and the frontend tests and build.
 # No secrets are used. The live tests (marker "live") are deselected, so nothing here reaches orion_desk.
 name: checks
 
@@ -38,4 +38,5 @@ jobs:
           cache-dependency-path: web/package-lock.json
       - run: npm ci
       - run: npm run typecheck
+      - run: npm test
       - run: npm run build

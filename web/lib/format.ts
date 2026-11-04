@@ -17,9 +17,26 @@ export function channelLabel(channel: string | null) {
   return channel.toLowerCase() === "api" ? "API" : sentenceCase(channel.toLowerCase());
 }
 
-// 7.96 -> "7h 58m", 3 -> "3h", 0.5 -> "30m". Hours from the API are exact decimal strings.
+// Moves the decimal point in the number's own digits, so no multiplication adds float error.
+function shifted(value: number, places: number) {
+  const [digits, exponent = "0"] = String(value).split("e");
+  return Number(`${digits}e${Number(exponent) + places}`);
+}
+
+// Rounds half up on the decimal value: 17.65 -> 17.7, where toFixed gives 17.6 from the binary float.
+export function rounded(value: number, places = 1) {
+  return shifted(Math.round(shifted(value, places)), -places);
+}
+
+// A share as a percentage, rounded by the same rule: 0.285 -> 29, where 0.285 * 100 falls just short of 28.5.
+export function asPercent(share: number, places = 0) {
+  return rounded(shifted(share, 2), places);
+}
+
+// 7.96 -> "7h 58m", 3 -> "3h", 0.5 -> "30m". Hours from the API are exact decimal strings with four places.
+// Six places keep every real value and drop the float error of the * 60, so 1.025 is 61.5 minutes and rounds up.
 export function duration(hours: string | number) {
-  const minutes = Math.round(Math.abs(Number(hours)) * 60);
+  const minutes = Math.round(rounded(Math.abs(Number(hours)) * 60, 6));
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;
   if (h === 0) return `${m}m`;
@@ -28,16 +45,26 @@ export function duration(hours: string | number) {
 
 // 16.2 -> "16.2h"; the hours figure the reports show.
 export function hoursShort(value: string | number, places = 1) {
-  return `${Number(value).toFixed(places)}h`;
+  return `${rounded(Number(value), places).toFixed(places)}h`;
 }
 
 // 2451, 4000 -> "61%". Null when there is nothing to divide by, so no 0% is invented.
 export function percent(part: number, whole: number) {
-  return whole > 0 ? `${Math.round((part / whole) * 100)}%` : null;
+  return whole > 0 ? `${asPercent(part / whole)}%` : null;
 }
 
 export function plural(count: number, one: string, many = `${one}s`) {
   return `${count} ${count === 1 ? one : many}`;
+}
+
+// ["a", "b", "c"] -> "a, b and c".
+export function listOf(words: string[]) {
+  return words.length < 2 ? words.join("") : `${words.slice(0, -1).join(", ")} and ${words[words.length - 1]}`;
+}
+
+// ["subject", "plan_id"] -> "Same subject and plan". The names are the API's matched_on fields.
+export function matchedPhrase(fields: string[]) {
+  return `Same ${listOf(fields.map((field) => (field === "plan_id" ? "plan" : field)))}`;
 }
 
 // "Fern Platform 086" -> "F".

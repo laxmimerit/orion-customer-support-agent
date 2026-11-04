@@ -19,7 +19,11 @@ function decodeId(raw: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  return { title: decodeId((await params).articleId) };
+  const articleId = decodeId((await params).articleId);
+  const result = await knowledgeArticle(articleId);
+  // notFound() here as well as in the page: a title returned from here would beat the one in not-found.tsx.
+  if (!result.ok && (result.problem.status === 404 || result.problem.status === 422)) notFound();
+  return { title: articleId };
 }
 
 // The board's header search has nothing to filter here, so Enter opens the list with the words.
@@ -99,7 +103,7 @@ export default async function ArticlePage({ params }: Props) {
         <main className="page is-detail article-page">
           <Crumbs parent="Knowledge base" href="/knowledge" current={articleId} />
           <PageHead title={articleId} />
-          <ApiProblemPanel problem={result.problem} />
+          <ApiProblemPanel problem={result.problem} retryTarget="this article" />
         </main>
       </>
     );

@@ -11,8 +11,8 @@ from psycopg.rows import dict_row
 from psycopg_pool import ConnectionPool
 
 from .embedding import DIMENSIONS, as_vector
-from .models import (AccountDetails, ArticleSummary, ArticleText, ArticleTicket, Customer, Invoice, Message, Ticket,
-                     TicketSummary)
+from .models import (AccountDetails, ArticleSummary, ArticleText, ArticleTicket, Customer, Invoice, Message, Snapshot,
+                     Ticket)
 
 
 def columns(model):
@@ -22,9 +22,19 @@ def columns(model):
 
 # Legacy orders (store.py:59, 81) run on MySQL, which puts NULLs last on DESC and
 # first on ASC. PostgreSQL does the opposite, so say it explicitly.
-TICKET_PAGE = sql.SQL(
-    "SELECT {} FROM tickets ORDER BY created_at DESC NULLS LAST, ticket_id LIMIT %s OFFSET %s"
-).format(columns(TicketSummary))
+# Tickets are aged at the snapshot, as in reports/backlog.sql. The left join keeps every ticket, with a null age,
+# if no snapshot is recorded. Four places are enough to tell whole seconds apart, so rounding can't move a ticket
+# across its target.
+TICKET_PAGE = """WITH snapshot AS (
+    SELECT snapshot_utc::timestamptz AT TIME ZONE 'UTC' AS at FROM lab_metadata ORDER BY baseline_id LIMIT 1
+)
+SELECT t.ticket_id, t.subject, t.status, t.priority, t.channel, t.category, t.customer_id, t.agent_id, t.created_at,
+       t.sla_response_hours, t.sla_resolution_hours, t.first_response_hours, t.resolution_hours,
+       ROUND(EXTRACT(EPOCH FROM (s.at - t.created_at)) / 3600, 4) AS age_hours
+FROM tickets t
+LEFT JOIN snapshot s ON TRUE
+ORDER BY t.created_at DESC NULLS LAST, t.ticket_id
+LIMIT %s OFFSET %s"""
 TICKET = sql.SQL("SELECT {} FROM tickets WHERE ticket_id = %s").format(columns(Ticket))
 CUSTOMER = sql.SQL("SELECT {} FROM customers WHERE customer_id = %s").format(columns(Customer))
 MESSAGES = sql.SQL(
@@ -97,6 +107,75 @@ def nearest_query(priority):
     return NEAREST.format(dim=DIMENSIONS, where=where)
 
 
+# Similar tickets. The ticket's own stored vector is the query, so no model runs. hits keeps the HNSW shape, as in
+# NEAREST, which is why articles and the ticket itself take places in the pool and are dropped afterwards.
+SIMILAR_POOL = 51  # the ticket itself and its 50 nearest documents
+SIMILAR_FIELDS = ("subject", "component", "priority", "plan_id", "channel")
+SIMILAR_SOURCE = """SELECT t.subject, t.component, t.priority, t.plan_id, t.channel, e.embedding::text AS vector
+FROM tickets t
+LEFT JOIN search_embeddings e ON e.doc_id = 'ticket:' || t.ticket_id
+WHERE t.ticket_id = %s"""
+SIMILAR_TICKETS = f"""WITH hits AS (
+    SELECT kind, source_id, embedding <=> %(vector)s::vector({DIMENSIONS}) AS distance
+    FROM search_embeddings
+    ORDER BY embedding <=> %(vector)s::vector({DIMENSIONS})
+    LIMIT %(limit)s
+)
+SELECT t.ticket_id, t.subject, t.component, t.priority, t.plan_id, t.channel, t.agent_id, t.resolution_hours,
+       t.sla_resolution_hours, t.first_response_hours, t.csat, t.reopened_count, t.escalated,
+       1 - hits.distance AS similarity
+FROM hits
+JOIN tickets t ON hits.kind = 'ticket' AND t.ticket_id = hits.source_id
+WHERE t.status = 'resolved' AND t.ticket_id <> %(ticket_id)s
+ORDER BY hits.distance, t.ticket_id"""
+SIMILAR_MESSAGES = """SELECT ticket_id, author_role, body FROM messages WHERE ticket_id = ANY(%s)
+ORDER BY ticket_id, created_at ASC NULLS FIRST, message_id"""
+# The title rule of TICKET_ARTICLES as well as the text: one reply is shared by articles on other subjects.
+REPLY_ARTICLES = """SELECT article_id, title, category, body FROM knowledge_articles
+WHERE title = %s AND position(%s in body) > 0 ORDER BY article_id"""
+
+
+def shared_fields(source, ticket):
+    """The fields two tickets have in common. A value missing from both is not a match (M07)."""
+    return [name for name in SIMILAR_FIELDS if source[name] is not None and source[name] == ticket[name]]
+
+
+def reply_summary(ticket_ids, messages):
+    """How many different agent replies these tickets hold, and the one most of them used."""
+    tickets_by_reply = {}
+    for message in messages:
+        if message["author_role"] == "agent" and message["body"] is not None:
+            tickets_by_reply.setdefault(message["body"], set()).add(message["ticket_id"])
+    # Most tickets first; the text settles a tie, so the answer never depends on row order.
+    ranked = sorted(tickets_by_reply.items(), key=lambda item: (-len(item[1]), item[0]))
+    answered = set().union(*tickets_by_reply.values())
+    return {"distinct_replies": len(ranked), "top_reply": ranked[0][0] if ranked else None,
+            "top_reply_tickets": len(ranked[0][1]) if ranked else 0,
+            "tickets_without_reply": len(set(ticket_ids) - answered)}
+
+
+def similar_result(source, tickets, messages, articles):
+    """The response body, with every ticket found. Articles carry body only to compare them."""
+    by_ticket = {}
+    for message in messages:  # oldest first, so the last one kept is the last message
+        count = by_ticket.get(message["ticket_id"], {}).get("message_count", 0)
+        by_ticket[message["ticket_id"]] = {"message_count": count + 1, "last_author_role": message["author_role"],
+                                           "last_body": message["body"]}
+    no_messages = {"message_count": 0, "last_author_role": None, "last_body": None}
+    items = [{**ticket, **by_ticket.get(ticket["ticket_id"], no_messages), "matched_on": shared_fields(source, ticket)}
+             for ticket in tickets]
+    return {
+        "total": len(items),
+        "items": items,
+        "matched_on": [name for name in SIMILAR_FIELDS if items and all(name in item["matched_on"] for item in items)],
+        "replies": reply_summary([ticket["ticket_id"] for ticket in tickets], messages),
+        "articles": articles,
+        "articles_read_same": len(articles) > 1 and len({article["body"] for article in articles}) == 1,
+    }
+
+
+# lab_metadata has one row today; the order keeps the answer stable if a second baseline is ever added.
+SNAPSHOT = sql.SQL("SELECT {} FROM lab_metadata ORDER BY baseline_id LIMIT 1").format(columns(Snapshot))
 # Reports: one checked SQL file each in api/reports, read once at import. No parameters are passed,
 # so nothing from a request reaches the SQL.
 REPORTS_DIR = Path(__file__).resolve().parents[1] / "reports"
@@ -207,10 +286,32 @@ class Store:
                 return None
             return db.execute(TICKET_ARTICLES, (ticket["subject"],)).fetchall()
 
+    def similar_tickets(self, ticket_id):
+        """Resolved tickets among the ticket's nearest documents, closest first; None if the ID is unknown."""
+        with self.pool.connection() as db:
+            source = db.execute(SIMILAR_SOURCE, (ticket_id,)).fetchone()
+            if source is None:
+                return None
+            tickets, messages, articles = [], [], []
+            if source["vector"] is not None:
+                tickets = db.execute(SIMILAR_TICKETS, {"vector": source["vector"], "limit": SIMILAR_POOL,
+                                                       "ticket_id": ticket_id}).fetchall()
+            if tickets:
+                messages = db.execute(SIMILAR_MESSAGES, ([ticket["ticket_id"] for ticket in tickets],)).fetchall()
+            top_reply = reply_summary([], messages)["top_reply"]
+            if top_reply is not None:
+                articles = db.execute(REPLY_ARTICLES, (source["subject"], top_reply)).fetchall()
+            return similar_result(source, tickets, messages, articles)
+
     def company(self):
         """Company documents and staff requests, each by ID."""
         with self.pool.connection() as db:
             return db.execute(COMPANY_SECTIONS).fetchall(), db.execute(STAFF_REQUESTS).fetchall()
+
+    def snapshot(self):
+        """When the lab data was taken; None if lab_metadata has no row."""
+        with self.pool.connection() as db:
+            return db.execute(SNAPSHOT).fetchone()
 
     def exact_ticket(self, q):
         """The ticket whose ID is exactly q (case-sensitive, M01), as a search hit; None otherwise."""

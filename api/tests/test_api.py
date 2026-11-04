@@ -4,6 +4,7 @@ import pytest
 from psycopg_pool import PoolTimeout
 
 from orion_api.main import create_app, split_owner
+from orion_api.models import TicketSummary
 from orion_api.settings import load_settings
 
 from .conftest import ADMIN, AGENT, SETTINGS, auth, private_keys
@@ -14,7 +15,8 @@ def test_every_route_is_under_api_apart_from_docs(client):
     paths = {route.path for route in client.app.routes} - docs
     reports = {f"/api/reports/{name}" for name in ("volume", "backlog", "priority", "category", "first-reply")}
     pages = {"/api/customers", "/api/customers/{customer_id}", "/api/knowledge", "/api/knowledge/{article_id}",
-             "/api/company", "/api/tickets/{ticket_id}/knowledge"}
+             "/api/company", "/api/snapshot", "/api/tickets/{ticket_id}/knowledge",
+             "/api/tickets/{ticket_id}/similar"}
     assert paths == {"/api/tickets", "/api/tickets/{ticket_id}", "/api/search", "/api/admin/status", *reports, *pages}
 
 
@@ -35,8 +37,8 @@ def test_root_opens_the_docs(client):
 
 @pytest.mark.parametrize("path", ["/api/tickets", "/api/tickets/T00727", "/api/search?q=T00727", "/api/admin/status",
                                   "/api/reports/first-reply", "/api/customers", "/api/customers/C0086",
-                                  "/api/knowledge", "/api/knowledge/KB022", "/api/company",
-                                  "/api/tickets/T00727/knowledge"])
+                                  "/api/knowledge", "/api/knowledge/KB022", "/api/company", "/api/snapshot",
+                                  "/api/tickets/T00727/knowledge", "/api/tickets/T00727/similar"])
 def test_a_token_is_required(client, path):
     response = client.get(path)
     assert response.status_code == 401
@@ -64,6 +66,23 @@ def test_ticket_list_is_paged(client, fake_store):
     assert body["items"][0]["ticket_id"] == "T00727"
     assert "body" not in body["items"][0]
     assert fake_store.calls == [("ticket_page", 10, 20)]
+
+
+def test_ticket_list_row_carries_its_targets_and_age(client):
+    item = client.get("/api/tickets", headers=auth(AGENT)).json()["items"][0]
+    assert item == {
+        "ticket_id": "T00727", "subject": "Invite link expired", "status": "resolved", "priority": "P2",
+        "channel": "web", "category": "account access", "customer_id": "C0086", "agent_id": "A03",
+        "created_at": "2026-06-28T03:34:00Z", "sla_response_hours": "3.0000", "sla_resolution_hours": "24.0000",
+        "first_response_hours": "7.9600", "resolution_hours": "25.5800", "age_hours": "68.4331",
+    }
+
+
+def test_ticket_list_row_with_nothing_recorded_stays_null(client, fake_store):
+    blank = {name: None for name in TicketSummary.model_fields} | {"ticket_id": "T00001"}
+    fake_store.ticket_page = lambda limit, offset: (1, [blank])
+    item = client.get("/api/tickets", headers=auth(AGENT)).json()["items"][0]
+    assert item == blank
 
 
 def test_ticket_list_defaults(client, fake_store):
@@ -297,13 +316,36 @@ def test_company_shape_and_owner_split(client):
                                        "body": "Body"}]
 
 
+# /api/snapshot is left out of test_no_email_or_date_field_reaches_a_page_route: a time is its whole answer,
+# as the creator asked, and the desk does not read it.
+def test_snapshot_says_when_the_data_was_taken_and_nothing_else(client):
+    response = client.get("/api/snapshot", headers=auth(AGENT))
+    assert response.status_code == 200
+    assert response.json() == {"snapshot_utc": "2026-06-30T23:59:59Z"}
+
+
+def test_snapshot_with_no_time_recorded_stays_null(client, fake_store):
+    fake_store.snapshot = lambda: {"snapshot_utc": None}
+    response = client.get("/api/snapshot", headers=auth(AGENT))
+    assert response.status_code == 200
+    assert response.json() == {"snapshot_utc": None}
+
+
+def test_no_snapshot_row_is_404(client, fake_store):
+    fake_store.snapshot = lambda: None
+    response = client.get("/api/snapshot", headers=auth(AGENT))
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "snapshot_not_found"
+
+
 def test_owner_splits_at_the_first_separator_only():
     assert split_owner("Arun · Engineering · Platform") == {"owner": "Arun", "team": "Engineering · Platform"}
     assert split_owner("Arun·Engineering") == {"owner": "Arun·Engineering", "team": None}
 
 
 @pytest.mark.parametrize("path", ["/api/customers", "/api/customers/C0086", "/api/knowledge", "/api/knowledge/KB022",
-                                  "/api/company", "/api/tickets/T00727/knowledge"])
+                                  "/api/company", "/api/tickets/T00727/knowledge",
+                                  "/api/tickets/T00727/similar"])
 def test_no_email_or_date_field_reaches_a_page_route(client, path):
     response = client.get(path, headers=auth(AGENT))
     assert response.status_code == 200

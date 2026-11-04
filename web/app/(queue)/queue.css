@@ -251,6 +251,23 @@
 }
 .queue-clip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+.queue-late {
+  align-self: flex-start;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--amber-pill);
+  color: var(--amber-ink);
+  font-size: 12px;
+  font-weight: 600;
+}
+.queue-late svg { flex: none; }
+.queue-card .queue-late { margin-top: 0; }
+
 .queue-minis {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));

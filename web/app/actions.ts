@@ -2,7 +2,7 @@
 
 import { ticketDetail } from "@/lib/api";
 
-// What the queue's preview panel adds to the row it already has. Only these fields leave the server:
+// What the queue's preview panel loads for the chosen ticket. Only these fields leave the server:
 // the ticket detail also holds contact details and timestamps, and the desk shows neither.
 export type TicketPreview = {
   company: string | null;

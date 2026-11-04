@@ -19,7 +19,7 @@ export default async function CustomersPage() {
         <TicketSearchBar />
         <main className="page clist-page">
           <PageHead title="Customers" description={DESCRIPTION} />
-          <ApiProblemPanel problem={result.problem} />
+          <ApiProblemPanel problem={result.problem} retryTarget="the customer list" />
         </main>
       </>
     );

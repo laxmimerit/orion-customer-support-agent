@@ -10,7 +10,9 @@ import { AlertIcon, CheckIcon, FilterIcon, ForwardIcon } from "@/components/icon
 import { RetryButton } from "@/components/retry-button";
 import { SearchField } from "@/components/search";
 import type { TicketPage, TicketSummary } from "@/lib/api";
+import { queueHref, ticketHref } from "@/lib/detail-pages";
 import { NOT_RECORDED, channelLabel, duration, isResolved, orNotRecorded, plural, sentenceCase } from "@/lib/format";
+import { lateLabel, slaResult, toHours } from "@/lib/sla";
 
 type Lane = "now" | "next" | "pending" | "done" | "missing";
 type QueueTicket = TicketSummary & { lane: Lane; rank: number };
@@ -122,7 +124,7 @@ export function Queue({ items, page, page_size, total, description, children }: 
     if (window.matchMedia("(max-width: 799px)").matches) panel.current?.scrollIntoView({ block: "start" });
   }
 
-  const rowProps = { selectedId: selected?.ticket_id ?? null, onPick: pick };
+  const rowProps = { page, selectedId: selected?.ticket_id ?? null, onPick: pick };
   const [cellPriority, cellStatus] = cell ? cell.split("|") : ["", ""];
 
   return (
@@ -267,6 +269,7 @@ export function Queue({ items, page, page_size, total, description, children }: 
               <div className="queue-panel-anchor" ref={panel}>
                 <Preview
                   ticket={selected}
+                  page={page}
                   similar={all.filter((ticket) =>
                     ticket.subject !== null && ticket.subject === selected.subject && ticket.ticket_id !== selected.ticket_id)}
                   onPick={pick}
@@ -295,10 +298,10 @@ function NoTickets({ total, pages }: { total: number; pages: number }) {
 
 function PageLink({ page, disabled, children }: { page: number; disabled: boolean; children: React.ReactNode }) {
   if (disabled) return <span className="button" role="link" aria-disabled="true">{children}</span>;
-  return <Link className="button" href={page === 1 ? "/" : `/?page=${page}`}>{children}</Link>;
+  return <Link className="button" href={queueHref(page)}>{children}</Link>;
 }
 
-type RowProps = { ticket: QueueTicket; selectedId: string | null; onPick: (ticketId: string) => void };
+type RowProps = { ticket: QueueTicket; page: number; selectedId: string | null; onPick: (ticketId: string) => void };
 
 // Covers the whole row or card to select it. The subject link sits above it and opens the ticket.
 function PickButton({ ticket, selected, onPick }: { ticket: TicketSummary; selected: boolean; onPick: (id: string) => void }) {
@@ -308,9 +311,9 @@ function PickButton({ ticket, selected, onPick }: { ticket: TicketSummary; selec
   );
 }
 
-function SubjectLink({ ticket, className }: { ticket: TicketSummary; className: string }) {
+function SubjectLink({ ticket, page, className }: { ticket: TicketSummary; page: number; className: string }) {
   return (
-    <Link className={`queue-subject ${className}`} href={`/tickets/${encodeURIComponent(ticket.ticket_id)}`} prefetch={false}>
+    <Link className={`queue-subject ${className}`} href={ticketHref(ticket.ticket_id, page)} prefetch={false}>
       {subjectOf(ticket)}
     </Link>
   );
@@ -337,7 +340,13 @@ function AgentText({ agent }: { agent: string | null }) {
   return <><span className="visually-hidden">Agent </span>{orNotRecorded(agent)}</>;
 }
 
-function NowCard({ ticket, selectedId, onPick }: RowProps) {
+// The words and the icon say it, so the colour is never the only sign.
+function LateMark({ ticket }: { ticket: TicketSummary }) {
+  const label = lateLabel(ticket);
+  return label && <span className="queue-late"><AlertIcon size={13} />{label}</span>;
+}
+
+function NowCard({ ticket, page, selectedId, onPick }: RowProps) {
   const selected = ticket.ticket_id === selectedId;
   const tone = selected ? " is-selected" : ticket.priority === "P1" ? " is-p1" : " is-p2";
   return (
@@ -348,10 +357,11 @@ function NowCard({ ticket, selectedId, onPick }: RowProps) {
         <PriorityTile priority={ticket.priority} size="lg" />
         <span className="queue-card-status"><StatusPill status={ticket.status} /></span>
       </span>
-      <SubjectLink ticket={ticket} className="queue-card-title" />
+      <SubjectLink ticket={ticket} page={page} className="queue-card-title" />
       <span className="row-sub">
         <strong>{ticket.ticket_id}</strong> · {categoryLabel(ticket.category)} · {orNotRecorded(ticket.customer_id)}
       </span>
+      <LateMark ticket={ticket} />
       <span className="queue-card-foot">
         <span className="queue-channel"><ChannelIcon channel={ticket.channel} />{channelLabel(ticket.channel)}</span>
         <span className="queue-channel">Agent<AgentBadge agent={ticket.agent_id} /></span>
@@ -360,7 +370,7 @@ function NowCard({ ticket, selectedId, onPick }: RowProps) {
   );
 }
 
-function QueueRow({ ticket, selectedId, onPick }: RowProps) {
+function QueueRow({ ticket, page, selectedId, onPick }: RowProps) {
   const selected = ticket.ticket_id === selectedId;
   return (
     <div className={`row queue-row${selected ? " is-selected" : ""}`}>
@@ -370,11 +380,12 @@ function QueueRow({ ticket, selectedId, onPick }: RowProps) {
         <PriorityTile priority={ticket.priority} />
       </span>
       <span className="row-text">
-        <SubjectLink ticket={ticket} className="queue-row-title" />
+        <SubjectLink ticket={ticket} page={page} className="queue-row-title" />
         <span className="row-sub queue-clip">
           <strong>{ticket.ticket_id}</strong> · {categoryLabel(ticket.category)} · {orNotRecorded(ticket.customer_id)}
           {" · "}{channelLabel(ticket.channel)}
         </span>
+        <LateMark ticket={ticket} />
       </span>
       <span className="queue-row-end">
         <StatusPill status={ticket.status} fixed />
@@ -385,7 +396,7 @@ function QueueRow({ ticket, selectedId, onPick }: RowProps) {
   );
 }
 
-function MiniRow({ ticket, selectedId, onPick, lead, detail, end }: RowProps & {
+function MiniRow({ ticket, page, selectedId, onPick, lead, detail, end }: RowProps & {
   lead: React.ReactNode; detail: React.ReactNode; end?: React.ReactNode;
 }) {
   const selected = ticket.ticket_id === selectedId;
@@ -394,8 +405,9 @@ function MiniRow({ ticket, selectedId, onPick, lead, detail, end }: RowProps & {
       <PickButton ticket={ticket} selected={selected} onPick={onPick} />
       {lead}
       <span className="queue-mini-text">
-        <SubjectLink ticket={ticket} className="queue-mini-title" />
+        <SubjectLink ticket={ticket} page={page} className="queue-mini-title" />
         <span className="queue-mini-sub">{ticket.ticket_id} · {detail}</span>
+        <LateMark ticket={ticket} />
       </span>
       {end}
     </div>
@@ -444,8 +456,8 @@ function Glance({ tickets, cell, onCell }: {
   );
 }
 
-function Preview({ ticket, similar, onPick }: {
-  ticket: QueueTicket; similar: QueueTicket[]; onPick: (ticketId: string) => void;
+function Preview({ ticket, page, similar, onPick }: {
+  ticket: QueueTicket; page: number; similar: QueueTicket[]; onPick: (ticketId: string) => void;
 }) {
   const [attempt, setAttempt] = useState(0);
   const [loaded, setLoaded] = useState<{ key: string; result: PreviewResult } | null>(null);
@@ -498,7 +510,7 @@ function Preview({ ticket, similar, onPick }: {
             <div>
               <p className="problem-title">The targets for {ticketId} did not load</p>
               <p className="problem-text">{result.message}</p>
-              <RetryButton onRetry={() => setAttempt((count) => count + 1)} />
+              <RetryButton target={`the targets for ${ticketId}`} onRetry={() => setAttempt((count) => count + 1)} />
             </div>
           </div>
         )}
@@ -523,15 +535,11 @@ function Preview({ ticket, similar, onPick }: {
         </div>
       )}
 
-      <Link className="button is-primary" href={`/tickets/${encodeURIComponent(ticketId)}`} prefetch={false}>
+      <Link className="button is-primary" href={ticketHref(ticketId, page)} prefetch={false}>
         Open case<ForwardIcon />
       </Link>
     </section>
   );
-}
-
-function hours(value: string | null) {
-  return value === null ? null : Number(value);
 }
 
 // Both bars share one scale, so a long first reply and a short resolution read true against each other.
@@ -542,10 +550,10 @@ function SlaBars({ status, first_response_hours, sla_response_hours, resolution_
   resolution_hours: string | null;
   sla_resolution_hours: string | null;
 }) {
-  const firstReply = hours(first_response_hours);
-  const firstTarget = hours(sla_response_hours);
-  const resolved = hours(resolution_hours);
-  const resolveTarget = hours(sla_resolution_hours);
+  const firstReply = toHours(first_response_hours);
+  const firstTarget = toHours(sla_response_hours);
+  const resolved = toHours(resolution_hours);
+  const resolveTarget = toHours(sla_resolution_hours);
   const scale = Math.max(firstReply ?? 0, firstTarget ?? 0, resolved ?? 0, resolveTarget ?? 0);
   // A ticket still in the queue has simply not got there yet; only a resolved one is missing a value.
   const closed = isResolved(status);
@@ -562,9 +570,8 @@ function SlaBars({ status, first_response_hours, sla_response_hours, resolution_
 function SlaBar({ label, spoken, missing, value, target, scale }: {
   label: string; spoken: string; missing: string; value: number | null; target: number | null; scale: number;
 }) {
-  const judged = value !== null && target !== null;
-  const met = judged && value <= target;
-  const verdict = judged ? (met ? " · met" : " · missed") : "";
+  const result = slaResult(value, target);
+  const verdict = result ? ` · ${result}` : "";
   const share = (part: number) => `${scale > 0 ? Math.round((part / scale) * 1000) / 10 : 0}%`;
   const took = value === null ? `${label}: ${missing}` : `${spoken} ${duration(value)}`;
   const against = target === null ? "no target recorded" : `against a ${duration(target)} target`;
@@ -573,12 +580,12 @@ function SlaBar({ label, spoken, missing, value, target, scale }: {
     <div className="queue-sla-item">
       <div className="queue-sla-line">
         <span>{label} <strong>{value === null ? missing : duration(value)}</strong></span>
-        <span className={judged ? (met ? "is-met" : "is-missed") : undefined}>
+        <span className={result ? `is-${result}` : undefined}>
           {target === null ? "No target recorded" : `target ${duration(target)}${verdict}`}
         </span>
       </div>
       <div className="queue-sla-track" role="img" aria-label={`${took}, ${against}`}>
-        {value !== null && <span className={`queue-sla-fill${judged && !met ? " is-missed" : ""}`} style={{ width: share(value) }} />}
+        {value !== null && <span className={`queue-sla-fill${result === "missed" ? " is-missed" : ""}`} style={{ width: share(value) }} />}
         {target !== null && <span className="queue-sla-mark" style={{ left: `calc(${share(target)} - 1px)` }} />}
       </div>
     </div>

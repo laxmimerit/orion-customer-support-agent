@@ -4,6 +4,7 @@ import "server-only";
 
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { cache } from "react";
 
 // Values already in the environment win over the repository's .env, as in api/orion_api/settings.py.
 // Only the API address and the agent token are read; the admin token stays with the API.
@@ -46,17 +47,18 @@ export type TicketSummary = {
   category: string | null;
   customer_id: string | null;
   agent_id: string | null;
-};
-
-export type TicketPage = { items: TicketSummary[]; page: number; page_size: number; total: number };
-
-export type Ticket = TicketSummary & {
-  component: string | null;
-  body: string | null;
   sla_response_hours: string | null;
   sla_resolution_hours: string | null;
   first_response_hours: string | null;
   resolution_hours: string | null;
+  age_hours: string | null;
+};
+
+export type TicketPage = { items: TicketSummary[]; page: number; page_size: number; total: number };
+
+export type Ticket = Omit<TicketSummary, "age_hours"> & {
+  component: string | null;
+  body: string | null;
   csat: number | null;
   reopened_count: number | null;
   escalated: number | null;
@@ -90,6 +92,39 @@ export type SearchHit = {
 };
 
 export type SearchResults = { query: string; match: "exact_id" | "semantic"; items: SearchHit[] };
+
+export type SimilarTicket = {
+  ticket_id: string;
+  priority: string | null;
+  similarity: number;
+  resolution_hours: string | null;
+  sla_resolution_hours: string | null;
+  first_response_hours: string | null;
+  csat: number | null;
+  reopened_count: number | null;
+  escalated: number | null;
+  message_count: number;
+  agent_id: string | null;
+  plan_id: string | null;
+  channel: string | null;
+  last_author_role: string | null;
+  last_body: string | null;
+  matched_on: string[];
+};
+
+export type SimilarTickets = {
+  total: number;
+  items: SimilarTicket[];
+  matched_on: string[];
+  replies: {
+    distinct_replies: number;
+    top_reply: string | null;
+    top_reply_tickets: number;
+    tickets_without_reply: number;
+  };
+  articles: ArticleSummary[];
+  articles_read_same: boolean;
+};
 
 // Customers, as in api/orion_api/models.py. Money is an exact decimal string ("99.0000").
 export type CustomerListItem = {
@@ -270,8 +305,16 @@ export function ticketPage(page: number, pageSize: number) {
   return get<TicketPage>(`/api/tickets?page=${page}&page_size=${pageSize}`);
 }
 
-export function ticketDetail(ticketId: string) {
-  return get<TicketDetail>(`/api/tickets/${encodeURIComponent(ticketId)}`);
+// The detail lookups run twice per request, for the tab title and for the page. `cache` makes that one
+// API call, because the timeout signal in `get` opts out of the memoizing `fetch` would otherwise do.
+export const ticketDetail = cache((ticketId: string) =>
+  get<TicketDetail>(`/api/tickets/${encodeURIComponent(ticketId)}`));
+
+// The case page shows the nearest few; the API still counts and summarises them all.
+export const SIMILAR_SHOWN = 3;
+
+export function similarTickets(ticketId: string, limit = SIMILAR_SHOWN) {
+  return get<SimilarTickets>(`/api/tickets/${encodeURIComponent(ticketId)}/similar?limit=${limit}`);
 }
 
 // The most hits one search returns. A full page means there may be more, so it is not a total.
@@ -285,17 +328,15 @@ export function customerList() {
   return get<CustomerList>("/api/customers");
 }
 
-export function customerProfile(customerId: string) {
-  return get<CustomerProfile>(`/api/customers/${encodeURIComponent(customerId)}`);
-}
+export const customerProfile = cache((customerId: string) =>
+  get<CustomerProfile>(`/api/customers/${encodeURIComponent(customerId)}`));
 
 export function knowledgeList() {
   return get<KnowledgeList>("/api/knowledge");
 }
 
-export function knowledgeArticle(articleId: string) {
-  return get<Article>(`/api/knowledge/${encodeURIComponent(articleId)}`);
-}
+export const knowledgeArticle = cache((articleId: string) =>
+  get<Article>(`/api/knowledge/${encodeURIComponent(articleId)}`));
 
 export function companyHandbook() {
   return get<Company>("/api/company");

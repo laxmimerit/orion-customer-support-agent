@@ -21,7 +21,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from .embedding import Embedder
 from .models import (AdminStatus, Article, ArticleSummary, BacklogRow, CategoryRow, Company, CustomerListItem,
                      CustomerProfile, ErrorResponse, FirstReplyRow, Listing, PriorityRow, Report, SearchResults,
-                     TicketDetail, TicketPage, VolumeRow)
+                     SimilarTickets, Snapshot, TicketDetail, TicketPage, VolumeRow)
 from .settings import load_settings
 from .store import report_description
 
@@ -163,7 +163,8 @@ def create_app(settings=None, store_instance=None, embedder_instance=None):
         _: str = Depends(role),
         db=Depends(store),
     ):
-        """Queue order as on the legacy desk: `created_at` newest first, then `ticket_id`."""
+        """Queue order as on the legacy desk: `created_at` newest first, then `ticket_id`. `age_hours` is the
+        ticket's age at the data snapshot, not today, and is null with no `created_at` or no snapshot."""
         total, items = db.ticket_page(page_size, (page - 1) * page_size)
         return {"items": items, "page": page, "page_size": page_size, "total": total}
 
@@ -186,6 +187,24 @@ def create_app(settings=None, store_instance=None, embedder_instance=None):
         if items is None:
             raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
         return {"total": len(items), "items": items}
+
+    @app.get("/api/tickets/{ticket_id}/similar", response_model=SimilarTickets, tags=["tickets"],
+             responses=errors(401, 404, 422, 503), summary="Resolved tickets closest to this one, with why each matched")
+    def list_similar_tickets(
+        ticket_id: str = Path(max_length=32),
+        limit: int = Query(10, ge=1, le=50),
+        _: str = Depends(role),
+        db=Depends(store),
+    ):
+        """Exact, case-sensitive ID lookup (M01). The ticket's stored embedding is compared with every other document;
+        the resolved tickets among its 50 nearest are returned, closest first. `total`, `matched_on` and `replies`
+        cover all of them, while `items` stops at `limit`. An item's `matched_on` may be empty: it is then close in
+        meaning only. `articles` are titled as the ticket's subject and contain the most used reply. A ticket with no stored
+        embedding has an empty list."""
+        similar = db.similar_tickets(ticket_id)
+        if similar is None:
+            raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
+        return {**similar, "items": similar["items"][:limit]}
 
     @app.get("/api/search", response_model=SearchResults, tags=["search"], responses=errors(401, 422, 503),
              summary="Find tickets and help articles by meaning, or one ticket by its exact ID")
@@ -246,6 +265,16 @@ def create_app(settings=None, store_instance=None, embedder_instance=None):
         sections, staff_requests = db.company()
         return {"sections": [{**row, **split_owner(row["owner"])} for row in sections],
                 "staff_requests": staff_requests}
+
+    @app.get("/api/snapshot", response_model=Snapshot, tags=["snapshot"], responses=errors(401, 404, 503),
+             summary="When the lab data snapshot was taken")
+    def get_snapshot(_: str = Depends(role), db=Depends(store)):
+        """The moment the lab data was frozen, in UTC. Reports age tickets at this time, not today. It is not when
+        the data was copied into orion_desk. `snapshot_utc` is null if the row records no time."""
+        snapshot = db.snapshot()
+        if snapshot is None:
+            raise ApiError(404, "snapshot_not_found", "No data snapshot is recorded.")
+        return snapshot
 
     for path, name, row, summary in REPORT_ROUTES:
         app.get(f"/api/reports/{path}", response_model=Report[row], tags=["reports"],

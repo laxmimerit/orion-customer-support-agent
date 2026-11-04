@@ -12,7 +12,7 @@ export default function SettingsError({ retry }: { retry: () => void }) {
         <div>
           <p className="problem-title">Settings could not be shown</p>
           <p className="problem-text">Something went wrong while opening this page.</p>
-          <RetryButton onRetry={retry} />
+          <RetryButton target="settings" onRetry={retry} />
         </div>
       </div>
     </main>

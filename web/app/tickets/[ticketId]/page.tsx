@@ -1,17 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import { CaseClock } from "@/components/case-clock";
 import { Conversation } from "@/components/conversation";
 import { ApiProblemPanel, ChannelIcon, Crumbs, Facts, PageHead, PriorityTile, StatusPill, TicketSearchBar } from "@/components/desk";
 import { BackIcon } from "@/components/icons";
+import { SimilarLoading, SimilarTickets } from "@/components/similar-tickets";
 import { type Customer, type Ticket, ticketDetail } from "@/lib/api";
+import { queueHref, queuePage } from "@/lib/detail-pages";
 import { NOT_RECORDED, channelLabel, initial, orNotRecorded, plural, sentenceCase } from "@/lib/format";
 
 import "./case.css";
 
-type Props = { params: Promise<{ ticketId: string }> };
+type Props = {
+  params: Promise<{ ticketId: string }>;
+  searchParams: Promise<{ queue?: string | string[] }>;
+};
 
 function decodeId(raw: string) {
   try {
@@ -22,11 +28,16 @@ function decodeId(raw: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  return { title: decodeId((await params).ticketId) };
+  const ticketId = decodeId((await params).ticketId);
+  const result = await ticketDetail(ticketId);
+  // notFound() here as well as in the page: a title returned from here would beat the one in not-found.tsx.
+  if (!result.ok && (result.problem.status === 404 || result.problem.status === 422)) notFound();
+  return { title: ticketId };
 }
 
-export default async function CasePage({ params }: Props) {
+export default async function CasePage({ params, searchParams }: Props) {
   const ticketId = decodeId((await params).ticketId);
+  const queue = queueHref(queuePage((await searchParams).queue));
   const result = await ticketDetail(ticketId);
 
   if (!result.ok) {
@@ -36,9 +47,9 @@ export default async function CasePage({ params }: Props) {
       <>
         <TicketSearchBar />
         <main className="page is-detail case-page">
-          <Crumbs parent="Tickets" href="/" current={ticketId} />
+          <Crumbs parent="Tickets" href={queue} current={ticketId} />
           <PageHead title={ticketId} />
-          <ApiProblemPanel problem={result.problem} />
+          <ApiProblemPanel problem={result.problem} retryTarget="this ticket" />
         </main>
       </>
     );
@@ -50,7 +61,7 @@ export default async function CasePage({ params }: Props) {
     <>
       <TicketSearchBar />
       <main className="page is-detail case-page">
-        <Crumbs parent="Tickets" href="/" current={ticket.ticket_id} />
+        <Crumbs parent="Tickets" href={queue} current={ticket.ticket_id} />
 
         <section className="card case-hero" aria-labelledby="case-title">
           <div className="case-head">
@@ -58,7 +69,7 @@ export default async function CasePage({ params }: Props) {
               <h1 id="case-title" className="page-title">{ticket.ticket_id} · {ticket.subject ?? "No subject recorded"}</h1>
               <CasePills ticket={ticket} />
             </div>
-            <Link className="button" href="/"><BackIcon />Back to queue</Link>
+            <Link className="button" href={queue}><BackIcon />Back to queue</Link>
           </div>
           <CaseClock
             status={ticket.status}
@@ -79,6 +90,9 @@ export default async function CasePage({ params }: Props) {
             />
           </div>
           <aside className="split-rail" aria-label="Case details">
+            <Suspense key={ticket.ticket_id} fallback={<SimilarLoading />}>
+              <SimilarTickets ticketId={ticket.ticket_id} />
+            </Suspense>
             <CustomerCard customer={customer} customerId={ticket.customer_id} />
             <TicketCard ticket={ticket} />
           </aside>

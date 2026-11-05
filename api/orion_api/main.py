@@ -24,7 +24,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from .assistant import COMPOSE_LABEL, DEFAULT_MODEL, MODELS, Assistant, ModelFailed, case_text
 from .embedding import Embedder
 from .lookups import NOTE_LIMIT, ComposeLookups, Lookups, TriageLookups, intake
-from .mail import Mailbox, MailProblem, new_links, subject_ids
+from .mail import TICKET_ID, Mailbox, MailProblem, new_links, subject_ids
 from .mail_sender import MailSender
 from .mail_writer import MailWriter
 from .mcp import PARSE_ERROR
@@ -157,9 +157,11 @@ MAIL_PROBLEMS = {
 
 
 def reply_subject(subject, ticket_id):
-    """One line, `Re:` once, and the ticket ID in square brackets (contract C7)."""
-    line = re.sub(r"^(re:\s*)+", "", " ".join((subject or "").split()), flags=re.IGNORECASE)
-    return f"Re: {line}" + ("" if f"[{ticket_id}]" in line else f" [{ticket_id}]")
+    """`Re:` and the original subject unchanged, on one line, because Gmail starts a new conversation if the words change.
+    Only a subject with no ticket ID gains one in square brackets (contract C7)."""
+    line = " ".join((subject or "").split())
+    replied = line if re.match(r"re:", line, re.IGNORECASE) else f"Re: {line}"
+    return replied if ticket_id in TICKET_ID.findall(line) else f"{replied} [{ticket_id}]"
 
 
 def draft_rows(db, draft_id):

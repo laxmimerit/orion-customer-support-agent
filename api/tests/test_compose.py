@@ -8,7 +8,7 @@ import pytest
 from orion_api.assistant import ModelFailed, checked_draft
 from orion_api.mail import MailProblem
 from orion_api.mail_sender import MailSender, desk_address
-from orion_api.main import create_app
+from orion_api.main import create_app, reply_subject
 from orion_api.settings import Settings
 
 from .conftest import AGENT, KB022_DETAIL, SETTINGS, FakeAssistant, FakeEmbedder, FakeStore, auth
@@ -115,6 +115,11 @@ def test_compose_stores_a_cited_draft_and_refuses_without_evidence_or_a_desk_add
     desk.box.address = "someone@else.example"
     assert desk.post("/api/tickets/T00727/drafts", json=FORM).json()["error"]["code"] == "recipient_not_allowed"
     assert desk.writer.added == []
+
+
+def test_a_subject_with_the_ticket_id_stays_as_it_was():
+    assert reply_subject("Sin respuesta: caso T01205", "T01205") == "Re: Sin respuesta: caso T01205"
+    assert reply_subject("Re: Slow (case T00727)", "T00727") == "Re: Slow (case T00727)"
 
 
 def test_approve_needs_a_known_name_and_happens_once(desk):

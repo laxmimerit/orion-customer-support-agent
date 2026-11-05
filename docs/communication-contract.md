@@ -126,4 +126,5 @@ Where this differs from the rules above, by the creator's decision:
 - **C8, C11:** the recipient is the From address of the mail answered, and it must be the desk's own mailbox or a plus form of it. `mail_sender.py` checks this again at the moment of sending. There is no capture mailbox: this rule stands in for it, and customers' real addresses can't be reached.
 - **C9:** a sent reply is logged in `mail_actions` and is not added to `messages`.
 - **Section 3:** a draft can't be edited or discarded, and a failed draft is not sent again. A different text, or another try, is a new draft. `sending` is written before SMTP, so a crash leaves a draft that can't go twice.
+- **C7:** a reply keeps `Re:` and the original subject unchanged, so Gmail keeps the conversation. Only a subject with no ticket ID gains `[T00727]`, and Gmail may start a new conversation for that one.
 - **Citation:** the article is a line the desk adds to the end of the text, so the approver reads it. It is not a file attachment.

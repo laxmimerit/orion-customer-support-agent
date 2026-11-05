@@ -1,16 +1,19 @@
 """Run the agent, and review what it proposed. From api/:
 
     uv run --group agent python -m triage_agent run --tickets 10
+    uv run --group agent python -m triage_agent draft T00727 --approver "Name"
     uv run python -m triage_agent list --status pending --changed
     uv run python -m triage_agent show T00727
     uv run python -m triage_agent approve T00727 --by "Name"
     uv run python -m triage_agent reject T00727 --by "Name" --note "Why"
 
-Only `run` calls the model. Nothing here changes a ticket: approving records a person's decision on the review list.
+Only `run` and `draft` call the model. Nothing here changes a ticket or sends anything: approving records a person's
+decision on the review list, and a draft is printed for a named person to approve.
 """
 import argparse
 import asyncio
 import json
+import re
 import sys
 
 from .config import REVIEW_FILE, load_config
@@ -22,6 +25,26 @@ def positive(text):
     if number < 1:
         raise argparse.ArgumentTypeError("must be at least 1")
     return number
+
+
+def ticket_id(text):
+    if not re.fullmatch(r"[A-Za-z0-9]{1,32}", text):
+        raise argparse.ArgumentTypeError("must be a ticket ID, such as T00727")
+    return text
+
+
+def person(text):
+    if not text.strip() or len(text) > 100 or not text.isprintable():
+        raise argparse.ArgumentTypeError("must be a person's name")
+    return text.strip()
+
+
+def draft(_, arguments):
+    from .drafts import run_draft  # Here, as with `run`.
+    outcome = asyncio.run(run_draft(load_config(needs_database=False), arguments.ticket_id, arguments.approver))
+    if outcome.text is None:
+        sys.exit(f"No draft for {arguments.ticket_id}: {outcome.error}")
+    print(outcome.text)
 
 
 def run(review, arguments):
@@ -72,6 +95,9 @@ def main():
     listing = commands.add_parser("list")
     listing.add_argument("--status", choices=("pending", "approved", "rejected", "all"), default="pending")
     listing.add_argument("--changed", action="store_true", help="Only proposals that differ from the stored labels")
+    drafting = commands.add_parser("draft", help="Draft a reply through the desk's MCP route. Nothing is sent")
+    drafting.add_argument("ticket_id", type=ticket_id)
+    drafting.add_argument("--approver", type=person, required=True, help="The person who will approve the draft")
     commands.add_parser("show").add_argument("ticket_id")
     for name in ("approve", "reject"):
         command = commands.add_parser(name)
@@ -79,7 +105,7 @@ def main():
         command.add_argument("--by", required=True, help="The name of the person deciding")
         command.add_argument("--note")
     arguments = parser.parse_args()
-    actions = {"run": run, "list": show_list, "show": show_one, "approve": decide, "reject": decide}
+    actions = {"run": run, "draft": draft, "list": show_list, "show": show_one, "approve": decide, "reject": decide}
     try:
         actions[arguments.command](ReviewList(REVIEW_FILE), arguments)
     except ReviewError as refused:

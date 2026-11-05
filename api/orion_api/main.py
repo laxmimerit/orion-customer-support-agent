@@ -7,13 +7,14 @@ Every data route is under /api and reads only orion_desk. Run it as a factory:
 import asyncio
 from contextlib import asynccontextmanager
 from http import HTTPStatus
+import json
 import logging
 import secrets
 from typing import Literal
 
 from fastapi import Depends, FastAPI, Path, Query, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse, RedirectResponse, StreamingResponse
+from fastapi.responses import JSONResponse, RedirectResponse, Response, StreamingResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 import psycopg
 from psycopg_pool import PoolTimeout
@@ -22,6 +23,9 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from .assistant import Assistant, ModelFailed, case_text
 from .embedding import Embedder
 from .lookups import NOTE_LIMIT, Lookups, TriageLookups, intake
+from .mcp import PARSE_ERROR
+from .mcp import answer as mcp_answer
+from .mcp import failure as mcp_failure
 from .models import (AdminStatus, Article, ArticleSummary, BacklogRow, CategoryRow, Company, CustomerListItem,
                      CustomerProfile, ErrorResponse, FirstReplyRow, LanguageModels, Listing, PriorityRow, Report,
                      SearchResults, SimilarTickets, Snapshot, TicketDetail, TicketPage, Triage, VolumeRow)
@@ -31,6 +35,7 @@ from .store import report_description
 
 log = logging.getLogger("orion_api")
 DISCONNECT_CHECK = 0.5  # Seconds between looks at whether the client is still there.
+MCP_BODY_LIMIT = 16_384  # Bytes. The longest message this server understands is a few hundred.
 bearer = HTTPBearer(auto_error=False, description="ORION_AGENT_TOKEN, or ORION_ADMIN_TOKEN for admin routes")
 
 
@@ -60,6 +65,29 @@ def role(request: Request, credentials: HTTPAuthorizationCredentials | None = De
     if secrets.compare_digest(token, settings.agent_token.encode()):
         return "agent"
     raise ApiError(401, "invalid_token", "The token is not valid.", {"WWW-Authenticate": "Bearer"})
+
+
+def mcp_caller(request: Request, credentials: HTTPAuthorizationCredentials | None = Depends(bearer)):
+    """Only ORION_MCP_TOKEN opens /api/mcp, and with that unset nothing does. It is carried outside the desk, so it opens
+    this one route and no other, and the agent and admin tokens stay where they are."""
+    if credentials is None:
+        raise ApiError(401, "missing_token", "Send Authorization: Bearer <token>.", {"WWW-Authenticate": "Bearer"})
+    expected = request.app.state.settings.mcp_token
+    if not expected or not secrets.compare_digest(credentials.credentials.encode(), expected.encode()):
+        raise ApiError(401, "invalid_token", "The token is not valid.", {"WWW-Authenticate": "Bearer"})
+
+
+async def mcp_message(request: Request, _: None = Depends(mcp_caller)):
+    """The body, read only once the token has passed, so a caller without one can't get an answer about their JSON."""
+    body = b""
+    async for chunk in request.stream():
+        body += chunk
+        if len(body) > MCP_BODY_LIMIT:
+            return None
+    try:
+        return json.loads(body)
+    except (ValueError, RecursionError):  # A short body of nothing but brackets is the second.
+        return None
 
 
 def require_admin(current: str = Depends(role)):
@@ -296,6 +324,14 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
             return await unless_gone(request, model.triage(case_text(intake(detail)), TriageLookups(db, search_model, detail)))
         except ModelFailed as failed:
             raise ApiError(failed.body["status"], failed.body["code"], failed.body["message"]) from None
+
+    @app.post("/api/mcp", tags=["mcp"], responses=errors(401, 503), summary="Read one ticket over MCP")
+    def mcp(message=Depends(mcp_message), db=Depends(store)):
+        """MCP's Streamable HTTP transport, with one read-only tool. A POST because MCP sends everything that way; it
+        changes nothing. Takes ORION_MCP_TOKEN only. The body is a JSON-RPC message, read after the token is checked.
+        There is no response_model, as the answer is JSON-RPC: case_text's named fields are the filter here."""
+        reply = mcp_failure(None, PARSE_ERROR, "The body is not JSON.") if message is None else mcp_answer(message, db)
+        return Response(status_code=202) if reply is None else JSONResponse(reply)
 
     @app.get("/api/search", response_model=SearchResults, tags=["search"], responses=errors(401, 422, 503),
              summary="Find tickets and help articles by meaning, or one ticket by its exact ID")

@@ -18,11 +18,14 @@ def test_every_route_is_under_api_apart_from_docs(client):
              "/api/company", "/api/snapshot", "/api/tickets/{ticket_id}/knowledge",
              "/api/tickets/{ticket_id}/similar", "/api/tickets/{ticket_id}/ask",
              "/api/tickets/{ticket_id}/triage", "/api/language-models"}
-    assert paths == {"/api/tickets", "/api/tickets/{ticket_id}", "/api/search", "/api/admin/status", *reports, *pages}
+    assert paths == {"/api/tickets", "/api/tickets/{ticket_id}", "/api/search", "/api/admin/status", "/api/mcp", *reports,
+                     *pages}
 
 
 def test_every_route_is_get_only(client):
-    methods = {method for route in client.app.routes if route.path.startswith("/api") for method in route.methods}
+    """Apart from /api/mcp, as MCP sends everything by POST. test_mcp.py holds that route to reading."""
+    methods = {method for route in client.app.routes if route.path.startswith("/api") and route.path != "/api/mcp"
+               for method in route.methods}
     assert methods <= {"GET", "HEAD"}
     response = client.post("/api/tickets", headers=auth(AGENT))
     assert response.status_code == 405

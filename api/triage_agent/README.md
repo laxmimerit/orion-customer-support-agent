@@ -63,6 +63,31 @@ uv run python -m triage_agent reject T00727 --by "Name" --note "Why"
 
 The list is `.triage-agent/review.jsonl`, one entry per line, only ever added to. It is ignored by git and readable only by its owner.
 
+## Draft a reply
+
+**Purpose.** Draft a customer reply in Orion's voice, for a named person to approve. **Reason.** Arun asked for the agent to write like the team and to reach Orion from anywhere (REQ004, backlog B15). Nothing is sent (M03).
+
+**Prerequisites.** The desk's `/api/mcp` route, reachable from where this runs, and two more lines in `.env.triage-agent`:
+
+```
+ORION_MCP_URL=...    # https, or http on 127.0.0.1. Ending in /api/mcp
+ORION_MCP_TOKEN=...  # The same value as the desk's ORION_MCP_TOKEN. It opens this route and no other
+VERCEL_AUTOMATION_BYPASS_SECRET=...  # Only for a deployment behind Vercel's login wall. It gets past the wall, not the route
+```
+
+```bash
+uv run --group agent python -m triage_agent draft T00727 --approver "Name"
+```
+
+The draft is printed and kept nowhere. Triage itself doesn't use the skill: its `reason` is a note for the person reviewing labels, not a reply.
+
+- **The voice** is `orion-reply-voice`, loaded from this repository's `plugins/orion-kit`, not from anyone's installed plugins. Only that skill is on offer.
+- **The ticket** comes through `/api/mcp`, whose one tool is `read_ticket`. The answer is `case_text`, so no email or date comes back.
+- **Python checks the run.** No draft is printed unless the skill loaded, this ticket and no other was read, and the text is in the skill's form with the approver you named: otherwise `skill_not_loaded`, `ticket_not_read`, `unexpected_read` or `draft_invalid`.
+- **It needs no database login.** A machine that only drafts needs `OPENROUTER_API_KEY` and the two lines above.
+- **The form check is not a fact check.** It can't tell whether a sentence is true, so the person approving still reads every line against the sources listed.
+- **The token stays out of the CLI's arguments and away from the model.** The CLI fills it in from its environment. The review list isn't touched.
+
 ## Limits
 
 All are in `agent.toml`.
@@ -102,7 +127,7 @@ The empty folder is deleted when the run ends, with the CLI's transcripts in it.
 
 ## What the model can do
 
-It has six read-only tools: `search_records`, `list_articles`, `read_ticket`, `find_customers`, `read_customer` and `read_article`. These are `TriageLookups`, the tools behind the Triage button, so it sees each ticket as it arrived and can't copy the stored labels. They run in the Python process, so the database login never reaches the CLI. It has no shell, no file access, no web and no subagents, and no tool that reaches the review list.
+It has six read-only tools: `search_records`, `list_articles`, `read_ticket`, `find_customers`, `read_customer` and `read_article`. These are `TriageLookups`, the tools behind the Triage button, so it sees each ticket as it arrived and can't copy the stored labels. They run in the Python process, so the database login never reaches the CLI. It has no shell, no file access, no web and no subagents, and no tool that reaches the review list. `draft` has two tools instead: the `Skill` tool, limited to `orion-reply-voice`, and the route's `read_ticket`.
 
 Ticket text goes to OpenRouter and the free model's provider, as it does for the Triage button. The prompt tells the model to ignore instructions inside tickets, but that is a request and not a control. The person reviewing is the control.
 

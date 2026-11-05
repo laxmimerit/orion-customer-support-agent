@@ -1,13 +1,14 @@
 """Settings from the repository's .env (never committed). Values already in the environment win.
 
-Only the new database (PG_*), the two access tokens and the optional OPENROUTER_API_KEY
-are read. The legacy TIDB_* settings are ignored, so this API cannot reach orion_lab.
+Only the new database (PG_*), the two access tokens, the optional OPENROUTER_API_KEY and the
+optional ORION_MCP_TOKEN are read. The legacy TIDB_* settings are ignored, so this API cannot reach orion_lab.
 """
 from dataclasses import dataclass
 import os
 from pathlib import Path
 
 ENV_FILE = Path(__file__).resolve().parents[2] / ".env"
+MCP_TOKEN_LENGTH = 32  # This token is the only thing between the internet and every ticket.
 REQUIRED = ("PG_HOST", "PG_USER", "PG_PASSWORD", "PG_DATABASE", "ORION_AGENT_TOKEN", "ORION_ADMIN_TOKEN")
 
 
@@ -22,6 +23,7 @@ class Settings:
     admin_token: str
     pg_ssl_root_cert: str | None = None
     openrouter_api_key: str | None = None
+    mcp_token: str | None = None  # Opens /api/mcp and nothing else. Left unset, nothing opens that route.
 
     def __repr__(self):
         # Never show hosts, users, passwords, tokens or keys in logs or tracebacks.
@@ -43,16 +45,21 @@ def read_env_file(path):
 
 def load_settings(path=ENV_FILE):
     values = read_env_file(path)
-    values.update({key: os.environ[key] for key in (*REQUIRED, "PG_PORT", "PG_SSL_ROOT_CERT", "OPENROUTER_API_KEY") if key in os.environ})
+    values.update({key: os.environ[key] for key in (*REQUIRED, "PG_PORT", "PG_SSL_ROOT_CERT", "OPENROUTER_API_KEY", "ORION_MCP_TOKEN") if key in os.environ})
     missing = [key for key in REQUIRED if not values.get(key)]
     if missing:
         raise RuntimeError("Missing settings in .env: " + ", ".join(missing))
     if values["ORION_AGENT_TOKEN"] == values["ORION_ADMIN_TOKEN"]:
         raise RuntimeError("ORION_AGENT_TOKEN and ORION_ADMIN_TOKEN must differ")
+    if values.get("ORION_MCP_TOKEN") in (values["ORION_AGENT_TOKEN"], values["ORION_ADMIN_TOKEN"]):
+        raise RuntimeError("ORION_MCP_TOKEN must differ from ORION_AGENT_TOKEN and ORION_ADMIN_TOKEN")
+    if 0 < len(values.get("ORION_MCP_TOKEN", "")) < MCP_TOKEN_LENGTH:
+        raise RuntimeError(f"ORION_MCP_TOKEN must be at least {MCP_TOKEN_LENGTH} characters")
     return Settings(
         pg_host=values["PG_HOST"], pg_port=int(values.get("PG_PORT") or "5432"),
         pg_user=values["PG_USER"], pg_password=values["PG_PASSWORD"], pg_database=values["PG_DATABASE"],
         pg_ssl_root_cert=values.get("PG_SSL_ROOT_CERT") or None,
         agent_token=values["ORION_AGENT_TOKEN"], admin_token=values["ORION_ADMIN_TOKEN"],
         openrouter_api_key=values.get("OPENROUTER_API_KEY") or None,
+        mcp_token=values.get("ORION_MCP_TOKEN") or None,
     )

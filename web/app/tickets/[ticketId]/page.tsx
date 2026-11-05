@@ -8,6 +8,7 @@ import { CaseClock } from "@/components/case-clock";
 import { Conversation } from "@/components/conversation";
 import { ApiProblemPanel, ChannelIcon, Crumbs, Facts, PageHead, PriorityTile, StatusPill, TicketSearchBar } from "@/components/desk";
 import { BackIcon } from "@/components/icons";
+import { MailLoading, MailThread } from "@/components/mail-thread";
 import { SimilarLoading, SimilarTickets } from "@/components/similar-tickets";
 import { TriagePanel } from "@/components/triage-panel";
 import { type Customer, type Ticket, modelAllowList, ticketDetail } from "@/lib/api";
@@ -84,6 +85,9 @@ export default async function CasePage({ params, searchParams }: Props) {
               company={customer?.company ?? null}
               agentId={ticket.agent_id}
             />
+            <Suspense key={`mail-${ticket.ticket_id}`} fallback={<MailLoading />}>
+              <MailThread ticketId={ticket.ticket_id} />
+            </Suspense>
             <TriagePanel key={`triage-${ticket.ticket_id}`} ticketId={ticket.ticket_id} models={models} />
             <AskPanel key={ticket.ticket_id} ticketId={ticket.ticket_id} models={models} />
           </div>

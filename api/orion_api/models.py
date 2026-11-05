@@ -372,6 +372,7 @@ class AllowedModel(BaseModel):
     model: str
     paid: bool
     run: bool
+    mail: bool
 
 
 class ModelOption(AllowedModel):
@@ -384,6 +385,24 @@ class LanguageModels(BaseModel):
 
 
 # The customer mailbox. No mailbox address leaves the API. label, messages and unread are null when they aren't known.
+class MailMessage(BaseModel):
+    """A customer mail. No address and no date, as everywhere on the desk. `linked_by` is `subject`, `thread` or null."""
+    mail_id: str
+    ticket_id: str | None
+    linked_by: str | None
+    sender_name: str | None
+    subject: str | None
+    body: str | None
+
+
+class MailSync(BaseModel):
+    added: int
+    linked: int
+    unlinked: int
+    skipped: int
+    remaining: int
+
+
 class MailCheck(BaseModel):
     address: str
     state: Literal["connected", "not_set_up", "login_refused", "label_missing", "not_answering"]

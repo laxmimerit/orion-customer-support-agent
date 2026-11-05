@@ -3,6 +3,7 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
+  MAIL_SYNC_LIMIT_MS,
   SEARCH_LIMIT,
   SIMILAR_SHOWN,
   apiAddress,
@@ -19,8 +20,11 @@ import {
   priorityReport,
   searchDesk,
   similarTickets,
+  syncMail,
   ticketDetail,
+  ticketMail,
   ticketPage,
+  unlinkedMail,
   volumeReport,
 } from "./api";
 
@@ -509,6 +513,8 @@ describe("routes", () => {
     ["similarTickets with a limit", () => similarTickets("T-1", 10), "/api/tickets/T-1/similar?limit=10"],
     ["searchDesk with the default limit", () => searchDesk("refund"), "/api/search?q=refund&limit=25"],
     ["searchDesk with a limit", () => searchDesk("refund", 5), "/api/search?q=refund&limit=5"],
+    ["ticketMail", () => ticketMail("T-1"), "/api/tickets/T-1/mail"],
+    ["unlinkedMail", () => unlinkedMail(), "/api/mail/unlinked"],
     ["customerList", () => customerList(), "/api/customers"],
     ["customerProfile", () => customerProfile("C-1"), "/api/customers/C-1"],
     ["knowledgeList", () => knowledgeList(), "/api/knowledge"],
@@ -533,6 +539,7 @@ describe("routes", () => {
   it.each<[string, () => Promise<unknown>, string]>([
     ["ticketDetail", () => ticketDetail(awkward), `/api/tickets/${encoded}`],
     ["similarTickets", () => similarTickets(awkward), `/api/tickets/${encoded}/similar?limit=3`],
+    ["ticketMail", () => ticketMail(awkward), `/api/tickets/${encoded}/mail`],
     ["searchDesk", () => searchDesk(awkward), `/api/search?q=${encoded}&limit=25`],
     ["customerProfile", () => customerProfile(awkward), `/api/customers/${encoded}`],
     ["knowledgeArticle", () => knowledgeArticle(awkward), `/api/knowledge/${encoded}`],
@@ -559,6 +566,67 @@ describe("mailStatus", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(lastRequest().url).toBe(`${BASE}/api/mail/status`);
     expect(lastRequest().init?.headers).toStrictEqual({ Authorization: "Bearer test-token" });
+  });
+});
+
+describe("mail lists", () => {
+  it("are read with a plain GET, as every other route is", async () => {
+    answerJson({ total: 0, items: [] });
+    await unlinkedMail();
+    expect(lastRequest().init).toStrictEqual({
+      cache: "no-store",
+      headers: { Authorization: "Bearer test-token" },
+      signal: timeoutSignal,
+    });
+  });
+
+  it("passes on a ticket the API does not know", async () => {
+    answerJson({ error: { code: "ticket_not_found", message: "No ticket T-9." } }, 404);
+    expect(await ticketMail("T-9")).toStrictEqual({
+      ok: false,
+      problem: { status: 404, code: "ticket_not_found", message: "No ticket T-9." },
+    });
+  });
+});
+
+describe("syncMail", () => {
+  const sync = { added: 2, linked: 1, unlinked: 1, skipped: 0, remaining: 0 };
+
+  it("sends a POST with the token, no body and a 60 second timeout", async () => {
+    answerJson(sync);
+    expect(await syncMail()).toStrictEqual({ ok: true, data: sync });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith(`${BASE}/api/mail/sync`, {
+      cache: "no-store",
+      headers: { Authorization: "Bearer test-token" },
+      signal: timeoutSignal,
+      method: "POST",
+    });
+    expect(MAIL_SYNC_LIMIT_MS).toBe(60_000);
+    expect(AbortSignal.timeout).toHaveBeenCalledWith(60_000);
+  });
+
+  it("stops before the API when there is no token", async () => {
+    vi.stubEnv("ORION_AGENT_TOKEN", undefined);
+    const result = await syncMail();
+    expect(result.ok).toBe(false);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    [429, "mail_sync_too_soon"],
+    [503, "mail_not_set_up"],
+    [503, "mail_unavailable"],
+    [503, "mail_writer_not_set_up"],
+  ])("passes on a %i %s", async (status, code) => {
+    answerJson({ error: { code, message: "Not now." } }, status);
+    expect(await syncMail()).toStrictEqual({ ok: false, problem: { status, code, message: "Not now." } });
+  });
+
+  it("reports an API that does not answer", async () => {
+    fetchMock.mockRejectedValue(new TypeError("fetch failed"));
+    const result = await syncMail();
+    expect(result.ok === false && result.problem.code).toBe("api_unreachable");
   });
 });
 

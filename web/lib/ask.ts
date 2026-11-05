@@ -8,7 +8,8 @@ export const NOTE_LIMIT = 300;
 export type AskProblem = { status: number | null; code: string; message: string };
 
 // A record the answer names that the case or a lookup returned. The API checks that, so these are safe to link.
-export type AskSource = { kind: "ticket" | "customer" | "article"; id: string; title: string | null };
+// A mail has no page of its own, so it is named and not linked.
+export type AskSource = { kind: "ticket" | "customer" | "article" | "mail"; id: string; title: string | null };
 
 // A page a web tool gave the model. Its title is null when it was fetched: OpenRouter doesn't say if a fetch worked, so
 // the desk can't either.
@@ -36,10 +37,11 @@ export function plainAnswer(text: string) {
   return text.replace(/\*\*|`/g, "");
 }
 
-const SOURCE_PAGES: Record<AskSource["kind"], string> = { ticket: "tickets", customer: "customers", article: "knowledge" };
+const SOURCE_PAGES: Record<AskSource["kind"], string | null> = { ticket: "tickets", customer: "customers", article: "knowledge", mail: null };
 
 export function sourceHref(source: AskSource) {
-  return `/${SOURCE_PAGES[source.kind]}/${encodeURIComponent(source.id)}`;
+  const page = SOURCE_PAGES[source.kind];
+  return page === null ? null : `/${page}/${encodeURIComponent(source.id)}`;
 }
 
 function isSource(value: unknown): value is AskSource {

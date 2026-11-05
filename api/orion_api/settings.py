@@ -1,7 +1,7 @@
 """Settings from the repository's .env (never committed). Values already in the environment win.
 
 Only the new database (PG_*), the two access tokens, the optional OPENROUTER_API_KEY, the optional
-ORION_MCP_TOKEN and the optional ORION_MAIL_* are read. The legacy TIDB_* settings are ignored, so this API cannot
+ORION_MCP_TOKEN, the optional ORION_MAIL_* and the optional PG_MAIL_WRITER_* are read. The legacy TIDB_* settings are ignored, so this API cannot
 reach orion_lab.
 """
 from dataclasses import dataclass
@@ -12,7 +12,7 @@ ENV_FILE = Path(__file__).resolve().parents[2] / ".env"
 MCP_TOKEN_LENGTH = 32  # This token is the only thing between the internet and every ticket.
 REQUIRED = ("PG_HOST", "PG_USER", "PG_PASSWORD", "PG_DATABASE", "ORION_AGENT_TOKEN", "ORION_ADMIN_TOKEN")
 OPTIONAL = ("PG_PORT", "PG_SSL_ROOT_CERT", "OPENROUTER_API_KEY", "ORION_MCP_TOKEN", "ORION_MAIL_USER",
-            "ORION_MAIL_APP_PASSWORD", "ORION_MAIL_LABEL")
+            "ORION_MAIL_APP_PASSWORD", "ORION_MAIL_LABEL", "PG_MAIL_WRITER_USER", "PG_MAIL_WRITER_PASSWORD")
 
 
 @dataclass(frozen=True)
@@ -30,6 +30,8 @@ class Settings:
     mail_user: str | None = None  # With any of the three mail settings missing, the desk reports mail as not set up.
     mail_app_password: str | None = None
     mail_label: str | None = None
+    mail_writer_user: str | None = None  # The only login that writes, and only to the two mail tables.
+    mail_writer_password: str | None = None
 
     def __repr__(self):
         # Never show hosts, users, passwords, tokens or keys in logs or tracebacks.
@@ -71,4 +73,6 @@ def load_settings(path=ENV_FILE):
         mail_user=values.get("ORION_MAIL_USER") or None,
         mail_app_password=values.get("ORION_MAIL_APP_PASSWORD") or None,
         mail_label=values.get("ORION_MAIL_LABEL") or None,
+        mail_writer_user=values.get("PG_MAIL_WRITER_USER") or None,
+        mail_writer_password=values.get("PG_MAIL_WRITER_PASSWORD") or None,
     )

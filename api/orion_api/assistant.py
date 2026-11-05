@@ -156,6 +156,7 @@ class DeskModel:
     paid: bool
     ask: ModelChoice | None = None
     triage: ModelChoice | None = None
+    mail: bool = False  # Whether Ask may read customer mail on this line.
 
     @property
     def run(self):
@@ -163,13 +164,13 @@ class DeskModel:
 
     def listed(self):
         return {"id": self.id, "label": self.label, "provider": self.provider, "model": self.model, "paid": self.paid,
-                "run": self.run}
+                "run": self.run, "mail": self.mail}
 
 
 # The two Not run lines are written down and nothing more: no key is read and no client exists for them.
 MODELS = {line.id: line for line in (
     DeskModel("free", "Nemotron 3 Ultra", PROVIDER, MODEL, False, ASK_FREE, TRIAGE_FREE),
-    DeskModel("luna-high", "GPT-6 Luna, high effort", PROVIDER, LUNA, True, ASK_LUNA_HIGH, TRIAGE_ENFORCED),
+    DeskModel("luna-high", "GPT-6 Luna, high effort", PROVIDER, LUNA, True, ASK_LUNA_HIGH, TRIAGE_ENFORCED, mail=True),
     DeskModel("anthropic", "Claude Sonnet 5.5", "Anthropic", "claude-sonnet-5-5", True),
     DeskModel("openai", "GPT-6 Luna, direct", "OpenAI", "gpt-6-luna", True),
 )}
@@ -410,7 +411,7 @@ class Assistant:
                     async with client.messages.stream(
                         model=choice.model,
                         max_tokens=MAX_TOKENS,
-                        system=SYSTEM + tools.rules,
+                        system=SYSTEM + tools.rules + lookups.rules,
                         tools=lookups.schemas + ([] if last else tools.offered()),
                         tool_choice={"type": "none" if last else "auto"},
                         messages=messages,

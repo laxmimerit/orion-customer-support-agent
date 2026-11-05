@@ -53,6 +53,12 @@ describe("askReader", () => {
       .toEqual([{ type: "done", complete: true, found: false, sources: [KB004], pages: [], searches: [], note: null }]);
   });
 
+  it("keeps a mail source", () => {
+    const source = { kind: "mail", id: "ML0001", title: "Invoice question" };
+    expect(askReader()(bytes(done({ complete: true, found: true, sources: [source] }))))
+      .toEqual([{ type: "done", complete: true, found: true, sources: [source], pages: [], searches: [], note: null }]);
+  });
+
   it("keeps a source with no title", () => {
     const source = { kind: "customer", id: "C0300", title: null };
     expect(askReader()(bytes(done({ complete: true, found: true, sources: [source] }))))
@@ -134,6 +140,10 @@ describe("sourceHref", () => {
     [{ kind: "ticket", id: "a/b c", title: null }, "/tickets/a%2Fb%20c"],
   ] as const)("links %j to its page", (source, href) => {
     expect(sourceHref(source)).toBe(href);
+  });
+
+  it("gives a mail no link, as it has no page of its own", () => {
+    expect(sourceHref({ kind: "mail", id: "ML0001", title: "Invoice question" })).toBeNull();
   });
 });
 

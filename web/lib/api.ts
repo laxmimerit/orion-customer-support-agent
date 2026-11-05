@@ -276,6 +276,21 @@ export type MailStatus = {
   smtp: { address: string; state: Exclude<MailState, "label_missing"> };
 };
 
+// Customer mail the sync has copied into the desk. No address and no date: the desk shows neither.
+export type MailMessage = {
+  mail_id: string;
+  ticket_id: string | null;
+  linked_by: "subject" | "thread" | null;
+  sender_name: string | null;
+  subject: string | null;
+  body: string | null;
+};
+
+export type MailList = { total: number; items: MailMessage[] };
+
+// `linked` can pass `added`: an older mail can get its ticket on this sync.
+export type MailSync = { added: number; linked: number; unlinked: number; skipped: number; remaining: number };
+
 export type ApiInfo = { title: string; version: string; routes: string[] };
 
 export type ApiProblem = { status: number | null; code: string; message: string };
@@ -300,7 +315,7 @@ function refused(response: Response, body: { error?: { code?: unknown; message?:
   };
 }
 
-async function get<T>(route: string, authorised = true, signal: AbortSignal = AbortSignal.timeout(20_000)): Promise<Result<T>> {
+async function send<T>(method: "GET" | "POST", route: string, authorised: boolean, signal: AbortSignal): Promise<Result<T>> {
   const { baseUrl, token } = settings();
   if (authorised && !token) {
     return { ok: false, problem: { status: null, code: "missing_token",
@@ -312,6 +327,7 @@ async function get<T>(route: string, authorised = true, signal: AbortSignal = Ab
       cache: "no-store",
       headers: authorised ? { Authorization: `Bearer ${token}` } : {},
       signal,
+      ...(method === "GET" ? {} : { method }),
     });
   } catch {
     return { ok: false, problem: { status: null, code: "api_unreachable",
@@ -325,6 +341,10 @@ async function get<T>(route: string, authorised = true, signal: AbortSignal = Ab
       message: `The API answered ${response.status}, but the reply was not JSON.` } };
   }
   return { ok: true, data: body as T };
+}
+
+function get<T>(route: string, authorised = true, signal: AbortSignal = AbortSignal.timeout(20_000)) {
+  return send<T>("GET", route, authorised, signal);
 }
 
 export function ticketPage(page: number, pageSize: number) {
@@ -390,6 +410,21 @@ export function languageModels() {
 
 export function mailStatus() {
   return get<MailStatus>("/api/mail/status");
+}
+
+export function ticketMail(ticketId: string) {
+  return get<MailList>(`/api/tickets/${encodeURIComponent(ticketId)}/mail`);
+}
+
+export function unlinkedMail() {
+  return get<MailList>("/api/mail/unlinked");
+}
+
+// How long this server waits for a sync. Longer than the 20 seconds in `get`: the API reads the mailbox before it answers.
+export const MAIL_SYNC_LIMIT_MS = 60_000;
+
+export function syncMail() {
+  return send<MailSync>("POST", "/api/mail/sync", true, AbortSignal.timeout(MAIL_SYNC_LIMIT_MS));
 }
 
 // No check and no call to a provider, so a case page can read it every time it opens.

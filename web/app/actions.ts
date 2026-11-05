@@ -1,6 +1,6 @@
 "use server";
 
-import { ticketDetail } from "@/lib/api";
+import { type MailSync, syncMail, ticketDetail } from "@/lib/api";
 
 // What the queue's preview panel loads for the chosen ticket. Only these fields leave the server:
 // the ticket detail also holds contact details and timestamps, and the desk shows neither.
@@ -26,4 +26,14 @@ export async function ticketPreview(ticketId: string): Promise<PreviewResult> {
     resolution_hours: ticket.resolution_hours,
     sla_resolution_hours: ticket.sla_resolution_hours,
   } };
+}
+
+export type MailSyncResult = { ok: true; sync: MailSync } | { ok: false; message: string };
+
+// Named field by field, so anything else the API adds to its answer stays on the server.
+export async function syncMailbox(): Promise<MailSyncResult> {
+  const result = await syncMail();
+  if (!result.ok) return { ok: false, message: result.problem.message };
+  const { added, linked, unlinked, skipped, remaining } = result.data;
+  return { ok: true, sync: { added, linked, unlinked, skipped, remaining } };
 }

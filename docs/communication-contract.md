@@ -1,6 +1,6 @@
 # Communication contract: customer mail
 
-- **Status:** The desk checks the customer mailbox and reports it on Settings (section 7). It reads no message and cannot send. The API in `api/` is read-only and has no draft or send route. Everything else here is still contract only.
+- **Status:** The desk checks the customer mailbox, and copies mail under the label into its own tables (sections 7 and 8). It cannot send, and has no draft or send route. Everything else here is still contract only.
 - **Applies to:** reply drafting (plan increment 11, backlog B15) and every later feature that sends or receives customer mail.
 - **Sources:** [`notes/backlog.md`](../notes/backlog.md) (B15, M03, M06, M07), [`notes/plan.md`](../notes/plan.md) (increment 11, assumption A3), the `orion_desk` data, `AGENTS.md` and `README.md`.
 
@@ -26,7 +26,7 @@ Counted in `orion_desk` through the read-only API connection.
 | C4 | A draft answers every question in the customer's messages, uses only facts from the ticket, its messages, its customer record and the articles or tickets it cites, and lists those sources. | B15, REQ004 |
 | C5 | A draft states what is not known instead of guessing. When there is no relevant evidence, the desk says so and makes no draft. | B15, REQ004 |
 | C6 | A missing value is never written as zero. "Not recorded" stays "not recorded" in a draft. | M07 |
-| C7 | Every subject carries the ticket ID in square brackets, for example `[T00727]`. Replies are matched to tickets by that ID only. | **Proposal**; M01 |
+| C7 | Every subject the desk sends carries the ticket ID in square brackets, for example `[T00727]`. Inbound mail links by one known ticket ID in its subject, or by replying to a linked mail (section 8). | **Proposal**; M01 |
 | C8 | The only recipient is the ticket's customer `contact_email`. Addresses found in message bodies are never used, and there is no CC or BCC in the first version. | **Proposal** |
 | C9 | Mail state is written to `orion_desk` only, never to `orion_lab`. Existing rows are never edited; a sent reply is added as a new `messages` row with `author_role = 'agent'`. | M06 |
 | C10 | Every state change is logged with who made it and when, and the log can be exported. A rollback to the legacy desk can then account for every message sent from the new one. | Plan A3 |
@@ -80,9 +80,9 @@ A draft record holds: `draft_id`, `ticket_id`, `to`, `subject`, `body`, `sources
 ## 6. Open questions
 
 1. How a person signs in, and who may approve: any agent, or a lead only? (C3)
-2. How inbound mail reaches the desk. The provider is settled: Gmail over IMAP and SMTP (section 7).
+2. Whether inbound mail should also sync on a timer. Today a person presses Sync mail (section 8).
 3. Whether tickets that arrived by web, API or chat get mail replies, or a reply on their own channel.
-4. What happens to inbound mail with no ticket ID in the subject: a triage list, or a new ticket?
+4. Whether a person can link an unlinked mail by hand, or make a ticket from it. Today it waits on the Unlinked mail page.
 5. How long drafts, discarded drafts and the state log are kept.
 
 ## 7. The mailbox connection today
@@ -100,3 +100,12 @@ A draft record holds: `draft_id`, `ticket_id`, `to`, `subject`, `body`, `sources
 - The check runs at most once a minute. Other calls get the last answer, a failure included, so repeated calls can't trip Google's login limits. The cache is held per running API, so several Vercel instances each keep their own.
 - Checks run with TLS and a verified certificate. There is no setting that turns this off.
 - CI uses the fake servers in `api/tests/fake_mail.py`. Only `api/tests/test_mail_live.py` reaches Gmail, and CI never runs it.
+
+## 8. Inbound mail
+
+`POST /api/mail/sync` opens the label read-only, fetches with PEEK and adds new mail to `mail_messages`, with any ticket link in `mail_links`. It is the desk's only write route, and it runs at most once a minute.
+
+- **Login:** `tools/create_mail_writer.py` makes the only login that writes. It has `SELECT` and `INSERT` on those two tables and nothing else, so stored mail can't be edited or deleted. `Store` stays read-only.
+- **Linking:** one known ticket ID in the subject, or a reply to a linked mail through `References` and `In-Reply-To`. Gmail's own thread ID is not used: it left a reply with a changed subject in a thread of its own.
+- **Trust:** nothing checks the sender, so anyone can attach a mail to a ticket. The desk says so wherever it shows mail, and shows no address or date.
+- **Ask:** the mail tools are read-only and offered only on a line marked `mail` (GPT-6 Luna), and not when web is ticked, so a planted mail can't steer a fetch. Mail is data, never instructions.

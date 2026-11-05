@@ -1,10 +1,16 @@
-"""The customer mailbox: one live check of Gmail over IMAP and SMTP, and nothing more.
+"""The customer mailbox: a live check of Gmail over IMAP and SMTP, and a read of the mail under its label.
 
 This module cannot send. SMTP logs in and quits, and there is no method that takes a recipient or a message
-(contract C1, C2). IMAP asks for STATUS only, which doesn't open the mailbox, so no message is read or marked as read.
+(contract C1, C2). The check asks IMAP for STATUS only. `read_new` opens the label read-only and fetches with PEEK, so
+nothing is marked as read.
 Exception text never leaves here, because a server's answer can repeat what it was sent (C12): a failure becomes one
 fixed state word, and only the exception's type is logged.
 """
+from datetime import UTC
+import email
+from email import policy
+from email.utils import parseaddr, parsedate_to_datetime
+import hashlib
 import imaplib
 import logging
 import re
@@ -20,6 +26,13 @@ IMAP_HOST, IMAP_PORT = "imap.gmail.com", 993
 SMTP_HOST, SMTP_PORT = "smtp.gmail.com", 465
 TIMEOUT = 8  # Seconds per socket step. The two checks run in turn, inside the web client's 20 seconds.
 CACHE_SECONDS = 60  # One check a minute at most. Google can throttle or lock an account that logs in too often.
+
+SYNC_SECONDS = 60  # One sync a minute at most, for the same reason.
+SYNC_BATCH = 25  # New mails per sync, which keeps one sync inside the web client's wait.
+LARGEST_MAIL = 2_000_000  # Bytes. Anything bigger is counted as skipped.
+BODY_LIMIT, SUBJECT_LIMIT, NAME_LIMIT = 20_000, 500, 200
+TICKET_ID = re.compile(r"(?<![A-Za-z0-9])T\d{5}(?![A-Za-z0-9])")  # Exact and case-sensitive, as every ticket lookup is (M01).
+MESSAGE_ID = re.compile(r"<[^<>\s]+>")
 
 log = logging.getLogger("orion_api")
 
@@ -60,6 +73,75 @@ def failed(check, reason):
     return "not_answering"
 
 
+class MailProblem(Exception):
+    """A sync that can't run. `code` is one of the fixed words the route turns into an error."""
+
+    def __init__(self, code):
+        super().__init__(code)
+        self.code = code
+
+
+def clean(text, limit):
+    """PostgreSQL refuses NUL in text."""
+    return text.replace("\x00", "")[:limit] if text else None
+
+
+def body_text(message):
+    """The plain text part, or the HTML with its tags left in: the desk only ever shows this as text."""
+    part = message.get_body(("plain", "html"))
+    try:
+        return part.get_content() if part is not None else None
+    except (LookupError, ValueError):  # A charset Python doesn't know.
+        return part.get_payload(decode=True).decode("utf-8", "replace")
+
+
+def parsed(raw):
+    """One raw mail as a row for mail_messages, or None if it has no Message-ID to know it by."""
+    message = email.message_from_bytes(raw, policy=policy.default)
+    found = MESSAGE_ID.search(str(message["Message-ID"] or ""))
+    if found is None:
+        return None
+    try:
+        received = parsedate_to_datetime(str(message["Date"])).astimezone(UTC).replace(tzinfo=None)
+    except (TypeError, ValueError):
+        received = None
+    chain = MESSAGE_ID.findall(f"{message['References'] or ''} {message['In-Reply-To'] or ''}")
+    return {"mail_id": "ML" + hashlib.sha256(found[0].encode()).hexdigest()[:12].upper(), "rfc_message_id": found[0],
+            "replies_to": " ".join(chain), "sender_name": clean(parseaddr(str(message["From"] or ""))[0], NAME_LIMIT),
+            "subject": clean(str(message["Subject"] or ""), SUBJECT_LIMIT), "body": clean(body_text(message), BODY_LIMIT),
+            "received_at": received}
+
+
+def subject_ids(mail):
+    return set(TICKET_ID.findall(mail["subject"] or ""))
+
+
+def new_links(mails, stored, tickets):
+    """Links to add, as rows for mail_links. One ticket ID in the subject links a mail. Otherwise a mail takes the ticket
+    of the nearest mail it replies to, so a reply with a bare subject still reaches its case. `stored` rows can gain a
+    link too, when the mail they answer arrives after them. The sender isn't checked: the desk says so wherever it shows mail.
+    """
+    ticket_of = {row["rfc_message_id"]: row["ticket_id"] for row in stored}
+    links = {}
+    for mail in mails:
+        ticket_of[mail["rfc_message_id"]] = None
+        ids = subject_ids(mail)
+        if len(ids) == 1 and ids <= tickets:
+            ticket_of[mail["rfc_message_id"]] = next(iter(ids))
+            links[mail["mail_id"]] = {"mail_id": mail["mail_id"], "ticket_id": next(iter(ids)), "linked_by": "subject"}
+    waiting = [row for row in [*stored, *mails] if ticket_of[row["rfc_message_id"]] is None]
+    moved = True
+    while moved:  # A chain can arrive in any order, so go round until nothing changes.
+        moved = False
+        for row in waiting:
+            parent = next((ticket_of[name] for name in reversed(row["replies_to"].split()) if ticket_of.get(name)), None)
+            if parent and ticket_of[row["rfc_message_id"]] is None:
+                ticket_of[row["rfc_message_id"]] = parent
+                links[row["mail_id"]] = {"mail_id": row["mail_id"], "ticket_id": parent, "linked_by": "thread"}
+                moved = True
+    return list(links.values())
+
+
 class Mailbox:
     def __init__(self, settings, open_imap=open_imap, open_smtp=open_smtp, clock=time.monotonic):
         """Only tests pass their own openers and clock. There is no setting that turns TLS off."""
@@ -70,6 +152,7 @@ class Mailbox:
         self._open_imap, self._open_smtp, self._clock = open_imap, open_smtp, clock
         self._lock = threading.Lock()
         self._answer, self._answered = None, None
+        self._synced = None
 
     def status(self):
         """The last answer while it is under a minute old, a failure included, since repeated refused logins are what
@@ -79,6 +162,48 @@ class Mailbox:
                 self._answer = self._check()
                 self._answered = self._clock()
             return self._answer
+
+    def read_new(self, known):
+        """Mails under the label whose Message-ID isn't in `known`, as (rows, skipped, remaining)."""
+        with self._lock:
+            if self._synced is not None and self._clock() - self._synced < SYNC_SECONDS:
+                raise MailProblem("too_soon")
+            if not (self._user and self._password and self._label):
+                raise MailProblem("not_set_up")
+            self._synced = self._clock()
+            try:
+                client = self._open_imap()
+            except (OSError, imaplib.IMAP4.error) as reason:
+                failed("imap", reason)
+                raise MailProblem("unavailable") from None
+            try:
+                answer = self._read_label_mail(client, known)
+            except (OSError, imaplib.IMAP4.error, UnicodeError, IndexError, TypeError) as reason:
+                quietly(client.shutdown)
+                failed("imap", reason)
+                raise MailProblem("unavailable") from None
+            quietly(client.logout)
+            return answer
+
+    def _read_label_mail(self, client, known):
+        client.login(self._user, self._password)
+        if client.select(quoted(self._label), readonly=True)[0] != "OK":
+            raise imaplib.IMAP4.error("no label")
+        _, lines = client.uid("FETCH", "1:*", "(RFC822.SIZE BODY.PEEK[HEADER.FIELDS (MESSAGE-ID)])")
+        waiting, skipped = [], 0
+        for line in lines:
+            if not isinstance(line, tuple):
+                continue
+            found = MESSAGE_ID.search(line[1].decode("latin-1"))
+            if found is None or int(re.search(rb"RFC822\.SIZE (\d+)", line[0])[1]) > LARGEST_MAIL:
+                skipped += 1
+            elif found[0] not in known:
+                waiting.append(re.search(rb"UID (\d+)", line[0])[1])
+        rows = []
+        for uid in waiting[:SYNC_BATCH]:
+            _, parts = client.uid("FETCH", uid, "(BODY.PEEK[])")
+            rows.append(parsed(parts[0][1]))
+        return rows, skipped, len(waiting) - len(rows)
 
     def _check(self):
         imap, messages, unread, smtp = "not_set_up", None, None, "not_set_up"

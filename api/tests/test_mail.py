@@ -306,9 +306,9 @@ def test_the_default_openers_connect_over_tls_to_gmail(monkeypatch):
     assert smtp_options["context"].check_hostname is True
 
 
-def test_mailbox_has_one_public_method():
+def test_mailbox_has_only_its_two_reading_methods():
     public = [name for name, _ in inspect.getmembers(mail.Mailbox, inspect.isfunction) if not name.startswith("_")]
-    assert public == ["status"]
+    assert public == ["read_new", "status"]
 
 
 def test_the_module_source_never_sends_or_names_a_mail_command():

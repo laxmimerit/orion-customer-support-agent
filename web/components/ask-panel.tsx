@@ -7,7 +7,7 @@ import { AlertIcon } from "@/components/icons";
 import { ModelPicker } from "@/components/model-picker";
 import { type AskPage, type AskProblem, type AskSource, QUESTION_LIMIT, askProblem, askReader, plainAnswer, sourceHref } from "@/lib/ask";
 import { NOT_RECORDED, sentenceCase } from "@/lib/format";
-import { type AllowedModel, firstRunnable, modelLabel } from "@/lib/models";
+import { type AllowedModel, firstRunnable, modelHasMail, modelLabel } from "@/lib/models";
 
 type Phase = "idle" | "waiting" | "writing" | "done" | "cut-short" | "stopped" | "failed";
 
@@ -26,15 +26,18 @@ function Sources({ ticketId, label, sources }: { ticketId: string; label: string
     <>
       <p className="ask-label">{label}</p>
       <ul className="ask-sources">
-        {sources.map((source) => (
-          <li key={source.id}>
-            {source.id === ticketId
-              ? <strong>{source.id}</strong>
-              : <Link href={sourceHref(source)} target="_blank">{source.id}<span className="visually-hidden"> (opens in a new tab)</span></Link>}
-            <span className="ask-source-title">{source.title ?? NOT_RECORDED}</span>
-            <span className="ask-source-kind">{source.id === ticketId ? "This case" : sentenceCase(source.kind)}</span>
-          </li>
-        ))}
+        {sources.map((source) => {
+          const href = source.id === ticketId ? null : sourceHref(source);
+          return (
+            <li key={source.id}>
+              {href === null
+                ? <strong>{source.id}</strong>
+                : <Link href={href} target="_blank">{source.id}<span className="visually-hidden"> (opens in a new tab)</span></Link>}
+              <span className="ask-source-title">{source.title ?? NOT_RECORDED}</span>
+              <span className="ask-source-kind">{source.id === ticketId ? "This case" : sentenceCase(source.kind)}</span>
+            </li>
+          );
+        })}
       </ul>
     </>
   );
@@ -229,6 +232,7 @@ export function AskPanel({ ticketId, models }: { ticketId: string; models: Allow
           <span>Let the model use the web for this question</span>
         </label>
         {web && <p className="ask-hint">Search words and page addresses leave the desk. This turns off again after the question.</p>}
+        {web && modelHasMail(models, model) && <p className="ask-hint">Mail tools are off while the web is on.</p>}
         <div className="ask-actions">
           <span className="ask-hint">Enter to ask, Shift+Enter for a new line</span>
           {/* One button that changes job, so keyboard focus stays on it. */}

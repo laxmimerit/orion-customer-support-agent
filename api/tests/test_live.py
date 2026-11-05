@@ -77,8 +77,9 @@ def test_admin_status_matches_adr_counts(live):
     assert client.get("/api/admin/status", headers=auth(settings.agent_token)).status_code == 403
     body = client.get("/api/admin/status", headers=auth(settings.admin_token)).json()
     assert body["database"] == settings.pg_database
-    # The 15 migrated tables, plus increment 8's search_embeddings (one row per ticket and article).
-    assert {row["table"]: row["rows"] for row in body["tables"]} == {**ADR_COUNTS, "search_embeddings": 4040}
+    # The 15 migrated tables, plus increment 8's search_embeddings (one row per ticket and article). Mail grows by itself.
+    counts = {row["table"]: row["rows"] for row in body["tables"] if not row["table"].startswith("mail_")}
+    assert counts == {**ADR_COUNTS, "search_embeddings": 4040}
 
 
 def test_sessions_are_read_only(live):

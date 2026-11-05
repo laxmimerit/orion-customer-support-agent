@@ -23,12 +23,13 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from .assistant import DEFAULT_MODEL, MODELS, Assistant, ModelFailed, case_text
 from .embedding import Embedder
 from .lookups import NOTE_LIMIT, Lookups, TriageLookups, intake
-from .mail import Mailbox
+from .mail import Mailbox, MailProblem, new_links, subject_ids
+from .mail_writer import MailWriter
 from .mcp import PARSE_ERROR
 from .mcp import answer as mcp_answer
 from .mcp import failure as mcp_failure
 from .models import (AdminStatus, AllowedModel, Article, ArticleSummary, BacklogRow, CategoryRow, Company, CustomerListItem,
-                     CustomerProfile, ErrorResponse, FirstReplyRow, LanguageModels, Listing, MailStatus, PriorityRow, Report,
+                     CustomerProfile, ErrorResponse, FirstReplyRow, LanguageModels, Listing, MailMessage, MailStatus, MailSync, PriorityRow, Report,
                      SearchResults, SimilarTickets, Snapshot, TicketDetail, TicketPage, Triage, VolumeRow)
 from .server_tools import ServerTools
 from .settings import load_settings
@@ -113,6 +114,10 @@ def mailbox(request: Request):
     return request.app.state.mailbox
 
 
+def mail_writer(request: Request):
+    return request.app.state.mail_writer
+
+
 def allowed_model(model: str = Query(DEFAULT_MODEL, max_length=64,
                                      description="An `id` from /api/language-models/allow-list")):
     """Not a Literal, as other fixed choices are: the allow-list is the point here, so a refusal says which rule it hit."""
@@ -134,6 +139,13 @@ async def unless_gone(request, work):
             raise ApiError(503, "client_gone", "The client left before the answer finished.")
     return task.result()
 
+
+UNLINKED_SHOWN = 100
+MAIL_PROBLEMS = {
+    "too_soon": (429, "mail_sync_too_soon", "The desk read the label under a minute ago. Try again shortly."),
+    "not_set_up": (503, "mail_not_set_up", "The customer mailbox is not set up."),
+    "unavailable": (503, "mail_unavailable", "The customer mailbox did not answer. Try again shortly."),
+}
 
 EVENT_STREAM = {200: {"description": "A stream of `lookup` and `delta` events, then one `done` or `error`",
                       "content": {"text/event-stream": {"schema": {"type": "string"}}}}}
@@ -163,7 +175,8 @@ def split_owner(owner):
     return {"owner": name, "team": team if separator else None}
 
 
-def create_app(settings=None, store_instance=None, embedder_instance=None, assistant_instance=None, mailbox_instance=None):
+def create_app(settings=None, store_instance=None, embedder_instance=None, assistant_instance=None, mailbox_instance=None,
+               mail_writer_instance=None):
     """Build the app. Tests pass their own settings, store, embedder, assistant and mailbox; uvicorn passes none."""
     settings = settings or load_settings()
 
@@ -191,6 +204,7 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
     app.state.embedder = embedder_instance or Embedder()
     app.state.assistant = assistant_instance or Assistant(settings.openrouter_api_key)
     app.state.mailbox = mailbox_instance or Mailbox(settings)
+    app.state.mail_writer = mail_writer_instance or MailWriter(settings)
     if store_instance is not None:
         app.state.store = store_instance
 
@@ -246,6 +260,16 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
             raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
         return detail
 
+    @app.get("/api/tickets/{ticket_id}/mail", response_model=Listing[MailMessage], tags=["tickets"],
+             responses=errors(401, 404, 422, 503), summary="Customer mail linked to the ticket")
+    def list_ticket_mail(ticket_id: str = Path(max_length=32), _: str = Depends(role), db=Depends(store)):
+        """Exact, case-sensitive ID lookup (M01). Oldest first. Mail is as the sender wrote it, and nothing checks who
+        sent it. A ticket with no mail has an empty list."""
+        items = db.ticket_mail(ticket_id)
+        if items is None:
+            raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
+        return {"total": len(items), "items": items}
+
     @app.get("/api/tickets/{ticket_id}/knowledge", response_model=Listing[ArticleSummary], tags=["tickets"],
              responses=errors(401, 404, 422, 503), summary="Help articles titled exactly as the ticket's subject")
     def list_ticket_articles(ticket_id: str = Path(max_length=32), _: str = Depends(role), db=Depends(store)):
@@ -292,7 +316,8 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
         """Exact, case-sensitive ID lookup (M01). The ticket, its messages and its customer go to the language model,
         which can read other tickets, customers and help articles through read-only tools, all without emails or
         dates. OpenRouter also runs a sandboxed shell with no network for it, and, only when `web` is true, web search
-        and web fetch, each with a limit per question. Nothing is stored or sent to the customer, so a question knows
+        and web fetch, each with a limit per question. A model line marked `mail` can also read customer mail, but
+        not when `web` is true. Nothing is stored or sent to the customer, so a question knows
         the last one only through `note`, which the client sends back. Events: `lookup` has `label`,
         and any `delta` text before it was working text to drop; `delta` has `text`; `done` has `complete`, false when
         the answer was cut short, `found`, false when the model says the records don't hold the answer, `sources`,
@@ -312,7 +337,7 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
             raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
         if not model.configured:
             raise ApiError(503, "model_not_configured", "No language model is set up. OPENROUTER_API_KEY is missing.")
-        lookups = Lookups(db, search_model, detail)
+        lookups = Lookups(db, search_model, detail, mail=chosen.mail and not web)
         answer = model.answer(case_text(detail), q, lookups, ServerTools(web), (note or "").strip() or None, chosen.ask)
         return StreamingResponse(answer, media_type="text/event-stream",
                                  headers={"Cache-Control": "no-store, no-transform"})
@@ -450,6 +475,34 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
         pass, IMAP before SMTP. `label`, `messages` and `unread` stay null when they aren't known. The mailbox address
         and the password are never returned."""
         return box.status()
+
+    @app.get("/api/mail/unlinked", response_model=Listing[MailMessage], tags=["mail"], responses=errors(401, 503),
+             summary="Customer mail that matched no ticket, newest first")
+    def list_unlinked_mail(_: str = Depends(role), db=Depends(store)):
+        """`items` stops at 100, and `total` counts them all."""
+        total, items = db.unlinked_mail(UNLINKED_SHOWN)
+        return {"total": total, "items": items}
+
+    @app.post("/api/mail/sync", response_model=MailSync, tags=["mail"], responses=errors(401, 429, 503),
+              summary="Copy new mail from the label into the desk and link it to tickets")
+    def sync_mail(_: str = Depends(role), db=Depends(store), box=Depends(mailbox), writer=Depends(mail_writer)):
+        """The desk's one write route. It reads the label without marking anything as read, adds rows to the two mail
+        tables through their own login, and sends nothing. At most once a minute and 25 mails a sync; `remaining` says
+        what is left. A subject with one known ticket ID links a mail, and a reply takes the ticket of what it answers."""
+        if not writer.configured:
+            raise ApiError(503, "mail_writer_not_set_up", "The login that stores mail is not set up.")
+        stored = db.mail_index()
+        try:
+            rows, skipped, remaining = box.read_new({row["rfc_message_id"] for row in stored})
+        except MailProblem as problem:
+            raise ApiError(*MAIL_PROBLEMS[problem.code]) from None
+        mails = [row for row in rows if row is not None]
+        wanted = set().union(*(subject_ids(mail) for mail in mails)) if mails else set()
+        links = new_links(mails, stored, db.existing_tickets(wanted) if wanted else set())
+        writer.save(mails, links)
+        new_ids = {mail["mail_id"] for mail in mails}
+        return {"added": len(mails), "linked": len(links), "skipped": skipped + len(rows) - len(mails),
+                "unlinked": len(new_ids - {link["mail_id"] for link in links}), "remaining": remaining}
 
     for path, name, row, summary in REPORT_ROUTES:
         app.get(f"/api/reports/{path}", response_model=Report[row], tags=["reports"],

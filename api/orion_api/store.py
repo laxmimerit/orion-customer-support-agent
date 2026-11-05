@@ -84,6 +84,16 @@ MORE_IN_CATEGORY = sql.SQL(
 # Company. owner stays "Name · Team" here; main.py splits it.
 COMPANY_SECTIONS = "SELECT document_id, title, owner, body FROM company_documents ORDER BY document_id"
 STAFF_REQUESTS = "SELECT request_id, title, requester AS requested_by, body FROM staff_requests ORDER BY request_id"
+# Mail. A mail has a link row only if it matched a ticket.
+MAIL = """SELECT m.mail_id, l.ticket_id, l.linked_by, m.sender_name, m.subject, m.body
+FROM mail_messages m
+LEFT JOIN mail_links l ON l.mail_id = m.mail_id"""
+TICKET_MAIL = MAIL + " WHERE l.ticket_id = %s ORDER BY m.received_at ASC NULLS FIRST, m.mail_id"
+UNLINKED_MAIL = MAIL + " WHERE l.mail_id IS NULL ORDER BY m.received_at DESC NULLS LAST, m.mail_id LIMIT %s"
+UNLINKED_COUNT = """SELECT COUNT(*) AS n FROM mail_messages m LEFT JOIN mail_links l ON l.mail_id = m.mail_id
+WHERE l.mail_id IS NULL"""
+MAIL_INDEX = """SELECT m.mail_id, m.rfc_message_id, m.replies_to, l.ticket_id
+FROM mail_messages m LEFT JOIN mail_links l ON l.mail_id = m.mail_id ORDER BY m.mail_id"""
 # Search (plan increment 8). The inner query keeps the shape HNSW needs:
 # ORDER BY embedding <=> vector LIMIT k on search_embeddings alone; titles are joined afterwards.
 EXACT_ID = ("SELECT 'ticket' AS kind, ticket_id AS id, subject AS title, status, priority, category, "
@@ -238,6 +248,28 @@ class Store:
                 customer = db.execute(CUSTOMER, (ticket["customer_id"],)).fetchone()
             messages = db.execute(MESSAGES, (ticket_id,)).fetchall()
             return {"ticket": ticket, "customer": customer, "messages": messages}
+
+    def ticket_mail(self, ticket_id):
+        """Mail linked to the ticket, oldest first; None if the ticket ID is unknown."""
+        with self.pool.connection() as db:
+            if db.execute(TICKET_SUBJECT, (ticket_id,)).fetchone() is None:
+                return None
+            return db.execute(TICKET_MAIL, (ticket_id,)).fetchall()
+
+    def unlinked_mail(self, limit):
+        """How many mails matched no ticket, and the newest of them."""
+        with self.pool.connection() as db:
+            return db.execute(UNLINKED_COUNT).fetchone()["n"], db.execute(UNLINKED_MAIL, (limit,)).fetchall()
+
+    def mail_index(self):
+        """What a sync needs to know about mail already stored."""
+        with self.pool.connection() as db:
+            return db.execute(MAIL_INDEX).fetchall()
+
+    def existing_tickets(self, ticket_ids):
+        with self.pool.connection() as db:
+            rows = db.execute("SELECT ticket_id FROM tickets WHERE ticket_id = ANY(%s)", (list(ticket_ids),)).fetchall()
+            return {row["ticket_id"] for row in rows}
 
     def customers(self):
         """Every customer with plan name and case counts, in one query, by company."""

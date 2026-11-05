@@ -63,17 +63,18 @@ def block_events(index, kind, value):
             {"type": "content_block_stop", "index": index}]
 
 
-def message_stream(*blocks, stop_reason="end_turn"):
+def message_stream(*blocks, stop_reason="end_turn", generation=None, cost=None):
     """An Anthropic Messages stream with the given (kind, value) blocks, as OpenRouter sends it."""
-    message = {"id": "gen-1", "type": "message", "role": "assistant", "model": MODEL, "content": [],
+    message = {"id": "gen-1", "type": "message", "role": "assistant", "model": MODEL, "content": [], "provider": "Nvidia",
                "stop_reason": None, "stop_sequence": None, "usage": {"input_tokens": 1, "output_tokens": 0}}
     items = [{"type": "message_start", "message": message}]
     for index, (kind, value) in enumerate(blocks):
         items += block_events(index, kind, value)
     items += [{"type": "message_delta", "delta": {"stop_reason": stop_reason, "stop_sequence": None},
-               "usage": {"output_tokens": 5}},
+               "usage": {"output_tokens": 5, **({} if cost is None else {"input_tokens": 19, "cost": cost})}},
               {"type": "message_stop"}]
-    return httpx2.Response(200, headers={"content-type": "text/event-stream"}, content=sse(*items))
+    headers = {"content-type": "text/event-stream", **({"request-id": generation} if generation else {})}
+    return httpx2.Response(200, headers=headers, content=sse(*items))
 
 
 def api_error(status, kind):
@@ -237,6 +238,26 @@ def test_a_model_choice_reaches_every_turn_of_an_answer(fake_store, fake_embedde
     assert asyncio.run(run())[-1].startswith("event: done")
     assert [body["model"] for body in handler.seen] == [choice.model] * 2
     assert [body["output_config"] for body in handler.seen] == [{"effort": "high"}] * 2
+
+
+def test_the_trace_shows_each_call_and_never_the_key_or_the_question(fake_store, fake_embedder, capsys):
+    handler = scripted(message_stream(("tool_use", ("get_ticket", {"ticket_id": "T00727"})), stop_reason="tool_use",
+                                      generation="gen-a", cost=0.25),
+                       message_stream(("text", "Answer T00727."), generation="gen-b", cost=0.5))
+    with client_for(offline(handler), fake_store, fake_embedder) as test_client:
+        test_client.get("/api/tickets/T00727/ask", params={"q": "a private question"}, headers=auth(AGENT))
+    lines = [line for line in capsys.readouterr().out.splitlines() if line.startswith("ask-trace")]
+    assert len(lines) == 1
+    assert "ticket=T00727 url=POST https://openrouter.ai/api/v1/messages key=OPENROUTER_API_KEY#" in lines[0]
+    assert "calls=2 total=$0.750000 |" in lines[0]
+    assert f"gen-a {MODEL} via Nvidia tokens=19+5 cost=0.25 | gen-b " in lines[0]
+    assert KEY not in lines[0] and KEY[:6] not in lines[0] and "private question" not in lines[0]
+
+
+def test_a_call_with_no_cost_is_unknown_in_the_trace_and_not_free(ask, capsys):
+    ask(lambda request: message_stream(("text", "Answer."), generation="gen-a"))
+    line = next(line for line in capsys.readouterr().out.splitlines() if line.startswith("ask-trace"))
+    assert "total=$0.000000+?" in line and "cost=?" in line
 
 
 def test_reasoning_is_not_passed_on(ask):

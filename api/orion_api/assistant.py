@@ -9,6 +9,7 @@ cannot send the key elsewhere or send another key to OpenRouter.
 """
 import asyncio
 from dataclasses import dataclass, field
+import hashlib
 import json
 import logging
 import re
@@ -221,6 +222,34 @@ def problem(exc, model=MODEL):
     return {"status": status, "code": code, "message": message}
 
 
+def opened_call(stream):
+    """One model call as OpenRouter's Activity page lists it. The address is the one the request really went to."""
+    return {"id": stream.request_id, "url": f"{stream.response.request.method} {stream.response.url}",
+            "model": None, "provider": None, "tokens": None, "cost": None}
+
+
+def read_call(call, event):
+    """The final message can't fill these: the SDK drops `cost` from it, and its `id` is not the generation's."""
+    if event.type == "message_start":
+        call.update(model=event.message.model, provider=getattr(event.message, "provider", None))
+    elif event.type == "message_delta":
+        call.update(tokens=f"{event.usage.input_tokens}+{event.usage.output_tokens}",
+                    cost=getattr(event.usage, "cost", None))
+
+
+def trace_line(ticket, api_key, calls):
+    """Where one question went, as one line. It holds no question text, and the key only as a hash: OpenRouter's own
+    key label is not safe here, because it holds the key's first characters. A call that ended before OpenRouter sent
+    its cost shows `?`, so a cost nobody reported is never counted as free."""
+    costs = [call["cost"] for call in calls if call["cost"] is not None]
+    total = f"${sum(costs):.6f}" + ("" if len(costs) == len(calls) else "+?")
+    fingerprint = hashlib.sha256(api_key.encode()).hexdigest()[:8]
+    shown = [f"{call['id']} {call['model']} via {call['provider']} tokens={call['tokens']} "
+             f"cost={'?' if call['cost'] is None else call['cost']}" for call in calls]
+    url = calls[0]["url"] if calls else "none"
+    return f"ask-trace ticket={ticket} url={url} key=OPENROUTER_API_KEY#{fingerprint} calls={len(calls)} total={total} | " + " | ".join(shown)
+
+
 class Assistant:
     def __init__(self, api_key, http_client=None):
         self.api_key = api_key
@@ -251,6 +280,7 @@ class Assistant:
         messages = [{"role": "user", "content": f"{kept}<case>{case}</case>\n\nQuestion: {question}"}]
         started = time.monotonic()
         written = ""
+        trace = []
         try:
             async with self.client(ANSWER_TIMEOUT, 1) as client:
                 for turn in range(MAX_TURNS):
@@ -268,7 +298,9 @@ class Assistant:
                         messages=messages,
                         extra_body=choice.options,
                     ) as stream:
+                        trace.append(opened_call(stream))
                         async for event in stream:
+                            read_call(trace[-1], event)
                             if event.type == "text":
                                 written += event.text
                                 yield frame("delta", {"text": event.text})
@@ -307,6 +339,10 @@ class Assistant:
             log.error("language model call failed: %s", type(exc).__name__)
             yield frame("error", {"error": problem(exc, choice.model)})
             return
+        finally:
+            # Here so that an agent who leaves mid-answer still leaves a trace: the calls already made still count.
+            # print, because nothing sets up a handler for `log`, and below a warning it would reach no one.
+            print(trace_line(next(iter(lookups.seen)), self.api_key, trace), flush=True)
         if not written:
             log.error("language model returned no text: %s", final.stop_reason)
             yield frame("error", {"error": {"status": 502, "code": "model_empty",

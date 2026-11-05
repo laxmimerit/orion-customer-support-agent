@@ -6,6 +6,9 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { cache } from "react";
 
+import type { AllowedModel } from "@/lib/models";
+import type { Triage } from "@/lib/triage";
+
 // Values already in the environment win over the repository's .env, as in api/orion_api/settings.py.
 // Only the API address and the agent token are read; the admin token stays with the API.
 function readEnvFile(file: string): Record<string, string> {
@@ -252,6 +255,14 @@ export type FirstReplyRow = {
   csat_missed_missing: number;
 };
 
+// The language model connection. The key stays with the API: no response carries it.
+export type ModelState = "connected" | "no_key" | "key_refused" | "model_unavailable" | "not_answering";
+
+export type LanguageModels = {
+  connection: { provider: string; model: string; address: string; sdk: string; state: ModelState };
+  options: (AllowedModel & { state: ModelState | "not_run" })[];
+};
+
 export type ApiInfo = { title: string; version: string; routes: string[] };
 
 export type ApiProblem = { status: number | null; code: string; message: string };
@@ -267,7 +278,16 @@ function parseBody(text: string) {
   return JSON.parse(text, (key, value) => (LEFT_OUT.has(key) ? undefined : value));
 }
 
-async function get<T>(route: string, authorised = true): Promise<Result<T>> {
+function refused(response: Response, body: { error?: { code?: unknown; message?: unknown } } | null): ApiProblem {
+  const error = body?.error;
+  return {
+    status: response.status,
+    code: typeof error?.code === "string" ? error.code : "unexpected_response",
+    message: typeof error?.message === "string" ? error.message : `The API answered ${response.status}.`,
+  };
+}
+
+async function get<T>(route: string, authorised = true, signal: AbortSignal = AbortSignal.timeout(20_000)): Promise<Result<T>> {
   const { baseUrl, token } = settings();
   if (authorised && !token) {
     return { ok: false, problem: { status: null, code: "missing_token",
@@ -278,21 +298,14 @@ async function get<T>(route: string, authorised = true): Promise<Result<T>> {
     response = await fetch(baseUrl + route, {
       cache: "no-store",
       headers: authorised ? { Authorization: `Bearer ${token}` } : {},
-      signal: AbortSignal.timeout(20_000),
+      signal,
     });
   } catch {
     return { ok: false, problem: { status: null, code: "api_unreachable",
       message: `The desk API at ${baseUrl} did not answer. Start it with the orion-api launch configuration.` } };
   }
   const body = await response.text().then(parseBody).catch(() => null);
-  if (!response.ok) {
-    const error = body?.error;
-    return { ok: false, problem: {
-      status: response.status,
-      code: typeof error?.code === "string" ? error.code : "unexpected_response",
-      message: typeof error?.message === "string" ? error.message : `The API answered ${response.status}.`,
-    } };
-  }
+  if (!response.ok) return { ok: false, problem: refused(response, body) };
   // A proxy or a missed route can answer 200 with a page of HTML. That is a failure, not empty data.
   if (body === null) {
     return { ok: false, problem: { status: response.status, code: "unexpected_response",
@@ -315,6 +328,56 @@ export const SIMILAR_SHOWN = 3;
 
 export function similarTickets(ticketId: string, limit = SIMILAR_SHOWN) {
   return get<SimilarTickets>(`/api/tickets/${encodeURIComponent(ticketId)}/similar?limit=${limit}`);
+}
+
+// How long this server waits for a whole answer or triage. MODEL_DEADLINE in api/orion_api/assistant.py stays under it, so
+// a stalled model is reported as that. A test there reads this line.
+export const ANSWER_LIMIT_MS = 180_000;
+
+// The API's stream of answer events, passed on unread. Its events hold the model's text and the IDs and titles of its
+// sources, and the token stays here. Longer than the 20 seconds in `get`: the model reasons first, and `signal` ends the call if the agent leaves.
+export async function askCase(ticketId: string, question: string, web: boolean, note: string | null, model: string | null, signal: AbortSignal): Promise<Result<ReadableStream<Uint8Array>>> {
+  const { baseUrl, token } = settings();
+  if (!token) {
+    return { ok: false, problem: { status: null, code: "missing_token",
+      message: "ORION_AGENT_TOKEN is not set in the environment or the repository's .env." } };
+  }
+  let response: Response;
+  try {
+    const options = `${web ? "&web=true" : ""}${note ? `&note=${encodeURIComponent(note)}` : ""}${model ? `&model=${encodeURIComponent(model)}` : ""}`;
+    response = await fetch(`${baseUrl}/api/tickets/${encodeURIComponent(ticketId)}/ask?q=${encodeURIComponent(question)}${options}`, {
+      cache: "no-store",
+      headers: { Authorization: `Bearer ${token}` },
+      signal: AbortSignal.any([signal, AbortSignal.timeout(ANSWER_LIMIT_MS)]),
+    });
+  } catch {
+    return { ok: false, problem: { status: null, code: "api_unreachable",
+      message: `The desk API at ${baseUrl} did not answer. Start it with the orion-api launch configuration.` } };
+  }
+  if (!response.ok) {
+    const body = await response.json().catch(() => null);
+    return { ok: false, problem: refused(response, body) };
+  }
+  if (!response.body || !response.headers.get("content-type")?.startsWith("text/event-stream")) {
+    return { ok: false, problem: { status: response.status, code: "unexpected_response",
+      message: `The API answered ${response.status}, but the reply was not a stream.` } };
+  }
+  return { ok: true, data: response.body };
+}
+
+// Longer than the 20 seconds in `get`, as an answer is: the model reads records first, and `signal` ends the call if the agent stops.
+export function triageCase(ticketId: string, model: string | null, signal: AbortSignal) {
+  const chosen = model ? `?model=${encodeURIComponent(model)}` : "";
+  return get<Triage>(`/api/tickets/${encodeURIComponent(ticketId)}/triage${chosen}`, true, AbortSignal.any([signal, AbortSignal.timeout(ANSWER_LIMIT_MS)]));
+}
+
+export function languageModels() {
+  return get<LanguageModels>("/api/language-models");
+}
+
+// No check and no call to a provider, so a case page can read it every time it opens.
+export function modelAllowList() {
+  return get<{ total: number; items: AllowedModel[] }>("/api/language-models/allow-list");
 }
 
 // The most hits one search returns. A full page means there may be more, so it is not a total.

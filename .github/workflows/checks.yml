@@ -20,8 +20,9 @@ jobs:
       - uses: astral-sh/setup-uv@v10.3.3
         with:
           working-directory: api
-      - run: uv sync --locked
-      - run: uv run --locked pytest -m "not live"
+      # The agent group brings the Agent SDK and its CLI, which the triage agent's tests drive. The deployed API has neither.
+      - run: uv sync --locked --group agent
+      - run: uv run --locked --group agent pytest -m "not live"
 
   web:
     name: Frontend build

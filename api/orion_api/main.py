@@ -4,28 +4,38 @@ Every data route is under /api and reads only orion_desk. Run it as a factory:
 
     uv run uvicorn orion_api.main:create_app --factory --port 8000
 """
+import asyncio
 from contextlib import asynccontextmanager
 from http import HTTPStatus
+import json
 import logging
 import secrets
 from typing import Literal
 
 from fastapi import Depends, FastAPI, Path, Query, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.responses import JSONResponse, RedirectResponse, Response, StreamingResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 import psycopg
 from psycopg_pool import PoolTimeout
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from .assistant import DEFAULT_MODEL, MODELS, Assistant, ModelFailed, case_text
 from .embedding import Embedder
-from .models import (AdminStatus, Article, ArticleSummary, BacklogRow, CategoryRow, Company, CustomerListItem,
-                     CustomerProfile, ErrorResponse, FirstReplyRow, Listing, PriorityRow, Report, SearchResults,
-                     SimilarTickets, Snapshot, TicketDetail, TicketPage, VolumeRow)
+from .lookups import NOTE_LIMIT, Lookups, TriageLookups, intake
+from .mcp import PARSE_ERROR
+from .mcp import answer as mcp_answer
+from .mcp import failure as mcp_failure
+from .models import (AdminStatus, AllowedModel, Article, ArticleSummary, BacklogRow, CategoryRow, Company, CustomerListItem,
+                     CustomerProfile, ErrorResponse, FirstReplyRow, LanguageModels, Listing, PriorityRow, Report,
+                     SearchResults, SimilarTickets, Snapshot, TicketDetail, TicketPage, Triage, VolumeRow)
+from .server_tools import ServerTools
 from .settings import load_settings
 from .store import report_description
 
 log = logging.getLogger("orion_api")
+DISCONNECT_CHECK = 0.5  # Seconds between looks at whether the client is still there.
+MCP_BODY_LIMIT = 16_384  # Bytes. The longest message this server understands is a few hundred.
 bearer = HTTPBearer(auto_error=False, description="ORION_AGENT_TOKEN, or ORION_ADMIN_TOKEN for admin routes")
 
 
@@ -57,6 +67,29 @@ def role(request: Request, credentials: HTTPAuthorizationCredentials | None = De
     raise ApiError(401, "invalid_token", "The token is not valid.", {"WWW-Authenticate": "Bearer"})
 
 
+def mcp_caller(request: Request, credentials: HTTPAuthorizationCredentials | None = Depends(bearer)):
+    """Only ORION_MCP_TOKEN opens /api/mcp, and with that unset nothing does. It is carried outside the desk, so it opens
+    this one route and no other, and the agent and admin tokens stay where they are."""
+    if credentials is None:
+        raise ApiError(401, "missing_token", "Send Authorization: Bearer <token>.", {"WWW-Authenticate": "Bearer"})
+    expected = request.app.state.settings.mcp_token
+    if not expected or not secrets.compare_digest(credentials.credentials.encode(), expected.encode()):
+        raise ApiError(401, "invalid_token", "The token is not valid.", {"WWW-Authenticate": "Bearer"})
+
+
+async def mcp_message(request: Request, _: None = Depends(mcp_caller)):
+    """The body, read only once the token has passed, so a caller without one can't get an answer about their JSON."""
+    body = b""
+    async for chunk in request.stream():
+        body += chunk
+        if len(body) > MCP_BODY_LIMIT:
+            return None
+    try:
+        return json.loads(body)
+    except (ValueError, RecursionError):  # A short body of nothing but brackets is the second.
+        return None
+
+
 def require_admin(current: str = Depends(role)):
     if current != "admin":
         raise ApiError(403, "admin_only", "Only the admin token may open this route.")
@@ -70,6 +103,35 @@ def store(request: Request):
 def embedder(request: Request):
     return request.app.state.embedder
 
+
+def assistant(request: Request):
+    return request.app.state.assistant
+
+
+def allowed_model(model: str = Query(DEFAULT_MODEL, max_length=64,
+                                     description="An `id` from /api/language-models/allow-list")):
+    """Not a Literal, as other fixed choices are: the allow-list is the point here, so a refusal says which rule it hit."""
+    line = MODELS.get(model)
+    if line is None:
+        raise ApiError(422, "model_not_allowed", f"{model!r} is not on the desk's model list.")
+    if not line.run:
+        raise ApiError(422, "model_not_run", f"{line.label} on {line.provider} is listed but has not been run, so the desk will not call it.")
+    return line
+
+
+async def unless_gone(request, work):
+    """Await `work`, and cancel it if the client leaves. A stream stops by itself when nobody reads it; a plain response
+    would run to the end, and spend the model's tokens, for nobody."""
+    task = asyncio.ensure_future(work)
+    while not (await asyncio.wait({task}, timeout=DISCONNECT_CHECK))[0]:
+        if await request.is_disconnected():
+            task.cancel()
+            raise ApiError(503, "client_gone", "The client left before the answer finished.")
+    return task.result()
+
+
+EVENT_STREAM = {200: {"description": "A stream of `lookup` and `delta` events, then one `done` or `error`",
+                      "content": {"text/event-stream": {"schema": {"type": "string"}}}}}
 
 # Read-only reports: URL path, SQL file in api/reports, row model, summary.
 REPORT_ROUTES = (
@@ -96,8 +158,8 @@ def split_owner(owner):
     return {"owner": name, "team": team if separator else None}
 
 
-def create_app(settings=None, store_instance=None, embedder_instance=None):
-    """Build the app. Tests pass their own settings, store and embedder; uvicorn passes none."""
+def create_app(settings=None, store_instance=None, embedder_instance=None, assistant_instance=None):
+    """Build the app. Tests pass their own settings, store, embedder and assistant; uvicorn passes none."""
     settings = settings or load_settings()
 
     @asynccontextmanager
@@ -122,6 +184,7 @@ def create_app(settings=None, store_instance=None, embedder_instance=None):
     )
     app.state.settings = settings
     app.state.embedder = embedder_instance or Embedder()
+    app.state.assistant = assistant_instance or Assistant(settings.openrouter_api_key)
     if store_instance is not None:
         app.state.store = store_instance
 
@@ -206,6 +269,88 @@ def create_app(settings=None, store_instance=None, embedder_instance=None):
             raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
         return {**similar, "items": similar["items"][:limit]}
 
+    @app.get("/api/tickets/{ticket_id}/ask", response_class=StreamingResponse, tags=["tickets"],
+             responses={**EVENT_STREAM, **errors(401, 404, 422, 503)},
+             summary="Ask the language model from one case, answered as a stream with its sources")
+    def ask_ticket(
+        ticket_id: str = Path(max_length=32),
+        q: str = Query(min_length=1, max_length=500, description="The agent's question"),
+        web: bool = Query(False, description="Offer web search and web fetch for this question"),
+        note: str | None = Query(None, max_length=NOTE_LIMIT, description="The note the last answer kept, if any"),
+        _: str = Depends(role),
+        chosen=Depends(allowed_model),
+        db=Depends(store),
+        model=Depends(assistant),
+        search_model=Depends(embedder),
+    ):
+        """Exact, case-sensitive ID lookup (M01). The ticket, its messages and its customer go to the language model,
+        which can read other tickets, customers and help articles through read-only tools, all without emails or
+        dates. OpenRouter also runs a sandboxed shell with no network for it, and, only when `web` is true, web search
+        and web fetch, each with a limit per question. Nothing is stored or sent to the customer, so a question knows
+        the last one only through `note`, which the client sends back. Events: `lookup` has `label`,
+        and any `delta` text before it was working text to drop; `delta` has `text`; `done` has `complete`, false when
+        the answer was cut short, `found`, false when the model says the records don't hold the answer, `sources`,
+        the records the answer names that the case or a lookup returned, each with `kind`, `id` and `title`, `pages`,
+        every web page a web tool gave, each with `url` and `title` (null when it was fetched, because OpenRouter does
+        not say if a fetch worked), `searches`, the words the model searched for, and `note`, for the next question,
+        or null; `error` has the usual error body,
+        because the status is already sent. The desk calls only the model named, and a failure is never retried on
+        another: `model_not_found`, `model_timeout`, `model_daily_limit` and `wrong_model` arrive as `error` events, and so do
+        `database_unavailable` and `lookup_failed`, which mean a tool broke and not the model. A 422 `model_not_allowed`
+        or `model_not_run` means nothing was called. A 503 `model_not_configured` means no key is set."""
+        q = q.strip()
+        if not q:
+            raise ApiError(422, "invalid_request", "The question is empty.")
+        detail = db.ticket(ticket_id)
+        if detail is None:
+            raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
+        if not model.configured:
+            raise ApiError(503, "model_not_configured", "No language model is set up. OPENROUTER_API_KEY is missing.")
+        lookups = Lookups(db, search_model, detail)
+        answer = model.answer(case_text(detail), q, lookups, ServerTools(web), (note or "").strip() or None, chosen.ask)
+        return StreamingResponse(answer, media_type="text/event-stream",
+                                 headers={"Cache-Control": "no-store, no-transform"})
+
+    # async, unlike the routes above: it waits on the model through the async client, so the store goes to a thread.
+    @app.get("/api/tickets/{ticket_id}/triage", response_model=Triage, tags=["tickets"],
+             responses=errors(401, 402, 404, 422, 429, 502, 503, 504),
+             summary="Category, priority and team from the language model, with the records it used")
+    async def triage_ticket(
+        request: Request,
+        ticket_id: str = Path(max_length=32),
+        _: str = Depends(role),
+        chosen=Depends(allowed_model),
+        db=Depends(store),
+        model=Depends(assistant),
+        search_model=Depends(embedder),
+    ):
+        """Exact, case-sensitive ID lookup (M01). The model sees the ticket as it arrived: subject, body, channel, the
+        customer's own messages and the customer. The ticket's stored category, priority, component, targets, agent and
+        replies are held back, here and in its tools, so a result can be compared with them. `category`, `priority` and
+        `team` are closed lists, and an answer outside the form is a 502 `triage_invalid`, not a result. `record_ids`
+        holds only records a tool returned: the open case is there only if the model read it, and an empty list means
+        it relied on none. `dropped_ids` counts the IDs taken out because no tool returned them. Nothing is stored, so
+        the same ticket can come back different. The desk calls only the model named: a 422 `model_not_allowed` or
+        `model_not_run` means nothing was called, and a 504 `model_timeout` means it did not finish in time. A 503
+        `model_not_configured` means no key is set."""
+        detail = await asyncio.to_thread(db.ticket, ticket_id)
+        if detail is None:
+            raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
+        if not model.configured:
+            raise ApiError(503, "model_not_configured", "No language model is set up. OPENROUTER_API_KEY is missing.")
+        try:
+            return await unless_gone(request, model.triage(case_text(intake(detail)), TriageLookups(db, search_model, detail), chosen.triage))
+        except ModelFailed as failed:
+            raise ApiError(failed.body["status"], failed.body["code"], failed.body["message"]) from None
+
+    @app.post("/api/mcp", tags=["mcp"], responses=errors(401, 503), summary="Read one ticket over MCP")
+    def mcp(message=Depends(mcp_message), db=Depends(store)):
+        """MCP's Streamable HTTP transport, with one read-only tool. A POST because MCP sends everything that way; it
+        changes nothing. Takes ORION_MCP_TOKEN only. The body is a JSON-RPC message, read after the token is checked.
+        There is no response_model, as the answer is JSON-RPC: case_text's named fields are the filter here."""
+        reply = mcp_failure(None, PARSE_ERROR, "The body is not JSON.") if message is None else mcp_answer(message, db)
+        return Response(status_code=202) if reply is None else JSONResponse(reply)
+
     @app.get("/api/search", response_model=SearchResults, tags=["search"], responses=errors(401, 422, 503),
              summary="Find tickets and help articles by meaning, or one ticket by its exact ID")
     def search(
@@ -275,6 +420,20 @@ def create_app(settings=None, store_instance=None, embedder_instance=None):
         if snapshot is None:
             raise ApiError(404, "snapshot_not_found", "No data snapshot is recorded.")
         return snapshot
+
+    # async, unlike the routes above: it reads no store, and only waits on the network through the async client.
+    @app.get("/api/language-models", response_model=LanguageModels, tags=["language-models"],
+             responses=errors(401), summary="The language model connection and every line of the allow-list")
+    async def get_language_models(_: str = Depends(role), model=Depends(assistant)):
+        """`state` comes from a live check of the key and each model that has been run, which uses no tokens. A line
+        that has not been run is `not_run` and is not checked. The key is never returned."""
+        return await model.connection()
+
+    @app.get("/api/language-models/allow-list", response_model=Listing[AllowedModel], tags=["language-models"],
+             responses=errors(401), summary="The models the desk may call, the default first")
+    def get_allow_list(_: str = Depends(role)):
+        """No check and no call, so a case page can read it on every load. `run` is false for a line the desk refuses."""
+        return {"total": len(MODELS), "items": [line.listed() for line in MODELS.values()]}
 
     for path, name, row, summary in REPORT_ROUTES:
         app.get(f"/api/reports/{path}", response_model=Report[row], tags=["reports"],

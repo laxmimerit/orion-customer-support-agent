@@ -5,8 +5,12 @@ import re
 from fastapi.testclient import TestClient
 import pytest
 
+from orion_api.assistant import frame
 from orion_api.main import create_app
 from orion_api.settings import Settings
+
+# Filled by test_case_set_live.py, and printed at the end of the run so a failure stays in front of whoever ran it.
+CASE_RESULTS = []
 
 AGENT = "agent-test-token"
 ADMIN = "admin-test-token"
@@ -207,6 +211,34 @@ class FakeEmbedder:
         return [0.0] * 767 + [1.0]
 
 
+class FakeAssistant:
+    """Stands in for the language model: no network, a fixed two-part answer."""
+
+    configured = True
+
+    def __init__(self):
+        self.asks = []
+
+    async def answer(self, case, question, lookups, tools, note=None, choice=None):
+        self.asks.append((case, question))
+        self.lookups, self.tools, self.note, self.choice = lookups, tools, note, choice
+        yield frame("delta", {"text": "Not "})
+        yield frame("delta", {"text": "recorded."})
+        yield frame("done", {"complete": True, "found": True, "sources": [], "pages": [], "searches": [], "note": None})
+
+    async def triage(self, case, lookups, choice=None):
+        self.asks.append((case, "triage"))
+        self.lookups, self.choice = lookups, choice
+        return {"category": "account access", "priority": "P2", "team": "Customer care", "reason": "Invitation trouble.",
+                "record_ids": ["KB004"], "model": "test/model", "dropped_ids": 1}
+
+    async def connection(self):
+        return {"connection": {"provider": "OpenRouter", "model": "test/model", "address": "https://example.invalid",
+                               "sdk": "Anthropic SDK", "state": "connected"},
+                "options": [{"id": "anthropic", "label": "Claude", "provider": "Anthropic", "model": "test/claude",
+                             "paid": True, "run": False, "state": "not_run"}]}
+
+
 @pytest.fixture
 def fake_store():
     return FakeStore()
@@ -218,8 +250,14 @@ def fake_embedder():
 
 
 @pytest.fixture
-def client(fake_store, fake_embedder):
-    with TestClient(create_app(SETTINGS, fake_store, fake_embedder), raise_server_exceptions=False) as test_client:
+def fake_assistant():
+    return FakeAssistant()
+
+
+@pytest.fixture
+def client(fake_store, fake_embedder, fake_assistant):
+    app = create_app(SETTINGS, fake_store, fake_embedder, fake_assistant)
+    with TestClient(app, raise_server_exceptions=False) as test_client:
         yield test_client
 
 
@@ -237,3 +275,16 @@ def private_keys(value):
     if isinstance(value, dict):
         return {key for key in value if PRIVATE_KEY.search(key)}.union(*map(private_keys, value.values()))
     return set()
+
+
+def pytest_terminal_summary(terminalreporter):
+    """The case set as one table: each case by each model, and the reason beside every failure."""
+    if not CASE_RESULTS:
+        return
+    terminalreporter.section("case set")
+    for result in CASE_RESULTS:
+        verdict = "pass" if result["passed"] else "FAIL"
+        terminalreporter.write_line(f"{verdict}  {result['case']:<24} {result['line']:<10} {result['seconds']:>6}s "
+                                    f"{result['cost'] or '':<11} {'; '.join(result['problems'])}")
+    passed = sum(result["passed"] for result in CASE_RESULTS)
+    terminalreporter.write_line(f"{passed} of {len(CASE_RESULTS)} passed")

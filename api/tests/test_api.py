@@ -16,12 +16,17 @@ def test_every_route_is_under_api_apart_from_docs(client):
     reports = {f"/api/reports/{name}" for name in ("volume", "backlog", "priority", "category", "first-reply")}
     pages = {"/api/customers", "/api/customers/{customer_id}", "/api/knowledge", "/api/knowledge/{article_id}",
              "/api/company", "/api/snapshot", "/api/tickets/{ticket_id}/knowledge",
-             "/api/tickets/{ticket_id}/similar"}
-    assert paths == {"/api/tickets", "/api/tickets/{ticket_id}", "/api/search", "/api/admin/status", *reports, *pages}
+             "/api/tickets/{ticket_id}/similar", "/api/tickets/{ticket_id}/ask",
+             "/api/tickets/{ticket_id}/triage", "/api/language-models",
+             "/api/language-models/allow-list"}
+    assert paths == {"/api/tickets", "/api/tickets/{ticket_id}", "/api/search", "/api/admin/status", "/api/mcp", *reports,
+                     *pages}
 
 
 def test_every_route_is_get_only(client):
-    methods = {method for route in client.app.routes if route.path.startswith("/api") for method in route.methods}
+    """Apart from /api/mcp, as MCP sends everything by POST. test_mcp.py holds that route to reading."""
+    methods = {method for route in client.app.routes if route.path.startswith("/api") and route.path != "/api/mcp"
+               for method in route.methods}
     assert methods <= {"GET", "HEAD"}
     response = client.post("/api/tickets", headers=auth(AGENT))
     assert response.status_code == 405
@@ -38,7 +43,9 @@ def test_root_opens_the_docs(client):
 @pytest.mark.parametrize("path", ["/api/tickets", "/api/tickets/T00727", "/api/search?q=T00727", "/api/admin/status",
                                   "/api/reports/first-reply", "/api/customers", "/api/customers/C0086",
                                   "/api/knowledge", "/api/knowledge/KB022", "/api/company", "/api/snapshot",
-                                  "/api/tickets/T00727/knowledge", "/api/tickets/T00727/similar"])
+                                  "/api/tickets/T00727/knowledge", "/api/tickets/T00727/similar",
+                                  "/api/tickets/T00727/ask?q=Why", "/api/tickets/T00727/triage",
+                                  "/api/language-models", "/api/language-models/allow-list"])
 def test_a_token_is_required(client, path):
     response = client.get(path)
     assert response.status_code == 401
@@ -345,7 +352,8 @@ def test_owner_splits_at_the_first_separator_only():
 
 @pytest.mark.parametrize("path", ["/api/customers", "/api/customers/C0086", "/api/knowledge", "/api/knowledge/KB022",
                                   "/api/company", "/api/tickets/T00727/knowledge",
-                                  "/api/tickets/T00727/similar"])
+                                  "/api/tickets/T00727/similar", "/api/language-models",
+                                  "/api/language-models/allow-list"])
 def test_no_email_or_date_field_reaches_a_page_route(client, path):
     response = client.get(path, headers=auth(AGENT))
     assert response.status_code == 200

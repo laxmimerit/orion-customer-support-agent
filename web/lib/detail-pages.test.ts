@@ -1,6 +1,16 @@
 import { describe, expect, it } from "vitest";
 
-import { detailLoadingLabel, isBackToList, queueHref, queuePage, ticketHref } from "@/lib/detail-pages";
+import { decodeId, detailLoadingLabel, isBackToList, queueHref, queuePage, ticketHref } from "@/lib/detail-pages";
+
+describe("decodeId", () => {
+  it("decodes an escaped id", () => {
+    expect(decodeId("T%2000727")).toBe("T 00727");
+  });
+
+  it("leaves a broken escape as it came", () => {
+    expect(decodeId("T%ZZ")).toBe("T%ZZ");
+  });
+});
 
 describe("detailLoadingLabel", () => {
   it.each([

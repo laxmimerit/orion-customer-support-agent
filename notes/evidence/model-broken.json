@@ -1,0 +1,33 @@
+{
+  "results": [
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b-BROKEN:free",
+      "ask_error": "model_not_found",
+      "triage_error": {
+        "status": 502,
+        "code": "model_not_found",
+        "message": "OpenRouter does not offer nvidia/nemotron-3-ultra-550b-a55b-BROKEN:free. The desk did not switch to another model."
+      },
+      "text": "",
+      "models_called": [
+        "nvidia/nemotron-3-ultra-550b-a55b-BROKEN:free",
+        "nvidia/nemotron-3-ultra-550b-a55b-BROKEN:free"
+      ]
+    },
+    {
+      "model": "openai/gpt-6-luna:free",
+      "ask_error": "model_not_found",
+      "triage_error": {
+        "status": 502,
+        "code": "model_not_found",
+        "message": "OpenRouter does not offer openai/gpt-6-luna:free. The desk did not switch to another model."
+      },
+      "text": "",
+      "models_called": [
+        "openai/gpt-6-luna:free",
+        "openai/gpt-6-luna:free"
+      ]
+    }
+  ],
+  "key_usage_change": 0.0
+}

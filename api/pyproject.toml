@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Read-only API for the Orion replacement desk (plan increment 2)"
 requires-python = ">=3.12"
 dependencies = [
+    "anthropic>=2.5.0",
     "certifi>=2026.10.23",
     "fastapi>=0.162.0",
     "fastembed>=0.9.1",
@@ -17,9 +18,12 @@ package = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-markers = ["live: reads the real orion_desk database; skipped when PG_* settings are missing"]
+markers = ["live: reads the real orion_desk database, skipped when PG_* settings are missing; the case set also calls OpenRouter, and only with ORION_LIVE_MODELS set"]
 
 [dependency-groups]
+agent = [
+    "claude-agent-sdk>=0.2.178",
+]
 dev = [
     "httpx2>=2.16.0",
     "pytest>=9.2.0",

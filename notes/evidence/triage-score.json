@@ -1,0 +1,574 @@
+{
+  "seed": "orion-triage-1",
+  "tickets": [
+    {
+      "ticket_id": "T02215",
+      "category": "billing",
+      "priority": "P3",
+      "team": "Customer care"
+    },
+    {
+      "ticket_id": "T03067",
+      "category": "billing",
+      "priority": "P2",
+      "team": "Customer care"
+    },
+    {
+      "ticket_id": "T03389",
+      "category": "bug",
+      "priority": "P2",
+      "team": "Technical support"
+    },
+    {
+      "ticket_id": "T00274",
+      "category": "bug",
+      "priority": "P3",
+      "team": "Customer success"
+    },
+    {
+      "ticket_id": "T02645",
+      "category": "account access",
+      "priority": "P4",
+      "team": "Technical support"
+    },
+    {
+      "ticket_id": "T03665",
+      "category": "account access",
+      "priority": "P2",
+      "team": "Customer care"
+    },
+    {
+      "ticket_id": "T02235",
+      "category": "feature request",
+      "priority": "P4",
+      "team": "Customer care"
+    },
+    {
+      "ticket_id": "T03293",
+      "category": "how-to",
+      "priority": "P3",
+      "team": "Customer care"
+    },
+    {
+      "ticket_id": "T00994",
+      "category": "feature request",
+      "priority": "P1",
+      "team": "Customer care"
+    },
+    {
+      "ticket_id": "T01813",
+      "category": "how-to",
+      "priority": "P4",
+      "team": "Customer success"
+    }
+  ],
+  "runs": {
+    "nvidia/nemotron-3-ultra-550b-a55b:free": [
+      {
+        "ticket_id": "T02215",
+        "result": {
+          "category": "billing",
+          "priority": "P3",
+          "team": "Customer care",
+          "reason": "Customer reports seat count discrepancy on invoice for their 17-seat starter plan; one person affected but workaround exists and operations continue. Matches past billing tickets (T00966, T02163) for same customer with P3 priority.",
+          "record_ids": [
+            "T00461",
+            "T00495",
+            "T00966",
+            "T02163"
+          ],
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "dropped_ids": 0
+        },
+        "error": null,
+        "attempts": 1,
+        "seconds": 8.8,
+        "tool_calls": [
+          "search_records",
+          "read_customer"
+        ],
+        "exposed": []
+      },
+      {
+        "ticket_id": "T03067",
+        "result": {
+          "category": "billing",
+          "priority": "P2",
+          "team": "Customer care",
+          "reason": "Credit missing from invoice is a billing issue; customer reports several people blocked on an important workflow with a costly manual workaround, matching P2 impact.",
+          "record_ids": [
+            "T00762",
+            "C0191"
+          ],
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "dropped_ids": 0
+        },
+        "error": null,
+        "attempts": 1,
+        "seconds": 19.8,
+        "tool_calls": [
+          "search_records",
+          "find_customers",
+          "read_customer",
+          "read_ticket"
+        ],
+        "exposed": []
+      },
+      {
+        "ticket_id": "T03389",
+        "result": {
+          "category": "bug",
+          "priority": "P2",
+          "team": "Technical support",
+          "reason": "Attachment preview is a feature returning blank results, blocking several users on an important workflow with a costly manual workaround.",
+          "record_ids": [
+            "T02945",
+            "T01588",
+            "T02044"
+          ],
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "dropped_ids": 0
+        },
+        "error": null,
+        "attempts": 1,
+        "seconds": 6.4,
+        "tool_calls": [
+          "search_records"
+        ],
+        "exposed": []
+      },
+      {
+        "ticket_id": "T00274",
+        "result": {
+          "category": "bug",
+          "priority": "P3",
+          "team": "Technical support",
+          "reason": "Customer reports missing rows in CSV export, a known bug pattern; impact is limited (one person, workaround exists, no deadline), so P3.",
+          "record_ids": [
+            "T00209",
+            "T00214",
+            "T00299",
+            "T00254"
+          ],
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "dropped_ids": 0
+        },
+        "error": null,
+        "attempts": 1,
+        "seconds": 7.1,
+        "tool_calls": [
+          "search_records"
+        ],
+        "exposed": []
+      },
+      {
+        "ticket_id": "T02645",
+        "result": {
+          "category": "account access",
+          "priority": "P4",
+          "team": "Customer care",
+          "reason": "Customer reports a role change not applied in a test workspace, explicitly stating it's non-urgent with no production impact or deadline, matching previous P4 account access tickets.",
+          "record_ids": [
+            "T03510"
+          ],
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "dropped_ids": 0
+        },
+        "error": null,
+        "attempts": 1,
+        "seconds": 9.1,
+        "tool_calls": [
+          "search_records",
+          "read_ticket"
+        ],
+        "exposed": []
+      },
+      {
+        "ticket_id": "T03665",
+        "result": {
+          "category": "account access",
+          "priority": "P2",
+          "team": "Customer care",
+          "reason": "Invite link expiration blocks multiple users from completing workflows; a manual workaround exists but is costly, matching prior P2 cases for the same issue.",
+          "record_ids": [
+            "T02330",
+            "T00416",
+            "C0116"
+          ],
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "dropped_ids": 0
+        },
+        "error": null,
+        "attempts": 1,
+        "seconds": 19.8,
+        "tool_calls": [
+          "search_records",
+          "read_ticket",
+          "read_customer",
+          "search_records",
+          "read_ticket"
+        ],
+        "exposed": []
+      },
+      {
+        "ticket_id": "T02235",
+        "result": {
+          "category": "feature request",
+          "priority": "P4",
+          "team": "Customer success",
+          "reason": "Customer is asking about a feature that doesn't exist yet (custom SLA calendars) for a test workspace with no production impact or deadline.",
+          "record_ids": [
+            "KB011",
+            "T02580"
+          ],
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "dropped_ids": 0
+        },
+        "error": null,
+        "attempts": 1,
+        "seconds": 13.0,
+        "tool_calls": [
+          "search_records",
+          "list_articles",
+          "read_article"
+        ],
+        "exposed": []
+      },
+      {
+        "ticket_id": "T03293",
+        "result": {
+          "category": "how-to",
+          "priority": "P3",
+          "team": "Customer success",
+          "reason": "Customer asks how to invite a read-only reviewer on their starter plan; past tickets and KB021 show this is a standard how-to topic. They report a workaround in place and no production impact, matching P3.",
+          "record_ids": [
+            "KB021",
+            "T02958",
+            "T00814",
+            "T02377"
+          ],
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "dropped_ids": 0
+        },
+        "error": null,
+        "attempts": 1,
+        "seconds": 12.2,
+        "tool_calls": [
+          "search_records",
+          "search_records",
+          "read_article"
+        ],
+        "exposed": []
+      },
+      {
+        "ticket_id": "T00994",
+        "result": {
+          "category": "feature request",
+          "priority": "P1",
+          "team": "Customer success",
+          "reason": "Customer requests audit trail download feature; entire production team blocked with no workaround, cannot serve customers. KB029 and similar tickets confirm this is a feature request.",
+          "record_ids": [
+            "KB029",
+            "T03988",
+            "C0011"
+          ],
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "dropped_ids": 0
+        },
+        "error": null,
+        "attempts": 1,
+        "seconds": 22.7,
+        "tool_calls": [
+          "search_records",
+          "read_article",
+          "find_customers",
+          "read_ticket",
+          "read_customer"
+        ],
+        "exposed": []
+      },
+      {
+        "ticket_id": "T01813",
+        "result": {
+          "category": "how-to",
+          "priority": "P4",
+          "team": "Customer success",
+          "reason": "The customer is asking how to export monthly ticket history for a test workspace, explicitly stating it's non-urgent with no production impact or deadline. Past tickets and help articles on this topic are categorized as how-to.",
+          "record_ids": [
+            "T00980",
+            "KB009"
+          ],
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "dropped_ids": 0
+        },
+        "error": null,
+        "attempts": 1,
+        "seconds": 15.4,
+        "tool_calls": [
+          "search_records",
+          "read_ticket",
+          "search_records",
+          "read_article"
+        ],
+        "exposed": []
+      }
+    ],
+    "openai/gpt-6-luna": [
+      {
+        "ticket_id": "T02215",
+        "result": {
+          "category": "billing",
+          "priority": "P3",
+          "team": "Customer care",
+          "reason": "The invoice seat count is a billing discrepancy. One person is affected, operations continue with a workaround, and similar resolved cases were classified P3 billing.",
+          "record_ids": [
+            "T00966"
+          ],
+          "model": "openai/gpt-6-luna",
+          "dropped_ids": 0
+        },
+        "error": null,
+        "attempts": 1,
+        "seconds": 10.0,
+        "tool_calls": [
+          "search_records"
+        ],
+        "exposed": []
+      },
+      {
+        "ticket_id": "T03067",
+        "result": {
+          "category": "billing",
+          "priority": "P2",
+          "team": "Customer care",
+          "reason": "The reported issue is a missing invoice credit, matching prior billing cases. Several people are held up and the manual workaround is costly, indicating P2 impact.",
+          "record_ids": [
+            "T00659",
+            "T02263",
+            "T01884"
+          ],
+          "model": "openai/gpt-6-luna",
+          "dropped_ids": 0
+        },
+        "error": null,
+        "attempts": 1,
+        "seconds": 18.3,
+        "tool_calls": [
+          "search_records",
+          "read_ticket",
+          "read_ticket",
+          "read_ticket"
+        ],
+        "exposed": []
+      },
+      {
+        "ticket_id": "T03389",
+        "result": {
+          "category": "bug",
+          "priority": "P2",
+          "team": "Technical support",
+          "reason": "The attachment preview is producing an incorrect blank result. Several people are held up, and the manual workaround is costly; similar cases were classified as P2 bugs.",
+          "record_ids": [
+            "T01876"
+          ],
+          "model": "openai/gpt-6-luna",
+          "dropped_ids": 0
+        },
+        "error": null,
+        "attempts": 1,
+        "seconds": 13.8,
+        "tool_calls": [
+          "search_records",
+          "read_ticket"
+        ],
+        "exposed": []
+      },
+      {
+        "ticket_id": "T00274",
+        "result": {
+          "category": "bug",
+          "priority": "P3",
+          "team": "Technical support",
+          "reason": "The CSV export truncates unexpectedly, indicating a bug. One person is affected, operations continue with a workaround, and the issue can wait a few days; this matches the impact in T00271.",
+          "record_ids": [
+            "T00271"
+          ],
+          "model": "openai/gpt-6-luna",
+          "dropped_ids": 0
+        },
+        "error": null,
+        "attempts": 1,
+        "seconds": 16.9,
+        "tool_calls": [
+          "search_records",
+          "read_ticket",
+          "read_ticket",
+          "read_ticket"
+        ],
+        "exposed": []
+      },
+      {
+        "ticket_id": "T02645",
+        "result": {
+          "category": "account access",
+          "priority": "P4",
+          "team": "Customer care",
+          "reason": "A role change is an account-access issue. The customer says this is limited to a test workspace, with production unaffected and no deadline; a closely matching case was also P4.",
+          "record_ids": [
+            "T00731"
+          ],
+          "model": "openai/gpt-6-luna",
+          "dropped_ids": 0
+        },
+        "error": null,
+        "attempts": 1,
+        "seconds": 18.3,
+        "tool_calls": [
+          "search_records",
+          "read_ticket",
+          "read_ticket",
+          "read_ticket"
+        ],
+        "exposed": []
+      },
+      {
+        "ticket_id": "T03665",
+        "result": {
+          "category": "account access",
+          "priority": "P2",
+          "team": "Customer care",
+          "reason": "Expired invitation links prevent several people from completing an important workflow, and the workaround requires considerable manual effort.",
+          "record_ids": [],
+          "model": "openai/gpt-6-luna",
+          "dropped_ids": 0
+        },
+        "error": null,
+        "attempts": 1,
+        "seconds": 10.1,
+        "tool_calls": [
+          "search_records"
+        ],
+        "exposed": []
+      },
+      {
+        "ticket_id": "T02235",
+        "result": {
+          "category": "feature request",
+          "priority": "P4",
+          "team": "Customer success",
+          "reason": "Custom SLA calendars are a requested product capability. Production is unaffected and there is no deadline; similar cases were classified as P4 feature requests.",
+          "record_ids": [
+            "T02800"
+          ],
+          "model": "openai/gpt-6-luna",
+          "dropped_ids": 0
+        },
+        "error": null,
+        "attempts": 1,
+        "seconds": 8.3,
+        "tool_calls": [
+          "search_records"
+        ],
+        "exposed": []
+      },
+      {
+        "ticket_id": "T03293",
+        "result": {
+          "category": "how-to",
+          "priority": "P3",
+          "team": "Customer success",
+          "reason": "The customer asks for guidance on inviting a read-only reviewer, and the matching resolved case treated this as a how-to. Only one person is affected; operations continue with a workaround and there is no immediate deadline.",
+          "record_ids": [
+            "T01110"
+          ],
+          "model": "openai/gpt-6-luna",
+          "dropped_ids": 0
+        },
+        "error": null,
+        "attempts": 1,
+        "seconds": 17.4,
+        "tool_calls": [
+          "search_records",
+          "read_ticket",
+          "read_ticket",
+          "read_ticket"
+        ],
+        "exposed": []
+      },
+      {
+        "ticket_id": "T00994",
+        "result": {
+          "category": "feature request",
+          "priority": "P1",
+          "team": "Customer success",
+          "reason": "The customer is requesting a capability that does not exist, not reporting a malfunction. They say the entire production team is blocked with no workaround and cannot serve customers; similar cases were categorized as feature requests.",
+          "record_ids": [
+            "T01416",
+            "T03028",
+            "KB029"
+          ],
+          "model": "openai/gpt-6-luna",
+          "dropped_ids": 0
+        },
+        "error": null,
+        "attempts": 1,
+        "seconds": 20.1,
+        "tool_calls": [
+          "search_records",
+          "read_ticket",
+          "read_ticket",
+          "read_article"
+        ],
+        "exposed": []
+      },
+      {
+        "ticket_id": "T01813",
+        "result": {
+          "category": "how-to",
+          "priority": "P4",
+          "team": "Customer success",
+          "reason": "The customer asks for next steps or a workaround for exporting ticket history, matching a prior how-to case. Production is unaffected and there is no deadline.",
+          "record_ids": [
+            "T02090"
+          ],
+          "model": "openai/gpt-6-luna",
+          "dropped_ids": 0
+        },
+        "error": null,
+        "attempts": 1,
+        "seconds": 15.9,
+        "tool_calls": [
+          "search_records",
+          "read_ticket"
+        ],
+        "exposed": []
+      }
+    ]
+  },
+  "scores": {
+    "nvidia/nemotron-3-ultra-550b-a55b:free": {
+      "tickets": 10,
+      "valid": 10,
+      "category": 10,
+      "priority": 10,
+      "team": 5,
+      "team_by_skills": 10,
+      "dropped_ids": 0,
+      "tool_calls": 30,
+      "exposed": 0,
+      "seconds": 134.3
+    },
+    "openai/gpt-6-luna": {
+      "tickets": 10,
+      "valid": 10,
+      "category": 10,
+      "priority": 10,
+      "team": 5,
+      "team_by_skills": 10,
+      "dropped_ids": 0,
+      "tool_calls": 27,
+      "exposed": 0,
+      "seconds": 149.1
+    }
+  }
+}

@@ -10,7 +10,7 @@ This describes the desk as built in `web/`: nine pages from the design at
 - No emails and no dates or times. Periods in reports are numbered, not named. Durations ("7h 58m", "81 days") are not dates and stay.
 - A missing value reads "Not recorded". It is never 0 or an empty cell.
 - A status or priority always shows its word. Colour only supports it.
-- The desk is view only. Nothing on it changes a ticket.
+- The desk is view only. Nothing on it changes a ticket. Asking the language model stores nothing and sends nothing to the customer, and its tools change no record.
 
 ## 2. Tokens
 
@@ -47,20 +47,28 @@ Status pills: Open is indigo, In progress is teal, Pending is amber, Resolved is
 | Route | Board | Data |
 |---|---|---|
 | `/` | Main | `/api/tickets`, reports `backlog`, `first-reply`, `priority`; `/api/search` for `?q=`; one ticket for the preview |
-| `/tickets/[ticketId]` | Case | `/api/tickets/{id}` |
+| `/tickets/[ticketId]` | Case | `/api/tickets/{id}`; `/api/tickets/{id}/ask` for the Ask panel |
 | `/customers` | Customers | `/api/customers` |
 | `/customers/[customerId]` | Customer | `/api/customers/{id}` |
 | `/knowledge` | Knowledge | `/api/knowledge` |
 | `/knowledge/[articleId]` | Article | `/api/knowledge/{id}` |
 | `/reports` | Reports | the five `/api/reports/*` routes |
 | `/company` | Company | `/api/company` |
-| `/settings` | Settings | `/openapi.json`, `/api/tickets` |
+| `/settings` | Settings | `/openapi.json`, `/api/tickets`, `/api/language-models` |
 
 **Queue.** A pulse of desk-wide figures from the reports, then the 25 tickets of the current page in lanes. Lanes, counts and filters cover that page and say so. Selecting a row opens a preview with the service targets and an "Open case" link; it is fetched through a server action so the token stays on the server. Previous and Next move between pages.
 
 **Search.** Typing filters what is on the page. Enter on the queue, or on any page with the ticket search, opens `/?q=words`, which searches the whole desk through `/api/search` and lists tickets and articles. `/` focuses the search box where the design shows the key.
 
 **Case.** The clock draws both targets and both actual times on one axis whose end is 1.055 times the largest value. Close labels fall back to a stacked legend, which is also the phone layout. A missing first reply, an unresolved ticket and a missing target each have their own wording. Customer messages are headed by the company and agent messages by the agent ID.
+
+**Ask.** A panel under the conversation takes one question. The browser posts it to `/tickets/[ticketId]/ask`, a route on the web server that adds the token and passes on the API's stream, and the answer appears as the model writes it. The model starts from the case and can read other tickets, customers and help articles through the read-only tools in `api/orion_api/lookups.py`; the panel says what it is reading. A new question replaces the last answer, and a question knows the last one only through a kept note. Stop ends the call all the way to the model. A cut-short answer, a stopped answer and a failure each have their own wording, and any text already written stays on the page.
+
+**Ask sources.** Under the answer, Sources lists the records the answer names by ID, and only those the case or a tool returned, so a made-up ID never appears. A row in a list counts, so a source may rest on that row alone. Each opens in a new tab, because the answer is not kept if the page closes. When the records do not hold the answer, the model opens with agreed words, and the panel says so and heads the list Records checked. An answer that names no record gets a warning instead. A failed lookup ends the answer as an error, so it can never read as "not recorded".
+
+**Ask tools.** OpenRouter also runs tools for the model, set out in `api/orion_api/server_tools.py`, each with a limit per question: 3 web searches, 3 page fetches, 2 shell runs. The desk enforces these across a question's turns, and closes the stream itself at the shell limit, because OpenRouter's own step limits have no effect on this API. The shell is always offered, and it has no network and starts empty each time, so it can work something out but can't reach the web. Web search and web fetch are off until the agent ticks the box, and the box unticks when the question goes, so the web is a choice made per question. Search words and page addresses leave the desk, and the panel says so beside the box. Under the answer, the panel shows what left the desk and what came back: the words the model searched for, then Web pages the model saw, with a warning that the web knows nothing about this customer. Search results are listed by host, all of them and not only those the answer names, because the model often names none. A fetched address is shown whole and is not a link, because the model chose it and OpenRouter does not report whether it opened. Sources stays records only. If a web tool the question did not offer ever runs, the answer ends as an error. These tools cost money even though the model is free.
+
+**Ask note.** The model can keep one short note, up to 300 characters, for the next question on this case. The desk has no writes, so the panel holds the note, shows it above the box as the model's, with a Clear button, and sends it with the next question. It lasts one question, is gone when the page closes, and never moves to another case. A question that fails or is stopped keeps the note it took. The model reads a note as information, not as an instruction.
 
 **Customers.** All accounts in one response, filtered on the client by plan, region and words, 20 more at a time. Active cases are tickets that are not resolved.
 
@@ -72,7 +80,7 @@ Status pills: Open is indigo, In progress is teal, Pending is amber, Resolved is
 
 **Company.** Handbook sections with owner and team, then staff requests. The database stores the owner as "Name · Team"; the API splits it.
 
-**Settings.** What the desk is connected to, read live. The token is never shown.
+**Settings.** What the desk is connected to, read live. The token and the OpenRouter key are never shown. The language model panel checks the key and each model that has been run with OpenRouter when the page opens, which uses no tokens, and shows the whole allow-list, with Anthropic and OpenAI marked Not run and never called.
 
 ## 5. States
 

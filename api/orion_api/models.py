@@ -7,7 +7,7 @@ from datetime import UTC, date, datetime
 from decimal import Decimal
 from typing import Annotated, Literal
 
-from pydantic import AfterValidator, BaseModel
+from pydantic import AfterValidator, BaseModel, ConfigDict, Field
 
 
 def as_utc(value):
@@ -353,3 +353,54 @@ class ErrorDetail(BaseModel):
 
 class ErrorResponse(BaseModel):
     error: ErrorDetail
+
+
+# The language model connection. It names the provider and the model, and never holds the key.
+class ModelConnection(BaseModel):
+    provider: str
+    model: str
+    address: str
+    sdk: str
+    state: Literal["connected", "no_key", "key_refused", "model_unavailable", "not_answering"]
+
+
+# One line of the allow-list in assistant.py. id is what a request sends; run is false for a line the desk won't call.
+class AllowedModel(BaseModel):
+    id: str
+    label: str
+    provider: str
+    model: str
+    paid: bool
+    run: bool
+
+
+class ModelOption(AllowedModel):
+    state: Literal["connected", "no_key", "key_refused", "model_unavailable", "not_answering", "not_run"]
+
+
+class LanguageModels(BaseModel):
+    connection: ModelConnection
+    options: list[ModelOption]
+
+
+# Triage. The first three fields are closed lists so that results can be sorted and compared: a value outside them never
+# leaves the API. test_live.py checks the lists against the values orion_desk holds.
+REASON_LIMIT = 300
+RECORD_ID_LIMIT = 20
+
+
+class TriageDecision(BaseModel):
+    """What the language model must return. Sent as the schema, and every answer is checked against it."""
+    model_config = ConfigDict(extra="forbid")
+
+    category: Literal["account access", "billing", "bug", "feature request", "how-to", "outage"]
+    priority: Literal["P1", "P2", "P3", "P4"]
+    team: Literal["Customer care", "Customer success", "Technical support"]
+    reason: str = Field(min_length=1, max_length=REASON_LIMIT)
+    record_ids: list[str] = Field(max_length=RECORD_ID_LIMIT)
+
+
+# model names the model that decided. dropped_ids counts the IDs taken out because no tool returned them.
+class Triage(TriageDecision):
+    model: str
+    dropped_ids: int

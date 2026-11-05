@@ -1,0 +1,4758 @@
+{
+  "prepare": {
+    "ticket_id": "T00360",
+    "messages": 115,
+    "characters": 11662,
+    "case_characters": 17110,
+    "sizes": {
+      "tickets": 4000,
+      "median_messages": 9.0,
+      "median_characters": 1017.0,
+      "longer_than_kept": 10
+    },
+    "keep": 10,
+    "questions": {
+      "whole": "Is this case really finished? Check the whole thread: how many customer messages say the issue is still reproducible, at which follow-up numbers do the first and the last of those come, and did any agent reply change after them?",
+      "latest": "What is the customer waiting for in their latest message, and has anyone answered it yet?"
+    },
+    "truth": {
+      "still_broken_count": 10,
+      "first": 6,
+      "last": 56,
+      "follow_ups": [
+        6,
+        12,
+        23,
+        24,
+        26,
+        31,
+        36,
+        38,
+        55,
+        56
+      ],
+      "distinct_agent_replies": 1,
+      "status": "resolved",
+      "last_author": "customer",
+      "last_body": "Thank you. Please confirm whether this also applies to our other team. Follow-up 58."
+    }
+  },
+  "summarise": {
+    "tries": [
+      {
+        "seconds": 6.01,
+        "stop_reason": "end_turn",
+        "text": "Customer on starter plan (14 seats) reports role change not applied for one user (workspace C0146, case demo-00360). Normal ops continue via workaround; can address in next few days. Asks for next steps and workaround details.\n\nAgent replies 53 times with identical message: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" No substantive answer to any question.\n\nCustomer follow-up patterns (follow-up numbers):\n- Workspace setting follow-up: 2, 5, 8, 11, 14, 16, 17, 19, 20, 21, 28, 29, 30, 34, 47, 48, 52 (17 times)\n- How to avoid next time: 3, 9, 13, 15, 27, 32, 35, 39, 41, 42, 44, 49, 50, 51, 53 (15 times)\n- Applies to other team: 4, 7, 10, 18, 22, 25, 33, 37, 40, 43, 45, 46 (12 times)\n- Issue still reproducible with more context: 6, 12, 23, 24, 26, 31, 36, 38 (8 times)\n\nAll customer questions remain unanswered. Issue persists per customer. Agent provides no troubleshooting, prevention guidance, or confirmation about other team.",
+        "tokens": {
+          "input": 3419,
+          "output": 623,
+          "thinking": 249,
+          "cached": 0,
+          "cost": 0
+        }
+      },
+      {
+        "seconds": 7.44,
+        "stop_reason": "end_turn",
+        "text": "Customer reports role change not applied on Starter plan (14 seats, workspace C0146, case demo-00360). One user affected; workaround in use, can address in days. Asks for next steps and workaround.\n\nAgent replies 52 times with identical message: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" No answers to customer questions.\n\nCustomer follow-ups 2\u201353 (52 total) cycle through four themes:\n- \"I tried those steps and have a follow-up about the workspace setting\" \u2014 follow-ups 2,5,8,11,14,16,17,19,20,21,28,29,30,34,47,48,52 (17\u00d7)\n- \"That addresses the immediate issue. How should we avoid it next time?\" \u2014 follow-ups 3,9,13,15,27,32,35,39,41,42,44,49,50,51,53 (15\u00d7)\n- \"Thank you. Please confirm whether this also applies to our other team.\" \u2014 follow-ups 4,7,10,18,22,25,33,37,40,43,45,46 (12\u00d7)\n- \"The issue is still reproducible; I have attached more context.\" \u2014 follow-ups 6,12,23,24,26,31,36,38 (8\u00d7)\n\nOpen: workspace setting clarification, prevention guidance, applicability to other team, reproducibility confirmed 8\u00d7. Agent has not addressed any follow-up.",
+        "tokens": {
+          "input": 3419,
+          "output": 943,
+          "thinking": 567,
+          "cached": 0,
+          "cost": 0
+        }
+      },
+      {
+        "seconds": 12.39,
+        "stop_reason": "end_turn",
+        "text": "Customer reported role change not applied on Starter plan (14 seats, 1 user affected, workspace C0146, case demo-00360). Workaround in place; can address in next few days. Asked for next steps and workaround.\n\nAgent replied 52 times with identical message: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" No substantive answers given.\n\nCustomer follow\u2011ups (51 total, numbered 2\u201353) cycle through four themes:\n- Workspace setting question: follow\u2011ups 2, 5, 8, 11, 14, 17, 19, 20, 21, 28, 29, 30, 34, 47, 48, 52 (16 times)\n- Prevention for next time: follow\u2011ups 3, 9, 13, 15, 27, 32, 35, 39, 41, 42, 44, 49, 50, 51, 53 (15 times)\n- Applicability to other team: follow\u2011ups 4, 7, 10, 18, 22, 25, 33, 37, 40, 43, 45, 46 (12 times)\n- Issue still reproducible with more context: follow\u2011ups 6, 12, 23, 24, 26, 31, 36, 38 (8 times)\n\nAll customer questions remain unanswered. Role change issue persists; workaround continues. No resolution or guidance provided.",
+        "tokens": {
+          "input": 3419,
+          "output": 1005,
+          "thinking": 620,
+          "cached": 0,
+          "cost": 0
+        }
+      }
+    ],
+    "summary": "Customer on starter plan (14 seats) reports role change not applied for one user (workspace C0146, case demo-00360). Normal ops continue via workaround; can address in next few days. Asks for next steps and workaround details.\n\nAgent replies 53 times with identical message: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" No substantive answer to any question.\n\nCustomer follow-up patterns (follow-up numbers):\n- Workspace setting follow-up: 2, 5, 8, 11, 14, 16, 17, 19, 20, 21, 28, 29, 30, 34, 47, 48, 52 (17 times)\n- How to avoid next time: 3, 9, 13, 15, 27, 32, 35, 39, 41, 42, 44, 49, 50, 51, 53 (15 times)\n- Applies to other team: 4, 7, 10, 18, 22, 25, 33, 37, 40, 43, 45, 46 (12 times)\n- Issue still reproducible with more context: 6, 12, 23, 24, 26, 31, 36, 38 (8 times)\n\nAll customer questions remain unanswered. Issue persists per customer. Agent provides no troubleshooting, prevention guidance, or confirmation about other team.",
+    "older_messages": 105,
+    "recent_messages": 10,
+    "older_characters": 10669,
+    "short_case_characters": 3375
+  },
+  "run": {
+    "key_usage_before": 0.164413355,
+    "answers": [
+      {
+        "round": 0,
+        "arm": "free, as the desk sends it",
+        "thread": "full",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 10.54,
+        "text": "Based on the full thread in T00360:\n\n**Customer messages stating \"the issue is still reproducible\": 9**\n\n**Follow-up numbers:**\n- First: Follow-up 6\n- Last: Follow-up 56\n\n**Agent replies after those messages:** No change. Every single agent response in the thread (from the first reply through the last) is identical: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" The agent never varied the response, acknowledged the continued reproducibility, or offered a different troubleshooting step.\n\nThe case is marked resolved with a CSAT of 4, but the customer reported the issue as still reproducible as late as follow-up 56 (the 9th such report), and the final two customer messages (follow-ups 57\u201358) ask whether the fix applies to another team\u2014suggesting the core problem may not have been fully addressed for all users.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_kd1K5PqNTCJhKyJf8r3a",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 8.63,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 5687,
+              "output_tokens": 973,
+              "output_tokens_details": {
+                "thinking_tokens": 775
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 10.51
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5687,
+            "cached": 0,
+            "output": 973,
+            "thinking": 775,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 9,
+          "count_right": false,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 0,
+        "arm": "free, medium",
+        "thread": "full",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 7.23,
+        "text": "**Yes, the case appears unresolved despite the \"resolved\" status.**\n\n**Customer messages stating \"The issue is still reproducible\": 9 total**\n\n| Follow-up | Message snippet |\n|-----------|-----------------|\n| 6  | \"The issue is still reproducible; I have attached more context.\" |\n| 12 | \"The issue is still reproducible; I have attached more context.\" |\n| 23 | \"The issue is still reproducible; I have attached more context.\" |\n| 24 | \"The issue is still reproducible; I have attached more context.\" |\n| 31 | \"The issue is still reproducible; I have attached more context.\" |\n| 36 | \"The issue is still reproducible; I have attached more context.\" |\n| 38 | \"The issue is still reproducible; I have attached more context.\" |\n| 55 | \"The issue is still reproducible; I have attached more context.\" |\n| 56 | \"The issue is still reproducible; I have attached more context.\" |\n\n- **First occurrence:** Follow-up 6  \n- **Last occurrence:** Follow-up 56  \n\n**Agent replies:** Every single agent response in the thread is identical:  \n> \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\"\n\nThe agent never varied the reply, never acknowledged the repeated \"still reproducible\" reports, and never offered a new step. The case was marked resolved after 37.2 hours, but the customer kept reporting the problem up to follow-up 56. The record suggests the issue was **not** actually fixed.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_IQa1QCR7p7wFDrNf1LBx",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 5.05,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 5687,
+              "output_tokens": 824,
+              "output_tokens_details": {
+                "thinking_tokens": 484
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 7.23
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5687,
+            "cached": 0,
+            "output": 824,
+            "thinking": 484,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 9,
+          "count_right": false,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 0,
+        "arm": "free, high",
+        "thread": "full",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 9.62,
+        "text": "Based on the full message thread in T00360:\n\n**Customer messages stating \"The issue is still reproducible\": 9 total**\n\n**Follow-up numbers:**\n- First: Follow-up 6\n- Last: Follow-up 56\n\n**Agent replies after those messages:** No change. Every single agent reply in the entire thread (58 exchanges) is identical: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" The agent never varied the response, acknowledged the continued reproducibility, or attempted a different troubleshooting step.\n\n**Assessment:** The case is marked \"resolved\" (resolution_hours: 37.16, CSAT: 4), but the customer repeatedly reported the issue persisted up to follow-up 56, and the agent responded with the same canned message each time. The records suggest the underlying problem was not actually fixed.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_wJ8b3ULwJeBlmBq7UbiC",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 6.16,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 1303,
+              "output_tokens": 732,
+              "output_tokens_details": {
+                "thinking_tokens": 543
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4384,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 9.62
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5687,
+            "cached": 4384,
+            "output": 732,
+            "thinking": 543,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 9,
+          "count_right": false,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 0,
+        "arm": "luna, high",
+        "thread": "full",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 7.6,
+        "text": "T00360 is marked resolved, but the thread doesn\u2019t look finished: the customer says the issue is still reproducible 10 times, at follow-ups 6, 12, 23, 24, 26, 31, 36, 38, 55, and 56. The first is follow-up 6 and the last is follow-up 56. No agent reply changes after those reports; the replies repeat the same access-restored message.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_GE8cYWp22Q6K1G9xVz0b",
+            "model": "openai/gpt-6-luna",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 6.59,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 3,
+              "output_tokens": 618,
+              "output_tokens_details": {
+                "thinking_tokens": 516
+              },
+              "cache_creation_input_tokens": 4701,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0.000896925,
+              "cost_details": {
+                "upstream_inference_cost": 0.000896925,
+                "upstream_inference_prompt_cost": 0.000587925,
+                "upstream_inference_completions_cost": 0.000309
+              }
+            },
+            "seconds": 7.6
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 4704,
+            "cached": 0,
+            "output": 618,
+            "thinking": 516,
+            "cost": 0.000896925
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 0,
+        "arm": "free, medium",
+        "thread": "short",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 11.31,
+        "text": "No, this case is not really finished. The ticket shows **status: resolved** with **CSAT 4**, but the full thread makes clear the customer\u2019s problem persisted.\n\n**Customer messages stating the issue is still reproducible:** 10  \n**First occurrence:** Follow-up 6  \n**Last occurrence:** Follow-up 56  \n\n**Agent replies after those messages:** Every single agent reply in the entire thread (58 of them) is identical:  \n\u201cVerified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\u201d  \nNo agent message ever changes, adds troubleshooting, prevention guidance, or confirmation about the other team. The case was marked resolved while the customer repeatedly reported the issue still reproducible.",
+        "lookups": [
+          "Reading a ticket"
+        ],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_YsucsvP16wyLCcl54bnN",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "stop_reason": "tool_use",
+            "usage_end": {
+              "input_tokens": 2809,
+              "output_tokens": 363,
+              "output_tokens_details": {
+                "thinking_tokens": 330
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 2.62
+          },
+          {
+            "status": 200,
+            "id": "msg_dKgWQCvoDvHinzvdIJxb",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 5.92,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 6746,
+              "output_tokens": 720,
+              "output_tokens_details": {
+                "thinking_tokens": 564
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 6.74
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 2809,
+            "cached": 0,
+            "output": 363,
+            "thinking": 330,
+            "cost": 0
+          },
+          {
+            "prompt": 6746,
+            "cached": 0,
+            "output": 720,
+            "thinking": 564,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 0,
+        "arm": "free, high",
+        "thread": "short",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 6.01,
+        "text": "Based on the full thread in T00360:\n\n**Customer messages saying \"issue is still reproducible\": 2**\n- First: Follow-up 55 (message index 4)\n- Last: Follow-up 56 (message index 6)\n\n**Agent replies after those messages**: No change. Every agent reply in the thread (indices 1, 3, 5, 7, 9) is identical: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" The agent never addresses the reproducibility, the workspace setting, the other team, or prevention.\n\nThe case is marked \"resolved\" but the customer explicitly states the issue persists (twice after the summary) and the agent provides no substantive response.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_FgfjIRsJRRS5Dp790D0v",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 4.7,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 2809,
+              "output_tokens": 736,
+              "output_tokens_details": {
+                "thinking_tokens": 576
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 6.01
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 2809,
+            "cached": 0,
+            "output": 736,
+            "thinking": 576,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 2,
+          "count_right": false,
+          "first_right": false,
+          "last_right": true
+        }
+      },
+      {
+        "round": 0,
+        "arm": "luna, high",
+        "thread": "short",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 7.63,
+        "text": "No. In T00360, 10 customer messages say the issue is still reproducible: the first is follow-up 6 and the last is follow-up 56. The agent replies did not change; they continued repeating the same account-recovery message rather than addressing the issue.",
+        "lookups": [
+          "Searching the desk"
+        ],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_609KayvFflbaQPHPIVJ7",
+            "model": "openai/gpt-6-luna",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "stop_reason": "tool_use",
+            "usage_end": {
+              "input_tokens": 3,
+              "output_tokens": 20,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": 1859,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0.000242675,
+              "cost_details": {
+                "upstream_inference_cost": 0.000242675,
+                "upstream_inference_prompt_cost": 0.000232675,
+                "upstream_inference_completions_cost": 1e-05
+              }
+            },
+            "seconds": 1.8
+          },
+          {
+            "status": 200,
+            "id": "msg_u5rDv4kXB8l9MmgIgQoc",
+            "model": "openai/gpt-6-luna",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 3.39,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 3,
+              "output_tokens": 238,
+              "output_tokens_details": {
+                "thinking_tokens": 175
+              },
+              "cache_creation_input_tokens": 84,
+              "cache_read_input_tokens": 1859,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0.00014839,
+              "cost_details": {
+                "upstream_inference_cost": 0.00014839,
+                "upstream_inference_prompt_cost": 2.939e-05,
+                "upstream_inference_completions_cost": 0.000119
+              }
+            },
+            "seconds": 4.66
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 1862,
+            "cached": 0,
+            "output": 20,
+            "thinking": 0,
+            "cost": 0.000242675
+          },
+          {
+            "prompt": 1946,
+            "cached": 1859,
+            "output": 238,
+            "thinking": 175,
+            "cost": 0.00014839
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 0,
+        "arm": "free, high",
+        "thread": "full",
+        "question": "latest",
+        "busy_tries": 0,
+        "seconds": 5.65,
+        "text": "In ticket T00360, the customer's latest message (Follow-up 58) asks: \"Please confirm whether this also applies to our other team.\" The agent has not responded to that specific question\u2014the last agent reply is the same generic recovery\u2011flow message that precedes the customer's follow\u2011up. So the customer is still waiting for confirmation about the other team, and no answer has been given yet.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_NVit9CyqyGysKoZ3Koio",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 4.81,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 1275,
+              "output_tokens": 521,
+              "output_tokens_details": {
+                "thinking_tokens": 432
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4384,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 5.65
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5659,
+            "cached": 4384,
+            "output": 521,
+            "thinking": 432,
+            "cost": 0
+          }
+        ]
+      },
+      {
+        "round": 0,
+        "arm": "free, high",
+        "thread": "short",
+        "question": "latest",
+        "busy_tries": 0,
+        "seconds": 2.95,
+        "text": "The customer's latest message (follow-up 58) repeats their earlier request: \"Please confirm whether this also applies to our other team.\" No one has answered that question \u2014 the agent's only replies are the same generic recovery\u2011flow message, which does not address whether the role\u2011change issue affects the other team.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_wJVjBJF3WXzMXsdxs1vv",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 2.3,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 2781,
+              "output_tokens": 200,
+              "output_tokens_details": {
+                "thinking_tokens": 133
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 2.95
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 2781,
+            "cached": 0,
+            "output": 200,
+            "thinking": 133,
+            "cost": 0
+          }
+        ]
+      },
+      {
+        "round": 1,
+        "arm": "free, as the desk sends it",
+        "thread": "full",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 11.58,
+        "text": "Based on the full thread in T00360:\n\n**Customer messages stating \"The issue is still reproducible\": 9 total**\n\n**Follow-up numbers:**\n- First: Follow-up 6\n- Last: Follow-up 56\n\n**Agent replies after those messages:** Every single agent reply in the thread (all 58 of them) is identical boilerplate: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" The agent response never changed, never acknowledged the repeated \"still reproducible\" statements, and never offered a different troubleshooting step or escalation.\n\nThe case is marked **resolved** with a CSAT of 4, but the customer explicitly reported the issue persisting through follow-up 56 (the second-to-last customer message), and the agent gave the same scripted reply each time. The records suggest the case was closed without the underlying problem being fixed.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_fTT9ce8cJMA0bH6RSn7r",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 8.9,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 1303,
+              "output_tokens": 1105,
+              "output_tokens_details": {
+                "thinking_tokens": 913
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4384,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 11.58
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5687,
+            "cached": 4384,
+            "output": 1105,
+            "thinking": 913,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 9,
+          "count_right": false,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 1,
+        "arm": "free, medium",
+        "thread": "full",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 11.49,
+        "text": "Based on the full thread in T00360:\n\n**Customer messages saying \"The issue is still reproducible\": 9 total**\n\n- First: Follow-up 6\n- Last: Follow-up 56\n\nOther occurrences at follow-ups 12, 23, 24, 31, 36, 38, 55.\n\n**Agent replies: No change at any point.** Every single agent response in the 58-message thread is identical: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" This same canned reply appears after every customer message, including all nine \"still reproducible\" messages and the final follow-up 58.\n\nThe case is marked resolved (resolution_hours 37.16, CSAT 4), but the customer repeatedly indicated the problem persisted, and the agent never varied the response or appeared to address the reproducibility.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_qLrAELn7FIPu3l9KmeGw",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 9.94,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 1303,
+              "output_tokens": 793,
+              "output_tokens_details": {
+                "thinking_tokens": 597
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4384,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 11.49
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5687,
+            "cached": 4384,
+            "output": 793,
+            "thinking": 597,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 9,
+          "count_right": false,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 1,
+        "arm": "free, high",
+        "thread": "full",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 17.6,
+        "text": "Based on the full message thread in T00360:\n\n**Customer messages stating \"The issue is still reproducible\": 10 occurrences**\n\n**Follow-up numbers:**\n- First: Follow-up 6\n- Last: Follow-up 56\n- All occurrences: Follow-ups 6, 12, 23, 24, 26, 31, 36, 38, 55, 56\n\n**Agent reply pattern:** Every single agent response (58 total) is identical: *\"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\"* The agent reply never changed \u2014 not after the first \"still reproducible\" at follow-up 6, nor after the last at follow-up 56.\n\n**Conclusion:** The case is marked \"resolved\" (resolution_hours 37.16, CSAT 4), but the thread shows the customer repeatedly reported the issue persisted through follow-up 56 while the agent gave the same canned response each time. The records indicate the case was closed without the underlying problem being addressed.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_6m0mRFlRiHNn7FqbWyP9",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 15.18,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 1303,
+              "output_tokens": 2587,
+              "output_tokens_details": {
+                "thinking_tokens": 2350
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4384,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 17.6
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5687,
+            "cached": 4384,
+            "output": 2587,
+            "thinking": 2350,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 1,
+        "arm": "luna, high",
+        "thread": "full",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 4.99,
+        "text": "T00360 is marked resolved, but the thread shows the issue may not be finished: 10 customer messages say it is still reproducible. They appear at follow-ups 6, 12, 23, 24, 26, 31, 36, 38, 55 and 56\u2014the first is 6 and the last is 56. The agent replies did not change; each repeated the same account-recovery response.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_Nq3GNXQRhaOe6lJh1ZL2",
+            "model": "openai/gpt-6-luna",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 4.17,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 3,
+              "output_tokens": 405,
+              "output_tokens_details": {
+                "thinking_tokens": 308
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4701,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0.00024981,
+              "cost_details": {
+                "upstream_inference_cost": 0.00024981,
+                "upstream_inference_prompt_cost": 4.731e-05,
+                "upstream_inference_completions_cost": 0.0002025
+              }
+            },
+            "seconds": 4.98
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 4704,
+            "cached": 4701,
+            "output": 405,
+            "thinking": 308,
+            "cost": 0.00024981
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 1,
+        "arm": "free, medium",
+        "thread": "short",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 10.32,
+        "text": "Based on the full thread in T00360:\n\n**Customer messages saying the issue is still reproducible: 10 total**\n- From the summary: follow-ups 6, 12, 23, 24, 26, 31, 36, 38 (8 messages)\n- From the visible thread: follow-ups 55 and 56 (2 messages)\n\n**First occurrence:** follow-up 6  \n**Last occurrence:** follow-up 56\n\n**Agent replies after those messages:** No change at all. Every agent reply in the entire thread (53 in the summary + 5 visible = 58 total) is identical: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" The agent never acknowledges the reproducibility reports, never provides troubleshooting, and never answers the follow-up questions about workspace settings, prevention, or impact on the other team.\n\nThe case is marked \"resolved\" with CSAT 4, but the customer's last two messages (follow-ups 57\u201358) are still asking whether the problem applies to their other team, and the final agent reply is the same canned message. The records show the issue was not actually resolved from the customer's perspective.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_8hkiSWLwqmSwV2txdpQc",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 6.75,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 2809,
+              "output_tokens": 990,
+              "output_tokens_details": {
+                "thinking_tokens": 720
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 10.32
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 2809,
+            "cached": 0,
+            "output": 990,
+            "thinking": 720,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 1,
+        "arm": "free, high",
+        "thread": "short",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 7.44,
+        "text": "Based on the full thread in T00360:\n\n**Customer messages saying the issue is still reproducible: 10 total**\n- 8 in the summarized history (follow-ups 6, 12, 23, 24, 26, 31, 36, 38)\n- 2 in the visible messages (follow-ups 55 and 56)\n\n**First follow-up number:** 6  \n**Last follow-up number:** 56\n\n**Agent replies after those messages:** No change at all. Every agent message in the thread \u2014 all 53+ replies shown in the summary plus the 5 visible after the summary \u2014 is identical: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" No troubleshooting, no prevention guidance, no confirmation about the other team, and no acknowledgment that the issue persists.\n\nThe case is marked \"resolved\" but the customer explicitly states the issue is still reproducible as late as follow-up 56, and the agent never varied the response. The records indicate the case is not substantively finished.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_dRGvPsLx7eanxBNzivfv",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 5.71,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 2809,
+              "output_tokens": 932,
+              "output_tokens_details": {
+                "thinking_tokens": 693
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 7.44
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 2809,
+            "cached": 0,
+            "output": 932,
+            "thinking": 693,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 1,
+        "arm": "luna, high",
+        "thread": "short",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 11.05,
+        "text": "No. T00360 is marked resolved, but the thread shows the issue still reproducible in 10 customer messages, from follow-up 6 through follow-up 56. No agent reply changed: replies remained the same generic recovery-flow message, including after those reports.",
+        "lookups": [
+          "Searching the desk",
+          "Reading a ticket"
+        ],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_FTRvrSkCfqBStLtfQkvB",
+            "model": "openai/gpt-6-luna",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "stop_reason": "tool_use",
+            "usage_end": {
+              "input_tokens": 3,
+              "output_tokens": 20,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 1859,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 2.889e-05,
+              "cost_details": {
+                "upstream_inference_cost": 2.889e-05,
+                "upstream_inference_prompt_cost": 1.889e-05,
+                "upstream_inference_completions_cost": 1e-05
+              }
+            },
+            "seconds": 1.9
+          },
+          {
+            "status": 200,
+            "id": "msg_YeGr16jmlj85xj45l6U0",
+            "model": "openai/gpt-6-luna",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "stop_reason": "tool_use",
+            "usage_end": {
+              "input_tokens": 3,
+              "output_tokens": 140,
+              "output_tokens_details": {
+                "thinking_tokens": 117
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 1943,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 8.973e-05,
+              "cost_details": {
+                "upstream_inference_cost": 8.973e-05,
+                "upstream_inference_prompt_cost": 1.973e-05,
+                "upstream_inference_completions_cost": 7e-05
+              }
+            },
+            "seconds": 2.45
+          },
+          {
+            "status": 200,
+            "id": "msg_fxKnjeZWwGUEbxbQ4Hzf",
+            "model": "openai/gpt-6-luna",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 2.95,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 3,
+              "output_tokens": 233,
+              "output_tokens_details": {
+                "thinking_tokens": 173
+              },
+              "cache_creation_input_tokens": 3776,
+              "cache_read_input_tokens": 1943,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0.00060823,
+              "cost_details": {
+                "upstream_inference_cost": 0.00060823,
+                "upstream_inference_prompt_cost": 0.00049173,
+                "upstream_inference_completions_cost": 0.0001165
+              }
+            },
+            "seconds": 3.52
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 1862,
+            "cached": 1859,
+            "output": 20,
+            "thinking": 0,
+            "cost": 2.889e-05
+          },
+          {
+            "prompt": 1946,
+            "cached": 1943,
+            "output": 140,
+            "thinking": 117,
+            "cost": 8.973e-05
+          },
+          {
+            "prompt": 5722,
+            "cached": 1943,
+            "output": 233,
+            "thinking": 173,
+            "cost": 0.00060823
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 1,
+        "arm": "free, high",
+        "thread": "full",
+        "question": "latest",
+        "busy_tries": 0,
+        "seconds": 26.3,
+        "text": "The customer's latest message (Follow\u2011up\u202f58) asks: \u201cThank you. Please confirm whether this also applies to our other team.\u201d  \n\nIn the message history provided, the last agent response is the canned reply after Follow\u2011up\u202f57. There is no agent message after Follow\u2011up\u202f58, so the question has not been answered yet.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_aNx0dwE9a6H3xNpWUhUN",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 25.86,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 1275,
+              "output_tokens": 859,
+              "output_tokens_details": {
+                "thinking_tokens": 780
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4384,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 26.3
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5659,
+            "cached": 4384,
+            "output": 859,
+            "thinking": 780,
+            "cost": 0
+          }
+        ]
+      },
+      {
+        "round": 1,
+        "arm": "free, high",
+        "thread": "short",
+        "question": "latest",
+        "busy_tries": 0,
+        "seconds": 4.74,
+        "text": "The customer's latest message (follow-up 58) asks: \"Please confirm whether this also applies to our other team.\" This same question was asked in follow-up 57 and appears 12 times in the earlier follow-up pattern.\n\nNo one has answered it. Every agent reply in this thread \u2014 including the two after follow-ups 57 and 58 \u2014 is the identical canned message: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" That response does not address the question about the other team.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_6nf2VlNDk6xHX2AJihtS",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 3.06,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 2781,
+              "output_tokens": 305,
+              "output_tokens_details": {
+                "thinking_tokens": 188
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 4.73
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 2781,
+            "cached": 0,
+            "output": 305,
+            "thinking": 188,
+            "cost": 0
+          }
+        ]
+      },
+      {
+        "round": 2,
+        "arm": "free, as the desk sends it",
+        "thread": "full",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 20.01,
+        "text": "Based on the full thread in T00360:\n\n**Customer messages stating \"the issue is still reproducible\": 10**\n\n**Follow-up numbers:**\n- First: Follow-up 6 (message index 10)\n- Last: Follow-up 56 (message index 110)\n\n**All occurrences:** Follow-ups 6, 12, 23, 24, 26, 31, 36, 38, 55, 56\n\n**Agent replies:** Every single agent response (58 of them) is identical: *\"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\"* The agent reply never changed after any of the \"still reproducible\" messages.\n\nThe case is marked **resolved** with a CSAT of 4, but the customer repeatedly reported the issue persisting up to the second-to-last follow-up (56), while the agent gave the same canned response each time. This suggests the underlying problem may not have been fixed.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_JKkWtbMgph8Hi4m0o2m0",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 16.65,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 1303,
+              "output_tokens": 2695,
+              "output_tokens_details": {
+                "thinking_tokens": 2473
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4384,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 20.01
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5687,
+            "cached": 4384,
+            "output": 2695,
+            "thinking": 2473,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 2,
+        "arm": "free, medium",
+        "thread": "full",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 14.29,
+        "text": "Based on the full thread in **T00360**:\n\n**Customer messages stating \"The issue is still reproducible\"**: 10 messages  \n**Follow-up numbers**: 6, 12, 23, 24, 26, 31, 36, 38, 55, 56  \n**First occurrence**: Follow-up 6  \n**Last occurrence**: Follow-up 56  \n\n**Agent replies**: Every single agent response in the thread is identical:  \n\"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\"  \n\n**No agent reply changed** after any of the \"still reproducible\" messages \u2014 the same boilerplate response was repeated 58 times.\n\nThe case is marked **resolved** (resolution_hours 37.16, CSAT 4), but the customer continued to report the issue as reproducible through follow-up 56, and the agent never varied the response or acknowledged the ongoing problem. The records suggest the case was closed without the underlying issue being fixed.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_JylcwsIFISS6NEOilrJm",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 9.99,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 1303,
+              "output_tokens": 1629,
+              "output_tokens_details": {
+                "thinking_tokens": 1395
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4384,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 14.29
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5687,
+            "cached": 4384,
+            "output": 1629,
+            "thinking": 1395,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 2,
+        "arm": "free, high",
+        "thread": "full",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 6.0,
+        "text": "Based on the full thread in T00360:\n\n**Customer messages stating \"The issue is still reproducible\": 9 total**\n\n**Follow-up numbers:**\n- First: Follow-up 6\n- Last: Follow-up 56\n\n**Agent replies after those messages:** No change. Every single agent response in the thread (58 total) is identical:  \n\"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\"\n\nThe case is marked **resolved**, but the customer repeatedly reported the issue was still reproducible up to follow-up 56, while the agent continued sending the same canned reply without addressing the recurrence.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_OUg7sWsi87co0ttDLvLF",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 4.85,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 1303,
+              "output_tokens": 654,
+              "output_tokens_details": {
+                "thinking_tokens": 515
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4384,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 6.0
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5687,
+            "cached": 4384,
+            "output": 654,
+            "thinking": 515,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 9,
+          "count_right": false,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 2,
+        "arm": "luna, high",
+        "thread": "full",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 5.86,
+        "text": "T00360 is marked resolved, but the thread doesn\u2019t show the issue was actually fixed: 10 customer messages say it is still reproducible. They appear at follow-ups 6, 12, 23, 24, 26, 31, 36, 38, 55 and 56. The agent\u2019s replies did not change after those reports; they repeat the same access-restored message.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_QxeQLsVVrxQIvXF4Pt7C",
+            "model": "openai/gpt-6-luna",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 5.13,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 3,
+              "output_tokens": 463,
+              "output_tokens_details": {
+                "thinking_tokens": 372
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4701,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0.00027881,
+              "cost_details": {
+                "upstream_inference_cost": 0.00027881,
+                "upstream_inference_prompt_cost": 4.731e-05,
+                "upstream_inference_completions_cost": 0.0002315
+              }
+            },
+            "seconds": 5.86
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 4704,
+            "cached": 4701,
+            "output": 463,
+            "thinking": 372,
+            "cost": 0.00027881
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 2,
+        "arm": "free, medium",
+        "thread": "short",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 9.05,
+        "text": "Based on the case thread (T00360):\n\n**Customer messages stating the issue is still reproducible: 10 total**\n\nFrom the summary of older messages: follow-ups **6, 12, 23, 24, 26, 31, 36, 38** (8 messages)\n\nFrom the visible recent messages: follow-ups **55 and 56** (2 messages)\n\n**First occurrence:** follow-up 6  \n**Last occurrence:** follow-up 56\n\n**Agent replies after those messages:** No change whatsoever. Every agent reply in the entire thread \u2014 53 times in the summary plus the 5 shown explicitly \u2014 is the identical canned message:  \n\"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\"\n\nThe case is marked \"resolved\" (resolution_hours 37.16, CSAT 4), but the customer repeatedly reported the problem persists (10 times, up to follow-up 56) and received no troubleshooting, prevention guidance, or confirmation about the other team. The records show the issue was not actually resolved.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_GeGgfMsVkeb8oWi4US0y",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 3.8,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 2809,
+              "output_tokens": 665,
+              "output_tokens_details": {
+                "thinking_tokens": 418
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 9.05
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 2809,
+            "cached": 0,
+            "output": 665,
+            "thinking": 418,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 2,
+        "arm": "free, high",
+        "thread": "short",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 7.01,
+        "text": "Based on the full thread in T00360:\n\n**Customer messages reporting the issue still reproducible:** 10 total  \n- 8 in the summary (follow\u2011ups 6, 12, 23, 24, 26, 31, 36, 38)  \n- 2 in the visible tail (follow\u2011ups 55 and 56)\n\n**First occurrence:** follow\u2011up 6  \n**Last occurrence:** follow\u2011up 56\n\n**Agent replies after those messages:** No change. Every agent reply in the thread (53+ in the summary, plus the 4 shown after follow\u2011ups 55\u201158) is identical:  \n\u201cVerified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\u201d\n\nThe case is marked \u201cresolved,\u201d but the customer repeatedly states the issue persists and the agent never deviates from the same boiler\u2011plate response.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_P8YNfcqbFi0iDRgobmxs",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 5.95,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 2809,
+              "output_tokens": 617,
+              "output_tokens_details": {
+                "thinking_tokens": 409
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 7.01
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 2809,
+            "cached": 0,
+            "output": 617,
+            "thinking": 409,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 2,
+        "arm": "luna, high",
+        "thread": "short",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 10.36,
+        "text": "No. Although T00360 is marked resolved, the thread contains 10 customer messages saying the issue is still reproducible. The first is follow-up 6 and the last is follow-up 56. Agent replies did not change: they continued repeating the same account-recovery statement, including after those reports.",
+        "lookups": [
+          "Searching the desk",
+          "Reading a ticket"
+        ],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_rAYGC6R7x2q8bc91p4q7",
+            "model": "openai/gpt-6-luna",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "stop_reason": "tool_use",
+            "usage_end": {
+              "input_tokens": 3,
+              "output_tokens": 20,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 1859,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 2.889e-05,
+              "cost_details": {
+                "upstream_inference_cost": 2.889e-05,
+                "upstream_inference_prompt_cost": 1.889e-05,
+                "upstream_inference_completions_cost": 1e-05
+              }
+            },
+            "seconds": 1.69
+          },
+          {
+            "status": 200,
+            "id": "msg_7tw3sqYY3rQEwuulGIJW",
+            "model": "openai/gpt-6-luna",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "stop_reason": "tool_use",
+            "usage_end": {
+              "input_tokens": 3,
+              "output_tokens": 47,
+              "output_tokens_details": {
+                "thinking_tokens": 24
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 1943,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 4.323e-05,
+              "cost_details": {
+                "upstream_inference_cost": 4.323e-05,
+                "upstream_inference_prompt_cost": 1.973e-05,
+                "upstream_inference_completions_cost": 2.35e-05
+              }
+            },
+            "seconds": 2.01
+          },
+          {
+            "status": 200,
+            "id": "msg_Wwe9ambqPFkAb6hoTsTh",
+            "model": "openai/gpt-6-luna",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 2.87,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 3,
+              "output_tokens": 220,
+              "output_tokens_details": {
+                "thinking_tokens": 152
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 5719,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0.00016749,
+              "cost_details": {
+                "upstream_inference_cost": 0.00016749,
+                "upstream_inference_prompt_cost": 5.749e-05,
+                "upstream_inference_completions_cost": 0.00011
+              }
+            },
+            "seconds": 3.53
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 1862,
+            "cached": 1859,
+            "output": 20,
+            "thinking": 0,
+            "cost": 2.889e-05
+          },
+          {
+            "prompt": 1946,
+            "cached": 1943,
+            "output": 47,
+            "thinking": 24,
+            "cost": 4.323e-05
+          },
+          {
+            "prompt": 5722,
+            "cached": 5719,
+            "output": 220,
+            "thinking": 152,
+            "cost": 0.00016749
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 2,
+        "arm": "free, high",
+        "thread": "full",
+        "question": "latest",
+        "busy_tries": 0,
+        "seconds": 8.08,
+        "text": "In ticket T00360, the customer\u2019s latest message (follow\u2011up 58) asks: \u201cThank you. Please confirm whether this also applies to our other team.\u201d  \nThe agent\u2019s immediate reply is the same generic statement used throughout the thread (\u201cVerified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\u201d), which does not address the question about the other team.  \nTherefore, the customer is still waiting for a specific answer on whether the fix applies to their other team.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_eBi0kL6k51N2Fl4zc4Zo",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 7.13,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 1275,
+              "output_tokens": 639,
+              "output_tokens_details": {
+                "thinking_tokens": 528
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4384,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 8.08
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5659,
+            "cached": 4384,
+            "output": 639,
+            "thinking": 528,
+            "cost": 0
+          }
+        ]
+      },
+      {
+        "round": 2,
+        "arm": "free, high",
+        "thread": "short",
+        "question": "latest",
+        "busy_tries": 0,
+        "seconds": 3.69,
+        "text": "The customer's latest message (follow-up 58) is asking: **\"Please confirm whether this also applies to our other team.\"**  \n\nThey have asked this same question 14 times across the thread (follow-ups 4, 7, 10, 18, 22, 25, 33, 37, 40, 43, 45, 46, 57, 58).  \n\n**No one has answered it.** Every agent reply in the visible history is the identical canned line:  \n\u201cVerified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\u201d  \n\nThe case summary also notes: \u201cAgent provides no troubleshooting, prevention guidance, or confirmation about other team.\u201d",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_cFop1p998o08rbThXSql",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 2.77,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 2781,
+              "output_tokens": 388,
+              "output_tokens_details": {
+                "thinking_tokens": 218
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 3.69
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 2781,
+            "cached": 0,
+            "output": 388,
+            "thinking": 218,
+            "cost": 0
+          }
+        ]
+      },
+      {
+        "round": 3,
+        "arm": "free, as the desk sends it",
+        "thread": "full",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 8.02,
+        "text": "Based on the full thread in T00360:\n\n**Customer messages stating \"the issue is still reproducible\": 9**\n\n**Follow-up numbers:**\n- First: Follow-up 6\n- Last: Follow-up 56\n\n**Agent replies after those messages:** Every single agent response in the thread is identical: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" This same canned reply appears after every customer message, including after each of the 9 \"still reproducible\" messages. No agent reply changed or adapted to the customer's repeated reports.\n\nThe case is marked \"resolved\" with a CSAT of 4, but the customer continued reporting the issue as reproducible through follow-up 56 (the second-to-last message in the thread), while the agent gave the same static response each time.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_8AxlWXsrskqqbyPkQupn",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 6.02,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 1303,
+              "output_tokens": 711,
+              "output_tokens_details": {
+                "thinking_tokens": 534
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4384,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 8.01
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5687,
+            "cached": 4384,
+            "output": 711,
+            "thinking": 534,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 9,
+          "count_right": false,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 3,
+        "arm": "free, medium",
+        "thread": "full",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 9.19,
+        "text": "Based on the full thread in T00360:\n\n**Customer messages stating \"the issue is still reproducible\": 9 total**\n\n**Follow-up numbers:**\n- First: Follow-up 6\n- Last: Follow-up 56\n\n**Agent replies after those messages:** No change. Every single agent message in the thread (all 58 replies) is identical boilerplate: *\"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\"* The agent never varied the response, never acknowledged the repeated \"still reproducible\" reports, and never provided different troubleshooting steps.\n\nThe case is marked \"resolved\" with 37.16 resolution hours and CSAT 4, but the thread shows the customer flagged the issue as still reproducible 9 times over the conversation, with the last occurrence at follow-up 56 (near the end), while the agent kept pasting the same response throughout.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_aL0IaAm6QNrkJO1SMTqR",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 7.95,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 1303,
+              "output_tokens": 705,
+              "output_tokens_details": {
+                "thinking_tokens": 511
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4384,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 9.18
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5687,
+            "cached": 4384,
+            "output": 705,
+            "thinking": 511,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 9,
+          "count_right": false,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 3,
+        "arm": "free, high",
+        "thread": "full",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 8.58,
+        "text": "Looking at the full thread in T00360:\n\n**Customer messages saying \"The issue is still reproducible; I have attached more context.\": 9 total**\n\n**Follow-up numbers:**\n- First: Follow-up 6\n- Last: Follow-up 56\n\n**Agent replies after those messages:** Every single agent response in the entire thread (58 total) is identical: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" The agent reply never changed, even after the customer repeatedly reported the issue was still reproducible.\n\nThe case is marked \"resolved\" with 37.16 resolution hours and CSAT 4, but the thread shows the customer kept reporting the problem persisted through follow-up 56 while the agent gave the same template response each time.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_AlFypUZ5b3CXYQfgoI28",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 7.56,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 1303,
+              "output_tokens": 602,
+              "output_tokens_details": {
+                "thinking_tokens": 432
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4384,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 8.58
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5687,
+            "cached": 4384,
+            "output": 602,
+            "thinking": 432,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 9,
+          "count_right": false,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 3,
+        "arm": "luna, high",
+        "thread": "full",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 4.23,
+        "text": "T00360 is marked resolved, but the thread doesn\u2019t support that the issue was fully finished: 10 customer messages say it is still reproducible, from Follow-up 6 through Follow-up 56. The agent replies after those reports all repeat the same recovery-flow message; none changes to address the continuing role-change issue.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_t3ttpTHsR4LzsrmlApRr",
+            "model": "openai/gpt-6-luna",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 3.52,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 3,
+              "output_tokens": 253,
+              "output_tokens_details": {
+                "thinking_tokens": 181
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4701,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0.00017381,
+              "cost_details": {
+                "upstream_inference_cost": 0.00017381,
+                "upstream_inference_prompt_cost": 4.731e-05,
+                "upstream_inference_completions_cost": 0.0001265
+              }
+            },
+            "seconds": 4.23
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 4704,
+            "cached": 4701,
+            "output": 253,
+            "thinking": 181,
+            "cost": 0.00017381
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 3,
+        "arm": "free, medium",
+        "thread": "short",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 11.47,
+        "text": "Based on the full thread in T00360:\n\n- **Customer messages stating the issue is still reproducible: 10 total**  \n  - 8 listed in the summary at follow\u2011ups 6, 12, 23, 24, 26, 31, 36, 38  \n  - 2 more in the visible tail at follow\u2011ups 55 and 56  \n\n- **First occurrence:** follow\u2011up 6  \n- **Last occurrence:** follow\u2011up 56  \n\n- **Agent replies:** All 58 agent responses (53 in the summary + 5 in the visible tail) are identical: \u201cVerified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\u201d No reply changed or addressed the customer\u2019s follow\u2011ups.\n\nThe case is marked \u201cresolved,\u201d but the customer repeatedly reported the issue was still reproducible up to follow\u2011up 56, and every agent response remained the same canned message. The records indicate the case was closed without resolving the underlying problem.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_yLRGlFMqMuGOfPvskCKq",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 9.68,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 2809,
+              "output_tokens": 1088,
+              "output_tokens_details": {
+                "thinking_tokens": 854
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 11.47
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 2809,
+            "cached": 0,
+            "output": 1088,
+            "thinking": 854,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 3,
+        "arm": "free, high",
+        "thread": "short",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 6.58,
+        "text": "Based on the full thread in T00360:\n\n**Customer messages stating the issue is still reproducible: 10 total**\n- 8 listed in the summary at follow-ups: 6, 12, 23, 24, 26, 31, 36, 38\n- 2 more in the visible tail at follow-ups: 55, 56\n\n**First occurrence:** follow-up 6  \n**Last occurrence:** follow-up 56\n\n**Agent replies after those messages:** No change. Every agent message in the thread (including all 53+ replies in the summary and the 4 visible after it) is identical: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" No troubleshooting, acknowledgment, or escalation appears after any \"still reproducible\" message.\n\nThe case is marked **resolved** (resolution_hours 37.16, within the 144-hour SLA) and has CSAT 4, but the customer repeatedly states the problem persists and no substantive answer was ever given.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_dCapqFlBIIYvYN8HRqzX",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 4.38,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 2809,
+              "output_tokens": 664,
+              "output_tokens_details": {
+                "thinking_tokens": 423
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 6.58
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 2809,
+            "cached": 0,
+            "output": 664,
+            "thinking": 423,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 3,
+        "arm": "luna, high",
+        "thread": "short",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 8.38,
+        "text": "No. Although T00360 is marked resolved, the customer said the issue was still reproducible in 10 messages, from Follow-up 6 through Follow-up 56. The agent\u2019s replies did not change; they repeated the same recovery-flow message, including after Follow-up 56.",
+        "lookups": [
+          "Reading a ticket"
+        ],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_A8C99dnrJWqHLfxsMQDG",
+            "model": "openai/gpt-6-luna",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "stop_reason": "tool_use",
+            "usage_end": {
+              "input_tokens": 3,
+              "output_tokens": 83,
+              "output_tokens_details": {
+                "thinking_tokens": 60
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 1859,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 6.039e-05,
+              "cost_details": {
+                "upstream_inference_cost": 6.039e-05,
+                "upstream_inference_prompt_cost": 1.889e-05,
+                "upstream_inference_completions_cost": 4.15e-05
+              }
+            },
+            "seconds": 2.71
+          },
+          {
+            "status": 200,
+            "id": "msg_zcsU9kazLFKLCoYcG7jF",
+            "model": "openai/gpt-6-luna",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 2.53,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 3,
+              "output_tokens": 162,
+              "output_tokens_details": {
+                "thinking_tokens": 98
+              },
+              "cache_creation_input_tokens": 3776,
+              "cache_read_input_tokens": 1859,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0.00057189,
+              "cost_details": {
+                "upstream_inference_cost": 0.00057189,
+                "upstream_inference_prompt_cost": 0.00049089,
+                "upstream_inference_completions_cost": 8.1e-05
+              }
+            },
+            "seconds": 3.15
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 1862,
+            "cached": 1859,
+            "output": 83,
+            "thinking": 60,
+            "cost": 6.039e-05
+          },
+          {
+            "prompt": 5638,
+            "cached": 1859,
+            "output": 162,
+            "thinking": 98,
+            "cost": 0.00057189
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 4,
+        "arm": "free, as the desk sends it",
+        "thread": "full",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 7.06,
+        "text": "Looking at the full thread in **T00360**:\n\n**Customer messages saying \"the issue is still reproducible\": 9 total**\n\n| Follow-up | Message |\n|-----------|---------|\n| 6 | \"The issue is still reproducible; I have attached more context.\" |\n| 12 | \"The issue is still reproducible; I have attached more context.\" |\n| 23 | \"The issue is still reproducible; I have attached more context.\" |\n| 24 | \"The issue is still reproducible; I have attached more context.\" |\n| 31 | \"The issue is still reproducible; I have attached more context.\" |\n| 36 | \"The issue is still reproducible; I have attached more context.\" |\n| 38 | \"The issue is still reproducible; I have attached more context.\" |\n| 55 | \"The issue is still reproducible; I have attached more context.\" |\n| 56 | \"The issue is still reproducible; I have attached more context.\" |\n\n- **First**: Follow-up 6  \n- **Last**: Follow-up 56  \n\n**Agent replies**: Every single agent response in the thread is identical \u2014 \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" \u2014 repeated 58 times with no variation, even after the customer repeatedly stated the issue was still reproducible.\n\n**Conclusion**: The case is marked *resolved*, but the customer explicitly said the problem persisted up to follow-up 56, and the agent never changed their response or took further action. The records indicate the case was closed without the issue actually being fixed.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_M20N72hh4N5GsDQKe9yi",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 4.11,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 1303,
+              "output_tokens": 824,
+              "output_tokens_details": {
+                "thinking_tokens": 481
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4384,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 7.06
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5687,
+            "cached": 4384,
+            "output": 824,
+            "thinking": 481,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 9,
+          "count_right": false,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 4,
+        "arm": "free, medium",
+        "thread": "full",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 17.62,
+        "text": "Based on the full thread in T00360:\n\n**Customer messages stating \"the issue is still reproducible\": 9 total**\n\n**First occurrence:** Follow-up 6  \n**Last occurrence:** Follow-up 56\n\n**Agent replies after those messages:** No change at all. Every single agent response in the entire 58-exchange thread is identical:  \n\"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\"\n\nThe case is marked \"resolved\" with a CSAT of 4, but the customer repeatedly reported the issue still reproducible up to follow-up 56, while the agent only ever pasted the same canned response. The records suggest the underlying problem was not actually fixed.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_UNgPddIntZKp5D1onRf9",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 13.76,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 1303,
+              "output_tokens": 727,
+              "output_tokens_details": {
+                "thinking_tokens": 573
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4384,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 17.62
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5687,
+            "cached": 4384,
+            "output": 727,
+            "thinking": 573,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 9,
+          "count_right": false,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 4,
+        "arm": "free, high",
+        "thread": "full",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 8.04,
+        "text": "Based on the full message thread in T00360:\n\n**Customer messages stating \"The issue is still reproducible\": 9 total**\n\n**Follow-up numbers:**\n- First: Follow-up 6\n- Last: Follow-up 56\n\n**Agent replies after those messages:** No change at all. Every single agent response in the thread (58 total) is identical: *\"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\"*\n\nThe case is marked \"resolved\" with a CSAT of 4, but the customer repeatedly reported the issue still reproducible up to follow-up 56, and the agent never varied their response or appeared to address the ongoing reproducibility.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_pIuploLORxqcKGGl9InX",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 6.76,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 1303,
+              "output_tokens": 928,
+              "output_tokens_details": {
+                "thinking_tokens": 781
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4384,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 8.04
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5687,
+            "cached": 4384,
+            "output": 928,
+            "thinking": 781,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 9,
+          "count_right": false,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 4,
+        "arm": "luna, high",
+        "thread": "full",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 3.79,
+        "text": "No. T00360 is marked resolved, but 10 customer messages say the issue is still reproducible. The first is Follow-up 6 and the last is Follow-up 56. The agent replies after them do not change; they repeat the same account-recovery response.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_87JsZXgoZUbvrcT4q54M",
+            "model": "openai/gpt-6-luna",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 3.22,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 3,
+              "output_tokens": 232,
+              "output_tokens_details": {
+                "thinking_tokens": 170
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4701,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0.00016331,
+              "cost_details": {
+                "upstream_inference_cost": 0.00016331,
+                "upstream_inference_prompt_cost": 4.731e-05,
+                "upstream_inference_completions_cost": 0.000116
+              }
+            },
+            "seconds": 3.79
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 4704,
+            "cached": 4701,
+            "output": 232,
+            "thinking": 170,
+            "cost": 0.00016331
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 4,
+        "arm": "free, medium",
+        "thread": "short",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 8.87,
+        "text": "Based on the full thread in T00360:\n\n**Customer messages stating the issue is still reproducible: 10 total**\n- 8 from the summary (follow-ups 6, 12, 23, 24, 26, 31, 36, 38)\n- 2 from the visible messages (follow-ups 55 and 56)\n\n**First follow-up number:** 6  \n**Last follow-up number:** 56\n\n**Agent replies after those messages:** No change. Every agent reply in the thread (including all 53+ in the summary and the 4 visible after follow-up 55) is identical: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" No troubleshooting, prevention guidance, or acknowledgment of the persistent issue appears.\n\nThe case is marked **resolved** (resolution_hours 37.16, CSAT 4), but the customer explicitly reported the issue still reproducible as late as follow-up 56, and all their questions (workspace setting, prevention, other team impact) remain unanswered.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_ONVtSIUwsh6Z9d4WQP76",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 6.76,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 2809,
+              "output_tokens": 885,
+              "output_tokens_details": {
+                "thinking_tokens": 640
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 8.87
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 2809,
+            "cached": 0,
+            "output": 885,
+            "thinking": 640,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 4,
+        "arm": "free, high",
+        "thread": "short",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 6.17,
+        "text": "Based on the full thread in T00360:\n\n**Customer messages saying the issue is still reproducible: 10 total**\n- From the summary of older messages: follow-ups 6, 12, 23, 24, 26, 31, 36, 38 (8 messages)\n- From the visible message thread: follow-ups 55 and 56 (2 messages)\n\n**First follow-up number:** 6  \n**Last follow-up number:** 56\n\n**Agent replies after those messages:** No change. Every agent reply in the thread \u2014 including the three replies after follow-ups 55 and 56 \u2014 is identical: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" The agent never acknowledges the reproducibility reports, offers troubleshooting, or answers any of the customer's follow-up questions (workspace setting, prevention, other team impact).\n\nThe case is marked \"resolved\" with resolution_hours 37.16, but the customer explicitly states the issue persists as of follow-up 56, and the agent's responses do not address it. The records show the case is not substantively finished.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_LdlHCSQmTV3CP3jYHMNp",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 4.07,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 2809,
+              "output_tokens": 662,
+              "output_tokens_details": {
+                "thinking_tokens": 406
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 6.17
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 2809,
+            "cached": 0,
+            "output": 662,
+            "thinking": 406,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "round": 4,
+        "arm": "luna, high",
+        "thread": "short",
+        "question": "whole",
+        "busy_tries": 0,
+        "seconds": 9.5,
+        "text": "T00360 is marked resolved, but the thread doesn\u2019t show it was really finished: 10 customer messages say the issue is still reproducible. The first is follow-up 6 and the last is follow-up 56. Agent replies after those reports did not change; they repeat the same recovery-flow message without addressing the reported issue.",
+        "lookups": [
+          "Reading a ticket"
+        ],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_XRFrgCwSFohwRL4eyNU1",
+            "model": "openai/gpt-6-luna",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "stop_reason": "tool_use",
+            "usage_end": {
+              "input_tokens": 3,
+              "output_tokens": 213,
+              "output_tokens_details": {
+                "thinking_tokens": 190
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 1859,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0.00012539,
+              "cost_details": {
+                "upstream_inference_cost": 0.00012539,
+                "upstream_inference_prompt_cost": 1.889e-05,
+                "upstream_inference_completions_cost": 0.0001065
+              }
+            },
+            "seconds": 3.33
+          },
+          {
+            "status": 200,
+            "id": "msg_qTjFUAPnlv3s208tbdud",
+            "model": "openai/gpt-6-luna",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 3.23,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 3,
+              "output_tokens": 251,
+              "output_tokens_details": {
+                "thinking_tokens": 177
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 5635,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0.00018215,
+              "cost_details": {
+                "upstream_inference_cost": 0.00018215,
+                "upstream_inference_prompt_cost": 5.665e-05,
+                "upstream_inference_completions_cost": 0.0001255
+              }
+            },
+            "seconds": 4.26
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 1862,
+            "cached": 1859,
+            "output": 213,
+            "thinking": 190,
+            "cost": 0.00012539
+          },
+          {
+            "prompt": 5638,
+            "cached": 5635,
+            "output": 251,
+            "thinking": 177,
+            "cost": 0.00018215
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      }
+    ],
+    "key_usage_after": 0.168002515
+  },
+  "cold": {
+    "arm": "free, high",
+    "answers": [
+      {
+        "ticket_id": "T00352",
+        "messages": 113,
+        "characters": 11509,
+        "seconds": 29.55,
+        "text": "Based on the full thread in T00352:\n\n**Customer messages stating \"the issue is still reproducible\": 19**\n\n**First occurrence:** Follow-up 3  \n**Last occurrence:** Follow-up 54\n\n**Agent replies:** All 28 agent responses are identical \u2014 \"Checked the invoice line items and seat history, explained the change, and applied the approved correction where needed.\" The reply never changed, even after the customer repeatedly said the issue was still reproducible (19 times across follow-ups 3\u201354).\n\nThe case is marked resolved, but the thread shows the customer flagged the problem as ongoing through follow-up 54, and the agent gave the same templated response each time.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_m8XWfgLpup7eSfh3uxwp",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 8.6,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 5776,
+              "output_tokens": 1010,
+              "output_tokens_details": {
+                "thinking_tokens": 859
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 29.52
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5776,
+            "cached": 0,
+            "output": 1010,
+            "thinking": 859,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 19,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "ticket_id": "T00358",
+        "messages": 115,
+        "characters": 9596,
+        "seconds": 14.73,
+        "text": "The case is marked **resolved**, but the thread shows it was not genuinely resolved.\n\n**Customer messages saying \"The issue is still reproducible; I have attached more context.\": 20**\n\n**First occurrence:** Follow-up 3  \n**Last occurrence:** Follow-up 57 (the second-to-last customer message)\n\n**Agent replies:** Every single agent reply in the thread is identical \u2014 \"Recorded the use case and impact for product review; no delivery date was promised.\" The wording never changes, even after the customer repeatedly states the issue is still reproducible (20 times, up to follow-up 57). The last customer message (follow-up 58) is again asking whether the issue applies to their other team, and the agent gives the same canned response.\n\nThe records show the case was closed while the customer was still reporting the problem as reproducible.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_fX1GqNhEHzwWQZqQVPMt",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 13.69,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 5615,
+              "output_tokens": 1853,
+              "output_tokens_details": {
+                "thinking_tokens": 1671
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 14.72
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5615,
+            "cached": 0,
+            "output": 1853,
+            "thinking": 1671,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 20,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "ticket_id": "T00355",
+        "messages": 104,
+        "characters": 9398,
+        "seconds": 28.0,
+        "text": "Based on the full message thread in T00355:\n\n**Customer messages stating \"The issue is still reproducible\": 10 occurrences**\n\n**Follow-up numbers:**\n- First: Follow-up 4 (message 6)\n- Last: Follow-up 45 (message 88)\n\n**Agent reply pattern:** Every single agent response (52 replies total) is identical: \"Shared the relevant setup steps and asked the customer to verify the result in their workspace.\" The agent never varied the response, never acknowledged the repeated reproducibility reports, and never escalated or changed approach.\n\n**Assessment:** Despite the case status being \"resolved\" with a 5/5 CSAT, the thread shows the customer reported the issue still reproducible 10 times over 45 follow-ups, with the last report at Follow-up 45. The final customer message (Follow-up 52) still indicates an unresolved workspace setting question. The agent's responses remained robotic and unchanged throughout. This case appears closed administratively but not substantively resolved.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_GJSVKg1yejRMUqFswHqc",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 26.33,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 5290,
+              "output_tokens": 2006,
+              "output_tokens_details": {
+                "thinking_tokens": 1790
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 28.0
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5290,
+            "cached": 0,
+            "output": 2006,
+            "thinking": 1790,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "ticket_id": "T00353",
+        "messages": 91,
+        "characters": 9288,
+        "seconds": 24.63,
+        "text": "Based on the full thread in T00353:\n\n**Customer messages stating \"the issue is still reproducible\": 8 messages**\n\n**Follow-up numbers:**\n- First: Follow-up 7\n- Last: Follow-up 44\n\n**Agent replies after those messages:** No change at all. Every single agent response in the entire thread (46 replies) is identical: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" The agent never varied the response, acknowledged the reproducibility, or offered further troubleshooting after any of the 8 \"still reproducible\" messages.\n\nThe case is marked \"resolved\" with a CSAT of 4, but the thread shows the customer repeatedly reported the issue persisting up to follow-up 44 while the agent gave the same canned reply each time.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_rIXn05iYY2x19qacSiCQ",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 23.57,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 4948,
+              "output_tokens": 778,
+              "output_tokens_details": {
+                "thinking_tokens": 604
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 24.63
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 4948,
+            "cached": 0,
+            "output": 778,
+            "thinking": 604,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 8,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "ticket_id": "T00356",
+        "messages": 109,
+        "characters": 9157,
+        "seconds": 143.11,
+        "text": "Based on the full thread in T00356:\n\n**14 customer messages** say \"The issue is still reproducible\".\n\n- **First** at **Follow-up 3** (message index 4)\n- **Last** at **Follow-up 52** (message index 102)\n\n**No agent reply ever changed.** All 55 agent responses in the thread are identical:  \n\"Recorded the use case and impact for product review; no delivery date was promised.\"\n\nThe case is marked resolved, but the customer repeatedly reported the issue still reproducible across 14 follow-ups spanning from Follow-up 3 to Follow-up 52, while the agent gave the same canned response every time.",
+        "lookups": [
+          "Running a command",
+          "Running a command"
+        ],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_udZnuPuA19Qjq5dZ14VG",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            }
+          },
+          {
+            "status": 200,
+            "id": "msg_HFdqh6oCZ8wudDudrPRY",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 47.68,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 6810,
+              "output_tokens": 2171,
+              "output_tokens_details": {
+                "thinking_tokens": 2020
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 0,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 49.02
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 0,
+            "cached": 0,
+            "output": 0,
+            "thinking": 0,
+            "cost": 0
+          },
+          {
+            "prompt": 6810,
+            "cached": 0,
+            "output": 2171,
+            "thinking": 2020,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 14,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      }
+    ]
+  },
+  "report": {
+    "table": [
+      {
+        "question": "whole",
+        "thread": "full",
+        "arm": "free, as the desk sends it",
+        "runs": 5,
+        "usable": 5,
+        "over_panel_limit": 0,
+        "counts": [
+          9,
+          9,
+          10,
+          9,
+          9
+        ],
+        "count_right": 1,
+        "read_full_ticket": 0,
+        "seconds_min": 7.06,
+        "seconds_max": 20.01,
+        "seconds": 10.54,
+        "first_text": 8.63,
+        "prompt_first": 5687,
+        "prompt_all": 5687,
+        "output": 973,
+        "thinking": 775,
+        "cached": 4384,
+        "calls": 1,
+        "words": 131,
+        "cost_total": 0
+      },
+      {
+        "question": "whole",
+        "thread": "full",
+        "arm": "free, medium",
+        "runs": 5,
+        "usable": 5,
+        "over_panel_limit": 0,
+        "counts": [
+          9,
+          9,
+          10,
+          9,
+          9
+        ],
+        "count_right": 1,
+        "read_full_ticket": 0,
+        "seconds_min": 7.23,
+        "seconds_max": 17.62,
+        "seconds": 11.49,
+        "first_text": 9.94,
+        "prompt_first": 5687,
+        "prompt_all": 5687,
+        "output": 793,
+        "thinking": 573,
+        "cached": 4384,
+        "calls": 1,
+        "words": 130,
+        "cost_total": 0
+      },
+      {
+        "question": "whole",
+        "thread": "full",
+        "arm": "free, high",
+        "runs": 5,
+        "usable": 5,
+        "over_panel_limit": 0,
+        "counts": [
+          9,
+          10,
+          9,
+          9,
+          9
+        ],
+        "count_right": 1,
+        "read_full_ticket": 0,
+        "seconds_min": 6.0,
+        "seconds_max": 17.6,
+        "seconds": 8.58,
+        "first_text": 6.76,
+        "prompt_first": 5687,
+        "prompt_all": 5687,
+        "output": 732,
+        "thinking": 543,
+        "cached": 4384,
+        "calls": 1,
+        "words": 117,
+        "cost_total": 0
+      },
+      {
+        "question": "whole",
+        "thread": "full",
+        "arm": "luna, high",
+        "runs": 5,
+        "usable": 5,
+        "over_panel_limit": 0,
+        "counts": [
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "count_right": 5,
+        "read_full_ticket": 0,
+        "seconds_min": 3.79,
+        "seconds_max": 7.6,
+        "seconds": 4.99,
+        "first_text": 4.17,
+        "prompt_first": 4704,
+        "prompt_all": 4704,
+        "output": 405,
+        "thinking": 308,
+        "cached": 4701,
+        "calls": 1,
+        "words": 52,
+        "cost_total": 0.001763
+      },
+      {
+        "question": "whole",
+        "thread": "short",
+        "arm": "free, medium",
+        "runs": 5,
+        "usable": 5,
+        "over_panel_limit": 0,
+        "counts": [
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "count_right": 5,
+        "read_full_ticket": 1,
+        "seconds_min": 8.87,
+        "seconds_max": 11.47,
+        "seconds": 10.32,
+        "first_text": 6.75,
+        "prompt_first": 2809,
+        "prompt_all": 2809,
+        "output": 990,
+        "thinking": 720,
+        "cached": 0,
+        "calls": 1,
+        "words": 139,
+        "cost_total": 0
+      },
+      {
+        "question": "whole",
+        "thread": "short",
+        "arm": "free, high",
+        "runs": 5,
+        "usable": 5,
+        "over_panel_limit": 0,
+        "counts": [
+          2,
+          10,
+          10,
+          10,
+          10
+        ],
+        "count_right": 4,
+        "read_full_ticket": 0,
+        "seconds_min": 6.01,
+        "seconds_max": 7.44,
+        "seconds": 6.58,
+        "first_text": 4.7,
+        "prompt_first": 2809,
+        "prompt_all": 2809,
+        "output": 664,
+        "thinking": 423,
+        "cached": 0,
+        "calls": 1,
+        "words": 137,
+        "cost_total": 0
+      },
+      {
+        "question": "whole",
+        "thread": "short",
+        "arm": "luna, high",
+        "runs": 5,
+        "usable": 5,
+        "over_panel_limit": 0,
+        "counts": [
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "count_right": 5,
+        "read_full_ticket": 4,
+        "seconds_min": 7.63,
+        "seconds_max": 11.05,
+        "seconds": 9.5,
+        "first_text": 2.95,
+        "prompt_first": 1862,
+        "prompt_all": 7500,
+        "output": 287,
+        "thinking": 176,
+        "cached": 5745,
+        "calls": 2,
+        "words": 41,
+        "cost_total": 0.002297
+      },
+      {
+        "question": "latest",
+        "thread": "full",
+        "arm": "free, high",
+        "runs": 3,
+        "usable": 3,
+        "over_panel_limit": 0,
+        "counts": [],
+        "count_right": 0,
+        "read_full_ticket": 0,
+        "seconds_min": 5.65,
+        "seconds_max": 26.3,
+        "seconds": 8.08,
+        "first_text": 7.13,
+        "prompt_first": 5659,
+        "prompt_all": 5659,
+        "output": 639,
+        "thinking": 528,
+        "cached": 4384,
+        "calls": 1,
+        "words": 62,
+        "cost_total": 0
+      },
+      {
+        "question": "latest",
+        "thread": "short",
+        "arm": "free, high",
+        "runs": 3,
+        "usable": 3,
+        "over_panel_limit": 0,
+        "counts": [],
+        "count_right": 0,
+        "read_full_ticket": 0,
+        "seconds_min": 2.95,
+        "seconds_max": 4.74,
+        "seconds": 3.69,
+        "first_text": 2.77,
+        "prompt_first": 2781,
+        "prompt_all": 2781,
+        "output": 305,
+        "thinking": 188,
+        "cached": 0,
+        "calls": 1,
+        "words": 87,
+        "cost_total": 0
+      },
+      {
+        "question": "whole",
+        "thread": "cold",
+        "arm": "free, high",
+        "runs": 5,
+        "usable": 5,
+        "over_panel_limit": 0,
+        "counts": [
+          19,
+          20,
+          10,
+          8,
+          14
+        ],
+        "count_right": 5,
+        "read_full_ticket": 0,
+        "seconds_min": 14.73,
+        "seconds_max": 143.11,
+        "seconds": 28.0,
+        "first_text": 23.57,
+        "prompt_first": 5290,
+        "prompt_all": 5615,
+        "output": 1853,
+        "thinking": 1671,
+        "cached": 0,
+        "calls": 1,
+        "words": 120,
+        "cost_total": 0
+      },
+      {
+        "question": "whole",
+        "thread": "control: first time",
+        "arm": "free, high",
+        "runs": 4,
+        "usable": 4,
+        "over_panel_limit": 0,
+        "counts": [
+          9,
+          5,
+          9,
+          13
+        ],
+        "count_right": 4,
+        "read_full_ticket": 0,
+        "seconds_min": 10.83,
+        "seconds_max": 76.59,
+        "seconds": 21.52,
+        "first_text": 11.28,
+        "prompt_first": 4635.0,
+        "prompt_all": 4777.0,
+        "output": 694.5,
+        "thinking": 533.5,
+        "cached": 0.0,
+        "calls": 1.0,
+        "words": 120.5,
+        "cost_total": 0
+      },
+      {
+        "question": "whole",
+        "thread": "control: repeat, full",
+        "arm": "free, high",
+        "runs": 4,
+        "usable": 4,
+        "over_panel_limit": 0,
+        "counts": [
+          9,
+          9,
+          9,
+          8
+        ],
+        "count_right": 0,
+        "read_full_ticket": 0,
+        "seconds_min": 11.05,
+        "seconds_max": 39.16,
+        "seconds": 18.7,
+        "first_text": 16.19,
+        "prompt_first": 5687.0,
+        "prompt_all": 5687.0,
+        "output": 1190.0,
+        "thinking": 1009.5,
+        "cached": 4384.0,
+        "calls": 1.0,
+        "words": 121.5,
+        "cost_total": 0
+      },
+      {
+        "question": "whole",
+        "thread": "control: repeat, short",
+        "arm": "free, high",
+        "runs": 4,
+        "usable": 4,
+        "over_panel_limit": 0,
+        "counts": [
+          10,
+          10,
+          10,
+          10
+        ],
+        "count_right": 4,
+        "read_full_ticket": 0,
+        "seconds_min": 9.31,
+        "seconds_max": 11.83,
+        "seconds": 9.53,
+        "first_text": 6.76,
+        "prompt_first": 2809.0,
+        "prompt_all": 2809.0,
+        "output": 769.5,
+        "thinking": 498.0,
+        "cached": 0.0,
+        "calls": 1.0,
+        "words": 156.0,
+        "cost_total": 0
+      }
+    ],
+    "max_tokens": 8192,
+    "key_usage_final": 0.174473365,
+    "free_one_call_runs": 30,
+    "seconds_vs_output_r": 0.64,
+    "seconds_vs_prompt_r": 0.44
+  },
+  "control": {
+    "arm": "free, high",
+    "answers": [
+      {
+        "kind": "first time",
+        "ticket_id": "T00357",
+        "seconds": 10.83,
+        "text": "Based on the full message thread in T00357:\n\n**Customer messages stating \"the issue is still reproducible\": 9 messages**\n\n**Follow-up numbers:**\n- First: Follow-up 3\n- Last: Follow-up 40\n\n**Agent replies after those messages:** No change. Every single agent response in the thread (from the first reply through Follow-up 44) is identical: *\"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\"* The agent never varied the reply, acknowledged the recurring problem, or offered a different step despite the customer repeating nine times that the issue remained reproducible.\n\nThe case is marked \"resolved\" with a resolution time of 8.51 hours, but the thread shows the customer kept reporting the problem up to Follow-up 40 while the agent gave the same canned response each time.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_usKW9YO10ylKIJ7nFYYu",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 8.59,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 4826,
+              "output_tokens": 648,
+              "output_tokens_details": {
+                "thinking_tokens": 466
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 10.79
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 4826,
+            "cached": 0,
+            "output": 648,
+            "thinking": 466,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 9,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "kind": "repeat, full",
+        "ticket_id": "T00360",
+        "seconds": 39.16,
+        "text": "Based on the full thread in T00360:\n\n**Customer messages stating \"The issue is still reproducible\": 9 total**\n\n**Follow-up numbers:**\n- First: Follow-up 6 (message index 10)\n- Last: Follow-up 56 (message index 110)\n\n**Agent replies after those messages:** All 59 agent replies are identical \u2014 \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" The wording never changes, even after the customer repeatedly reports the issue is still reproducible (at follow-ups 6, 12, 23, 24, 31, 36, 38, 55, 56).\n\nThe case is marked \"resolved\" with a CSAT of 4, but the thread shows the customer kept reporting the problem was reproducible up to the second-to-last message, while the agent gave the same templated response each time.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_yfPxn4rqePlgoUpI6pmU",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 36.87,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 1303,
+              "output_tokens": 2444,
+              "output_tokens_details": {
+                "thinking_tokens": 2240
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4384,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 39.16
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5687,
+            "cached": 4384,
+            "output": 2444,
+            "thinking": 2240,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 9,
+          "count_right": false,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "kind": "repeat, short",
+        "ticket_id": "T00360",
+        "seconds": 9.31,
+        "text": "Based on the full thread in T00360:\n\n**Customer messages stating the issue is still reproducible: 10 total**\n- 8 in the summary (follow-ups 6, 12, 23, 24, 26, 31, 36, 38)\n- 2 in the visible messages (follow-ups 55 and 56)\n\n**First follow-up number:** 6  \n**Last follow-up number:** 56\n\n**Agent replies after those messages:** No change. Every agent reply in the thread\u2014including those after follow-ups 55 and 56\u2014is identical: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" The agent never acknowledges the reproducibility reports, offers troubleshooting, or addresses the other questions (workspace setting, prevention, other team).\n\nThe case is marked \"resolved\" (status: resolved, resolution_hours: 37.16), but the customer repeatedly states the issue persists and no substantive answer is given.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_0PzxXvvKwfhM98lNhSI2",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 5.62,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 2809,
+              "output_tokens": 563,
+              "output_tokens_details": {
+                "thinking_tokens": 338
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 9.31
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 2809,
+            "cached": 0,
+            "output": 563,
+            "thinking": 338,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "kind": "first time",
+        "ticket_id": "T00354",
+        "seconds": 16.1,
+        "text": "Based on the full thread in T00354:\n\n**Customer messages saying \"the issue is still reproducible\": 5**\n\n- First: Follow-up 8  \n- Last: Follow-up 36  \n\n**Agent replies after those messages:** No change. Every single agent message in the thread (40 replies) is identical:  \n\"Reproduced the issue with the supplied steps, linked the engineering case and verified the workaround with the customer.\"\n\nThe case is marked \"resolved\" but the customer reported the issue still reproducible as late as follow-up 36, and the agent never varied the response. This suggests the case may not be truly finished.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_z3jfNo3cTmxEzXSUJOxb",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 13.97,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 4728,
+              "output_tokens": 741,
+              "output_tokens_details": {
+                "thinking_tokens": 601
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 16.1
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 4728,
+            "cached": 0,
+            "output": 741,
+            "thinking": 601,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 5,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "kind": "repeat, full",
+        "ticket_id": "T00360",
+        "seconds": 11.05,
+        "text": "Based on the full message thread in T00360:\n\n**Customer messages stating \"The issue is still reproducible\": 9 occurrences**\n\n**Follow-up numbers:**\n- First: Follow-up 6\n- Last: Follow-up 56\n\n**Agent replies after those messages:** No change. Every single agent reply in the thread (58 total) is identical: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" This same canned response repeats regardless of the customer's follow-up, including after each \"still reproducible\" message.\n\nThe case is marked \"resolved\" with a CSAT of 4, but the thread shows the customer reported the issue persisting through follow-up 56 while the agent gave the same unchanged response each time.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_rWRIzCqrXSlHgkeAc91J",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 9.36,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 1303,
+              "output_tokens": 697,
+              "output_tokens_details": {
+                "thinking_tokens": 533
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4384,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 11.05
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5687,
+            "cached": 4384,
+            "output": 697,
+            "thinking": 533,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 9,
+          "count_right": false,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "kind": "repeat, short",
+        "ticket_id": "T00360",
+        "seconds": 9.55,
+        "text": "Based on the full thread in T00360:\n\n**Customer messages stating the issue is still reproducible: 10 total**\n- From the summary of older messages: 8 occurrences at follow-ups **6, 12, 23, 24, 26, 31, 36, 38**\n- From the visible messages: 2 occurrences at follow-ups **55 and 56**\n\n**First occurrence:** follow-up 6  \n**Last occurrence:** follow-up 56\n\n**Agent replies after those messages:** No change. Every agent reply in the visible thread (including after follow-ups 55, 56, 57, and 58) is identical: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" The summary also notes the agent replied 53 times with this same message and provided no troubleshooting, prevention guidance, or confirmation about the other team.\n\nThe case is marked \"resolved\" (resolution_hours 37.16, CSAT 4), but the customer continued to report the issue as reproducible through follow-up 56, and the agent's responses never addressed the substance of those reports.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_CGR980mYEMMsdTSmwvIC",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 6.91,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 2809,
+              "output_tokens": 740,
+              "output_tokens_details": {
+                "thinking_tokens": 478
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 9.54
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 2809,
+            "cached": 0,
+            "output": 740,
+            "thinking": 478,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "kind": "first time",
+        "ticket_id": "T00351",
+        "seconds": 26.93,
+        "text": "Based on the full thread in T00351:\n\n**Customer messages stating \"the issue is still reproducible\": 9 messages**\n- Follow-up 3\n- Follow-up 4  \n- Follow-up 8\n- Follow-up 9\n- Follow-up 12\n- Follow-up 21\n- Follow-up 36\n- Follow-up 38\n- Follow-up 39\n\n**First occurrence:** Follow-up 3  \n**Last occurrence:** Follow-up 39 (the final customer message in the thread)\n\n**Agent replies:** Every single agent response (39 total) is identical: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" No agent reply changed at any point, including after each \"still reproducible\" message.\n\nThe case is marked **resolved** with a CSAT of 5, but the customer repeatedly reported the issue persisted through to the very last follow-up, while the agent gave the same scripted response each time. This suggests the resolution may not have addressed the underlying problem from the customer's perspective.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_ZbRzkEM6psdUOgPLFhWh",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 23.44,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 4542,
+              "output_tokens": 1491,
+              "output_tokens_details": {
+                "thinking_tokens": 1260
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 26.93
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 4542,
+            "cached": 0,
+            "output": 1491,
+            "thinking": 1260,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 9,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "kind": "repeat, full",
+        "ticket_id": "T00360",
+        "seconds": 11.2,
+        "text": "Based on the full thread in T00360:\n\n**Customer messages stating \"the issue is still reproducible\": 9**\n\n**Follow-up numbers:**\n- First: Follow-up 6\n- Last: Follow-up 56\n\n**Agent replies:** Every single agent response in the thread is identical \u2014 \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" This same message repeats for all 58 agent turns, including after each of the 9 \"still reproducible\" customer messages. No agent reply ever changes.\n\nThe case is marked **resolved**, but the customer repeatedly reported the issue persisting (9 times, up to follow-up 56) while the agent gave the same canned response throughout. This strongly suggests the case was closed without the issue actually being fixed.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_qYtb0OR7JxXTMJFYGlEP",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 8.7,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 1303,
+              "output_tokens": 754,
+              "output_tokens_details": {
+                "thinking_tokens": 584
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4384,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 11.2
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5687,
+            "cached": 4384,
+            "output": 754,
+            "thinking": 584,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 9,
+          "count_right": false,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "kind": "repeat, short",
+        "ticket_id": "T00360",
+        "seconds": 9.51,
+        "text": "Based on the full thread in T00360:\n\n**Customer messages stating \"issue is still reproducible\": 10 total**\n- 8 mentioned in the summary at follow-ups: 6, 12, 23, 24, 26, 31, 36, 38\n- 2 visible in the message array at follow-ups: 55, 56\n\n**First occurrence:** follow-up 6 (from summary)  \n**Last occurrence:** follow-up 56 (visible message: \"The issue is still reproducible; I have attached more context. Follow-up 56.\")\n\n**Agent replies:** Every single agent reply in the thread is identical \u2014 \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" This message never changes, including after each \"still reproducible\" follow-up (55 and 56). No troubleshooting, prevention guidance, or confirmation about the other team is ever provided.\n\nThe case is marked **resolved** (resolution_hours 37.16, CSAT 4), but the customer explicitly states the issue persists through follow-up 56, and the agent's only response remains a generic recovery-flow statement that does not address the role-change problem.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_mprS9u28bQw3MwYKQcDP",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 6.84,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 2809,
+              "output_tokens": 846,
+              "output_tokens_details": {
+                "thinking_tokens": 575
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 9.51
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 2809,
+            "cached": 0,
+            "output": 846,
+            "thinking": 575,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "kind": "first time",
+        "ticket_id": "T00359",
+        "seconds": 76.59,
+        "text": "Based on the full thread in T00359:\n\n- **13 customer messages** say \"The issue is still reproducible\"\n- **First** at Follow-up 5\n- **Last** at Follow-up 36\n- **Every agent reply after each one is identical**: \"Reproduced the issue with the supplied steps, linked the engineering case and verified the workaround with the customer.\"\n\nThe agent never changes their response \u2014 same templated line all 13 times. The final customer message (Follow-up 37) is still asking for confirmation about the other team. The case is marked \"resolved\" with 18.59 resolution hours, but the customer repeatedly said the issue persisted through Follow-up 36. This appears to be a premature closure without actual resolution.",
+        "lookups": [
+          "Running a command",
+          "Running a command"
+        ],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_xoZoPUgA9R0diqLfUlBX",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            }
+          },
+          {
+            "status": 200,
+            "id": "msg_LPaJ424UuGgvgnRiRGHa",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 4.3,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 11085,
+              "output_tokens": 330,
+              "output_tokens_details": {
+                "thinking_tokens": 164
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 0,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 6.46
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 0,
+            "cached": 0,
+            "output": 0,
+            "thinking": 0,
+            "cost": 0
+          },
+          {
+            "prompt": 11085,
+            "cached": 0,
+            "output": 330,
+            "thinking": 164,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 13,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "kind": "repeat, full",
+        "ticket_id": "T00360",
+        "seconds": 26.19,
+        "text": "Based on the full message thread in T00360:\n\n**Customer messages stating \"the issue is still reproducible\": 8 total**\n\n**Follow-up numbers:**\n- First: Follow-up 6 (message index 10)\n- Last: Follow-up 56 (message index 52)\n\n**Agent replies after those messages:** No change at all. Every single agent message (58 total) is identical: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" The agent never varied the response, never acknowledged the reproducibility claims, and never offered a different action.\n\n**Assessment:** The case is marked \"resolved\" with CSAT 4, but the customer explicitly reported the issue still reproducible 8 times across follow-ups 6 through 56, and the agent response never adapted. The records show the case was closed while the customer was still reporting the problem.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_JKql13ymmwAxHjOOsGZB",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 23.02,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 1303,
+              "output_tokens": 1626,
+              "output_tokens_details": {
+                "thinking_tokens": 1435
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": 4384,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 26.19
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 5687,
+            "cached": 4384,
+            "output": 1626,
+            "thinking": 1435,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 8,
+          "count_right": false,
+          "first_right": true,
+          "last_right": true
+        }
+      },
+      {
+        "kind": "repeat, short",
+        "ticket_id": "T00360",
+        "seconds": 11.83,
+        "text": "Based on the full thread in T00360:\n\n**Customer messages saying the issue is still reproducible: 10 total**\n- From the summary (older messages): follow-ups 6, 12, 23, 24, 26, 31, 36, 38 (8 messages)\n- From the visible recent messages: follow-ups 55 and 56 (2 messages)\n\n**First occurrence:** follow-up 6  \n**Last occurrence:** follow-up 56\n\n**Agent replies after those messages:** No change. Every agent reply in the thread \u2014 including the four replies after follow-ups 55 and 56 \u2014 is the identical canned message: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" The agent never acknowledged the reproducibility reports, offered troubleshooting, or addressed the other questions (workspace setting, prevention, other team).\n\nThe case is marked \"resolved\" (resolution_hours 37.16, CSAT 4), but the customer's last two messages (follow-ups 57 and 58) are again asking whether the issue applies to their other team, and the final agent reply remains the same non\u2011substantive text. The records show the issue persisted and was never substantively addressed.",
+        "lookups": [],
+        "error": null,
+        "complete": true,
+        "turns": [
+          {
+            "status": 200,
+            "id": "msg_4SAqkH4sYJaper9quk31",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "usage_start": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "output_tokens_details": null,
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "inference_geo": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard"
+            },
+            "first_text_seconds": 6.68,
+            "stop_reason": "end_turn",
+            "usage_end": {
+              "input_tokens": 2809,
+              "output_tokens": 799,
+              "output_tokens_details": {
+                "thinking_tokens": 518
+              },
+              "cache_creation_input_tokens": null,
+              "cache_read_input_tokens": null,
+              "cache_creation": null,
+              "server_tool_use": null,
+              "service_tier": null,
+              "speed": "standard",
+              "cost": 0,
+              "cost_details": {
+                "upstream_inference_cost": 0,
+                "upstream_inference_prompt_cost": 0,
+                "upstream_inference_completions_cost": 0
+              }
+            },
+            "seconds": 11.83
+          }
+        ],
+        "tokens": [
+          {
+            "prompt": 2809,
+            "cached": 0,
+            "output": 799,
+            "thinking": 518,
+            "cost": 0
+          }
+        ],
+        "grade": {
+          "count": 10,
+          "count_right": true,
+          "first_right": true,
+          "last_right": true
+        }
+      }
+    ]
+  }
+}

@@ -1,4 +1,5 @@
 """Plan increment 2's check against the real orion_desk (read-only). Skipped without PG_* settings."""
+from decimal import Decimal
 import json
 
 from fastapi.testclient import TestClient
@@ -77,8 +78,9 @@ def test_admin_status_matches_adr_counts(live):
     assert client.get("/api/admin/status", headers=auth(settings.agent_token)).status_code == 403
     body = client.get("/api/admin/status", headers=auth(settings.admin_token)).json()
     assert body["database"] == settings.pg_database
-    # The 15 migrated tables, plus increment 8's search_embeddings (one row per ticket and article).
-    assert {row["table"]: row["rows"] for row in body["tables"]} == {**ADR_COUNTS, "search_embeddings": 4040}
+    # The 15 migrated tables, plus increment 8's search_embeddings (one row per ticket and article). Mail grows by itself.
+    counts = {row["table"]: row["rows"] for row in body["tables"] if not row["table"].startswith("mail_")}
+    assert counts == {**ADR_COUNTS, "search_embeddings": 4040}
 
 
 def test_sessions_are_read_only(live):
@@ -445,3 +447,25 @@ def test_category_report_matches_the_design_stat_strip(live):
     row = next(row for row in report(client, settings, "category") if row["category"] == "account access")
     assert (row["tickets"], row["avg_first_response_hours"], row["first_response_counted"],
             row["first_response_missing"]) == (526, "17.65", 522, 4)
+
+
+def test_follow_ups_are_the_late_active_cases_oldest_first(live):
+    client, settings = live
+    body = page(client, settings, "/api/follow-ups")
+    with client.app.state.store.pool.connection() as db:
+        direct = db.execute("""SELECT COUNT(*) AS n FROM tickets t, (SELECT snapshot_utc::timestamptz AT TIME ZONE 'UTC' AS at
+            FROM lab_metadata ORDER BY baseline_id LIMIT 1) s WHERE t.status <> 'resolved' AND (
+            (t.first_response_hours IS NULL AND EXTRACT(EPOCH FROM (s.at - t.created_at)) / 3600 > t.sla_response_hours)
+            OR t.first_response_hours > t.sla_response_hours
+            OR (t.resolution_hours IS NULL AND EXTRACT(EPOCH FROM (s.at - t.created_at)) / 3600 > t.sla_resolution_hours)
+            OR t.resolution_hours > t.sla_resolution_hours)""").fetchone()["n"]
+    assert body["total"] == direct
+    ages = [Decimal(item["age_hours"]) for item in body["items"]]
+    assert len(ages) == 100 and ages == sorted(ages, reverse=True)
+    assert all(item["draft"].startswith("DRAFT. NOT SENT.") for item in body["items"])
+
+
+def test_case_notes_read_on_the_read_only_login(live):
+    client, settings = live
+    body = page(client, settings, "/api/tickets/T00727/notes")
+    assert body["agents"] and body["total"] == len(body["items"])

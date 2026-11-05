@@ -84,6 +84,58 @@ MORE_IN_CATEGORY = sql.SQL(
 # Company. owner stays "Name · Team" here; main.py splits it.
 COMPANY_SECTIONS = "SELECT document_id, title, owner, body FROM company_documents ORDER BY document_id"
 STAFF_REQUESTS = "SELECT request_id, title, requester AS requested_by, body FROM staff_requests ORDER BY request_id"
+# Mail. A mail has a link row only if it matched a ticket.
+MAIL = """SELECT m.mail_id, l.ticket_id, l.linked_by, m.sender_name, m.subject, m.body
+FROM mail_messages m
+LEFT JOIN mail_links l ON l.mail_id = m.mail_id"""
+TICKET_MAIL = MAIL + " WHERE l.ticket_id = %s ORDER BY m.received_at ASC NULLS FIRST, m.mail_id"
+UNLINKED_MAIL = MAIL + " WHERE l.mail_id IS NULL ORDER BY m.received_at DESC NULLS LAST, m.mail_id LIMIT %s"
+UNLINKED_COUNT = """SELECT COUNT(*) AS n FROM mail_messages m LEFT JOIN mail_links l ON l.mail_id = m.mail_id
+WHERE l.mail_id IS NULL"""
+ONE_MAIL = MAIL + " WHERE m.mail_id = %s"
+# Notes stay out of TICKET and every model tool: only the notes routes read this table, so a note can't reach a draft.
+CASE_NOTES = """SELECT note_id, author, handed_to, body, noted_at FROM case_notes WHERE ticket_id = %s
+ORDER BY noted_at, note_id"""
+# Late as in web/lib/sla.ts: an active case past a target, a stage still waiting being judged on its age at the snapshot.
+LATE = """WITH snapshot AS (
+    SELECT snapshot_utc::timestamptz AT TIME ZONE 'UTC' AS at FROM lab_metadata ORDER BY baseline_id LIMIT 1
+), aged AS (
+    SELECT t.*, ROUND(EXTRACT(EPOCH FROM (s.at - t.created_at)) / 3600, 4) AS age_hours
+    FROM tickets t LEFT JOIN snapshot s ON TRUE
+    WHERE t.status IS DISTINCT FROM 'resolved'
+), late AS (
+    SELECT *, COALESCE(first_response_hours, age_hours) > sla_response_hours AS late_reply,
+           COALESCE(resolution_hours, age_hours) > sla_resolution_hours AS late_resolution
+    FROM aged
+)
+"""
+LATE_COUNT = LATE + "SELECT COUNT(*) AS n FROM late WHERE late_reply OR late_resolution"
+LATE_CASES = LATE + """SELECT l.ticket_id, l.subject, l.status, l.priority, c.company, a.name AS approver, l.customer_id,
+       l.late_reply IS TRUE AS late_reply, l.late_resolution IS TRUE AS late_resolution, l.age_hours,
+       l.first_response_hours, l.sla_response_hours, l.sla_resolution_hours
+FROM late l
+LEFT JOIN customers c ON c.customer_id = l.customer_id
+LEFT JOIN agents a ON a.agent_id = l.agent_id
+WHERE l.late_reply OR l.late_resolution
+ORDER BY l.age_hours DESC NULLS LAST, l.ticket_id
+LIMIT %s"""
+# One UTC day, from `start` up to but not including `end`. Late cases are counted now, by LATE_COUNT.
+DAY_COUNTS = """SELECT
+    (SELECT COUNT(*) FROM mail_messages WHERE synced_at >= %(start)s AND synced_at < %(end)s) AS mail,
+    (SELECT COUNT(*) FROM mail_actions WHERE action = 'drafted' AND acted_at >= %(start)s AND acted_at < %(end)s) AS drafts,
+    (SELECT COUNT(*) FROM mail_actions WHERE action = 'sent' AND acted_at >= %(start)s AND acted_at < %(end)s) AS sends,
+    (SELECT COUNT(*) FROM mail_actions WHERE action = 'failed' AND acted_at >= %(start)s AND acted_at < %(end)s) AS failed,
+    (SELECT COUNT(*) FROM case_notes WHERE handed_to IS NOT NULL AND noted_at >= %(start)s AND noted_at < %(end)s) AS handoffs"""
+MAIL_INDEX = """SELECT m.mail_id, m.rfc_message_id, m.replies_to, l.ticket_id
+FROM mail_messages m LEFT JOIN mail_links l ON l.mail_id = m.mail_id ORDER BY m.mail_id"""
+THREAD_MAIL = """SELECT m.rfc_message_id, m.replies_to, m.sender_name, m.subject, m.body
+FROM mail_messages m JOIN mail_links l ON l.mail_id = m.mail_id
+WHERE m.mail_id = %s AND l.ticket_id = %s"""
+APPROVERS = "SELECT name FROM agents WHERE name IS NOT NULL ORDER BY name, agent_id"
+# Each row waits on the one before it, so the time alone puts them in order.
+ACTION = "SELECT draft_id, action, ticket_id, actor, details, acted_at FROM mail_actions"
+TICKET_ACTIONS = ACTION + " WHERE ticket_id = %s ORDER BY acted_at, draft_id, action"
+DRAFT_ACTIONS = ACTION + " WHERE draft_id = %s"
 # Search (plan increment 8). The inner query keeps the shape HNSW needs:
 # ORDER BY embedding <=> vector LIMIT k on search_embeddings alone; titles are joined afterwards.
 EXACT_ID = ("SELECT 'ticket' AS kind, ticket_id AS id, subject AS title, status, priority, category, "
@@ -239,6 +291,49 @@ class Store:
             messages = db.execute(MESSAGES, (ticket_id,)).fetchall()
             return {"ticket": ticket, "customer": customer, "messages": messages}
 
+    def ticket_mail(self, ticket_id):
+        """Mail linked to the ticket, oldest first; None if the ticket ID is unknown."""
+        with self.pool.connection() as db:
+            if db.execute(TICKET_SUBJECT, (ticket_id,)).fetchone() is None:
+                return None
+            return db.execute(TICKET_MAIL, (ticket_id,)).fetchall()
+
+    def unlinked_mail(self, limit):
+        """How many mails matched no ticket, and the newest of them."""
+        with self.pool.connection() as db:
+            return db.execute(UNLINKED_COUNT).fetchone()["n"], db.execute(UNLINKED_MAIL, (limit,)).fetchall()
+
+    def mail(self, mail_id):
+        with self.pool.connection() as db:
+            return db.execute(ONE_MAIL, (mail_id,)).fetchone()
+
+    def case_notes(self, ticket_id):
+        """The ticket's notes, oldest first; None if the ticket ID is unknown."""
+        with self.pool.connection() as db:
+            if db.execute(TICKET_SUBJECT, (ticket_id,)).fetchone() is None:
+                return None
+            return db.execute(CASE_NOTES, (ticket_id,)).fetchall()
+
+    def late_cases(self, limit):
+        """The full count, and the `limit` oldest late cases."""
+        with self.pool.connection() as db:
+            return db.execute(LATE_COUNT).fetchone()["n"], db.execute(LATE_CASES, (limit,)).fetchall()
+
+    def day_counts(self, start, end):
+        with self.pool.connection() as db:
+            counts = db.execute(DAY_COUNTS, {"start": start, "end": end}).fetchone()
+            return {**counts, "late": db.execute(LATE_COUNT).fetchone()["n"]}
+
+    def mail_index(self):
+        """What a sync needs to know about mail already stored."""
+        with self.pool.connection() as db:
+            return db.execute(MAIL_INDEX).fetchall()
+
+    def existing_tickets(self, ticket_ids):
+        with self.pool.connection() as db:
+            rows = db.execute("SELECT ticket_id FROM tickets WHERE ticket_id = ANY(%s)", (list(ticket_ids),)).fetchall()
+            return {row["ticket_id"] for row in rows}
+
     def customers(self):
         """Every customer with plan name and case counts, in one query, by company."""
         with self.pool.connection() as db:
@@ -323,6 +418,28 @@ class Store:
         with self.pool.connection() as db:
             return db.execute(nearest_query(priority),
                               {"vector": as_vector(vector), "priority": priority, "limit": limit}).fetchall()
+
+    def thread_mail(self, ticket_id, mail_id):
+        """One mail linked to this ticket, with the IDs a reply needs; None if it isn't."""
+        with self.pool.connection() as db:
+            return db.execute(THREAD_MAIL, (mail_id, ticket_id)).fetchone()
+
+    def approvers(self):
+        with self.pool.connection() as db:
+            return [row["name"] for row in db.execute(APPROVERS).fetchall()]
+
+    def ticket_actions(self, ticket_id):
+        """The ticket's log, oldest first; None if the ticket ID is unknown."""
+        with self.pool.connection() as db:
+            if db.execute(TICKET_SUBJECT, (ticket_id,)).fetchone() is None:
+                return None
+            return db.execute(TICKET_ACTIONS, (ticket_id,)).fetchall()
+
+    def draft_actions(self, draft_id):
+        """The draft's rows by action; None if the draft ID is unknown."""
+        with self.pool.connection() as db:
+            rows = db.execute(DRAFT_ACTIONS, (draft_id,)).fetchall()
+        return {row["action"]: row for row in rows} or None
 
     def report(self, name):
         """Rows of api/reports/<name>.sql, in the order the file sorts them."""

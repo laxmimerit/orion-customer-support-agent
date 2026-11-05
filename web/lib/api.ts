@@ -263,6 +263,34 @@ export type LanguageModels = {
   options: (AllowedModel & { state: ModelState | "not_run" })[];
 };
 
+// The customer mail connection. The password and the mailbox address stay with the API: no response carries them.
+export type MailState = "connected" | "not_set_up" | "login_refused" | "label_missing" | "not_answering";
+
+export type MailStatus = {
+  provider: string;
+  state: MailState;
+  label: string | null;
+  messages: number | null;
+  unread: number | null;
+  imap: { address: string; state: MailState };
+  smtp: { address: string; state: Exclude<MailState, "label_missing"> };
+};
+
+// Customer mail the sync has copied into the desk. No address and no date: the desk shows neither.
+export type MailMessage = {
+  mail_id: string;
+  ticket_id: string | null;
+  linked_by: "subject" | "thread" | "manual" | null;
+  sender_name: string | null;
+  subject: string | null;
+  body: string | null;
+};
+
+export type MailList = { total: number; items: MailMessage[] };
+
+// `linked` can pass `added`: an older mail can get its ticket on this sync.
+export type MailSync = { added: number; linked: number; unlinked: number; skipped: number; remaining: number };
+
 export type ApiInfo = { title: string; version: string; routes: string[] };
 
 export type ApiProblem = { status: number | null; code: string; message: string };
@@ -287,7 +315,7 @@ function refused(response: Response, body: { error?: { code?: unknown; message?:
   };
 }
 
-async function get<T>(route: string, authorised = true, signal: AbortSignal = AbortSignal.timeout(20_000)): Promise<Result<T>> {
+async function send<T>(method: "GET" | "POST", route: string, authorised: boolean, signal: AbortSignal, json?: unknown): Promise<Result<T>> {
   const { baseUrl, token } = settings();
   if (authorised && !token) {
     return { ok: false, problem: { status: null, code: "missing_token",
@@ -297,8 +325,10 @@ async function get<T>(route: string, authorised = true, signal: AbortSignal = Ab
   try {
     response = await fetch(baseUrl + route, {
       cache: "no-store",
-      headers: authorised ? { Authorization: `Bearer ${token}` } : {},
+      headers: { ...(authorised ? { Authorization: `Bearer ${token}` } : {}), ...(json === undefined ? {} : { "Content-Type": "application/json" }) },
       signal,
+      ...(method === "GET" ? {} : { method }),
+      ...(json === undefined ? {} : { body: JSON.stringify(json) }),
     });
   } catch {
     return { ok: false, problem: { status: null, code: "api_unreachable",
@@ -312,6 +342,10 @@ async function get<T>(route: string, authorised = true, signal: AbortSignal = Ab
       message: `The API answered ${response.status}, but the reply was not JSON.` } };
   }
   return { ok: true, data: body as T };
+}
+
+function get<T>(route: string, authorised = true, signal: AbortSignal = AbortSignal.timeout(20_000)) {
+  return send<T>("GET", route, authorised, signal);
 }
 
 export function ticketPage(page: number, pageSize: number) {
@@ -373,6 +407,113 @@ export function triageCase(ticketId: string, model: string | null, signal: Abort
 
 export function languageModels() {
   return get<LanguageModels>("/api/language-models");
+}
+
+export function mailStatus() {
+  return get<MailStatus>("/api/mail/status");
+}
+
+// `cache` for the reason ticketDetail gives: the page and the mail card both read it.
+export const ticketMail = cache((ticketId: string) =>
+  get<MailList>(`/api/tickets/${encodeURIComponent(ticketId)}/mail`));
+
+// The one place an address reaches the desk: a person can't approve what they can't read.
+export type ComposedDraft = {
+  draft_id: string;
+  status: string;
+  recipient: string;
+  subject: string;
+  body: string;
+  english: string;
+  language: string;
+  article_id: string;
+  article_title: string | null;
+  approvers: string[];
+};
+
+export type DraftState = { draft_id: string; status: string; approved_by: string };
+
+export type MailAction = {
+  draft_id: string;
+  action: string;
+  actor: string;
+  acted_at: string;
+  recipient: string | null;
+  subject: string | null;
+  article_id: string | null;
+};
+
+// Longer than the 20 seconds in `get`, as a triage is, and `signal` ends the call if the agent leaves.
+export function composeDraft(ticketId: string, form: unknown, signal: AbortSignal) {
+  return send<ComposedDraft>("POST", `/api/tickets/${encodeURIComponent(ticketId)}/drafts`, true,
+    AbortSignal.any([signal, AbortSignal.timeout(ANSWER_LIMIT_MS)]), form);
+}
+
+export function approveDraft(draftId: string, approvedBy: string) {
+  return send<DraftState>("POST", `/api/drafts/${encodeURIComponent(draftId)}/approve`, true, AbortSignal.timeout(20_000), { approved_by: approvedBy });
+}
+
+// Longer than `get`: the API logs in to SMTP and hands the mail over before it answers.
+export function sendDraft(draftId: string) {
+  return send<DraftState>("POST", `/api/drafts/${encodeURIComponent(draftId)}/send`, true, AbortSignal.timeout(60_000));
+}
+
+export function ticketActions(ticketId: string) {
+  return get<{ total: number; items: MailAction[] }>(`/api/tickets/${encodeURIComponent(ticketId)}/actions`);
+}
+
+export type MailMatch = { match: { ticket_id: string; subject: string | null; status: string | null; similarity: number } | null };
+
+export type CaseNote = { note_id: string; author: string; handed_to: string | null; body: string; noted_at: string };
+
+export type CaseNotes = { total: number; items: CaseNote[]; agents: string[] };
+
+export type FollowUp = {
+  ticket_id: string;
+  subject: string | null;
+  status: string | null;
+  priority: string | null;
+  company: string | null;
+  approver: string | null;
+  late_reply: boolean;
+  late_resolution: boolean;
+  age_hours: string | null;
+  draft: string;
+};
+
+export function mailMatch(mailId: string) {
+  return get<MailMatch>(`/api/mail/${encodeURIComponent(mailId)}/match`);
+}
+
+export function linkMail(mailId: string, ticketId: string) {
+  return send<MailMessage>("POST", `/api/mail/${encodeURIComponent(mailId)}/link`, true, AbortSignal.timeout(20_000), { ticket_id: ticketId });
+}
+
+export function triageMail(mailId: string, signal: AbortSignal) {
+  return get<Triage>(`/api/mail/${encodeURIComponent(mailId)}/triage`, true, AbortSignal.any([signal, AbortSignal.timeout(ANSWER_LIMIT_MS)]));
+}
+
+export function caseNotes(ticketId: string) {
+  return get<CaseNotes>(`/api/tickets/${encodeURIComponent(ticketId)}/notes`);
+}
+
+export function addCaseNote(ticketId: string, note: { author: string; body: string; handed_to: string | null }) {
+  return send<CaseNote>("POST", `/api/tickets/${encodeURIComponent(ticketId)}/notes`, true, AbortSignal.timeout(20_000), note);
+}
+
+export function followUps() {
+  return get<{ total: number; items: FollowUp[] }>("/api/follow-ups");
+}
+
+export function unlinkedMail() {
+  return get<MailList>("/api/mail/unlinked");
+}
+
+// How long this server waits for a sync. Longer than the 20 seconds in `get`: the API reads the mailbox before it answers.
+export const MAIL_SYNC_LIMIT_MS = 60_000;
+
+export function syncMail() {
+  return send<MailSync>("POST", "/api/mail/sync", true, AbortSignal.timeout(MAIL_SYNC_LIMIT_MS));
 }
 
 // No check and no call to a provider, so a case page can read it every time it opens.

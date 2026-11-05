@@ -1,6 +1,6 @@
 "use server";
 
-import { ticketDetail } from "@/lib/api";
+import { type ApiProblem, type MailMatch, type MailSync, addCaseNote, approveDraft, linkMail, mailMatch, sendDraft, syncMail, ticketDetail } from "@/lib/api";
 
 // What the queue's preview panel loads for the chosen ticket. Only these fields leave the server:
 // the ticket detail also holds contact details and timestamps, and the desk shows neither.
@@ -26,4 +26,45 @@ export async function ticketPreview(ticketId: string): Promise<PreviewResult> {
     resolution_hours: ticket.resolution_hours,
     sla_resolution_hours: ticket.sla_resolution_hours,
   } };
+}
+
+export type MailSyncResult = { ok: true; sync: MailSync } | { ok: false; message: string };
+
+// Named field by field, so anything else the API adds to its answer stays on the server.
+export async function syncMailbox(): Promise<MailSyncResult> {
+  const result = await syncMail();
+  if (!result.ok) return { ok: false, message: result.problem.message };
+  const { added, linked, unlinked, skipped, remaining } = result.data;
+  return { ok: true, sync: { added, linked, unlinked, skipped, remaining } };
+}
+
+export type DraftStepResult = { ok: true } | { ok: false; problem: ApiProblem };
+
+export async function approveReply(draftId: string, approvedBy: string): Promise<DraftStepResult> {
+  const result = await approveDraft(draftId, approvedBy);
+  return result.ok ? { ok: true } : { ok: false, problem: result.problem };
+}
+
+export async function sendReply(draftId: string): Promise<DraftStepResult> {
+  const result = await sendDraft(draftId);
+  return result.ok ? { ok: true } : { ok: false, problem: result.problem };
+}
+
+export type MatchResult = { ok: true; match: MailMatch["match"] } | { ok: false; message: string };
+
+export async function findDuplicate(mailId: string): Promise<MatchResult> {
+  const result = await mailMatch(mailId);
+  return result.ok ? { ok: true, match: result.data.match } : { ok: false, message: result.problem.message };
+}
+
+export type StepResult = { ok: true } | { ok: false; message: string };
+
+export async function linkToCase(mailId: string, ticketId: string): Promise<StepResult> {
+  const result = await linkMail(mailId, ticketId);
+  return result.ok ? { ok: true } : { ok: false, message: result.problem.message };
+}
+
+export async function saveNote(ticketId: string, author: string, body: string, handedTo: string | null): Promise<StepResult> {
+  const result = await addCaseNote(ticketId, { author, body, handed_to: handedTo });
+  return result.ok ? { ok: true } : { ok: false, message: result.problem.message };
 }

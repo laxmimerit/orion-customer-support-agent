@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { type AllowedModel, firstRunnable, modelLabel, modelOption } from "@/lib/models";
+import { type AllowedModel, firstRunnable, modelHasMail, modelLabel, modelOption } from "@/lib/models";
 
-const FREE: AllowedModel = { id: "free", label: "Nemotron 3 Ultra", provider: "OpenRouter", model: "n:free", paid: false, run: true };
-const LUNA: AllowedModel = { id: "luna-high", label: "GPT-6 Luna, high effort", provider: "OpenRouter", model: "l", paid: true, run: true };
-const CLAUDE: AllowedModel = { id: "anthropic", label: "Claude Sonnet 5.5", provider: "Anthropic", model: "c", paid: true, run: false };
+const FREE: AllowedModel = { id: "free", label: "Nemotron 3 Ultra", provider: "OpenRouter", model: "n:free", paid: false, run: true, mail: false };
+const LUNA: AllowedModel = { id: "luna-high", label: "GPT-6 Luna, high effort", provider: "OpenRouter", model: "l", paid: true, run: true, mail: true };
+const CLAUDE: AllowedModel = { id: "anthropic", label: "Claude Sonnet 5.5", provider: "Anthropic", model: "c", paid: true, run: false, mail: false };
 
 describe("firstRunnable", () => {
   it("starts on the first line the API will call", () => {
@@ -37,5 +37,18 @@ describe("modelLabel", () => {
     expect(modelLabel([FREE, LUNA], "luna-high")).toBe("GPT-6 Luna, high effort");
     expect(modelLabel([FREE], "luna-high")).toBeNull();
     expect(modelLabel([FREE], null)).toBeNull();
+  });
+});
+
+describe("modelHasMail", () => {
+  it("is true only for a line with the mail tools", () => {
+    expect(modelHasMail([FREE, LUNA], "luna-high")).toBe(true);
+    expect(modelHasMail([FREE, LUNA], "free")).toBe(false);
+  });
+
+  it("is false when no model is chosen, or the chosen one is not listed", () => {
+    expect(modelHasMail([LUNA], null)).toBe(false);
+    expect(modelHasMail([LUNA], "gone")).toBe(false);
+    expect(modelHasMail([], "luna-high")).toBe(false);
   });
 });

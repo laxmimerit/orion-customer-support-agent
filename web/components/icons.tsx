@@ -31,3 +31,4 @@ export const WebIcon = (p: IconProps) => <Icon size={15} strokeWidth={1.9} {...p
 export const ApiIcon = (p: IconProps) => <Icon size={15} strokeWidth={1.9} {...p}><path d="M8 7l-5 5 5 5M16 7l5 5-5 5" /></Icon>;
 export const ChatIcon = (p: IconProps) => <Icon size={15} strokeWidth={1.9} {...p}><path d="M4 5h16v11H9l-5 4z" /></Icon>;
 export const EmailIcon = (p: IconProps) => <Icon size={15} strokeWidth={1.9} {...p}><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" /></Icon>;
+export const MailIcon = (p: IconProps) => <EmailIcon size={18} strokeWidth={1.8} {...p} />;

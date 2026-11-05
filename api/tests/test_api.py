@@ -18,14 +18,21 @@ def test_every_route_is_under_api_apart_from_docs(client):
              "/api/company", "/api/snapshot", "/api/tickets/{ticket_id}/knowledge",
              "/api/tickets/{ticket_id}/similar", "/api/tickets/{ticket_id}/ask",
              "/api/tickets/{ticket_id}/triage", "/api/language-models",
-             "/api/language-models/allow-list"}
+             "/api/language-models/allow-list", "/api/mail/status", "/api/mail/unlinked", "/api/mail/sync",
+             "/api/tickets/{ticket_id}/mail", "/api/tickets/{ticket_id}/drafts", "/api/tickets/{ticket_id}/actions",
+             "/api/drafts/{draft_id}/approve", "/api/drafts/{draft_id}/send", "/api/tickets/{ticket_id}/notes",
+             "/api/mail/{mail_id}/triage", "/api/mail/{mail_id}/match", "/api/mail/{mail_id}/link", "/api/follow-ups"}
     assert paths == {"/api/tickets", "/api/tickets/{ticket_id}", "/api/search", "/api/admin/status", "/api/mcp", *reports,
                      *pages}
 
 
 def test_every_route_is_get_only(client):
-    """Apart from /api/mcp, as MCP sends everything by POST. test_mcp.py holds that route to reading."""
-    methods = {method for route in client.app.routes if route.path.startswith("/api") and route.path != "/api/mcp"
+    """Apart from /api/mcp, as MCP sends everything by POST, and the mail writes. test_mcp.py holds the first to reading,
+    and the database login holds the rest to adding rows. test_compose.py covers the three that make and send a reply."""
+    methods = {method for route in client.app.routes
+               if route.path.startswith("/api") and route.path not in ("/api/mcp", "/api/mail/sync", "/api/tickets/{ticket_id}/drafts",
+                                                                          "/api/drafts/{draft_id}/approve", "/api/drafts/{draft_id}/send",
+                                                                          "/api/mail/{mail_id}/link", "/api/tickets/{ticket_id}/notes")
                for method in route.methods}
     assert methods <= {"GET", "HEAD"}
     response = client.post("/api/tickets", headers=auth(AGENT))
@@ -45,7 +52,9 @@ def test_root_opens_the_docs(client):
                                   "/api/knowledge", "/api/knowledge/KB022", "/api/company", "/api/snapshot",
                                   "/api/tickets/T00727/knowledge", "/api/tickets/T00727/similar",
                                   "/api/tickets/T00727/ask?q=Why", "/api/tickets/T00727/triage",
-                                  "/api/language-models", "/api/language-models/allow-list"])
+                                  "/api/language-models", "/api/language-models/allow-list", "/api/mail/status",
+                                  "/api/mail/unlinked", "/api/tickets/T00727/mail", "/api/tickets/T00727/notes",
+                                  "/api/mail/ML1/triage", "/api/mail/ML1/match", "/api/follow-ups"])
 def test_a_token_is_required(client, path):
     response = client.get(path)
     assert response.status_code == 401
@@ -353,7 +362,8 @@ def test_owner_splits_at_the_first_separator_only():
 @pytest.mark.parametrize("path", ["/api/customers", "/api/customers/C0086", "/api/knowledge", "/api/knowledge/KB022",
                                   "/api/company", "/api/tickets/T00727/knowledge",
                                   "/api/tickets/T00727/similar", "/api/language-models",
-                                  "/api/language-models/allow-list"])
+                                  "/api/language-models/allow-list", "/api/mail/status", "/api/mail/unlinked",
+                                  "/api/tickets/T00727/mail"])
 def test_no_email_or_date_field_reaches_a_page_route(client, path):
     response = client.get(path, headers=auth(AGENT))
     assert response.status_code == 200

@@ -82,10 +82,10 @@ def test_the_allow_list_lists_every_line_with_the_default_first(client):
     response = client.get("/api/language-models/allow-list", headers=auth(AGENT))
     assert response.status_code == 200
     assert response.json() == {"total": 4, "items": [
-        {"id": "free", "label": "Nemotron 3 Ultra", "provider": "OpenRouter", "model": MODEL, "paid": False, "run": True},
-        {"id": "luna-high", "label": "GPT-6 Luna, high effort", "provider": "OpenRouter", "model": LUNA, "paid": True, "run": True},
-        {"id": "anthropic", "label": "Claude Sonnet 5.5", "provider": "Anthropic", "model": "claude-sonnet-5-5", "paid": True, "run": False},
-        {"id": "openai", "label": "GPT-6 Luna, direct", "provider": "OpenAI", "model": "gpt-6-luna", "paid": True, "run": False},
+        {"id": "free", "label": "Nemotron 3 Ultra", "provider": "OpenRouter", "model": MODEL, "paid": False, "run": True, "mail": False},
+        {"id": "luna-high", "label": "GPT-6 Luna, high effort", "provider": "OpenRouter", "model": LUNA, "paid": True, "run": True, "mail": True},
+        {"id": "anthropic", "label": "Claude Sonnet 5.5", "provider": "Anthropic", "model": "claude-sonnet-5-5", "paid": True, "run": False, "mail": False},
+        {"id": "openai", "label": "GPT-6 Luna, direct", "provider": "OpenAI", "model": "gpt-6-luna", "paid": True, "run": False, "mail": False},
     ]}
 
 

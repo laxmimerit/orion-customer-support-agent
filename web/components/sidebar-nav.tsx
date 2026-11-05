@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { CompanyIcon, CustomersIcon, KnowledgeIcon, ReportsIcon, SettingsIcon, TicketsIcon } from "@/components/icons";
+import { AlertIcon, CompanyIcon, CustomersIcon, KnowledgeIcon, MailIcon, ReportsIcon, SettingsIcon, TicketsIcon } from "@/components/icons";
 
 const MAIN = [
   { href: "/", label: "Tickets", Icon: TicketsIcon, matches: (path: string) => path === "/" || path.startsWith("/tickets") },
+  { href: "/mail/unlinked", label: "Unlinked mail", Icon: MailIcon, matches: (path: string) => path.startsWith("/mail") },
+  { href: "/follow-ups", label: "Follow-up", Icon: AlertIcon, matches: (path: string) => path.startsWith("/follow-ups") },
   { href: "/customers", label: "Customers", Icon: CustomersIcon, matches: (path: string) => path.startsWith("/customers") },
   { href: "/knowledge", label: "Knowledge", Icon: KnowledgeIcon, matches: (path: string) => path.startsWith("/knowledge") },
   { href: "/reports", label: "Reports", Icon: ReportsIcon, matches: (path: string) => path.startsWith("/reports") },

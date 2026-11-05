@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { ApiProblemPanel, PageHead, TicketSearchBar } from "@/components/desk";
 import { LockIcon } from "@/components/icons";
-import { type LanguageModels, type ModelState, type Result, apiAddress, apiInfo, languageModels, ticketPage } from "@/lib/api";
+import { type LanguageModels, type MailState, type MailStatus, type ModelState, type Result, apiAddress, apiInfo, languageModels, mailStatus, ticketPage } from "@/lib/api";
 import { NOT_RECORDED, orNotRecorded, plural } from "@/lib/format";
 import "./settings.css";
 
@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Settings" };
 
 // Nothing here is editable: each panel reports what the desk is connected to today.
 export default async function Settings() {
-  const [info, tickets, models] = await Promise.all([apiInfo(), ticketPage(1, 1), languageModels()]);
+  const [info, tickets, models, mail] = await Promise.all([apiInfo(), ticketPage(1, 1), languageModels(), mailStatus()]);
 
   return (
     <>
@@ -21,8 +21,7 @@ export default async function Settings() {
         <div className="settings-note" role="note">
           <LockIcon size={18} strokeWidth={2} />
           <span>
-            <strong>Read-only.</strong> API and language model details are read from the Orion desk API when the page opens.
-            Mail is not set up, so there is nothing to configure for it.
+            <strong>Read-only.</strong> API, language model and mail details are read from the Orion desk API when the page opens.
           </span>
         </div>
 
@@ -73,13 +72,7 @@ export default async function Settings() {
                 : <p className="is-failed">It could not be read through the Orion desk API.</p>}
             </div>
 
-            <div className="card settings-panel">
-              <PanelHead title="Customer mail"><NotSetUp /></PanelHead>
-              <p>
-                No mail provider is connected. The desk cannot send or receive mail, and no reply leaves it.
-                The rules mail must follow are in <code>docs/communication-contract.md</code>.
-              </p>
-            </div>
+            <CustomerMailPanel mail={mail} />
           </div>
         </section>
       </main>
@@ -152,6 +145,68 @@ function LanguageModelPanel({ models }: { models: Result<LanguageModels> }) {
   );
 }
 
+const MAIL_STATES: Record<MailState, { pill: string; tone: "is-answering" | "is-off" | "is-failed"; note: string }> = {
+  connected: { pill: "Connected", tone: "is-answering",
+    note: "The desk API logged in to the mailbox. Checked at most once a minute; no mail was sent." },
+  not_set_up: { pill: "Not set up", tone: "is-off",
+    note: "The desk API needs ORION_MAIL_USER, ORION_MAIL_APP_PASSWORD and ORION_MAIL_LABEL before it can read mail." },
+  login_refused: { pill: "Login refused", tone: "is-failed",
+    note: "The mail server refused the login in ORION_MAIL_USER and ORION_MAIL_APP_PASSWORD." },
+  label_missing: { pill: "Label missing", tone: "is-failed", note: "The mailbox has no label named in ORION_MAIL_LABEL." },
+  not_answering: { pill: "Not answering", tone: "is-failed", note: "The mail server did not answer the check." },
+};
+
+// Each count can be unknown on its own, and an unknown count is never shown as 0.
+function mailCounts(messages: number | null, unread: number | null) {
+  if (messages === null && unread === null) return NOT_RECORDED;
+  const unknown = NOT_RECORDED.toLowerCase();
+  return `${messages === null ? `Messages ${unknown}` : plural(messages, "message")}, ${unread === null ? `unread ${unknown}` : `${unread} unread`}`;
+}
+
+function CustomerMailPanel({ mail }: { mail: Result<MailStatus> }) {
+  if (!mail.ok) {
+    return (
+      <div className="card settings-panel">
+        <PanelHead title="Customer mail"><Answering ok={false} /></PanelHead>
+        <p className="is-failed">{mail.problem.message}</p>
+      </div>
+    );
+  }
+  const { provider, label, messages, unread, imap, smtp } = mail.data;
+  const state = MAIL_STATES[mail.data.state];
+  return (
+    <div className="card settings-panel is-api">
+      <PanelHead title="Customer mail">
+        <span className={`pill settings-pill ${state.tone}`}>
+          <span className="dot" aria-hidden="true" />
+          {state.pill}
+        </span>
+      </PanelHead>
+      <p className={state.tone === "is-failed" ? "is-failed" : undefined}>{state.note}</p>
+      <dl className="settings-facts">
+        <dt>Provider</dt>
+        <dd className="is-strong">{provider}</dd>
+        <dt>IMAP</dt>
+        <dd><code>{imap.address}</code> · {MAIL_STATES[imap.state].pill}</dd>
+        <dt>SMTP</dt>
+        <dd><code>{smtp.address}</code> · {smtp.state === "connected" ? "Login accepted" : MAIL_STATES[smtp.state].pill}</dd>
+        <dt>Label</dt>
+        <dd>{orNotRecorded(label)}</dd>
+        <dt>In the label</dt>
+        <dd>{mailCounts(messages, unread)}</dd>
+        <dt>Password</dt>
+        <dd>Held by the desk API. It is never sent to the web server or the browser.</dd>
+        <dt>Sending mail</dt>
+        <dd>Off. The desk has no send route, so no reply can leave it.</dd>
+      </dl>
+      <p>
+        These counts are all the desk reads. Messages do not appear on the desk yet.
+        The rules mail must follow are in <code>docs/communication-contract.md</code>.
+      </p>
+    </div>
+  );
+}
+
 function PanelHead({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="settings-panel-head">
@@ -166,15 +221,6 @@ function Answering({ ok }: { ok: boolean }) {
     <span className={`pill settings-pill ${ok ? "is-answering" : "is-failed"}`}>
       <span className="dot" aria-hidden="true" />
       {ok ? "Answering" : "Not answering"}
-    </span>
-  );
-}
-
-function NotSetUp() {
-  return (
-    <span className="pill settings-pill is-off">
-      <span className="dot" aria-hidden="true" />
-      Not set up
     </span>
   );
 }

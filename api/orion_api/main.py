@@ -9,6 +9,7 @@ from contextlib import asynccontextmanager
 from http import HTTPStatus
 import json
 import logging
+import re
 import secrets
 from typing import Literal
 
@@ -20,15 +21,20 @@ import psycopg
 from psycopg_pool import PoolTimeout
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from .assistant import DEFAULT_MODEL, MODELS, Assistant, ModelFailed, case_text
+from .assistant import COMPOSE_LABEL, DEFAULT_MODEL, MODELS, Assistant, ModelFailed, case_text
 from .embedding import Embedder
-from .lookups import NOTE_LIMIT, Lookups, TriageLookups, intake
+from .lookups import NOTE_LIMIT, ComposeLookups, Lookups, TriageLookups, intake
+from .mail import TICKET_ID, Mailbox, MailProblem, new_links, subject_ids
+from .mail_sender import MailSender
+from .mail_writer import MailWriter
 from .mcp import PARSE_ERROR
 from .mcp import answer as mcp_answer
 from .mcp import failure as mcp_failure
-from .models import (AdminStatus, AllowedModel, Article, ArticleSummary, BacklogRow, CategoryRow, Company, CustomerListItem,
-                     CustomerProfile, ErrorResponse, FirstReplyRow, LanguageModels, Listing, PriorityRow, Report,
-                     SearchResults, SimilarTickets, Snapshot, TicketDetail, TicketPage, Triage, VolumeRow)
+from .models import (AdminStatus, AllowedModel, ApproveRequest, Article, ArticleSummary, BacklogRow, CaseNote, CaseNotes,
+                     CategoryRow, Company, ComposeRequest, CustomerListItem, CustomerProfile, Draft, DraftState,
+                     ErrorResponse, FirstReplyRow, FollowUp, LanguageModels, LinkRequest, Listing, MailAction, MailMatch,
+                     MailMessage, MailStatus, MailSync, NoteRequest, PriorityRow, Report, SearchResults, SimilarTickets,
+                     Snapshot, TicketDetail, TicketPage, Triage, VolumeRow)
 from .server_tools import ServerTools
 from .settings import load_settings
 from .store import report_description
@@ -108,6 +114,18 @@ def assistant(request: Request):
     return request.app.state.assistant
 
 
+def mailbox(request: Request):
+    return request.app.state.mailbox
+
+
+def mail_writer(request: Request):
+    return request.app.state.mail_writer
+
+
+def mail_sender(request: Request):
+    return request.app.state.mail_sender
+
+
 def allowed_model(model: str = Query(DEFAULT_MODEL, max_length=64,
                                      description="An `id` from /api/language-models/allow-list")):
     """Not a Literal, as other fixed choices are: the allow-list is the point here, so a refusal says which rule it hit."""
@@ -129,6 +147,60 @@ async def unless_gone(request, work):
             raise ApiError(503, "client_gone", "The client left before the answer finished.")
     return task.result()
 
+
+UNLINKED_SHOWN = 100
+LATE_SHOWN = 100
+MATCH_POOL = 50  # Nearest documents looked at for a duplicate; most tickets are resolved, so the pool has to be wide.
+MATCH_FLOOR = 0.65  # Measured on the test mail: real issues scored 0.69 to 0.70, junk text 0.49 to 0.56.
+MAIL_LINE = "luna-high"  # Mail goes to a line marked `mail` and no other.
+MAIL_PROBLEMS = {
+    "too_soon": (429, "mail_sync_too_soon", "The desk read the label under a minute ago. Try again shortly."),
+    "not_set_up": (503, "mail_not_set_up", "The customer mailbox is not set up."),
+    "unavailable": (503, "mail_unavailable", "The customer mailbox did not answer. Try again shortly."),
+    "recipient_not_allowed": (422, "recipient_not_allowed", "The desk sends only to its own mailbox or a plus form of it."),
+}
+
+
+def reply_subject(subject, ticket_id):
+    """`Re:` and the original subject unchanged, on one line, because Gmail starts a new conversation if the words change.
+    Only a subject with no ticket ID gains one in square brackets (contract C7)."""
+    line = " ".join((subject or "").split())
+    replied = line if re.match(r"re:", line, re.IGNORECASE) else f"Re: {line}"
+    return replied if ticket_id in TICKET_ID.findall(line) else f"{replied} [{ticket_id}]"
+
+
+def hours(value):
+    return f"{round(value, 2).normalize():f}"
+
+
+def follow_up_draft(case):
+    """An unsent status follow-up from the ticket's own fields, in the Orion reply voice. It is text to read: it is not
+    stored, and it can't be approved or sent. A reply goes through Compose, on a mail linked to the case."""
+    ticket_id, subject = case["ticket_id"], case["subject"] or "No subject recorded"
+    lines = [f"This is a follow-up on {ticket_id}, {subject}. Its status is {case['status'] or 'not recorded'}."]
+    if case["late_reply"]:
+        done = case["first_response_hours"]
+        target = hours(case["sla_response_hours"])
+        lines.append(f"No first response is recorded yet, against our {target} hour target." if done is None
+                     else f"The first response took {hours(done)} hours against our {target} hour target.")
+    if case["late_resolution"]:
+        lines.append(f"It has not been resolved yet, against our {hours(case['sla_resolution_hours'])} hour target.")
+    lines.append("We don't yet know when this will be resolved. We will write again once we have checked.")
+    approver = case["approver"] or "no agent on this case, so name one before approving"
+    return (f"DRAFT. NOT SENT. Awaiting approval by: {approver}\n\n"
+            f"Ticket: {ticket_id}   Customer: {case['customer_id'] or 'not recorded'}, {case['company'] or 'not recorded'}\n\n"
+            f"Subject: Re: {ticket_id}, {subject}\n\nHello,\n\n" + "\n\n".join(lines) + "\n\nOrion Support\n\n"
+            "--- Notes for the approver (not part of the reply) ---\n"
+            "Questions found: not checked. Read the case and answer each question before this goes out.\n"
+            "Sources used: ticket status and target fields.\n"
+            "Not known / needs checking: when the case will be resolved.")
+
+
+def draft_rows(db, draft_id):
+    rows = db.draft_actions(draft_id)
+    if rows is None or "drafted" not in rows:
+        raise ApiError(404, "draft_not_found", f"No draft has the ID {draft_id!r}.")
+    return rows
 
 EVENT_STREAM = {200: {"description": "A stream of `lookup` and `delta` events, then one `done` or `error`",
                       "content": {"text/event-stream": {"schema": {"type": "string"}}}}}
@@ -158,8 +230,9 @@ def split_owner(owner):
     return {"owner": name, "team": team if separator else None}
 
 
-def create_app(settings=None, store_instance=None, embedder_instance=None, assistant_instance=None):
-    """Build the app. Tests pass their own settings, store, embedder and assistant; uvicorn passes none."""
+def create_app(settings=None, store_instance=None, embedder_instance=None, assistant_instance=None, mailbox_instance=None,
+               mail_writer_instance=None, mail_sender_instance=None):
+    """Build the app. Tests pass their own settings, store, embedder, assistant and mailbox; uvicorn passes none."""
     settings = settings or load_settings()
 
     @asynccontextmanager
@@ -185,6 +258,9 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
     app.state.settings = settings
     app.state.embedder = embedder_instance or Embedder()
     app.state.assistant = assistant_instance or Assistant(settings.openrouter_api_key)
+    app.state.mailbox = mailbox_instance or Mailbox(settings)
+    app.state.mail_writer = mail_writer_instance or MailWriter(settings)
+    app.state.mail_sender = mail_sender_instance or MailSender(settings)
     if store_instance is not None:
         app.state.store = store_instance
 
@@ -240,6 +316,16 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
             raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
         return detail
 
+    @app.get("/api/tickets/{ticket_id}/mail", response_model=Listing[MailMessage], tags=["tickets"],
+             responses=errors(401, 404, 422, 503), summary="Customer mail linked to the ticket")
+    def list_ticket_mail(ticket_id: str = Path(max_length=32), _: str = Depends(role), db=Depends(store)):
+        """Exact, case-sensitive ID lookup (M01). Oldest first. Mail is as the sender wrote it, and nothing checks who
+        sent it. A ticket with no mail has an empty list."""
+        items = db.ticket_mail(ticket_id)
+        if items is None:
+            raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
+        return {"total": len(items), "items": items}
+
     @app.get("/api/tickets/{ticket_id}/knowledge", response_model=Listing[ArticleSummary], tags=["tickets"],
              responses=errors(401, 404, 422, 503), summary="Help articles titled exactly as the ticket's subject")
     def list_ticket_articles(ticket_id: str = Path(max_length=32), _: str = Depends(role), db=Depends(store)):
@@ -286,7 +372,8 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
         """Exact, case-sensitive ID lookup (M01). The ticket, its messages and its customer go to the language model,
         which can read other tickets, customers and help articles through read-only tools, all without emails or
         dates. OpenRouter also runs a sandboxed shell with no network for it, and, only when `web` is true, web search
-        and web fetch, each with a limit per question. Nothing is stored or sent to the customer, so a question knows
+        and web fetch, each with a limit per question. A model line marked `mail` can also read customer mail, but
+        not when `web` is true. Nothing is stored or sent to the customer, so a question knows
         the last one only through `note`, which the client sends back. Events: `lookup` has `label`,
         and any `delta` text before it was working text to drop; `delta` has `text`; `done` has `complete`, false when
         the answer was cut short, `found`, false when the model says the records don't hold the answer, `sources`,
@@ -306,7 +393,7 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
             raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
         if not model.configured:
             raise ApiError(503, "model_not_configured", "No language model is set up. OPENROUTER_API_KEY is missing.")
-        lookups = Lookups(db, search_model, detail)
+        lookups = Lookups(db, search_model, detail, mail=chosen.mail and not web)
         answer = model.answer(case_text(detail), q, lookups, ServerTools(web), (note or "").strip() or None, chosen.ask)
         return StreamingResponse(answer, media_type="text/event-stream",
                                  headers={"Cache-Control": "no-store, no-transform"})
@@ -342,6 +429,147 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
             return await unless_gone(request, model.triage(case_text(intake(detail)), TriageLookups(db, search_model, detail), chosen.triage))
         except ModelFailed as failed:
             raise ApiError(failed.body["status"], failed.body["code"], failed.body["message"]) from None
+
+    @app.get("/api/tickets/{ticket_id}/notes", response_model=CaseNotes, tags=["tickets"],
+             responses=errors(401, 404, 422, 503), summary="Internal notes and handoffs on the ticket, oldest first")
+    def list_case_notes(ticket_id: str = Path(max_length=32), _: str = Depends(role), db=Depends(store)):
+        """Exact, case-sensitive ID lookup (M01). Notes are for agents: no model tool, draft or mail reads them. `author`
+        and `handed_to` are names picked by whoever held the shared token. `agents` lists the names to pick from."""
+        rows = db.case_notes(ticket_id)
+        if rows is None:
+            raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
+        return {"total": len(rows), "items": rows, "agents": db.approvers()}
+
+    @app.post("/api/tickets/{ticket_id}/notes", response_model=CaseNote, tags=["tickets"],
+              responses=errors(401, 404, 422, 503), summary="Add an internal note, or hand the case to another agent")
+    def add_case_note(form: NoteRequest, ticket_id: str = Path(max_length=32), _: str = Depends(role), db=Depends(store),
+                      writer=Depends(mail_writer)):
+        """A note with `handed_to` is a handoff, recorded here only: the ticket's stored agent doesn't change. A note can't
+        be changed or removed."""
+        if not db.existing_tickets({ticket_id}):
+            raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
+        if not writer.configured:
+            raise ApiError(503, "mail_writer_not_set_up", "The login that stores mail is not set up.")
+        body = form.body.strip()
+        if not body:
+            raise ApiError(422, "invalid_request", "Write the note first.")
+        agents = db.approvers()
+        if form.author not in agents or form.handed_to not in (None, *agents):
+            raise ApiError(422, "unknown_agent", "Pick a name from the desk's agents.")
+        if form.handed_to == form.author:
+            raise ApiError(422, "same_agent", "Hand the case to another agent.")
+        row = {"note_id": "NT" + secrets.token_hex(6).upper(), "ticket_id": ticket_id, "author": form.author,
+               "handed_to": form.handed_to, "body": body}
+        return {**row, "noted_at": writer.add_note(row)}
+
+    # async, as triage is: it waits on the model, so the store and both mail steps go to threads.
+    @app.post("/api/tickets/{ticket_id}/drafts", response_model=Draft, tags=["tickets"],
+              responses=errors(401, 402, 404, 422, 429, 502, 503, 504),
+              summary="Draft a reply to one linked mail on GPT-6 Luna, citing one help article")
+    async def compose_draft(
+        request: Request,
+        form: ComposeRequest,
+        ticket_id: str = Path(max_length=32),
+        _: str = Depends(role),
+        db=Depends(store),
+        model=Depends(assistant),
+        search_model=Depends(embedder),
+        box=Depends(mailbox),
+        sender=Depends(mail_sender),
+        writer=Depends(mail_writer),
+    ):
+        """Always Luna: this route takes no model. The recipient is the From address of the mail answered, read from the
+        label, and a 422 `recipient_not_allowed` comes before any model call if that isn't the desk's own mailbox or a
+        plus form of it. A 422 `insufficient_evidence` means the model read no article that supports a reply, and no
+        draft is stored. A stored draft can't change: a different text is a new draft. Nothing is sent here."""
+        detail = await asyncio.to_thread(db.ticket, ticket_id)
+        if detail is None:
+            raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
+        mail = await asyncio.to_thread(db.thread_mail, ticket_id, form.mail_id)
+        if mail is None:
+            raise ApiError(404, "mail_not_found", f"No mail on this ticket has the ID {form.mail_id!r}.")
+        if not model.configured:
+            raise ApiError(503, "model_not_configured", "No language model is set up. OPENROUTER_API_KEY is missing.")
+        if not writer.configured:
+            raise ApiError(503, "mail_writer_not_set_up", "The login that stores mail is not set up.")
+        try:
+            recipient = await asyncio.to_thread(box.reply_address, mail["rfc_message_id"])
+        except MailProblem as problem:
+            raise ApiError(*MAIL_PROBLEMS[problem.code]) from None
+        if not sender.allowed(recipient):
+            raise ApiError(*MAIL_PROBLEMS["recipient_not_allowed"])
+        lookups = ComposeLookups(db, search_model, detail)
+        try:
+            decision = await unless_gone(request, model.compose(case_text(detail), mail, form.template, form.tone,
+                                                                form.language, lookups))
+        except ModelFailed as failed:
+            raise ApiError(failed.body["status"], failed.body["code"], failed.body["message"]) from None
+        article = await asyncio.to_thread(db.article, decision["article_id"])
+        cited = f"\n\nHelp article: {article['article_id']} · {article['title']}"
+        draft = {"recipient": recipient, "subject": reply_subject(mail["subject"], ticket_id),
+                 "body": decision["reply"].strip() + cited, "english": decision["english"].strip() + cited,
+                 "language": form.language, "article_id": article["article_id"], "article_title": article["title"]}
+        thread = {"in_reply_to": mail["rfc_message_id"],
+                  "references": f"{mail['replies_to']} {mail['rfc_message_id']}".strip()}
+        draft_id = "DR" + secrets.token_hex(6).upper()
+        await asyncio.to_thread(writer.add_action, {
+            "draft_id": draft_id, "action": "drafted", "ticket_id": ticket_id, "actor": COMPOSE_LABEL,
+            "details": json.dumps({**draft, **thread, "template": form.template, "tone": form.tone})})
+        return {**draft, "draft_id": draft_id, "status": "drafted", "approvers": await asyncio.to_thread(db.approvers)}
+
+    @app.get("/api/tickets/{ticket_id}/actions", response_model=Listing[MailAction], tags=["tickets"],
+             responses=errors(401, 404, 422, 503), summary="Every draft, approval and send on the ticket, oldest first")
+    def list_ticket_actions(ticket_id: str = Path(max_length=32), _: str = Depends(role), db=Depends(store)):
+        """Exact, case-sensitive ID lookup (M01). Rows are never changed. `actor` is a name picked by whoever held the
+        shared token, not a signed-in person. A ticket with no actions has an empty list."""
+        rows = db.ticket_actions(ticket_id)
+        if rows is None:
+            raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
+        drafts = {row["draft_id"]: json.loads(row["details"]) for row in rows if row["action"] == "drafted"}
+        items = [{**row, **{name: drafts.get(row["draft_id"], {}).get(name) for name in ("recipient", "subject", "article_id")}}
+                 for row in rows]
+        return {"total": len(items), "items": items}
+
+    @app.post("/api/drafts/{draft_id}/approve", response_model=DraftState, tags=["drafts"],
+              responses=errors(401, 404, 409, 422, 503), summary="Record who approved the exact draft")
+    def approve_draft(form: ApproveRequest, draft_id: str = Path(max_length=16), _: str = Depends(role), db=Depends(store),
+                      writer=Depends(mail_writer)):
+        """`approved_by` must be a name in the agents table. The shared token can't prove who pressed the button, so this
+        records a name, not a signed-in person. A draft is approved once: a 409 `already_approved` changes nothing."""
+        rows = draft_rows(db, draft_id)
+        if form.approved_by not in db.approvers():
+            raise ApiError(422, "unknown_approver", "Pick a name from the desk's agents.")
+        added = writer.add_action({"draft_id": draft_id, "action": "approved", "ticket_id": rows["drafted"]["ticket_id"],
+                                   "actor": form.approved_by, "details": None})
+        if not added:
+            raise ApiError(409, "already_approved", "This draft has already been approved.")
+        return {"draft_id": draft_id, "status": "approved", "approved_by": form.approved_by}
+
+    @app.post("/api/drafts/{draft_id}/send", response_model=DraftState, tags=["drafts"],
+              responses=errors(401, 404, 409, 422, 503), summary="Send an approved draft over SMTP in the mail's thread")
+    def send_draft(draft_id: str = Path(max_length=16), _: str = Depends(role), db=Depends(store), sender=Depends(mail_sender),
+                   writer=Depends(mail_writer)):
+        """Only an approved draft, and at most once: the `sending` row goes in first, and its primary key stops a second
+        press. A failure logs `failed` and is never retried, because SMTP can fail after the server took the mail. Compose
+        a new draft to try again. The stored text goes out exactly as it was approved."""
+        rows = draft_rows(db, draft_id)
+        if "approved" not in rows:
+            raise ApiError(409, "not_approved", "Only an approved draft can be sent.")
+        approver, ticket_id = rows["approved"]["actor"], rows["drafted"]["ticket_id"]
+
+        def log_action(action, details=None):
+            return writer.add_action({"draft_id": draft_id, "action": action, "ticket_id": ticket_id, "actor": approver,
+                                      "details": details})
+
+        if not log_action("sending"):
+            raise ApiError(409, "already_sent", "This draft has already gone to the mail server.")
+        try:
+            message_id = sender.send(json.loads(rows["drafted"]["details"]))
+        except MailProblem as problem:
+            log_action("failed", problem.code)
+            raise ApiError(*MAIL_PROBLEMS[problem.code]) from None
+        log_action("sent", message_id)
+        return {"draft_id": draft_id, "status": "sent", "approved_by": approver}
 
     @app.post("/api/mcp", tags=["mcp"], responses=errors(401, 503), summary="Read one ticket over MCP")
     def mcp(message=Depends(mcp_message), db=Depends(store)):
@@ -434,6 +662,110 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
     def get_allow_list(_: str = Depends(role)):
         """No check and no call, so a case page can read it on every load. `run` is false for a line the desk refuses."""
         return {"total": len(MODELS), "items": [line.listed() for line in MODELS.values()]}
+
+    @app.get("/api/mail/status", response_model=MailStatus, tags=["mail"], responses=errors(401),
+             summary="Whether the desk can reach the customer mailbox, and how much is under its label")
+    def get_mail_status(_: str = Depends(role), box=Depends(mailbox)):
+        """A live check at most once a minute. Other calls get the last answer, a failure included, so a change to the
+        mailbox can take up to a minute to show. IMAP logs in and asks for the label's counts, which opens no message and marks
+        none as read. SMTP logs in and quits, and this check sends nothing. `state` is the first check that did not
+        pass, IMAP before SMTP. `label`, `messages` and `unread` stay null when they aren't known. The mailbox address
+        and the password are never returned."""
+        return box.status()
+
+    @app.get("/api/mail/unlinked", response_model=Listing[MailMessage], tags=["mail"], responses=errors(401, 503),
+             summary="Customer mail that matched no ticket, newest first")
+    def list_unlinked_mail(_: str = Depends(role), db=Depends(store)):
+        """`items` stops at 100, and `total` counts them all."""
+        total, items = db.unlinked_mail(UNLINKED_SHOWN)
+        return {"total": total, "items": items}
+
+    # async, as triage is. Always a line marked `mail`, so this route takes no model.
+    @app.get("/api/mail/{mail_id}/triage", response_model=Triage, tags=["mail"],
+             responses=errors(401, 402, 404, 422, 429, 502, 503, 504),
+             summary="Category, priority and team for one mail, from GPT-6 Luna")
+    async def triage_mail(
+        request: Request,
+        mail_id: str = Path(max_length=16),
+        _: str = Depends(role),
+        db=Depends(store),
+        model=Depends(assistant),
+        search_model=Depends(embedder),
+    ):
+        """The model sees the mail's subject and body as a case that arrived by email, with no customer, and the reading
+        tools triage has. Nothing is stored, and nothing is linked."""
+        mail = await asyncio.to_thread(db.mail, mail_id)
+        if mail is None:
+            raise ApiError(404, "mail_not_found", f"No mail has the ID {mail_id!r}.")
+        if not model.configured:
+            raise ApiError(503, "model_not_configured", "No language model is set up. OPENROUTER_API_KEY is missing.")
+        detail = {"ticket": {"ticket_id": mail_id, "subject": mail["subject"], "body": mail["body"], "channel": "email"},
+                  "customer": None, "messages": []}
+        try:
+            return await unless_gone(request, model.triage(case_text(intake(detail)), TriageLookups(db, search_model, detail),
+                                                           MODELS[MAIL_LINE].triage))
+        except ModelFailed as failed:
+            raise ApiError(failed.body["status"], failed.body["code"], failed.body["message"]) from None
+
+    @app.get("/api/mail/{mail_id}/match", response_model=MailMatch, tags=["mail"], responses=errors(401, 404, 422, 503),
+             summary="The closest case still open, as a possible duplicate of one mail")
+    def match_mail(mail_id: str = Path(max_length=16), _: str = Depends(role), db=Depends(store),
+                   search_model=Depends(embedder)):
+        """Nearest by meaning, not proof: a person decides. `match` is null when no active case is close enough."""
+        mail = db.mail(mail_id)
+        if mail is None:
+            raise ApiError(404, "mail_not_found", f"No mail has the ID {mail_id!r}.")
+        text = f"{mail['subject'] or ''}\n{mail['body'] or ''}".strip()
+        hits = db.nearest(search_model.query(text), None, MATCH_POOL) if text else []
+        best = next((hit for hit in hits if hit["kind"] == "ticket" and hit["status"] != "resolved"
+                     and hit["similarity"] >= MATCH_FLOOR), None)
+        return {"match": best and {"ticket_id": best["id"], "subject": best["title"], "status": best["status"],
+                                   "similarity": best["similarity"]}}
+
+    @app.post("/api/mail/{mail_id}/link", response_model=MailMessage, tags=["mail"],
+              responses=errors(401, 404, 409, 422, 503), summary="Link one unlinked mail to a ticket by hand")
+    def link_mail(form: LinkRequest, mail_id: str = Path(max_length=16), _: str = Depends(role), db=Depends(store),
+                  writer=Depends(mail_writer)):
+        """A link can't be changed: a 409 `mail_already_linked` changes nothing."""
+        mail = db.mail(mail_id)
+        if mail is None:
+            raise ApiError(404, "mail_not_found", f"No mail has the ID {mail_id!r}.")
+        if not db.existing_tickets({form.ticket_id}):
+            raise ApiError(404, "ticket_not_found", f"No ticket has the ID {form.ticket_id!r}.")
+        if not writer.configured:
+            raise ApiError(503, "mail_writer_not_set_up", "The login that stores mail is not set up.")
+        if not writer.add_link(mail_id, form.ticket_id):
+            raise ApiError(409, "mail_already_linked", "This mail is already linked to a case.")
+        return {**mail, "ticket_id": form.ticket_id, "linked_by": "manual"}
+
+    @app.get("/api/follow-ups", response_model=Listing[FollowUp], tags=["follow-ups"], responses=errors(401, 503),
+             summary="Active cases past a target, oldest first, each with an unsent follow-up draft")
+    def list_follow_ups(_: str = Depends(role), db=Depends(store)):
+        """Late as on the queue, aged at the data snapshot. `items` stops at 100, and `total` counts them all. A `draft`
+        is text to read: it is not stored, and only Compose makes a reply that can be approved and sent."""
+        total, rows = db.late_cases(LATE_SHOWN)
+        return {"total": total, "items": [{**row, "draft": follow_up_draft(row)} for row in rows]}
+
+    @app.post("/api/mail/sync", response_model=MailSync, tags=["mail"], responses=errors(401, 429, 503),
+              summary="Copy new mail from the label into the desk and link it to tickets")
+    def sync_mail(_: str = Depends(role), db=Depends(store), box=Depends(mailbox), writer=Depends(mail_writer)):
+        """It reads the label without marking anything as read, adds rows to the two mail
+        tables through their own login, and sends nothing. At most once a minute and 25 mails a sync; `remaining` says
+        what is left. A subject with one known ticket ID links a mail, and a reply takes the ticket of what it answers."""
+        if not writer.configured:
+            raise ApiError(503, "mail_writer_not_set_up", "The login that stores mail is not set up.")
+        stored = db.mail_index()
+        try:
+            rows, skipped, remaining = box.read_new({row["rfc_message_id"] for row in stored})
+        except MailProblem as problem:
+            raise ApiError(*MAIL_PROBLEMS[problem.code]) from None
+        mails = [row for row in rows if row is not None]
+        wanted = set().union(*(subject_ids(mail) for mail in mails)) if mails else set()
+        links = new_links(mails, stored, db.existing_tickets(wanted) if wanted else set())
+        writer.save(mails, links)
+        new_ids = {mail["mail_id"] for mail in mails}
+        return {"added": len(mails), "linked": len(links), "skipped": skipped + len(rows) - len(mails),
+                "unlinked": len(new_ids - {link["mail_id"] for link in links}), "remaining": remaining}
 
     for path, name, row, summary in REPORT_ROUTES:
         app.get(f"/api/reports/{path}", response_model=Report[row], tags=["reports"],

@@ -403,6 +403,58 @@ class MailSync(BaseModel):
     remaining: int
 
 
+# Compose, Approve and Send. The recipient leaves the API here and nowhere else: a person can't approve what they can't read.
+class ComposeRequest(BaseModel):
+    mail_id: str = Field(min_length=1, max_length=16)
+    template: Literal["Answer", "Apology", "Status update", "Ask for details"]
+    tone: Literal["Warm", "Neutral", "Formal"]
+    language: Literal["English", "Spanish", "French", "German", "Hindi"]
+
+
+class ComposeDecision(BaseModel):
+    """What the language model must return. A null `article_id` means no article supports a reply."""
+    model_config = ConfigDict(extra="forbid")
+
+    article_id: str | None
+    reply: str = Field(max_length=6000)
+    english: str = Field(max_length=6000)
+
+
+class Draft(BaseModel):
+    draft_id: str
+    status: str
+    recipient: str
+    subject: str
+    body: str
+    english: str
+    language: str
+    article_id: str
+    article_title: str | None
+    approvers: list[str]
+
+
+class ApproveRequest(BaseModel):
+    approved_by: str = Field(min_length=1, max_length=100)
+
+
+class DraftState(BaseModel):
+    draft_id: str
+    status: str
+    approved_by: str
+
+
+# A log has to say when (contract C10, C13), so this shape carries a time. `recipient`, `subject` and `article_id` come
+# from the draft's first row.
+class MailAction(BaseModel):
+    draft_id: str
+    action: str
+    actor: str
+    acted_at: UtcDatetime
+    recipient: str | None
+    subject: str | None
+    article_id: str | None
+
+
 class MailCheck(BaseModel):
     address: str
     state: Literal["connected", "not_set_up", "login_refused", "label_missing", "not_answering"]

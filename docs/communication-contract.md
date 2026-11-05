@@ -1,6 +1,6 @@
 # Communication contract: customer mail
 
-- **Status:** The desk checks the customer mailbox, and copies mail under the label into its own tables (sections 7 and 8). It cannot send, and has no draft or send route. Everything else here is still contract only.
+- **Status:** The desk checks the customer mailbox, copies mail under the label into its own tables (sections 7 and 8), and can draft, approve and send a reply (section 9). Section 9 says where that first version differs from the rules below.
 - **Applies to:** reply drafting (plan increment 11, backlog B15) and every later feature that sends or receives customer mail.
 - **Sources:** [`notes/backlog.md`](../notes/backlog.md) (B15, M03, M06, M07), [`notes/plan.md`](../notes/plan.md) (increment 11, assumption A3), the `orion_desk` data, `AGENTS.md` and `README.md`.
 
@@ -95,8 +95,7 @@ A draft record holds: `draft_id`, `ticket_id`, `to`, `subject`, `body`, `sources
 | SMTP, `smtp.gmail.com:465` | Logs in and quits | Name a sender or recipient, or hand over a message |
 | The route | Returns each check's state, the label and its counts | Return the mailbox address or the password |
 
-- The adapter has no method that sends, so C1 and C2 hold because there is no way to break them. Sending needs new code.
-- C11 is not met yet. Before any send route exists, the capture mailbox must be built, because the settings in `.env` reach a real mailbox.
+- `mail.py` has no method that sends. The only sending code is `mail_sender.py` (section 9).
 - The check runs at most once a minute. Other calls get the last answer, a failure included, so repeated calls can't trip Google's login limits. The cache is held per running API, so several Vercel instances each keep their own.
 - Checks run with TLS and a verified certificate. There is no setting that turns this off.
 - CI uses the fake servers in `api/tests/fake_mail.py`. Only `api/tests/test_mail_live.py` reaches Gmail, and CI never runs it.
@@ -109,3 +108,22 @@ A draft record holds: `draft_id`, `ticket_id`, `to`, `subject`, `body`, `sources
 - **Linking:** one known ticket ID in the subject, or a reply to a linked mail through `References` and `In-Reply-To`. Gmail's own thread ID is not used: it left a reply with a changed subject in a thread of its own.
 - **Trust:** nothing checks the sender, so anyone can attach a mail to a ticket. The desk says so wherever it shows mail, and shows no address or date.
 - **Ask:** the mail tools are read-only and offered only on a line marked `mail` (GPT-6 Luna), and not when web is ticked, so a planted mail can't steer a fetch. Mail is data, never instructions.
+
+## 9. Compose, Approve and Send
+
+Authorised by the creator for section 13, on GPT-6 Luna only. `tools/create_mail_actions.py` makes `mail_actions`, which the mail writer login can read and add to, and never change.
+
+| Route | Does |
+|---|---|
+| `POST /api/tickets/{ticket_id}/drafts` | Template, tone and language in; a reply with English beside it and one cited article out. No article the model read means `422 insufficient_evidence` and no draft |
+| `POST /api/drafts/{draft_id}/approve` | Records a name from `agents`, once |
+| `POST /api/drafts/{draft_id}/send` | Sends the stored text over SMTP as a reply in the mail's thread, once |
+| `GET /api/tickets/{ticket_id}/actions` | The Action history on the case page |
+
+Where this differs from the rules above, by the creator's decision:
+
+- **C3:** approval is a name picked from a list, not a sign-in. The shared token can't prove who picked it.
+- **C8, C11:** the recipient is the From address of the mail answered, and it must be the desk's own mailbox or a plus form of it. `mail_sender.py` checks this again at the moment of sending. There is no capture mailbox: this rule stands in for it, and customers' real addresses can't be reached.
+- **C9:** a sent reply is logged in `mail_actions` and is not added to `messages`.
+- **Section 3:** a draft can't be edited or discarded, and a failed draft is not sent again. A different text, or another try, is a new draft. `sending` is written before SMTP, so a crash leaves a draft that can't go twice.
+- **Citation:** the article is a line the desk adds to the end of the text, so the approver reads it. It is not a file attachment.

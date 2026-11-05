@@ -94,6 +94,14 @@ UNLINKED_COUNT = """SELECT COUNT(*) AS n FROM mail_messages m LEFT JOIN mail_lin
 WHERE l.mail_id IS NULL"""
 MAIL_INDEX = """SELECT m.mail_id, m.rfc_message_id, m.replies_to, l.ticket_id
 FROM mail_messages m LEFT JOIN mail_links l ON l.mail_id = m.mail_id ORDER BY m.mail_id"""
+THREAD_MAIL = """SELECT m.rfc_message_id, m.replies_to, m.sender_name, m.subject, m.body
+FROM mail_messages m JOIN mail_links l ON l.mail_id = m.mail_id
+WHERE m.mail_id = %s AND l.ticket_id = %s"""
+APPROVERS = "SELECT name FROM agents WHERE name IS NOT NULL ORDER BY name, agent_id"
+# Each row waits on the one before it, so the time alone puts them in order.
+ACTION = "SELECT draft_id, action, ticket_id, actor, details, acted_at FROM mail_actions"
+TICKET_ACTIONS = ACTION + " WHERE ticket_id = %s ORDER BY acted_at, draft_id, action"
+DRAFT_ACTIONS = ACTION + " WHERE draft_id = %s"
 # Search (plan increment 8). The inner query keeps the shape HNSW needs:
 # ORDER BY embedding <=> vector LIMIT k on search_embeddings alone; titles are joined afterwards.
 EXACT_ID = ("SELECT 'ticket' AS kind, ticket_id AS id, subject AS title, status, priority, category, "
@@ -355,6 +363,28 @@ class Store:
         with self.pool.connection() as db:
             return db.execute(nearest_query(priority),
                               {"vector": as_vector(vector), "priority": priority, "limit": limit}).fetchall()
+
+    def thread_mail(self, ticket_id, mail_id):
+        """One mail linked to this ticket, with the IDs a reply needs; None if it isn't."""
+        with self.pool.connection() as db:
+            return db.execute(THREAD_MAIL, (mail_id, ticket_id)).fetchone()
+
+    def approvers(self):
+        with self.pool.connection() as db:
+            return [row["name"] for row in db.execute(APPROVERS).fetchall()]
+
+    def ticket_actions(self, ticket_id):
+        """The ticket's log, oldest first; None if the ticket ID is unknown."""
+        with self.pool.connection() as db:
+            if db.execute(TICKET_SUBJECT, (ticket_id,)).fetchone() is None:
+                return None
+            return db.execute(TICKET_ACTIONS, (ticket_id,)).fetchall()
+
+    def draft_actions(self, draft_id):
+        """The draft's rows by action; None if the draft ID is unknown."""
+        with self.pool.connection() as db:
+            rows = db.execute(DRAFT_ACTIONS, (draft_id,)).fetchall()
+        return {row["action"]: row for row in rows} or None
 
     def report(self, name):
         """Rows of api/reports/<name>.sql, in the order the file sorts them."""

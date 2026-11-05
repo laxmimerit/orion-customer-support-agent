@@ -1,6 +1,6 @@
 "use server";
 
-import { type MailSync, syncMail, ticketDetail } from "@/lib/api";
+import { type ApiProblem, type MailSync, approveDraft, sendDraft, syncMail, ticketDetail } from "@/lib/api";
 
 // What the queue's preview panel loads for the chosen ticket. Only these fields leave the server:
 // the ticket detail also holds contact details and timestamps, and the desk shows neither.
@@ -36,4 +36,16 @@ export async function syncMailbox(): Promise<MailSyncResult> {
   if (!result.ok) return { ok: false, message: result.problem.message };
   const { added, linked, unlinked, skipped, remaining } = result.data;
   return { ok: true, sync: { added, linked, unlinked, skipped, remaining } };
+}
+
+export type DraftStepResult = { ok: true } | { ok: false; problem: ApiProblem };
+
+export async function approveReply(draftId: string, approvedBy: string): Promise<DraftStepResult> {
+  const result = await approveDraft(draftId, approvedBy);
+  return result.ok ? { ok: true } : { ok: false, problem: result.problem };
+}
+
+export async function sendReply(draftId: string): Promise<DraftStepResult> {
+  const result = await sendDraft(draftId);
+  return result.ok ? { ok: true } : { ok: false, problem: result.problem };
 }

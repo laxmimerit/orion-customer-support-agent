@@ -9,7 +9,7 @@ Every route is built the same way, so a client, a test or a reader can trust one
 
 ## Stop first if the route writes
 
-Every route today is `GET`, apart from `/api/mcp`, which only reads, and `POST /api/mail/sync`, which the creator authorised and which adds to the two mail tables through its own login. Three things hold that in place: `test_every_route_is_get_only`, read-only sessions in `Store`, and the deployed `orion_desk_reader` login. Other writes belong to plan increments 10 and 11, and `docs/communication-contract.md` section 4 is still a proposal. Don't add a `POST`, `PATCH`, `PUT` or `DELETE` route, or loosen any of those three, until the creator authorises it. These rules cover read routes only.
+Every route today is `GET`, apart from `/api/mcp`, which only reads, and the mail writes the creator authorised: `POST /api/mail/sync` and the three in `docs/communication-contract.md` section 9, which add rows through their own login. Three things hold that in place: `test_every_route_is_get_only`, read-only sessions in `Store`, and the deployed `orion_desk_reader` login. Other writes belong to plan increments 10 and 11. Don't add a `POST`, `PATCH`, `PUT` or `DELETE` route, or loosen any of those three, until the creator authorises it. These rules cover read routes only.
 
 ## What one endpoint touches
 

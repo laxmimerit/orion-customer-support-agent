@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { type FormEvent, type KeyboardEvent, type MouseEvent, useEffect, useRef, useState } from "react";
 
+import { ComposePanel } from "@/components/compose-panel";
 import { AlertIcon } from "@/components/icons";
 import { ModelPicker } from "@/components/model-picker";
 import { type AskPage, type AskProblem, type AskSource, QUESTION_LIMIT, askProblem, askReader, plainAnswer, sourceHref } from "@/lib/ask";
@@ -84,9 +85,12 @@ function WebUse({ searches, pages }: { searches: string[]; pages: AskPage[] }) {
 
 // One question at a time: a new one replaces the last answer, and nothing is kept once the page closes. That goes for
 // the model's note too: the desk has no writes, so the note lives here and rides along with the next question.
-export function AskPanel({ ticketId, models }: { ticketId: string; models: AllowedModel[] }) {
+export function AskPanel({ ticketId, models, mails }: { ticketId: string; models: AllowedModel[]; mails: { mail_id: string; sender_name: string | null; subject: string | null }[] }) {
   const [question, setQuestion] = useState("");
   const [model, setModel] = useState(firstRunnable(models));
+  const [tab, setTab] = useState<"ask" | "compose">("ask");
+  // Compose runs on Luna only, so the tab shows only with Luna picked: nobody reaches a paid call from the free model.
+  const onLuna = modelHasMail(models, model);
   const [askedModel, setAskedModel] = useState<string | null>(null);
   const [web, setWeb] = useState(false);
   const [note, setNote] = useState<string | null>(null);
@@ -202,10 +206,22 @@ export function AskPanel({ ticketId, models }: { ticketId: string; models: Allow
   return (
     <section className="card ask" aria-labelledby="ask-title">
       <div className="ask-head">
-        <h2 id="ask-title">Ask about this case</h2>
-        <p>A language model starts from this ticket and can read other tickets, customers and help articles, and work things out in a sandbox with no network. It changes nothing, and nothing goes to the customer.</p>
+        <h2 id="ask-title">{tab === "ask" ? "Ask about this case" : "Answer the customer"}</h2>
+        <p>{tab === "ask"
+          ? "A language model starts from this ticket and can read other tickets, customers and help articles, and work things out in a sandbox with no network. It changes nothing, and nothing goes to the customer."
+          : "GPT-6 Luna drafts a reply to one linked mail and cites one help article. No article, no draft. A named person approves the exact text before anyone can send it."}</p>
+        {onLuna && (
+          <div className="compose-tabs">
+            <button className={tab === "ask" ? "button is-on" : "button"} type="button" aria-pressed={tab === "ask"} onClick={() => setTab("ask")}>Ask</button>
+            <button className={tab === "compose" ? "button is-on" : "button"} type="button" aria-pressed={tab === "compose"} onClick={() => setTab("compose")}>Compose</button>
+          </div>
+        )}
       </div>
 
+      {/* Mounted once opened and only hidden, so a draft waiting for approval survives a look back at Ask. */}
+      {onLuna && <div hidden={tab !== "compose"}><ComposePanel ticketId={ticketId} mails={mails} /></div>}
+
+      <div hidden={tab !== "ask"}>
       <form className="ask-form" onSubmit={submit}>
         <label htmlFor="ask-question">Your question</label>
         <textarea
@@ -281,6 +297,7 @@ export function AskPanel({ ticketId, models }: { ticketId: string; models: Allow
           )}
         </div>
       )}
+      </div>
     </section>
   );
 }

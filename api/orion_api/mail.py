@@ -185,6 +185,31 @@ class Mailbox:
             quietly(client.logout)
             return answer
 
+    def reply_address(self, rfc_message_id):
+        """The From address of one mail under the label, read-only. The desk stores no address, so this is asked for only
+        when a person composes a reply. Raises MailProblem."""
+        with self._lock:
+            if not (self._user and self._password and self._label):
+                raise MailProblem("not_set_up")
+            try:
+                client = self._open_imap()
+            except (OSError, imaplib.IMAP4.error) as reason:
+                failed("imap", reason)
+                raise MailProblem("unavailable") from None
+            try:
+                client.login(self._user, self._password)
+                if client.select(quoted(self._label), readonly=True)[0] != "OK":
+                    raise imaplib.IMAP4.error("no label")
+                _, found = client.uid("SEARCH", "HEADER", "Message-ID", quoted(rfc_message_id))
+                _, parts = client.uid("FETCH", found[0].split()[0], "(BODY.PEEK[HEADER.FIELDS (FROM)])")
+                sender = email.message_from_bytes(parts[0][1], policy=policy.default)["From"]
+            except (OSError, imaplib.IMAP4.error, UnicodeError, IndexError, TypeError) as reason:
+                quietly(client.shutdown)
+                failed("imap", reason)
+                raise MailProblem("unavailable") from None
+            quietly(client.logout)
+            return parseaddr(str(sender or ""))[1]
+
     def _read_label_mail(self, client, known):
         client.login(self._user, self._password)
         if client.select(quoted(self._label), readonly=True)[0] != "OK":

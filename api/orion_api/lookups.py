@@ -249,6 +249,20 @@ class Lookups:
         return [record for _, record in sorted(named, key=lambda pair: pair[0])]
 
 
+class ComposeLookups(Lookups):
+    """Ask's tools and the mail tools, remembering which articles the model read in full: only those can be cited."""
+
+    def __init__(self, db, embedder, detail):
+        super().__init__(db, embedder, detail, mail=True)
+        self.read = set()
+
+    def read_article(self, request):
+        result = super().read_article(request)
+        if result is not None:
+            self.read.add(result["article_id"])
+        return result
+
+
 def intake(detail):
     """A case as it stood on arrival: only what the customer wrote and who they are."""
     return {"ticket": {name: detail["ticket"].get(name) for name in INTAKE_FIELDS}, "customer": detail["customer"],

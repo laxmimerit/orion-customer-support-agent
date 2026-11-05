@@ -315,7 +315,7 @@ function refused(response: Response, body: { error?: { code?: unknown; message?:
   };
 }
 
-async function send<T>(method: "GET" | "POST", route: string, authorised: boolean, signal: AbortSignal): Promise<Result<T>> {
+async function send<T>(method: "GET" | "POST", route: string, authorised: boolean, signal: AbortSignal, json?: unknown): Promise<Result<T>> {
   const { baseUrl, token } = settings();
   if (authorised && !token) {
     return { ok: false, problem: { status: null, code: "missing_token",
@@ -325,9 +325,10 @@ async function send<T>(method: "GET" | "POST", route: string, authorised: boolea
   try {
     response = await fetch(baseUrl + route, {
       cache: "no-store",
-      headers: authorised ? { Authorization: `Bearer ${token}` } : {},
+      headers: { ...(authorised ? { Authorization: `Bearer ${token}` } : {}), ...(json === undefined ? {} : { "Content-Type": "application/json" }) },
       signal,
       ...(method === "GET" ? {} : { method }),
+      ...(json === undefined ? {} : { body: JSON.stringify(json) }),
     });
   } catch {
     return { ok: false, problem: { status: null, code: "api_unreachable",
@@ -412,8 +413,53 @@ export function mailStatus() {
   return get<MailStatus>("/api/mail/status");
 }
 
-export function ticketMail(ticketId: string) {
-  return get<MailList>(`/api/tickets/${encodeURIComponent(ticketId)}/mail`);
+// `cache` for the reason ticketDetail gives: the page and the mail card both read it.
+export const ticketMail = cache((ticketId: string) =>
+  get<MailList>(`/api/tickets/${encodeURIComponent(ticketId)}/mail`));
+
+// The one place an address reaches the desk: a person can't approve what they can't read.
+export type ComposedDraft = {
+  draft_id: string;
+  status: string;
+  recipient: string;
+  subject: string;
+  body: string;
+  english: string;
+  language: string;
+  article_id: string;
+  article_title: string | null;
+  approvers: string[];
+};
+
+export type DraftState = { draft_id: string; status: string; approved_by: string };
+
+export type MailAction = {
+  draft_id: string;
+  action: string;
+  actor: string;
+  acted_at: string;
+  recipient: string | null;
+  subject: string | null;
+  article_id: string | null;
+};
+
+// Longer than the 20 seconds in `get`, as a triage is, and `signal` ends the call if the agent leaves.
+export function composeDraft(ticketId: string, form: unknown, signal: AbortSignal) {
+  return send<ComposedDraft>("POST", `/api/tickets/${encodeURIComponent(ticketId)}/drafts`, true,
+    AbortSignal.any([signal, AbortSignal.timeout(ANSWER_LIMIT_MS)]), form);
+}
+
+export function approveDraft(draftId: string, approvedBy: string) {
+  return send<DraftState>("POST", `/api/drafts/${encodeURIComponent(draftId)}/approve`, true, AbortSignal.timeout(20_000), { approved_by: approvedBy });
+}
+
+// Longer than `get`: the API logs in to SMTP and hands the mail over before it answers.
+export function sendDraft(draftId: string) {
+  return send<DraftState>("POST", `/api/drafts/${encodeURIComponent(draftId)}/send`, true, AbortSignal.timeout(60_000));
+}
+
+export function ticketActions(ticketId: string) {
+  return get<{ total: number; items: MailAction[] }>(`/api/tickets/${encodeURIComponent(ticketId)}/actions`);
 }
 
 export function unlinkedMail() {

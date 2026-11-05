@@ -19,16 +19,18 @@ def test_every_route_is_under_api_apart_from_docs(client):
              "/api/tickets/{ticket_id}/similar", "/api/tickets/{ticket_id}/ask",
              "/api/tickets/{ticket_id}/triage", "/api/language-models",
              "/api/language-models/allow-list", "/api/mail/status", "/api/mail/unlinked", "/api/mail/sync",
-             "/api/tickets/{ticket_id}/mail"}
+             "/api/tickets/{ticket_id}/mail", "/api/tickets/{ticket_id}/drafts", "/api/tickets/{ticket_id}/actions",
+             "/api/drafts/{draft_id}/approve", "/api/drafts/{draft_id}/send"}
     assert paths == {"/api/tickets", "/api/tickets/{ticket_id}", "/api/search", "/api/admin/status", "/api/mcp", *reports,
                      *pages}
 
 
 def test_every_route_is_get_only(client):
-    """Apart from /api/mcp, as MCP sends everything by POST, and /api/mail/sync, the desk's one write. test_mcp.py holds
-    the first to reading, and the database login holds the second to adding mail."""
+    """Apart from /api/mcp, as MCP sends everything by POST, and the mail writes. test_mcp.py holds the first to reading,
+    and the database login holds the rest to adding rows. test_compose.py covers the three that make and send a reply."""
     methods = {method for route in client.app.routes
-               if route.path.startswith("/api") and route.path not in ("/api/mcp", "/api/mail/sync")
+               if route.path.startswith("/api") and route.path not in ("/api/mcp", "/api/mail/sync", "/api/tickets/{ticket_id}/drafts",
+                                                                          "/api/drafts/{draft_id}/approve", "/api/drafts/{draft_id}/send")
                for method in route.methods}
     assert methods <= {"GET", "HEAD"}
     response = client.post("/api/tickets", headers=auth(AGENT))

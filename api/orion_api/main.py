@@ -9,6 +9,7 @@ from contextlib import asynccontextmanager
 from http import HTTPStatus
 import json
 import logging
+import re
 import secrets
 from typing import Literal
 
@@ -20,16 +21,18 @@ import psycopg
 from psycopg_pool import PoolTimeout
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from .assistant import DEFAULT_MODEL, MODELS, Assistant, ModelFailed, case_text
+from .assistant import COMPOSE_LABEL, DEFAULT_MODEL, MODELS, Assistant, ModelFailed, case_text
 from .embedding import Embedder
-from .lookups import NOTE_LIMIT, Lookups, TriageLookups, intake
+from .lookups import NOTE_LIMIT, ComposeLookups, Lookups, TriageLookups, intake
 from .mail import Mailbox, MailProblem, new_links, subject_ids
+from .mail_sender import MailSender
 from .mail_writer import MailWriter
 from .mcp import PARSE_ERROR
 from .mcp import answer as mcp_answer
 from .mcp import failure as mcp_failure
-from .models import (AdminStatus, AllowedModel, Article, ArticleSummary, BacklogRow, CategoryRow, Company, CustomerListItem,
-                     CustomerProfile, ErrorResponse, FirstReplyRow, LanguageModels, Listing, MailMessage, MailStatus, MailSync, PriorityRow, Report,
+from .models import (AdminStatus, AllowedModel, ApproveRequest, Article, ArticleSummary, BacklogRow, CategoryRow, Company,
+                     ComposeRequest, CustomerListItem, CustomerProfile, Draft, DraftState, ErrorResponse, FirstReplyRow,
+                     LanguageModels, Listing, MailAction, MailMessage, MailStatus, MailSync, PriorityRow, Report,
                      SearchResults, SimilarTickets, Snapshot, TicketDetail, TicketPage, Triage, VolumeRow)
 from .server_tools import ServerTools
 from .settings import load_settings
@@ -118,6 +121,10 @@ def mail_writer(request: Request):
     return request.app.state.mail_writer
 
 
+def mail_sender(request: Request):
+    return request.app.state.mail_sender
+
+
 def allowed_model(model: str = Query(DEFAULT_MODEL, max_length=64,
                                      description="An `id` from /api/language-models/allow-list")):
     """Not a Literal, as other fixed choices are: the allow-list is the point here, so a refusal says which rule it hit."""
@@ -145,7 +152,21 @@ MAIL_PROBLEMS = {
     "too_soon": (429, "mail_sync_too_soon", "The desk read the label under a minute ago. Try again shortly."),
     "not_set_up": (503, "mail_not_set_up", "The customer mailbox is not set up."),
     "unavailable": (503, "mail_unavailable", "The customer mailbox did not answer. Try again shortly."),
+    "recipient_not_allowed": (422, "recipient_not_allowed", "The desk sends only to its own mailbox or a plus form of it."),
 }
+
+
+def reply_subject(subject, ticket_id):
+    """One line, `Re:` once, and the ticket ID in square brackets (contract C7)."""
+    line = re.sub(r"^(re:\s*)+", "", " ".join((subject or "").split()), flags=re.IGNORECASE)
+    return f"Re: {line}" + ("" if f"[{ticket_id}]" in line else f" [{ticket_id}]")
+
+
+def draft_rows(db, draft_id):
+    rows = db.draft_actions(draft_id)
+    if rows is None or "drafted" not in rows:
+        raise ApiError(404, "draft_not_found", f"No draft has the ID {draft_id!r}.")
+    return rows
 
 EVENT_STREAM = {200: {"description": "A stream of `lookup` and `delta` events, then one `done` or `error`",
                       "content": {"text/event-stream": {"schema": {"type": "string"}}}}}
@@ -176,7 +197,7 @@ def split_owner(owner):
 
 
 def create_app(settings=None, store_instance=None, embedder_instance=None, assistant_instance=None, mailbox_instance=None,
-               mail_writer_instance=None):
+               mail_writer_instance=None, mail_sender_instance=None):
     """Build the app. Tests pass their own settings, store, embedder, assistant and mailbox; uvicorn passes none."""
     settings = settings or load_settings()
 
@@ -205,6 +226,7 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
     app.state.assistant = assistant_instance or Assistant(settings.openrouter_api_key)
     app.state.mailbox = mailbox_instance or Mailbox(settings)
     app.state.mail_writer = mail_writer_instance or MailWriter(settings)
+    app.state.mail_sender = mail_sender_instance or MailSender(settings)
     if store_instance is not None:
         app.state.store = store_instance
 
@@ -374,6 +396,115 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
         except ModelFailed as failed:
             raise ApiError(failed.body["status"], failed.body["code"], failed.body["message"]) from None
 
+    # async, as triage is: it waits on the model, so the store and both mail steps go to threads.
+    @app.post("/api/tickets/{ticket_id}/drafts", response_model=Draft, tags=["tickets"],
+              responses=errors(401, 402, 404, 422, 429, 502, 503, 504),
+              summary="Draft a reply to one linked mail on GPT-6 Luna, citing one help article")
+    async def compose_draft(
+        request: Request,
+        form: ComposeRequest,
+        ticket_id: str = Path(max_length=32),
+        _: str = Depends(role),
+        db=Depends(store),
+        model=Depends(assistant),
+        search_model=Depends(embedder),
+        box=Depends(mailbox),
+        sender=Depends(mail_sender),
+        writer=Depends(mail_writer),
+    ):
+        """Always Luna: this route takes no model. The recipient is the From address of the mail answered, read from the
+        label, and a 422 `recipient_not_allowed` comes before any model call if that isn't the desk's own mailbox or a
+        plus form of it. A 422 `insufficient_evidence` means the model read no article that supports a reply, and no
+        draft is stored. A stored draft can't change: a different text is a new draft. Nothing is sent here."""
+        detail = await asyncio.to_thread(db.ticket, ticket_id)
+        if detail is None:
+            raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
+        mail = await asyncio.to_thread(db.thread_mail, ticket_id, form.mail_id)
+        if mail is None:
+            raise ApiError(404, "mail_not_found", f"No mail on this ticket has the ID {form.mail_id!r}.")
+        if not model.configured:
+            raise ApiError(503, "model_not_configured", "No language model is set up. OPENROUTER_API_KEY is missing.")
+        if not writer.configured:
+            raise ApiError(503, "mail_writer_not_set_up", "The login that stores mail is not set up.")
+        try:
+            recipient = await asyncio.to_thread(box.reply_address, mail["rfc_message_id"])
+        except MailProblem as problem:
+            raise ApiError(*MAIL_PROBLEMS[problem.code]) from None
+        if not sender.allowed(recipient):
+            raise ApiError(*MAIL_PROBLEMS["recipient_not_allowed"])
+        lookups = ComposeLookups(db, search_model, detail)
+        try:
+            decision = await unless_gone(request, model.compose(case_text(detail), mail, form.template, form.tone,
+                                                                form.language, lookups))
+        except ModelFailed as failed:
+            raise ApiError(failed.body["status"], failed.body["code"], failed.body["message"]) from None
+        article = await asyncio.to_thread(db.article, decision["article_id"])
+        cited = f"\n\nHelp article: {article['article_id']} · {article['title']}"
+        draft = {"recipient": recipient, "subject": reply_subject(mail["subject"], ticket_id),
+                 "body": decision["reply"].strip() + cited, "english": decision["english"].strip() + cited,
+                 "language": form.language, "article_id": article["article_id"], "article_title": article["title"]}
+        thread = {"in_reply_to": mail["rfc_message_id"],
+                  "references": f"{mail['replies_to']} {mail['rfc_message_id']}".strip()}
+        draft_id = "DR" + secrets.token_hex(6).upper()
+        await asyncio.to_thread(writer.add_action, {
+            "draft_id": draft_id, "action": "drafted", "ticket_id": ticket_id, "actor": COMPOSE_LABEL,
+            "details": json.dumps({**draft, **thread, "template": form.template, "tone": form.tone})})
+        return {**draft, "draft_id": draft_id, "status": "drafted", "approvers": await asyncio.to_thread(db.approvers)}
+
+    @app.get("/api/tickets/{ticket_id}/actions", response_model=Listing[MailAction], tags=["tickets"],
+             responses=errors(401, 404, 422, 503), summary="Every draft, approval and send on the ticket, oldest first")
+    def list_ticket_actions(ticket_id: str = Path(max_length=32), _: str = Depends(role), db=Depends(store)):
+        """Exact, case-sensitive ID lookup (M01). Rows are never changed. `actor` is a name picked by whoever held the
+        shared token, not a signed-in person. A ticket with no actions has an empty list."""
+        rows = db.ticket_actions(ticket_id)
+        if rows is None:
+            raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
+        drafts = {row["draft_id"]: json.loads(row["details"]) for row in rows if row["action"] == "drafted"}
+        items = [{**row, **{name: drafts.get(row["draft_id"], {}).get(name) for name in ("recipient", "subject", "article_id")}}
+                 for row in rows]
+        return {"total": len(items), "items": items}
+
+    @app.post("/api/drafts/{draft_id}/approve", response_model=DraftState, tags=["drafts"],
+              responses=errors(401, 404, 409, 422, 503), summary="Record who approved the exact draft")
+    def approve_draft(form: ApproveRequest, draft_id: str = Path(max_length=16), _: str = Depends(role), db=Depends(store),
+                      writer=Depends(mail_writer)):
+        """`approved_by` must be a name in the agents table. The shared token can't prove who pressed the button, so this
+        records a name, not a signed-in person. A draft is approved once: a 409 `already_approved` changes nothing."""
+        rows = draft_rows(db, draft_id)
+        if form.approved_by not in db.approvers():
+            raise ApiError(422, "unknown_approver", "Pick a name from the desk's agents.")
+        added = writer.add_action({"draft_id": draft_id, "action": "approved", "ticket_id": rows["drafted"]["ticket_id"],
+                                   "actor": form.approved_by, "details": None})
+        if not added:
+            raise ApiError(409, "already_approved", "This draft has already been approved.")
+        return {"draft_id": draft_id, "status": "approved", "approved_by": form.approved_by}
+
+    @app.post("/api/drafts/{draft_id}/send", response_model=DraftState, tags=["drafts"],
+              responses=errors(401, 404, 409, 422, 503), summary="Send an approved draft over SMTP in the mail's thread")
+    def send_draft(draft_id: str = Path(max_length=16), _: str = Depends(role), db=Depends(store), sender=Depends(mail_sender),
+                   writer=Depends(mail_writer)):
+        """Only an approved draft, and at most once: the `sending` row goes in first, and its primary key stops a second
+        press. A failure logs `failed` and is never retried, because SMTP can fail after the server took the mail. Compose
+        a new draft to try again. The stored text goes out exactly as it was approved."""
+        rows = draft_rows(db, draft_id)
+        if "approved" not in rows:
+            raise ApiError(409, "not_approved", "Only an approved draft can be sent.")
+        approver, ticket_id = rows["approved"]["actor"], rows["drafted"]["ticket_id"]
+
+        def log_action(action, details=None):
+            return writer.add_action({"draft_id": draft_id, "action": action, "ticket_id": ticket_id, "actor": approver,
+                                      "details": details})
+
+        if not log_action("sending"):
+            raise ApiError(409, "already_sent", "This draft has already gone to the mail server.")
+        try:
+            message_id = sender.send(json.loads(rows["drafted"]["details"]))
+        except MailProblem as problem:
+            log_action("failed", problem.code)
+            raise ApiError(*MAIL_PROBLEMS[problem.code]) from None
+        log_action("sent", message_id)
+        return {"draft_id": draft_id, "status": "sent", "approved_by": approver}
+
     @app.post("/api/mcp", tags=["mcp"], responses=errors(401, 503), summary="Read one ticket over MCP")
     def mcp(message=Depends(mcp_message), db=Depends(store)):
         """MCP's Streamable HTTP transport, with one read-only tool. A POST because MCP sends everything that way; it
@@ -471,7 +602,7 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
     def get_mail_status(_: str = Depends(role), box=Depends(mailbox)):
         """A live check at most once a minute. Other calls get the last answer, a failure included, so a change to the
         mailbox can take up to a minute to show. IMAP logs in and asks for the label's counts, which opens no message and marks
-        none as read. SMTP logs in and quits, and the desk has no way to send. `state` is the first check that did not
+        none as read. SMTP logs in and quits, and this check sends nothing. `state` is the first check that did not
         pass, IMAP before SMTP. `label`, `messages` and `unread` stay null when they aren't known. The mailbox address
         and the password are never returned."""
         return box.status()
@@ -486,7 +617,7 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
     @app.post("/api/mail/sync", response_model=MailSync, tags=["mail"], responses=errors(401, 429, 503),
               summary="Copy new mail from the label into the desk and link it to tickets")
     def sync_mail(_: str = Depends(role), db=Depends(store), box=Depends(mailbox), writer=Depends(mail_writer)):
-        """The desk's one write route. It reads the label without marking anything as read, adds rows to the two mail
+        """It reads the label without marking anything as read, adds rows to the two mail
         tables through their own login, and sends nothing. At most once a minute and 25 mails a sync; `remaining` says
         what is left. A subject with one known ticket ID links a mail, and a reply takes the ticket of what it answers."""
         if not writer.configured:

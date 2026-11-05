@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import { ActionHistory } from "@/components/action-history";
 import { AskPanel } from "@/components/ask-panel";
 import { CaseClock } from "@/components/case-clock";
 import { Conversation } from "@/components/conversation";
@@ -11,7 +12,7 @@ import { BackIcon } from "@/components/icons";
 import { MailLoading, MailThread } from "@/components/mail-thread";
 import { SimilarLoading, SimilarTickets } from "@/components/similar-tickets";
 import { TriagePanel } from "@/components/triage-panel";
-import { type Customer, type Ticket, modelAllowList, ticketDetail } from "@/lib/api";
+import { type Customer, type Ticket, modelAllowList, ticketDetail, ticketMail } from "@/lib/api";
 import { decodeId, queueHref, queuePage } from "@/lib/detail-pages";
 import { NOT_RECORDED, channelLabel, initial, orNotRecorded, plural, sentenceCase } from "@/lib/format";
 
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function CasePage({ params, searchParams }: Props) {
   const ticketId = decodeId((await params).ticketId);
   const queue = queueHref(queuePage((await searchParams).queue));
-  const [result, allowList] = await Promise.all([ticketDetail(ticketId), modelAllowList()]);
+  const [result, allowList, mail] = await Promise.all([ticketDetail(ticketId), modelAllowList(), ticketMail(ticketId)]);
 
   if (!result.ok) {
     // 404: no such ticket. 422: an ID the API cannot hold (over 32 characters).
@@ -89,7 +90,11 @@ export default async function CasePage({ params, searchParams }: Props) {
               <MailThread ticketId={ticket.ticket_id} />
             </Suspense>
             <TriagePanel key={`triage-${ticket.ticket_id}`} ticketId={ticket.ticket_id} models={models} />
-            <AskPanel key={ticket.ticket_id} ticketId={ticket.ticket_id} models={models} />
+            <AskPanel key={ticket.ticket_id} ticketId={ticket.ticket_id} models={models}
+              mails={mail.ok ? mail.data.items.map(({ mail_id, sender_name, subject }) => ({ mail_id, sender_name, subject })) : []} />
+            <Suspense key={`actions-${ticket.ticket_id}`} fallback={null}>
+              <ActionHistory ticketId={ticket.ticket_id} />
+            </Suspense>
           </div>
           <aside className="split-rail" aria-label="Case details">
             <Suspense key={ticket.ticket_id} fallback={<SimilarLoading />}>

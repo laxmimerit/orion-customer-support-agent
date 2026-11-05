@@ -18,7 +18,7 @@ package = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-markers = ["live: reads the real orion_desk database, skipped when PG_* settings are missing; the case set also calls OpenRouter, and only with ORION_LIVE_MODELS set"]
+markers = ["live: reads the real orion_desk database, skipped when PG_* settings are missing; the case set also calls OpenRouter, and only with ORION_LIVE_MODELS set; the mail check logs in to the real mailbox, sends nothing, and skips without ORION_MAIL_* settings"]
 
 [dependency-groups]
 agent = [

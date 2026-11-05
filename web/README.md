@@ -5,7 +5,7 @@ Next.js app for the Orion desk: the ticket queue (`/`), a case page per ticket (
 - Every value comes from the read-only desk API in `api/`, never from `notes/design-data`. No emails, dates or times are shown.
 - Pages render on the server. `lib/api.ts` is `server-only`: it reads `ORION_API_URL` (default `http://127.0.0.1:8000`) and `ORION_AGENT_TOKEN` from the environment, then from the repository's `.env`. The token is never sent to the browser, and the admin token is not read. The queue's preview reads through a server action for the same reason.
 - Search on the queue uses the API's `/api/search`. It needs the API's local embedding model, so the first search after a start is slower.
-- Mail is not set up; Settings says so and offers no controls. Triage and the Ask panel pick a model from the API's allow-list, and Settings shows that list read-only.
+- Settings shows whether the API can reach the customer mailbox, with the counts under its label. It offers no controls, and the desk can't send mail. Triage and the Ask panel pick a model from the API's allow-list, and Settings shows that list read-only.
 
 Run the API first (`orion-api` in `.claude/launch.json`), then:
 

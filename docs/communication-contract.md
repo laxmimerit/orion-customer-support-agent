@@ -1,6 +1,6 @@
 # Communication contract: customer mail
 
-- **Status:** Contract only. No mail code exists yet. The API in `api/` is read-only and has no draft or send route.
+- **Status:** The desk checks the customer mailbox and reports it on Settings (section 7). It reads no message and cannot send. The API in `api/` is read-only and has no draft or send route. Everything else here is still contract only.
 - **Applies to:** reply drafting (plan increment 11, backlog B15) and every later feature that sends or receives customer mail.
 - **Sources:** [`notes/backlog.md`](../notes/backlog.md) (B15, M03, M06, M07), [`notes/plan.md`](../notes/plan.md) (increment 11, assumption A3), the `orion_desk` data, `AGENTS.md` and `README.md`.
 
@@ -80,7 +80,23 @@ A draft record holds: `draft_id`, `ticket_id`, `to`, `subject`, `body`, `sources
 ## 6. Open questions
 
 1. How a person signs in, and who may approve: any agent, or a lead only? (C3)
-2. Which mail provider, and how inbound mail reaches the desk.
+2. How inbound mail reaches the desk. The provider is settled: Gmail over IMAP and SMTP (section 7).
 3. Whether tickets that arrived by web, API or chat get mail replies, or a reply on their own channel.
 4. What happens to inbound mail with no ticket ID in the subject: a triage list, or a new ticket?
 5. How long drafts, discarded drafts and the state log are kept.
+
+## 7. The mailbox connection today
+
+`api/orion_api/mail.py` holds one check, reached through `GET /api/mail/status` and shown on the Customer mail card on Settings.
+
+| Part | What it does | What it never does |
+|---|---|---|
+| IMAP, `imap.gmail.com:993` | Logs in, asks `STATUS` for the counts under `ORION_MAIL_LABEL`, logs out | Open the mailbox, read a subject or body, mark anything as read |
+| SMTP, `smtp.gmail.com:465` | Logs in and quits | Name a sender or recipient, or hand over a message |
+| The route | Returns each check's state, the label and its counts | Return the mailbox address or the password |
+
+- The adapter has no method that sends, so C1 and C2 hold because there is no way to break them. Sending needs new code.
+- C11 is not met yet. Before any send route exists, the capture mailbox must be built, because the settings in `.env` reach a real mailbox.
+- The check runs at most once a minute. Other calls get the last answer, a failure included, so repeated calls can't trip Google's login limits. The cache is held per running API, so several Vercel instances each keep their own.
+- Checks run with TLS and a verified certificate. There is no setting that turns this off.
+- CI uses the fake servers in `api/tests/fake_mail.py`. Only `api/tests/test_mail_live.py` reaches Gmail, and CI never runs it.

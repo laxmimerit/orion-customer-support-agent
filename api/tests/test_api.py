@@ -18,7 +18,7 @@ def test_every_route_is_under_api_apart_from_docs(client):
              "/api/company", "/api/snapshot", "/api/tickets/{ticket_id}/knowledge",
              "/api/tickets/{ticket_id}/similar", "/api/tickets/{ticket_id}/ask",
              "/api/tickets/{ticket_id}/triage", "/api/language-models",
-             "/api/language-models/allow-list"}
+             "/api/language-models/allow-list", "/api/mail/status"}
     assert paths == {"/api/tickets", "/api/tickets/{ticket_id}", "/api/search", "/api/admin/status", "/api/mcp", *reports,
                      *pages}
 
@@ -45,7 +45,7 @@ def test_root_opens_the_docs(client):
                                   "/api/knowledge", "/api/knowledge/KB022", "/api/company", "/api/snapshot",
                                   "/api/tickets/T00727/knowledge", "/api/tickets/T00727/similar",
                                   "/api/tickets/T00727/ask?q=Why", "/api/tickets/T00727/triage",
-                                  "/api/language-models", "/api/language-models/allow-list"])
+                                  "/api/language-models", "/api/language-models/allow-list", "/api/mail/status"])
 def test_a_token_is_required(client, path):
     response = client.get(path)
     assert response.status_code == 401
@@ -353,7 +353,7 @@ def test_owner_splits_at_the_first_separator_only():
 @pytest.mark.parametrize("path", ["/api/customers", "/api/customers/C0086", "/api/knowledge", "/api/knowledge/KB022",
                                   "/api/company", "/api/tickets/T00727/knowledge",
                                   "/api/tickets/T00727/similar", "/api/language-models",
-                                  "/api/language-models/allow-list"])
+                                  "/api/language-models/allow-list", "/api/mail/status"])
 def test_no_email_or_date_field_reaches_a_page_route(client, path):
     response = client.get(path, headers=auth(AGENT))
     assert response.status_code == 200

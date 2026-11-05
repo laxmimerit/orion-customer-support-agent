@@ -15,6 +15,7 @@ import {
   firstReplyReport,
   knowledgeArticle,
   knowledgeList,
+  mailStatus,
   priorityReport,
   searchDesk,
   similarTickets,
@@ -539,6 +540,25 @@ describe("routes", () => {
     answerJson({});
     await call();
     expect(lastRequest().url).toBe(BASE + route);
+  });
+});
+
+describe("mailStatus", () => {
+  it("calls its route with the token and returns the status", async () => {
+    const status = {
+      provider: "Gmail",
+      state: "connected",
+      label: "Orion",
+      messages: 12,
+      unread: 3,
+      imap: { address: "imap.gmail.com:993", state: "connected" },
+      smtp: { address: "smtp.gmail.com:465", state: "connected" },
+    };
+    answerJson(status);
+    expect(await mailStatus()).toStrictEqual({ ok: true, data: status });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(lastRequest().url).toBe(`${BASE}/api/mail/status`);
+    expect(lastRequest().init?.headers).toStrictEqual({ Authorization: "Bearer test-token" });
   });
 });
 

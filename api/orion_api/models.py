@@ -383,6 +383,22 @@ class LanguageModels(BaseModel):
     options: list[ModelOption]
 
 
+# The customer mailbox. No mailbox address leaves the API. label, messages and unread are null when they aren't known.
+class MailCheck(BaseModel):
+    address: str
+    state: Literal["connected", "not_set_up", "login_refused", "label_missing", "not_answering"]
+
+
+class MailStatus(BaseModel):
+    provider: str
+    state: Literal["connected", "not_set_up", "login_refused", "label_missing", "not_answering"]
+    label: str | None
+    messages: int | None
+    unread: int | None
+    imap: MailCheck
+    smtp: MailCheck
+
+
 # Triage. The first three fields are closed lists so that results can be sorted and compared: a value outside them never
 # leaves the API. test_live.py checks the lists against the values orion_desk holds.
 REASON_LIMIT = 300

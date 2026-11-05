@@ -263,6 +263,19 @@ export type LanguageModels = {
   options: (AllowedModel & { state: ModelState | "not_run" })[];
 };
 
+// The customer mail connection. The password and the mailbox address stay with the API: no response carries them.
+export type MailState = "connected" | "not_set_up" | "login_refused" | "label_missing" | "not_answering";
+
+export type MailStatus = {
+  provider: string;
+  state: MailState;
+  label: string | null;
+  messages: number | null;
+  unread: number | null;
+  imap: { address: string; state: MailState };
+  smtp: { address: string; state: Exclude<MailState, "label_missing"> };
+};
+
 export type ApiInfo = { title: string; version: string; routes: string[] };
 
 export type ApiProblem = { status: number | null; code: string; message: string };
@@ -373,6 +386,10 @@ export function triageCase(ticketId: string, model: string | null, signal: Abort
 
 export function languageModels() {
   return get<LanguageModels>("/api/language-models");
+}
+
+export function mailStatus() {
+  return get<MailStatus>("/api/mail/status");
 }
 
 // No check and no call to a provider, so a case page can read it every time it opens.

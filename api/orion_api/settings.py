@@ -1,7 +1,8 @@
 """Settings from the repository's .env (never committed). Values already in the environment win.
 
-Only the new database (PG_*), the two access tokens, the optional OPENROUTER_API_KEY and the
-optional ORION_MCP_TOKEN are read. The legacy TIDB_* settings are ignored, so this API cannot reach orion_lab.
+Only the new database (PG_*), the two access tokens, the optional OPENROUTER_API_KEY, the optional
+ORION_MCP_TOKEN and the optional ORION_MAIL_* are read. The legacy TIDB_* settings are ignored, so this API cannot
+reach orion_lab.
 """
 from dataclasses import dataclass
 import os
@@ -10,6 +11,8 @@ from pathlib import Path
 ENV_FILE = Path(__file__).resolve().parents[2] / ".env"
 MCP_TOKEN_LENGTH = 32  # This token is the only thing between the internet and every ticket.
 REQUIRED = ("PG_HOST", "PG_USER", "PG_PASSWORD", "PG_DATABASE", "ORION_AGENT_TOKEN", "ORION_ADMIN_TOKEN")
+OPTIONAL = ("PG_PORT", "PG_SSL_ROOT_CERT", "OPENROUTER_API_KEY", "ORION_MCP_TOKEN", "ORION_MAIL_USER",
+            "ORION_MAIL_APP_PASSWORD", "ORION_MAIL_LABEL")
 
 
 @dataclass(frozen=True)
@@ -24,6 +27,9 @@ class Settings:
     pg_ssl_root_cert: str | None = None
     openrouter_api_key: str | None = None
     mcp_token: str | None = None  # Opens /api/mcp and nothing else. Left unset, nothing opens that route.
+    mail_user: str | None = None  # With any of the three mail settings missing, the desk reports mail as not set up.
+    mail_app_password: str | None = None
+    mail_label: str | None = None
 
     def __repr__(self):
         # Never show hosts, users, passwords, tokens or keys in logs or tracebacks.
@@ -45,7 +51,7 @@ def read_env_file(path):
 
 def load_settings(path=ENV_FILE):
     values = read_env_file(path)
-    values.update({key: os.environ[key] for key in (*REQUIRED, "PG_PORT", "PG_SSL_ROOT_CERT", "OPENROUTER_API_KEY", "ORION_MCP_TOKEN") if key in os.environ})
+    values.update({key: os.environ[key] for key in (*REQUIRED, *OPTIONAL) if key in os.environ})
     missing = [key for key in REQUIRED if not values.get(key)]
     if missing:
         raise RuntimeError("Missing settings in .env: " + ", ".join(missing))
@@ -62,4 +68,7 @@ def load_settings(path=ENV_FILE):
         agent_token=values["ORION_AGENT_TOKEN"], admin_token=values["ORION_ADMIN_TOKEN"],
         openrouter_api_key=values.get("OPENROUTER_API_KEY") or None,
         mcp_token=values.get("ORION_MCP_TOKEN") or None,
+        mail_user=values.get("ORION_MAIL_USER") or None,
+        mail_app_password=values.get("ORION_MAIL_APP_PASSWORD") or None,
+        mail_label=values.get("ORION_MAIL_LABEL") or None,
     )

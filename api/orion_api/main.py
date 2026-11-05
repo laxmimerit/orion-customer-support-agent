@@ -23,11 +23,12 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from .assistant import DEFAULT_MODEL, MODELS, Assistant, ModelFailed, case_text
 from .embedding import Embedder
 from .lookups import NOTE_LIMIT, Lookups, TriageLookups, intake
+from .mail import Mailbox
 from .mcp import PARSE_ERROR
 from .mcp import answer as mcp_answer
 from .mcp import failure as mcp_failure
 from .models import (AdminStatus, AllowedModel, Article, ArticleSummary, BacklogRow, CategoryRow, Company, CustomerListItem,
-                     CustomerProfile, ErrorResponse, FirstReplyRow, LanguageModels, Listing, PriorityRow, Report,
+                     CustomerProfile, ErrorResponse, FirstReplyRow, LanguageModels, Listing, MailStatus, PriorityRow, Report,
                      SearchResults, SimilarTickets, Snapshot, TicketDetail, TicketPage, Triage, VolumeRow)
 from .server_tools import ServerTools
 from .settings import load_settings
@@ -108,6 +109,10 @@ def assistant(request: Request):
     return request.app.state.assistant
 
 
+def mailbox(request: Request):
+    return request.app.state.mailbox
+
+
 def allowed_model(model: str = Query(DEFAULT_MODEL, max_length=64,
                                      description="An `id` from /api/language-models/allow-list")):
     """Not a Literal, as other fixed choices are: the allow-list is the point here, so a refusal says which rule it hit."""
@@ -158,8 +163,8 @@ def split_owner(owner):
     return {"owner": name, "team": team if separator else None}
 
 
-def create_app(settings=None, store_instance=None, embedder_instance=None, assistant_instance=None):
-    """Build the app. Tests pass their own settings, store, embedder and assistant; uvicorn passes none."""
+def create_app(settings=None, store_instance=None, embedder_instance=None, assistant_instance=None, mailbox_instance=None):
+    """Build the app. Tests pass their own settings, store, embedder, assistant and mailbox; uvicorn passes none."""
     settings = settings or load_settings()
 
     @asynccontextmanager
@@ -185,6 +190,7 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
     app.state.settings = settings
     app.state.embedder = embedder_instance or Embedder()
     app.state.assistant = assistant_instance or Assistant(settings.openrouter_api_key)
+    app.state.mailbox = mailbox_instance or Mailbox(settings)
     if store_instance is not None:
         app.state.store = store_instance
 
@@ -434,6 +440,16 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
     def get_allow_list(_: str = Depends(role)):
         """No check and no call, so a case page can read it on every load. `run` is false for a line the desk refuses."""
         return {"total": len(MODELS), "items": [line.listed() for line in MODELS.values()]}
+
+    @app.get("/api/mail/status", response_model=MailStatus, tags=["mail"], responses=errors(401),
+             summary="Whether the desk can reach the customer mailbox, and how much is under its label")
+    def get_mail_status(_: str = Depends(role), box=Depends(mailbox)):
+        """A live check at most once a minute. Other calls get the last answer, a failure included, so a change to the
+        mailbox can take up to a minute to show. IMAP logs in and asks for the label's counts, which opens no message and marks
+        none as read. SMTP logs in and quits, and the desk has no way to send. `state` is the first check that did not
+        pass, IMAP before SMTP. `label`, `messages` and `unread` stay null when they aren't known. The mailbox address
+        and the password are never returned."""
+        return box.status()
 
     for path, name, row, summary in REPORT_ROUTES:
         app.get(f"/api/reports/{path}", response_model=Report[row], tags=["reports"],

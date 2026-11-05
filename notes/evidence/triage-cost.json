@@ -1,0 +1,491 @@
+{
+  "prepare": {
+    "seed": "orion-cost-1",
+    "tickets": [
+      {
+        "ticket_id": "T03018",
+        "category": "feature request",
+        "priority": "P4",
+        "team": "Customer care",
+        "case": "{\"ticket\": {\"ticket_id\": \"T03018\", \"subject\": \"Allow scheduled exports\", \"status\": null, \"priority\": null, \"channel\": \"web\", \"category\": null, \"component\": null, \"body\": \"Allow scheduled exports. We use the starter plan with 10 seats. This is a non-urgent planning question or suggestion for our test workspace. Production is unaffected and there is no deadline. Workspace reference C0222; case demo-03018. Please explain the next step and any workaround.\", \"customer_id\": null, \"agent_id\": null, \"sla_response_hours\": null, \"first_response_hours\": null, \"sla_resolution_hours\": null, \"resolution_hours\": null, \"csat\": null, \"reopened_count\": null, \"escalated\": null, \"sentiment\": null}, \"customer\": {\"company\": \"Birch Works 222\", \"industry\": \"Finance tools\", \"country\": \"Germany\", \"region\": \"EMEA\", \"company_size\": \"1-10\", \"plan_id\": \"starter\", \"seats\": 10}, \"messages\": [{\"author_role\": \"customer\", \"body\": \"Allow scheduled exports. We use the starter plan with 10 seats. This is a non-urgent planning question or suggestion for our test workspace. Production is unaffected and there is no deadline. Workspace reference C0222; case demo-03018. Please explain the next step and any workaround.\"}, {\"author_role\": \"customer\", \"body\": \"I tried those steps and have a follow-up about the workspace setting. Follow-up 2.\"}, {\"author_role\": \"customer\", \"body\": \"I tried those steps and have a follow-up about the workspace setting. Follow-up 3.\"}, {\"author_role\": \"customer\", \"body\": \"Thank you. Please confirm whether this also applies to our other team. Follow-up 4.\"}, {\"author_role\": \"customer\", \"body\": \"That addresses the immediate issue. How should we avoid it next time? Follow-up 5.\"}]}",
+        "search": "{\"items\": [{\"kind\": \"article\", \"id\": \"KB023\", \"title\": \"Allow scheduled exports\", \"status\": null, \"priority\": null, \"category\": \"feature request\", \"similarity\": 0.8316393183997995}, {\"kind\": \"ticket\", \"id\": \"T03564\", \"title\": \"Allow scheduled exports\", \"status\": \"resolved\", \"priority\": \"P2\", \"category\": \"feature request\", \"similarity\": 0.8205992917673485}, {\"kind\": \"ticket\", \"id\": \"T02586\", \"title\": \"Allow scheduled exports\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"feature request\", \"similarity\": 0.8139067792735805}, {\"kind\": \"ticket\", \"id\": \"T01083\", \"title\": \"Allow scheduled exports\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"feature request\", \"similarity\": 0.8130158793579306}, {\"kind\": \"ticket\", \"id\": \"T03358\", \"title\": \"Allow scheduled exports\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"feature request\", \"similarity\": 0.8128508468817688}, {\"kind\": \"ticket\", \"id\": \"T03465\", \"title\": \"Allow scheduled exports\", \"status\": \"resolved\", \"priority\": \"P2\", \"category\": \"feature request\", \"similarity\": 0.8127328910339099}, {\"kind\": \"ticket\", \"id\": \"T01645\", \"title\": \"Allow scheduled exports\", \"status\": \"resolved\", \"priority\": \"P4\", \"category\": \"feature request\", \"similarity\": 0.8123386378468344}, {\"kind\": \"ticket\", \"id\": \"T01942\", \"title\": \"Allow scheduled exports\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"feature request\", \"similarity\": 0.8120575034512897}]}",
+        "exposed": false,
+        "seen": [
+          "KB023",
+          "T01083",
+          "T01645",
+          "T01942",
+          "T02586",
+          "T03358",
+          "T03465",
+          "T03564"
+        ],
+        "named": [
+          "C0222",
+          "T03018"
+        ]
+      },
+      {
+        "ticket_id": "T02038",
+        "category": "feature request",
+        "priority": "P3",
+        "team": "Customer success",
+        "case": "{\"ticket\": {\"ticket_id\": \"T02038\", \"subject\": \"Support custom SLA calendars\", \"status\": null, \"priority\": null, \"channel\": \"web\", \"category\": null, \"component\": null, \"body\": \"Support custom SLA calendars. We use the growth plan with 7 seats. One person is affected. Normal operations continue using a workaround; we can address this in the next few days. Workspace reference C0013; case demo-02038. Please explain the next step and any workaround.\", \"customer_id\": null, \"agent_id\": null, \"sla_response_hours\": null, \"first_response_hours\": null, \"sla_resolution_hours\": null, \"resolution_hours\": null, \"csat\": null, \"reopened_count\": null, \"escalated\": null, \"sentiment\": null}, \"customer\": {\"company\": \"Cedar Systems 013\", \"industry\": \"Healthcare software\", \"country\": \"Germany\", \"region\": \"EMEA\", \"company_size\": \"1-10\", \"plan_id\": \"growth\", \"seats\": 7}, \"messages\": [{\"author_role\": \"customer\", \"body\": \"Support custom SLA calendars. We use the growth plan with 7 seats. One person is affected. Normal operations continue using a workaround; we can address this in the next few days. Workspace reference C0013; case demo-02038. Please explain the next step and any workaround.\"}, {\"author_role\": \"customer\", \"body\": \"Thank you. Please confirm whether this also applies to our other team. Follow-up 2.\"}, {\"author_role\": \"customer\", \"body\": \"Thank you. Please confirm whether this also applies to our other team. Follow-up 3.\"}, {\"author_role\": \"customer\", \"body\": \"The issue is still reproducible; I have attached more context. Follow-up 4.\"}, {\"author_role\": \"customer\", \"body\": \"I tried those steps and have a follow-up about the workspace setting. Follow-up 5.\"}, {\"author_role\": \"customer\", \"body\": \"That addresses the immediate issue. How should we avoid it next time? Follow-up 6.\"}]}",
+        "search": "{\"items\": [{\"kind\": \"ticket\", \"id\": \"T03722\", \"title\": \"Support custom SLA calendars\", \"status\": \"resolved\", \"priority\": \"P2\", \"category\": \"feature request\", \"similarity\": 0.8487106584667632}, {\"kind\": \"ticket\", \"id\": \"T03975\", \"title\": \"Support custom SLA calendars\", \"status\": \"open\", \"priority\": \"P2\", \"category\": \"feature request\", \"similarity\": 0.842671607513814}, {\"kind\": \"ticket\", \"id\": \"T00774\", \"title\": \"Support custom SLA calendars\", \"status\": \"resolved\", \"priority\": \"P2\", \"category\": \"feature request\", \"similarity\": 0.8419692952863511}, {\"kind\": \"ticket\", \"id\": \"T03559\", \"title\": \"Support custom SLA calendars\", \"status\": \"resolved\", \"priority\": \"P2\", \"category\": \"feature request\", \"similarity\": 0.8409691359167252}, {\"kind\": \"article\", \"id\": \"KB011\", \"title\": \"Support custom SLA calendars\", \"status\": null, \"priority\": null, \"category\": \"feature request\", \"similarity\": 0.8409497429038372}, {\"kind\": \"ticket\", \"id\": \"T03573\", \"title\": \"Support custom SLA calendars\", \"status\": \"resolved\", \"priority\": \"P2\", \"category\": \"feature request\", \"similarity\": 0.84092836241677}, {\"kind\": \"ticket\", \"id\": \"T02935\", \"title\": \"Support custom SLA calendars\", \"status\": \"resolved\", \"priority\": \"P2\", \"category\": \"feature request\", \"similarity\": 0.8403559286867195}, {\"kind\": \"ticket\", \"id\": \"T02202\", \"title\": \"Support custom SLA calendars\", \"status\": \"resolved\", \"priority\": \"P2\", \"category\": \"feature request\", \"similarity\": 0.8401229083179275}]}",
+        "exposed": false,
+        "seen": [
+          "KB011",
+          "T00774",
+          "T02202",
+          "T02935",
+          "T03559",
+          "T03573",
+          "T03722",
+          "T03975"
+        ],
+        "named": [
+          "C0013",
+          "T02038"
+        ]
+      },
+      {
+        "ticket_id": "T01531",
+        "category": "bug",
+        "priority": "P4",
+        "team": "Customer care",
+        "case": "{\"ticket\": {\"ticket_id\": \"T01531\", \"subject\": \"Export stops before completion\", \"status\": null, \"priority\": null, \"channel\": \"chat\", \"category\": null, \"component\": null, \"body\": \"Export stops before completion. We use the growth plan with 24 seats. This is a non-urgent planning question or suggestion for our test workspace. Production is unaffected and there is no deadline. Workspace reference C0084; case demo-01531. Please explain the next step and any workaround.\", \"customer_id\": null, \"agent_id\": null, \"sla_response_hours\": null, \"first_response_hours\": null, \"sla_resolution_hours\": null, \"resolution_hours\": null, \"csat\": null, \"reopened_count\": null, \"escalated\": null, \"sentiment\": null}, \"customer\": {\"company\": \"Dune Platform 084\", \"industry\": \"Healthcare software\", \"country\": \"Germany\", \"region\": \"EMEA\", \"company_size\": \"1-10\", \"plan_id\": \"growth\", \"seats\": 24}, \"messages\": [{\"author_role\": \"customer\", \"body\": \"Export stops before completion. We use the growth plan with 24 seats. This is a non-urgent planning question or suggestion for our test workspace. Production is unaffected and there is no deadline. Workspace reference C0084; case demo-01531. Please explain the next step and any workaround.\"}, {\"author_role\": \"customer\", \"body\": \"Thank you. Please confirm whether this also applies to our other team. Follow-up 2.\"}, {\"author_role\": \"customer\", \"body\": \"I tried those steps and have a follow-up about the workspace setting. Follow-up 3.\"}, {\"author_role\": \"customer\", \"body\": \"I tried those steps and have a follow-up about the workspace setting. Follow-up 4.\"}, {\"author_role\": \"customer\", \"body\": \"That addresses the immediate issue. How should we avoid it next time? Follow-up 5.\"}, {\"author_role\": \"customer\", \"body\": \"I tried those steps and have a follow-up about the workspace setting. Follow-up 6.\"}]}",
+        "search": "{\"items\": [{\"kind\": \"article\", \"id\": \"KB002\", \"title\": \"Export stops before completion\", \"status\": null, \"priority\": null, \"category\": \"bug\", \"similarity\": 0.8565163372791093}, {\"kind\": \"article\", \"id\": \"KB032\", \"title\": \"Export stops before completion\", \"status\": null, \"priority\": null, \"category\": \"bug\", \"similarity\": 0.8565163372791093}, {\"kind\": \"ticket\", \"id\": \"T01733\", \"title\": \"Export stops before completion\", \"status\": \"resolved\", \"priority\": \"P4\", \"category\": \"bug\", \"similarity\": 0.852347917288112}, {\"kind\": \"ticket\", \"id\": \"T01578\", \"title\": \"Export stops before completion\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"bug\", \"similarity\": 0.849599576596619}, {\"kind\": \"ticket\", \"id\": \"T00528\", \"title\": \"Export stops before completion\", \"status\": \"resolved\", \"priority\": \"P2\", \"category\": \"bug\", \"similarity\": 0.8489374482271057}, {\"kind\": \"ticket\", \"id\": \"T03169\", \"title\": \"Export stops before completion\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"bug\", \"similarity\": 0.8486326707540932}, {\"kind\": \"ticket\", \"id\": \"T03170\", \"title\": \"Export stops before completion\", \"status\": \"resolved\", \"priority\": \"P4\", \"category\": \"bug\", \"similarity\": 0.848000354487124}, {\"kind\": \"ticket\", \"id\": \"T03487\", \"title\": \"Export stops before completion\", \"status\": \"resolved\", \"priority\": \"P2\", \"category\": \"bug\", \"similarity\": 0.8477061763958205}]}",
+        "exposed": false,
+        "seen": [
+          "KB002",
+          "KB032",
+          "T00528",
+          "T01578",
+          "T01733",
+          "T03169",
+          "T03170",
+          "T03487"
+        ],
+        "named": [
+          "C0084",
+          "T01531"
+        ]
+      },
+      {
+        "ticket_id": "T03226",
+        "category": "account access",
+        "priority": "P3",
+        "team": "Customer care",
+        "case": "{\"ticket\": {\"ticket_id\": \"T03226\", \"subject\": \"Locked out after device change\", \"status\": null, \"priority\": null, \"channel\": \"chat\", \"category\": null, \"component\": null, \"body\": \"Locked out after device change. We use the growth plan with 20 seats. One person is affected. Normal operations continue using a workaround; we can address this in the next few days. Workspace reference C0254; case demo-03226. Please explain the next step and any workaround.\", \"customer_id\": null, \"agent_id\": null, \"sla_response_hours\": null, \"first_response_hours\": null, \"sla_resolution_hours\": null, \"resolution_hours\": null, \"csat\": null, \"reopened_count\": null, \"escalated\": null, \"sentiment\": null}, \"customer\": {\"company\": \"Dune Studio 254\", \"industry\": \"Finance tools\", \"country\": \"Australia\", \"region\": \"APAC\", \"company_size\": \"1-10\", \"plan_id\": \"growth\", \"seats\": 20}, \"messages\": [{\"author_role\": \"customer\", \"body\": \"Locked out after device change. We use the growth plan with 20 seats. One person is affected. Normal operations continue using a workaround; we can address this in the next few days. Workspace reference C0254; case demo-03226. Please explain the next step and any workaround.\"}, {\"author_role\": \"customer\", \"body\": \"I tried those steps and have a follow-up about the workspace setting. Follow-up 2.\"}, {\"author_role\": \"customer\", \"body\": \"I tried those steps and have a follow-up about the workspace setting. Follow-up 3.\"}, {\"author_role\": \"customer\", \"body\": \"Thank you. Please confirm whether this also applies to our other team. Follow-up 4.\"}]}",
+        "search": "{\"items\": [{\"kind\": \"ticket\", \"id\": \"T00884\", \"title\": \"Locked out after device change\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"account access\", \"similarity\": 0.814555728992396}, {\"kind\": \"ticket\", \"id\": \"T02780\", \"title\": \"Locked out after device change\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"account access\", \"similarity\": 0.8054871846571097}, {\"kind\": \"ticket\", \"id\": \"T01270\", \"title\": \"Locked out after device change\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"account access\", \"similarity\": 0.8023423014946299}, {\"kind\": \"ticket\", \"id\": \"T03081\", \"title\": \"Locked out after device change\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"account access\", \"similarity\": 0.800633153134436}, {\"kind\": \"ticket\", \"id\": \"T00546\", \"title\": \"Locked out after device change\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"account access\", \"similarity\": 0.8004956699030671}, {\"kind\": \"ticket\", \"id\": \"T02616\", \"title\": \"Locked out after device change\", \"status\": \"pending\", \"priority\": \"P3\", \"category\": \"account access\", \"similarity\": 0.8002438129905388}, {\"kind\": \"ticket\", \"id\": \"T01313\", \"title\": \"Locked out after device change\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"account access\", \"similarity\": 0.798613238202322}, {\"kind\": \"ticket\", \"id\": \"T01224\", \"title\": \"Locked out after device change\", \"status\": \"open\", \"priority\": \"P3\", \"category\": \"account access\", \"similarity\": 0.7979326860884237}]}",
+        "exposed": false,
+        "seen": [
+          "T00546",
+          "T00884",
+          "T01224",
+          "T01270",
+          "T01313",
+          "T02616",
+          "T02780",
+          "T03081"
+        ],
+        "named": [
+          "C0254",
+          "T03226"
+        ]
+      },
+      {
+        "ticket_id": "T00737",
+        "category": "billing",
+        "priority": "P4",
+        "team": "Technical support",
+        "case": "{\"ticket\": {\"ticket_id\": \"T00737\", \"subject\": \"Renewal total changed\", \"status\": null, \"priority\": null, \"channel\": \"email\", \"category\": null, \"component\": null, \"body\": \"Renewal total changed. We use the starter plan with 17 seats. This is a non-urgent planning question or suggestion for our test workspace. Production is unaffected and there is no deadline. Workspace reference C0272; case demo-00737. Please explain the next step and any workaround.\", \"customer_id\": null, \"agent_id\": null, \"sla_response_hours\": null, \"first_response_hours\": null, \"sla_resolution_hours\": null, \"resolution_hours\": null, \"csat\": null, \"reopened_count\": null, \"escalated\": null, \"sentiment\": null}, \"customer\": {\"company\": \"Birch Metrics 272\", \"industry\": \"Retail tech\", \"country\": \"India\", \"region\": \"APAC\", \"company_size\": \"201-500\", \"plan_id\": \"starter\", \"seats\": 17}, \"messages\": [{\"author_role\": \"customer\", \"body\": \"Renewal total changed. We use the starter plan with 17 seats. This is a non-urgent planning question or suggestion for our test workspace. Production is unaffected and there is no deadline. Workspace reference C0272; case demo-00737. Please explain the next step and any workaround.\"}, {\"author_role\": \"customer\", \"body\": \"That addresses the immediate issue. How should we avoid it next time? Follow-up 2.\"}]}",
+        "search": "{\"items\": [{\"kind\": \"article\", \"id\": \"KB013\", \"title\": \"Renewal total changed\", \"status\": null, \"priority\": null, \"category\": \"billing\", \"similarity\": 0.8006180546728905}, {\"kind\": \"ticket\", \"id\": \"T02540\", \"title\": \"Renewal total changed\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"billing\", \"similarity\": 0.7878328443112237}, {\"kind\": \"ticket\", \"id\": \"T01916\", \"title\": \"Renewal total changed\", \"status\": \"pending\", \"priority\": \"P3\", \"category\": \"billing\", \"similarity\": 0.7877987563714935}, {\"kind\": \"ticket\", \"id\": \"T01497\", \"title\": \"Renewal total changed\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"billing\", \"similarity\": 0.7874410037247889}, {\"kind\": \"ticket\", \"id\": \"T03362\", \"title\": \"Renewal total changed\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"billing\", \"similarity\": 0.7853662091841227}, {\"kind\": \"ticket\", \"id\": \"T03766\", \"title\": \"Renewal total changed\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"billing\", \"similarity\": 0.7851826824580109}, {\"kind\": \"ticket\", \"id\": \"T02715\", \"title\": \"Renewal total changed\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"billing\", \"similarity\": 0.7837245269824566}, {\"kind\": \"ticket\", \"id\": \"T00745\", \"title\": \"Renewal total changed\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"billing\", \"similarity\": 0.7824085143965599}]}",
+        "exposed": false,
+        "seen": [
+          "KB013",
+          "T00745",
+          "T01497",
+          "T01916",
+          "T02540",
+          "T02715",
+          "T03362",
+          "T03766"
+        ],
+        "named": [
+          "C0272",
+          "T00737"
+        ]
+      },
+      {
+        "ticket_id": "T02335",
+        "category": "bug",
+        "priority": "P3",
+        "team": "Customer care",
+        "case": "{\"ticket\": {\"ticket_id\": \"T02335\", \"subject\": \"Saved view loses sorting\", \"status\": null, \"priority\": null, \"channel\": \"API\", \"category\": null, \"component\": null, \"body\": \"Saved view loses sorting. We use the growth plan with 9 seats. One person is affected. Normal operations continue using a workaround; we can address this in the next few days. Workspace reference C0193; case demo-02335. Please explain the next step and any workaround.\", \"customer_id\": null, \"agent_id\": null, \"sla_response_hours\": null, \"first_response_hours\": null, \"sla_resolution_hours\": null, \"resolution_hours\": null, \"csat\": null, \"reopened_count\": null, \"escalated\": null, \"sentiment\": null}, \"customer\": {\"company\": \"Cedar Tools 193\", \"industry\": \"Healthcare software\", \"country\": \"United Kingdom\", \"region\": \"EMEA\", \"company_size\": \"51-200\", \"plan_id\": \"growth\", \"seats\": 9}, \"messages\": [{\"author_role\": \"customer\", \"body\": \"Saved view loses sorting. We use the growth plan with 9 seats. One person is affected. Normal operations continue using a workaround; we can address this in the next few days. Workspace reference C0193; case demo-02335. Please explain the next step and any workaround.\"}, {\"author_role\": \"customer\", \"body\": \"The issue is still reproducible; I have attached more context. Follow-up 2.\"}, {\"author_role\": \"customer\", \"body\": \"Thank you. Please confirm whether this also applies to our other team. Follow-up 3.\"}, {\"author_role\": \"customer\", \"body\": \"I tried those steps and have a follow-up about the workspace setting. Follow-up 4.\"}]}",
+        "search": "{\"items\": [{\"kind\": \"ticket\", \"id\": \"T03182\", \"title\": \"Saved view loses sorting\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"bug\", \"similarity\": 0.832062216979147}, {\"kind\": \"ticket\", \"id\": \"T01461\", \"title\": \"Saved view loses sorting\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"bug\", \"similarity\": 0.8316665068407365}, {\"kind\": \"ticket\", \"id\": \"T03880\", \"title\": \"Saved view loses sorting\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"bug\", \"similarity\": 0.8288804542042733}, {\"kind\": \"ticket\", \"id\": \"T03176\", \"title\": \"Saved view loses sorting\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"bug\", \"similarity\": 0.8270623174434723}, {\"kind\": \"ticket\", \"id\": \"T02262\", \"title\": \"Saved view loses sorting\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"bug\", \"similarity\": 0.8269814824785315}, {\"kind\": \"ticket\", \"id\": \"T01023\", \"title\": \"Saved view loses sorting\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"bug\", \"similarity\": 0.8268383749508272}, {\"kind\": \"ticket\", \"id\": \"T02020\", \"title\": \"Saved view loses sorting\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"bug\", \"similarity\": 0.8258926050956985}, {\"kind\": \"ticket\", \"id\": \"T00418\", \"title\": \"Saved view loses sorting\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"bug\", \"similarity\": 0.8257642799131195}]}",
+        "exposed": false,
+        "seen": [
+          "T00418",
+          "T01023",
+          "T01461",
+          "T02020",
+          "T02262",
+          "T03176",
+          "T03182",
+          "T03880"
+        ],
+        "named": [
+          "C0193",
+          "T02335"
+        ]
+      },
+      {
+        "ticket_id": "T00013",
+        "category": "outage",
+        "priority": "P1",
+        "team": "Technical support",
+        "case": "{\"ticket\": {\"ticket_id\": \"T00013\", \"subject\": \"Messages cannot be sent\", \"status\": null, \"priority\": null, \"channel\": \"web\", \"category\": null, \"component\": null, \"body\": \"Messages cannot be sent. We use the growth plan with 10 seats. Our entire production team is blocked right now, with no workaround. We cannot serve customers. Workspace reference C0098; case demo-00013. Please explain the next step and any workaround.\", \"customer_id\": null, \"agent_id\": null, \"sla_response_hours\": null, \"first_response_hours\": null, \"sla_resolution_hours\": null, \"resolution_hours\": null, \"csat\": null, \"reopened_count\": null, \"escalated\": null, \"sentiment\": null}, \"customer\": {\"company\": \"Harbor Tools 098\", \"industry\": \"SaaS\", \"country\": \"United Kingdom\", \"region\": \"EMEA\", \"company_size\": \"1-10\", \"plan_id\": \"growth\", \"seats\": 10}, \"messages\": [{\"author_role\": \"customer\", \"body\": \"Messages cannot be sent. We use the growth plan with 10 seats. Our entire production team is blocked right now, with no workaround. We cannot serve customers. Workspace reference C0098; case demo-00013. Please explain the next step and any workaround.\"}, {\"author_role\": \"customer\", \"body\": \"That addresses the immediate issue. How should we avoid it next time? Follow-up 2.\"}, {\"author_role\": \"customer\", \"body\": \"I tried those steps and have a follow-up about the workspace setting. Follow-up 3.\"}, {\"author_role\": \"customer\", \"body\": \"Thank you. Please confirm whether this also applies to our other team. Follow-up 4.\"}, {\"author_role\": \"customer\", \"body\": \"Thank you. Please confirm whether this also applies to our other team. Follow-up 5.\"}, {\"author_role\": \"customer\", \"body\": \"The issue is still reproducible; I have attached more context. Follow-up 6.\"}]}",
+        "search": "{\"items\": [{\"kind\": \"article\", \"id\": \"KB018\", \"title\": \"Messages cannot be sent\", \"status\": null, \"priority\": null, \"category\": \"outage\", \"similarity\": 0.8047970383835036}, {\"kind\": \"ticket\", \"id\": \"T00020\", \"title\": \"Messages cannot be sent\", \"status\": \"resolved\", \"priority\": \"P1\", \"category\": \"outage\", \"similarity\": 0.7887853631071229}, {\"kind\": \"ticket\", \"id\": \"T00141\", \"title\": \"Messages cannot be sent\", \"status\": \"resolved\", \"priority\": \"P1\", \"category\": \"outage\", \"similarity\": 0.7875413170932289}, {\"kind\": \"ticket\", \"id\": \"T03006\", \"title\": \"Messages cannot be sent\", \"status\": \"resolved\", \"priority\": \"P1\", \"category\": \"outage\", \"similarity\": 0.7859502165250309}, {\"kind\": \"ticket\", \"id\": \"T00140\", \"title\": \"Messages cannot be sent\", \"status\": \"resolved\", \"priority\": \"P1\", \"category\": \"outage\", \"similarity\": 0.7846892593448098}, {\"kind\": \"ticket\", \"id\": \"T00164\", \"title\": \"Messages cannot be sent\", \"status\": \"resolved\", \"priority\": \"P1\", \"category\": \"outage\", \"similarity\": 0.7845350721468388}, {\"kind\": \"ticket\", \"id\": \"T00849\", \"title\": \"Messages cannot be sent\", \"status\": \"open\", \"priority\": \"P1\", \"category\": \"outage\", \"similarity\": 0.7841723935497061}, {\"kind\": \"ticket\", \"id\": \"T03606\", \"title\": \"Messages cannot be sent\", \"status\": \"resolved\", \"priority\": \"P1\", \"category\": \"outage\", \"similarity\": 0.7828137840543954}]}",
+        "exposed": false,
+        "seen": [
+          "KB018",
+          "T00020",
+          "T00140",
+          "T00141",
+          "T00164",
+          "T00849",
+          "T03006",
+          "T03606"
+        ],
+        "named": [
+          "C0098",
+          "T00013"
+        ]
+      },
+      {
+        "ticket_id": "T02696",
+        "category": "billing",
+        "priority": "P2",
+        "team": "Customer success",
+        "case": "{\"ticket\": {\"ticket_id\": \"T02696\", \"subject\": \"Credit missing from next invoice\", \"status\": null, \"priority\": null, \"channel\": \"API\", \"category\": null, \"component\": null, \"body\": \"Credit missing from next invoice. We use the starter plan with 21 seats. Several people cannot complete an important workflow today. We have a temporary workaround, but it takes considerable manual work. Workspace reference C0180; case demo-02696. Please explain the next step and any workaround.\", \"customer_id\": null, \"agent_id\": null, \"sla_response_hours\": null, \"first_response_hours\": null, \"sla_resolution_hours\": null, \"resolution_hours\": null, \"csat\": null, \"reopened_count\": null, \"escalated\": null, \"sentiment\": null}, \"customer\": {\"company\": \"Juniper Metrics 180\", \"industry\": \"Retail tech\", \"country\": \"India\", \"region\": \"APAC\", \"company_size\": \"11-50\", \"plan_id\": \"starter\", \"seats\": 21}, \"messages\": [{\"author_role\": \"customer\", \"body\": \"Credit missing from next invoice. We use the starter plan with 21 seats. Several people cannot complete an important workflow today. We have a temporary workaround, but it takes considerable manual work. Workspace reference C0180; case demo-02696. Please explain the next step and any workaround.\"}, {\"author_role\": \"customer\", \"body\": \"The issue is still reproducible; I have attached more context. Follow-up 2.\"}, {\"author_role\": \"customer\", \"body\": \"The issue is still reproducible; I have attached more context. Follow-up 3.\"}]}",
+        "search": "{\"items\": [{\"kind\": \"ticket\", \"id\": \"T02372\", \"title\": \"Credit missing from next invoice\", \"status\": \"pending\", \"priority\": \"P3\", \"category\": \"billing\", \"similarity\": 0.8240529849101712}, {\"kind\": \"ticket\", \"id\": \"T02982\", \"title\": \"Credit missing from next invoice\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"billing\", \"similarity\": 0.8228312527713791}, {\"kind\": \"ticket\", \"id\": \"T02640\", \"title\": \"Credit missing from next invoice\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"billing\", \"similarity\": 0.8222847174990134}, {\"kind\": \"ticket\", \"id\": \"T03196\", \"title\": \"Credit missing from next invoice\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"billing\", \"similarity\": 0.8220998220532837}, {\"kind\": \"ticket\", \"id\": \"T01046\", \"title\": \"Credit missing from next invoice\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"billing\", \"similarity\": 0.8220672113919905}, {\"kind\": \"ticket\", \"id\": \"T02185\", \"title\": \"Credit missing from next invoice\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"billing\", \"similarity\": 0.8206511887523918}, {\"kind\": \"ticket\", \"id\": \"T03572\", \"title\": \"Credit missing from next invoice\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"billing\", \"similarity\": 0.8202766419998366}, {\"kind\": \"ticket\", \"id\": \"T02745\", \"title\": \"Credit missing from next invoice\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"billing\", \"similarity\": 0.8197411484143127}]}",
+        "exposed": false,
+        "seen": [
+          "T01046",
+          "T02185",
+          "T02372",
+          "T02640",
+          "T02745",
+          "T02982",
+          "T03196",
+          "T03572"
+        ],
+        "named": [
+          "C0180",
+          "T02696"
+        ]
+      },
+      {
+        "ticket_id": "T03005",
+        "category": "account access",
+        "priority": "P2",
+        "team": "Technical support",
+        "case": "{\"ticket\": {\"ticket_id\": \"T03005\", \"subject\": \"Invite link expired\", \"status\": null, \"priority\": null, \"channel\": \"API\", \"category\": null, \"component\": null, \"body\": \"Invite link expired. We use the starter plan with 18 seats. Several people cannot complete an important workflow today. We have a temporary workaround, but it takes considerable manual work. Workspace reference C0228; case demo-03005. Please explain the next step and any workaround.\", \"customer_id\": null, \"agent_id\": null, \"sla_response_hours\": null, \"first_response_hours\": null, \"sla_resolution_hours\": null, \"resolution_hours\": null, \"csat\": null, \"reopened_count\": null, \"escalated\": null, \"sentiment\": null}, \"customer\": {\"company\": \"Harbor Works 228\", \"industry\": \"SaaS\", \"country\": \"Canada\", \"region\": \"Americas\", \"company_size\": \"51-200\", \"plan_id\": \"starter\", \"seats\": 18}, \"messages\": [{\"author_role\": \"customer\", \"body\": \"Invite link expired. We use the starter plan with 18 seats. Several people cannot complete an important workflow today. We have a temporary workaround, but it takes considerable manual work. Workspace reference C0228; case demo-03005. Please explain the next step and any workaround.\"}, {\"author_role\": \"customer\", \"body\": \"Thank you. Please confirm whether this also applies to our other team. Follow-up 2.\"}, {\"author_role\": \"customer\", \"body\": \"The issue is still reproducible; I have attached more context. Follow-up 3.\"}]}",
+        "search": "{\"items\": [{\"kind\": \"ticket\", \"id\": \"T02330\", \"title\": \"Invite link expired\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"account access\", \"similarity\": 0.8308319383235727}, {\"kind\": \"ticket\", \"id\": \"T03808\", \"title\": \"Invite link expired\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"account access\", \"similarity\": 0.8267414022842791}, {\"kind\": \"ticket\", \"id\": \"T02111\", \"title\": \"Invite link expired\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"account access\", \"similarity\": 0.8246313141865225}, {\"kind\": \"ticket\", \"id\": \"T01400\", \"title\": \"Invite link expired\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"account access\", \"similarity\": 0.824434444448077}, {\"kind\": \"ticket\", \"id\": \"T02382\", \"title\": \"Invite link expired\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"account access\", \"similarity\": 0.8210656083244185}, {\"kind\": \"ticket\", \"id\": \"T02613\", \"title\": \"Invite link expired\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"account access\", \"similarity\": 0.8209443811634476}, {\"kind\": \"ticket\", \"id\": \"T03214\", \"title\": \"Invite link expired\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"account access\", \"similarity\": 0.8195724414446051}, {\"kind\": \"ticket\", \"id\": \"T03241\", \"title\": \"Invite link expired\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"account access\", \"similarity\": 0.8191918322050051}]}",
+        "exposed": false,
+        "seen": [
+          "T01400",
+          "T02111",
+          "T02330",
+          "T02382",
+          "T02613",
+          "T03214",
+          "T03241",
+          "T03808"
+        ],
+        "named": [
+          "C0228",
+          "T03005"
+        ]
+      },
+      {
+        "ticket_id": "T00040",
+        "category": "outage",
+        "priority": "P2",
+        "team": "Customer success",
+        "case": "{\"ticket\": {\"ticket_id\": \"T00040\", \"subject\": \"Messages cannot be sent\", \"status\": null, \"priority\": null, \"channel\": \"API\", \"category\": null, \"component\": null, \"body\": \"Messages cannot be sent. We use the starter plan with 21 seats. Several people cannot complete an important workflow today. We have a temporary workaround, but it takes considerable manual work. Workspace reference C0283; case demo-00040. Please explain the next step and any workaround.\", \"customer_id\": null, \"agent_id\": null, \"sla_response_hours\": null, \"first_response_hours\": null, \"sla_resolution_hours\": null, \"resolution_hours\": null, \"csat\": null, \"reopened_count\": null, \"escalated\": null, \"sentiment\": null}, \"customer\": {\"company\": \"Cedar Platform 283\", \"industry\": \"Healthcare software\", \"country\": \"United States\", \"region\": \"Americas\", \"company_size\": \"1-10\", \"plan_id\": \"starter\", \"seats\": 21}, \"messages\": [{\"author_role\": \"customer\", \"body\": \"Messages cannot be sent. We use the starter plan with 21 seats. Several people cannot complete an important workflow today. We have a temporary workaround, but it takes considerable manual work. Workspace reference C0283; case demo-00040. Please explain the next step and any workaround.\"}, {\"author_role\": \"customer\", \"body\": \"I tried those steps and have a follow-up about the workspace setting. Follow-up 2.\"}, {\"author_role\": \"customer\", \"body\": \"The issue is still reproducible; I have attached more context. Follow-up 3.\"}, {\"author_role\": \"customer\", \"body\": \"Thank you. Please confirm whether this also applies to our other team. Follow-up 4.\"}]}",
+        "search": "{\"items\": [{\"kind\": \"article\", \"id\": \"KB018\", \"title\": \"Messages cannot be sent\", \"status\": null, \"priority\": null, \"category\": \"outage\", \"similarity\": 0.8047970383835036}, {\"kind\": \"ticket\", \"id\": \"T00020\", \"title\": \"Messages cannot be sent\", \"status\": \"resolved\", \"priority\": \"P1\", \"category\": \"outage\", \"similarity\": 0.7887853631071229}, {\"kind\": \"ticket\", \"id\": \"T00141\", \"title\": \"Messages cannot be sent\", \"status\": \"resolved\", \"priority\": \"P1\", \"category\": \"outage\", \"similarity\": 0.7875413170932289}, {\"kind\": \"ticket\", \"id\": \"T03006\", \"title\": \"Messages cannot be sent\", \"status\": \"resolved\", \"priority\": \"P1\", \"category\": \"outage\", \"similarity\": 0.7859502165250309}, {\"kind\": \"ticket\", \"id\": \"T00140\", \"title\": \"Messages cannot be sent\", \"status\": \"resolved\", \"priority\": \"P1\", \"category\": \"outage\", \"similarity\": 0.7846892593448098}, {\"kind\": \"ticket\", \"id\": \"T00164\", \"title\": \"Messages cannot be sent\", \"status\": \"resolved\", \"priority\": \"P1\", \"category\": \"outage\", \"similarity\": 0.7845350721468388}, {\"kind\": \"ticket\", \"id\": \"T00849\", \"title\": \"Messages cannot be sent\", \"status\": \"open\", \"priority\": \"P1\", \"category\": \"outage\", \"similarity\": 0.7841723935497061}, {\"kind\": \"ticket\", \"id\": \"T03606\", \"title\": \"Messages cannot be sent\", \"status\": \"resolved\", \"priority\": \"P1\", \"category\": \"outage\", \"similarity\": 0.7828137840543954}]}",
+        "exposed": false,
+        "seen": [
+          "KB018",
+          "T00020",
+          "T00140",
+          "T00141",
+          "T00164",
+          "T00849",
+          "T03006",
+          "T03606"
+        ],
+        "named": [
+          "C0283",
+          "T00040"
+        ]
+      },
+      {
+        "ticket_id": "T02213",
+        "category": "how-to",
+        "priority": "P1",
+        "team": "Customer care",
+        "case": "{\"ticket\": {\"ticket_id\": \"T02213\", \"subject\": \"Find archived conversations\", \"status\": null, \"priority\": null, \"channel\": \"web\", \"category\": null, \"component\": null, \"body\": \"Find archived conversations. We use the scale plan with 18 seats. Our entire production team is blocked right now, with no workaround. We cannot serve customers. Workspace reference C0176; case demo-02213. Please explain the next step and any workaround.\", \"customer_id\": null, \"agent_id\": null, \"sla_response_hours\": null, \"first_response_hours\": null, \"sla_resolution_hours\": null, \"resolution_hours\": null, \"csat\": null, \"reopened_count\": null, \"escalated\": null, \"sentiment\": null}, \"customer\": {\"company\": \"Fern Metrics 176\", \"industry\": \"Finance tools\", \"country\": \"United Kingdom\", \"region\": \"EMEA\", \"company_size\": \"201-500\", \"plan_id\": \"scale\", \"seats\": 18}, \"messages\": [{\"author_role\": \"customer\", \"body\": \"Find archived conversations. We use the scale plan with 18 seats. Our entire production team is blocked right now, with no workaround. We cannot serve customers. Workspace reference C0176; case demo-02213. Please explain the next step and any workaround.\"}, {\"author_role\": \"customer\", \"body\": \"That addresses the immediate issue. How should we avoid it next time? Follow-up 2.\"}, {\"author_role\": \"customer\", \"body\": \"I tried those steps and have a follow-up about the workspace setting. Follow-up 3.\"}, {\"author_role\": \"customer\", \"body\": \"The issue is still reproducible; I have attached more context. Follow-up 4.\"}]}",
+        "search": "{\"items\": [{\"kind\": \"article\", \"id\": \"KB027\", \"title\": \"Find archived conversations\", \"status\": null, \"priority\": null, \"category\": \"how-to\", \"similarity\": 0.8119091909121717}, {\"kind\": \"ticket\", \"id\": \"T03930\", \"title\": \"Find archived conversations\", \"status\": \"resolved\", \"priority\": \"P2\", \"category\": \"how-to\", \"similarity\": 0.7749900618587289}, {\"kind\": \"ticket\", \"id\": \"T03326\", \"title\": \"Find archived conversations\", \"status\": \"resolved\", \"priority\": \"P2\", \"category\": \"how-to\", \"similarity\": 0.7734823759322745}, {\"kind\": \"ticket\", \"id\": \"T02629\", \"title\": \"Find archived conversations\", \"status\": \"resolved\", \"priority\": \"P2\", \"category\": \"how-to\", \"similarity\": 0.7706529484600178}, {\"kind\": \"ticket\", \"id\": \"T03175\", \"title\": \"Find archived conversations\", \"status\": \"in progress\", \"priority\": \"P2\", \"category\": \"how-to\", \"similarity\": 0.7705789239072739}, {\"kind\": \"ticket\", \"id\": \"T03851\", \"title\": \"Find archived conversations\", \"status\": \"resolved\", \"priority\": \"P2\", \"category\": \"how-to\", \"similarity\": 0.770534257881252}, {\"kind\": \"ticket\", \"id\": \"T02413\", \"title\": \"Find archived conversations\", \"status\": \"resolved\", \"priority\": \"P2\", \"category\": \"how-to\", \"similarity\": 0.7702819646726073}, {\"kind\": \"ticket\", \"id\": \"T02744\", \"title\": \"Find archived conversations\", \"status\": \"resolved\", \"priority\": \"P2\", \"category\": \"how-to\", \"similarity\": 0.7665233752760953}]}",
+        "exposed": false,
+        "seen": [
+          "KB027",
+          "T02413",
+          "T02629",
+          "T02744",
+          "T03175",
+          "T03326",
+          "T03851",
+          "T03930"
+        ],
+        "named": [
+          "C0176",
+          "T02213"
+        ]
+      },
+      {
+        "ticket_id": "T02531",
+        "category": "how-to",
+        "priority": "P1",
+        "team": "Technical support",
+        "case": "{\"ticket\": {\"ticket_id\": \"T02531\", \"subject\": \"Set a reply template\", \"status\": null, \"priority\": null, \"channel\": \"API\", \"category\": null, \"component\": null, \"body\": \"Set a reply template. We use the scale plan with 6 seats. Our entire production team is blocked right now, with no workaround. We cannot serve customers. Workspace reference C0253; case demo-02531. Please explain the next step and any workaround.\", \"customer_id\": null, \"agent_id\": null, \"sla_response_hours\": null, \"first_response_hours\": null, \"sla_resolution_hours\": null, \"resolution_hours\": null, \"csat\": null, \"reopened_count\": null, \"escalated\": null, \"sentiment\": null}, \"customer\": {\"company\": \"Cedar Studio 253\", \"industry\": \"Logistics\", \"country\": \"United Kingdom\", \"region\": \"EMEA\", \"company_size\": \"1-10\", \"plan_id\": \"scale\", \"seats\": 6}, \"messages\": [{\"author_role\": \"customer\", \"body\": \"Set a reply template. We use the scale plan with 6 seats. Our entire production team is blocked right now, with no workaround. We cannot serve customers. Workspace reference C0253; case demo-02531. Please explain the next step and any workaround.\"}, {\"author_role\": \"customer\", \"body\": \"Thank you. Please confirm whether this also applies to our other team. Follow-up 2.\"}]}",
+        "search": "{\"items\": [{\"kind\": \"article\", \"id\": \"KB015\", \"title\": \"Set a reply template\", \"status\": null, \"priority\": null, \"category\": \"how-to\", \"similarity\": 0.8338390529165689}, {\"kind\": \"ticket\", \"id\": \"T03608\", \"title\": \"Set a reply template\", \"status\": \"resolved\", \"priority\": \"P2\", \"category\": \"how-to\", \"similarity\": 0.8085119741223259}, {\"kind\": \"ticket\", \"id\": \"T01139\", \"title\": \"Set a reply template\", \"status\": \"in progress\", \"priority\": \"P2\", \"category\": \"how-to\", \"similarity\": 0.8019603054050659}, {\"kind\": \"ticket\", \"id\": \"T01217\", \"title\": \"Set a reply template\", \"status\": \"resolved\", \"priority\": \"P2\", \"category\": \"how-to\", \"similarity\": 0.800839901074514}, {\"kind\": \"ticket\", \"id\": \"T03019\", \"title\": \"Set a reply template\", \"status\": \"resolved\", \"priority\": \"P2\", \"category\": \"how-to\", \"similarity\": 0.800717946030603}, {\"kind\": \"ticket\", \"id\": \"T03050\", \"title\": \"Set a reply template\", \"status\": \"resolved\", \"priority\": \"P3\", \"category\": \"how-to\", \"similarity\": 0.798693103807169}, {\"kind\": \"ticket\", \"id\": \"T03915\", \"title\": \"Set a reply template\", \"status\": \"resolved\", \"priority\": \"P2\", \"category\": \"how-to\", \"similarity\": 0.7955037438302823}, {\"kind\": \"ticket\", \"id\": \"T01321\", \"title\": \"Set a reply template\", \"status\": \"resolved\", \"priority\": \"P4\", \"category\": \"how-to\", \"similarity\": 0.7949085243398849}]}",
+        "exposed": false,
+        "seen": [
+          "KB015",
+          "T01139",
+          "T01217",
+          "T01321",
+          "T03019",
+          "T03050",
+          "T03608",
+          "T03915"
+        ],
+        "named": [
+          "C0253",
+          "T02531"
+        ]
+      }
+    ],
+    "skills_team": {
+      "billing": "Customer care",
+      "account access": "Customer care",
+      "how-to": "Customer success",
+      "feature request": "Customer success",
+      "bug": "Technical support",
+      "outage": "Technical support"
+    }
+  },
+  "cache": {
+    "key_usage_before": 0.111914865,
+    "key_usage_after": 0.112325755,
+    "calls": [
+      {
+        "label": "same prompt, first send",
+        "ticket_id": "T01531",
+        "id": "msg_fpbla6pxKzDuSnfTG3yi",
+        "usage": {
+          "input_tokens": 3,
+          "output_tokens": 28,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "cache_creation_input_tokens": 1374,
+          "cache_read_input_tokens": 0,
+          "cache_creation": null,
+          "inference_geo": null,
+          "server_tool_use": null,
+          "service_tier": "standard",
+          "speed": "standard",
+          "cost": 0.00018605,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.00018605,
+            "upstream_inference_prompt_cost": 0.00017205,
+            "upstream_inference_completions_cost": 1.4e-05
+          }
+        },
+        "stop_reason": "tool_use",
+        "generation": {
+          "missing": 400
+        }
+      },
+      {
+        "label": "same prompt, second send",
+        "ticket_id": "T01531",
+        "id": "msg_n10KjNAofsNEhiTwYQ7a",
+        "usage": {
+          "input_tokens": 3,
+          "output_tokens": 60,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "cache_creation_input_tokens": null,
+          "cache_read_input_tokens": 1374,
+          "cache_creation": null,
+          "inference_geo": null,
+          "server_tool_use": null,
+          "service_tier": "standard",
+          "speed": "standard",
+          "cost": 4.404e-05,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 4.404e-05,
+            "upstream_inference_prompt_cost": 1.404e-05,
+            "upstream_inference_completions_cost": 3e-05
+          }
+        },
+        "stop_reason": "tool_use",
+        "generation": {
+          "missing": 400
+        }
+      },
+      {
+        "label": "same instructions, another ticket",
+        "ticket_id": "T03018",
+        "id": "msg_XPctHmULdoZmTMKVN5s6",
+        "usage": {
+          "input_tokens": 3,
+          "output_tokens": 26,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "cache_creation_input_tokens": 1340,
+          "cache_read_input_tokens": 0,
+          "cache_creation": null,
+          "inference_geo": null,
+          "server_tool_use": null,
+          "service_tier": "standard",
+          "speed": "standard",
+          "cost": 0.0001808,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.0001808,
+            "upstream_inference_prompt_cost": 0.0001678,
+            "upstream_inference_completions_cost": 1.3e-05
+          }
+        },
+        "stop_reason": "tool_use",
+        "generation": {
+          "missing": 400
+        }
+      }
+    ]
+  },
+  "batch": {
+    "model": "openai/gpt-6-luna",
+    "key_usage_before": 0.112325755,
+    "submit_status": 202,
+    "submit_body": {
+      "id": "batch-1793846853-jKgYFvt8YTmvZJdKnS6g",
+      "object": "batch",
+      "endpoint": "/v1/messages",
+      "model": "openai/gpt-6-luna-20260922",
+      "completion_window": "24h",
+      "status": "validating",
+      "created_at": 1793846853,
+      "finalized_at": null,
+      "provider": "OpenAI",
+      "expires_at": 1793933253,
+      "request_counts": {
+        "total": 12,
+        "completed": 0,
+        "failed": 0
+      },
+      "usage": null,
+      "results": null,
+      "error": null
+    },
+    "submitted_at": 1793846855.137619
+  },
+  "free": {
+    "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "key_usage_before": 0.112325755,
+    "submit_status": 400,
+    "submit_body": {
+      "error": {
+        "message": "Model 'nvidia/nemotron-3-ultra-550b-a55b:free' does not have a :batch endpoint.",
+        "code": 400
+      }
+    },
+    "submitted_at": 1793846857.028918
+  },
+  "file": {
+    "key_usage_before": 0.112325755,
+    "upload": {
+      "_shape": "openrouter",
+      "id": "or_file_0Va3ybZEZ7pHm8kvDF8jkJa1",
+      "type": "file",
+      "filename": "communication-contract.md",
+      "mime_type": "text/markdown",
+      "size_bytes": 6775,
+      "created_at": "2026-11-05T02:47:39.819Z",
+      "downloadable": false
+    },
+    "bytes": 6775,
+    "metadata": {
+      "_shape": "openrouter",
+      "id": "or_file_0Va3ybZEZ7pHm8kvDF8jkJa1",
+      "type": "file",
+      "filename": "communication-contract.md",
+      "mime_type": "text/markdown",
+      "size_bytes": 6775,
+      "created_at": "2026-11-05T02:47:39.819Z",
+      "downloadable": false
+    },
+    "key_usage_after_upload": 0.112325755,
+    "read": {
+      "status": 400,
+      "id": null,
+      "usage": null,
+      "stop_reason": null,
+      "content": null,
+      "error": {
+        "type": "invalid_request_error",
+        "message": "Invalid Anthropic Messages API request",
+        "error_type": "invalid_request"
+      }
+    },
+    "key_usage_after_read": 0.162403655
+  },
+  "read": {
+    "attempts": [
+      {
+        "route": "/messages",
+        "status": 400,
+        "usage": null,
+        "content": null,
+        "error": {
+          "type": "invalid_request_error",
+          "message": "Invalid Anthropic Messages API request",
+          "error_type": "invalid_request"
+        }
+      },
+      {
+        "route": "/chat/completions",
+        "status": 403,
+        "usage": null,
+        "content": null,
+        "error": {
+          "message": "Tool 'openrouter:files' is not currently enabled.",
+          "code": 403,
+          "metadata": {
+            "provider_name": null
+          }
+        }
+      }
+    ]
+  }
+}

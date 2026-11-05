@@ -20,6 +20,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from .assistant import Assistant, case_text
 from .embedding import Embedder
+from .lookups import Lookups
 from .models import (AdminStatus, Article, ArticleSummary, BacklogRow, CategoryRow, Company, CustomerListItem,
                      CustomerProfile, ErrorResponse, FirstReplyRow, LanguageModels, Listing, PriorityRow, Report,
                      SearchResults, SimilarTickets, Snapshot, TicketDetail, TicketPage, VolumeRow)
@@ -76,7 +77,7 @@ def assistant(request: Request):
     return request.app.state.assistant
 
 
-EVENT_STREAM = {200: {"description": "A stream of `delta` events, then one `done` or `error`",
+EVENT_STREAM = {200: {"description": "A stream of `lookup` and `delta` events, then one `done` or `error`",
                       "content": {"text/event-stream": {"schema": {"type": "string"}}}}}
 
 # Read-only reports: URL path, SQL file in api/reports, row model, summary.
@@ -217,18 +218,22 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
 
     @app.get("/api/tickets/{ticket_id}/ask", response_class=StreamingResponse, tags=["tickets"],
              responses={**EVENT_STREAM, **errors(401, 404, 422, 503)},
-             summary="Ask the language model about one case, answered as a stream")
+             summary="Ask the language model from one case, answered as a stream with its sources")
     def ask_ticket(
         ticket_id: str = Path(max_length=32),
         q: str = Query(min_length=1, max_length=500, description="The agent's question"),
         _: str = Depends(role),
         db=Depends(store),
         model=Depends(assistant),
+        search_model=Depends(embedder),
     ):
         """Exact, case-sensitive ID lookup (M01). The ticket, its messages and its customer go to the language model,
-        without emails or dates. Nothing is stored or sent to the customer, so each question stands alone. Events:
-        `delta` has `text`; `done` has `complete`, false when the answer was cut short; `error` has the usual error
-        body, because the status is already sent. A 503 `model_not_configured` means no key is set."""
+        which can read other tickets, customers and help articles through read-only tools, all without emails or
+        dates. Nothing is stored or sent to the customer, so each question stands alone. Events: `lookup` has `label`,
+        and any `delta` text before it was working text to drop; `delta` has `text`; `done` has `complete`, false when
+        the answer was cut short, `found`, false when the model says the records don't hold the answer, and `sources`,
+        the records the answer names that the case or a lookup returned, each with `kind`, `id` and `title`; `error` has the
+        usual error body, because the status is already sent. A 503 `model_not_configured` means no key is set."""
         q = q.strip()
         if not q:
             raise ApiError(422, "invalid_request", "The question is empty.")
@@ -237,7 +242,8 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
             raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
         if not model.configured:
             raise ApiError(503, "model_not_configured", "No language model is set up. OPENROUTER_API_KEY is missing.")
-        return StreamingResponse(model.answer(case_text(detail), q), media_type="text/event-stream",
+        lookups = Lookups(db, search_model, detail)
+        return StreamingResponse(model.answer(case_text(detail), q, lookups), media_type="text/event-stream",
                                  headers={"Cache-Control": "no-store, no-transform"})
 
     @app.get("/api/search", response_model=SearchResults, tags=["search"], responses=errors(401, 422, 503),

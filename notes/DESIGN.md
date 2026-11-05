@@ -10,7 +10,7 @@ This describes the desk as built in `web/`: nine pages from the design at
 - No emails and no dates or times. Periods in reports are numbered, not named. Durations ("7h 58m", "81 days") are not dates and stay.
 - A missing value reads "Not recorded". It is never 0 or an empty cell.
 - A status or priority always shows its word. Colour only supports it.
-- The desk is view only. Nothing on it changes a ticket. Asking the language model stores nothing and sends nothing to the customer.
+- The desk is view only. Nothing on it changes a ticket. Asking the language model stores nothing and sends nothing to the customer, and its tools can only read.
 
 ## 2. Tokens
 
@@ -62,7 +62,9 @@ Status pills: Open is indigo, In progress is teal, Pending is amber, Resolved is
 
 **Case.** The clock draws both targets and both actual times on one axis whose end is 1.055 times the largest value. Close labels fall back to a stacked legend, which is also the phone layout. A missing first reply, an unresolved ticket and a missing target each have their own wording. Customer messages are headed by the company and agent messages by the agent ID.
 
-**Ask.** A panel under the conversation takes one question about the case. The browser posts it to `/tickets/[ticketId]/ask`, a route on the web server that adds the token and passes on the API's stream, and the answer appears as the model writes it. A new question replaces the last answer, and each question stands alone. Stop ends the call all the way to the model. A cut-short answer, a stopped answer and a failure each have their own wording, and any text already written stays on the page.
+**Ask.** A panel under the conversation takes one question. The browser posts it to `/tickets/[ticketId]/ask`, a route on the web server that adds the token and passes on the API's stream, and the answer appears as the model writes it. The model starts from the case and can read other tickets, customers and help articles through the read-only tools in `api/orion_api/lookups.py`; the panel says what it is reading. A new question replaces the last answer, and each question stands alone. Stop ends the call all the way to the model. A cut-short answer, a stopped answer and a failure each have their own wording, and any text already written stays on the page.
+
+**Ask sources.** Under the answer, Sources lists the records the answer names by ID, and only those the case or a tool returned, so a made-up ID never appears. A row in a list counts, so a source may rest on that row alone. Each opens in a new tab, because the answer is not kept if the page closes. When the records do not hold the answer, the model opens with agreed words, and the panel says so and heads the list Records checked. An answer that names no record gets a warning instead. A failed lookup ends the answer as an error, so it can never read as "not recorded".
 
 **Customers.** All accounts in one response, filtered on the client by plan, region and words, 20 more at a time. Active cases are tickets that are not resolved.
 

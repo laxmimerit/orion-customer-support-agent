@@ -1,11 +1,14 @@
 """Plan increment 2's check against the real orion_desk (read-only). Skipped without PG_* settings."""
+import json
+
 from fastapi.testclient import TestClient
 import pytest
 
 from orion_api.main import REPORT_ROUTES, create_app
 from orion_api.settings import load_settings
 
-from orion_api.embedding import MODEL, as_vector
+from orion_api.embedding import MODEL, Embedder, as_vector
+from orion_api.lookups import Lookups
 from orion_api.models import CustomerListItem, CustomerSubscription, CustomerTicket, StaffRequest, TicketSummary
 from orion_api.store import (CUSTOMER_LIST, CUSTOMER_SUBSCRIPTION, CUSTOMER_TICKETS, REPORTS, STAFF_REQUESTS,
                              TICKET_ARTICLES, TICKET_PAGE, nearest_query)
@@ -132,6 +135,30 @@ def test_search_plans_use_hnsw_unfiltered_and_the_priority_index_filtered(live):
 
 
 # Customers, knowledge and company pages.
+
+def test_the_model_s_tools_read_real_records_without_private_fields(live):
+    client, _ = live
+    db = client.app.state.store
+    lookups = Lookups(db, Embedder(), db.ticket("T00727"))
+    assert set(lookups.seen) == {"T00727", "C0086"}
+    results = {}
+    for name, arguments in (("read_ticket", {"ticket_id": "T02576"}), ("read_customer", {"customer_id": "C0086"}),
+                            ("read_article", {"article_id": "KB004"}), ("find_customers", {"name": "fern platform 086"}),
+                            ("search_records", {"query": "invite link expired"}), ("list_articles", {})):
+        text, failed = lookups.run(name, arguments)
+        assert not failed
+        results[name] = json.loads(text)
+        assert private_keys(results[name]) == set()
+        assert "@" not in text
+    assert results["read_ticket"]["ticket"]["ticket_id"] == "T02576"
+    assert results["read_customer"]["support_history"]["total"] == len(results["read_customer"]["support_history"]["items"])
+    assert results["find_customers"]["items"][0]["customer_id"] == "C0086"
+    assert results["search_records"]["items"]
+    assert results["list_articles"]["total"] == 40 == len(results["list_articles"]["items"])
+    assert {"T02576", "KB004"} <= set(lookups.seen)
+    assert {hit["id"] for hit in results["search_records"]["items"]} <= set(lookups.seen)
+    assert lookups.run("read_ticket", {"ticket_id": "t02576"})[1] is True  # exact and case-sensitive (M01)
+
 
 def page(client, settings, path):
     response = client.get(path, headers=auth(settings.agent_token))

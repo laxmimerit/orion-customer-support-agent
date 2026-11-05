@@ -327,8 +327,8 @@ export function similarTickets(ticketId: string, limit = SIMILAR_SHOWN) {
   return get<SimilarTickets>(`/api/tickets/${encodeURIComponent(ticketId)}/similar?limit=${limit}`);
 }
 
-// The API's stream of answer events, passed on unread. Its events hold only the model's text, and the token stays
-// here. Longer than the 20 seconds in `get`: the model reasons first, and `signal` ends the call if the agent leaves.
+// The API's stream of answer events, passed on unread. Its events hold the model's text and the IDs and titles of its
+// sources, and the token stays here. Longer than the 20 seconds in `get`: the model reasons first, and `signal` ends the call if the agent leaves.
 export async function askCase(ticketId: string, question: string, signal: AbortSignal): Promise<Result<ReadableStream<Uint8Array>>> {
   const { baseUrl, token } = settings();
   if (!token) {

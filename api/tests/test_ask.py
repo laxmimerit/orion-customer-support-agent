@@ -5,13 +5,15 @@ import logging
 
 from fastapi.testclient import TestClient
 import httpx2
+import psycopg
 import pytest
 
-from orion_api.assistant import BASE_URL, MODEL, Assistant, case_text, frame
+from orion_api.assistant import BASE_URL, LAST_TURN, MAX_TURNS, MODEL, NO_ANSWER, Assistant, case_text, frame
+from orion_api.lookups import Lookups
 from orion_api.main import create_app
 from orion_api.settings import load_settings
 
-from .conftest import AGENT, C0086, MESSAGES, SETTINGS, T00727, auth
+from .conftest import AGENT, C0086, MESSAGES, SETTINGS, T00727, FakeEmbedder, FakeStore, auth
 
 KEY = "sk-or-test-secret"
 ASK = "/api/tickets/T00727/ask?q=Was%20the%20target%20met%3F"
@@ -30,17 +32,28 @@ def sse(*items):
     return "".join(f"event: {item['type']}\ndata: {json.dumps(item)}\n\n" for item in items).encode()
 
 
+def block_events(index, kind, value):
+    if kind == "tool_use":
+        name, arguments = value
+        return [{"type": "content_block_start", "index": index, "content_block": {
+                    "type": "tool_use", "id": f"call-{index}", "name": name, "input": {}}},
+                {"type": "content_block_delta", "index": index,
+                 "delta": {"type": "input_json_delta", "partial_json": json.dumps(arguments)}},
+                {"type": "content_block_stop", "index": index}]
+    empty = {"type": "thinking", "thinking": "", "signature": ""} if kind == "thinking" else {"type": "text", "text": ""}
+    delta = {"type": "thinking_delta", "thinking": value} if kind == "thinking" else {"type": "text_delta", "text": value}
+    return [{"type": "content_block_start", "index": index, "content_block": empty},
+            {"type": "content_block_delta", "index": index, "delta": delta},
+            {"type": "content_block_stop", "index": index}]
+
+
 def message_stream(*blocks, stop_reason="end_turn"):
-    """An Anthropic Messages stream with the given (kind, text) blocks, as OpenRouter sends it."""
+    """An Anthropic Messages stream with the given (kind, value) blocks, as OpenRouter sends it."""
     message = {"id": "gen-1", "type": "message", "role": "assistant", "model": MODEL, "content": [],
                "stop_reason": None, "stop_sequence": None, "usage": {"input_tokens": 1, "output_tokens": 0}}
     items = [{"type": "message_start", "message": message}]
-    for index, (kind, text) in enumerate(blocks):
-        empty = {"type": "thinking", "thinking": "", "signature": ""} if kind == "thinking" else {"type": "text", "text": ""}
-        delta = {"type": "thinking_delta", "thinking": text} if kind == "thinking" else {"type": "text_delta", "text": text}
-        items += [{"type": "content_block_start", "index": index, "content_block": empty},
-                  {"type": "content_block_delta", "index": index, "delta": delta},
-                  {"type": "content_block_stop", "index": index}]
+    for index, (kind, value) in enumerate(blocks):
+        items += block_events(index, kind, value)
     items += [{"type": "message_delta", "delta": {"stop_reason": stop_reason, "stop_sequence": None},
                "usage": {"output_tokens": 5}},
               {"type": "message_stop"}]
@@ -49,6 +62,27 @@ def message_stream(*blocks, stop_reason="end_turn"):
 
 def api_error(status, kind):
     return httpx2.Response(status, json={"type": "error", "error": {"type": kind, "message": f"upstream said {KEY}"}})
+
+
+def tool_turn(*calls, text=None):
+    """A turn that ends in tool calls, each a (name, arguments) pair."""
+    blocks = [("text", text)] if text else []
+    return message_stream(*blocks, *[("tool_use", call) for call in calls], stop_reason="tool_use")
+
+
+def scripted(*turns):
+    """A handler that plays one model turn per request, and keeps each request's body in `.seen`."""
+    remaining = list(turns)
+
+    def handler(request):
+        handler.seen.append(json.loads(request.content))
+        return remaining.pop(0)
+    handler.seen = []
+    return handler
+
+
+def tool_results(body):
+    return body["messages"][-1]["content"]
 
 
 def offline(handler, key=KEY):
@@ -73,7 +107,7 @@ def test_ask_streams_the_answer_as_events(client):
     assert response.headers["content-type"].startswith("text/event-stream")
     assert response.headers["cache-control"] == "no-store, no-transform"
     assert events(response.text) == [("delta", {"text": "Not "}), ("delta", {"text": "recorded."}),
-                                     ("done", {"complete": True})]
+                                     ("done", {"complete": True, "found": True, "sources": []})]
 
 
 def test_ask_passes_the_case_and_the_trimmed_question(client, fake_assistant):
@@ -170,12 +204,13 @@ def test_the_request_goes_to_openrouter_with_only_its_own_key(ask, monkeypatch):
 
 def test_reasoning_is_not_passed_on(ask):
     response = ask(lambda request: message_stream(("thinking", "Secret reasoning"), ("text", "Yes.")))
-    assert events(response.text) == [("delta", {"text": "Yes."}), ("done", {"complete": True})]
+    assert events(response.text) == [("delta", {"text": "Yes."}),
+                                     ("done", {"complete": True, "found": True, "sources": []})]
 
 
 def test_an_answer_cut_off_at_the_limit_says_so(ask):
     response = ask(lambda request: message_stream(("text", "Part"), stop_reason="max_tokens"))
-    assert events(response.text)[-1] == ("done", {"complete": False})
+    assert events(response.text)[-1] == ("done", {"complete": False, "found": True, "sources": []})
 
 
 def test_an_answer_with_no_text_is_an_error(ask):
@@ -225,13 +260,156 @@ def test_leaving_mid_answer_closes_the_provider_call():
         return httpx2.Response(200, headers={"content-type": "text/event-stream"}, stream=Unfinished())
 
     async def leave():
-        answer = offline(handler).answer("{}", "Was the target met?")
+        lookups = Lookups(FakeStore(), FakeEmbedder(), {"ticket": T00727, "customer": C0086, "messages": MESSAGES})
+        answer = offline(handler).answer("{}", "Was the target met?", lookups)
         first = await anext(answer)
         await answer.aclose()
         return first
 
     assert asyncio.run(leave()) == frame("delta", {"text": "Yes"})
     assert closed == [True]
+
+
+def test_the_request_offers_only_the_read_tools(ask):
+    handler = scripted(message_stream(("text", "Yes.")))
+    ask(handler)
+    body = handler.seen[0]
+    assert {tool["name"] for tool in body["tools"]} == {"search_records", "list_articles", "read_ticket",
+                                                        "find_customers", "read_customer", "read_article"}
+    assert body["tool_choice"] == {"type": "auto"}
+
+
+def test_a_lookup_result_goes_back_and_the_answer_cites_it(ask):
+    handler = scripted(tool_turn(("read_article", {"article_id": "KB022"})),
+                       message_stream(("text", "KB022 covers it, and T00727 shows the same.")))
+    response = ask(handler)
+    assert events(response.text) == [
+        ("lookup", {"label": "Reading an article"}),
+        ("delta", {"text": "KB022 covers it, and T00727 shows the same."}),
+        ("done", {"complete": True, "found": True, "sources": [
+            {"kind": "article", "id": "KB022", "title": "Role change not applied"},
+            {"kind": "ticket", "id": "T00727", "title": "Invite link expired"},
+        ]}),
+    ]
+    assistant_turn, user_turn = handler.seen[1]["messages"][-2:]
+    assert assistant_turn["role"] == "assistant"
+    assert assistant_turn["content"][0]["type"] == "tool_use"
+    [result] = user_turn["content"]
+    assert (result["type"], result["tool_use_id"], result["is_error"]) == ("tool_result", "call-0", False)
+    assert json.loads(result["content"])["title"] == "Role change not applied"
+
+
+def test_every_call_in_a_turn_gets_its_own_result(ask):
+    handler = scripted(tool_turn(("read_ticket", {"ticket_id": "T00727"}), ("read_customer", {"customer_id": "C0086"})),
+                       message_stream(("text", "Done.")))
+    ask(handler)
+    assert [result["tool_use_id"] for result in tool_results(handler.seen[1])] == ["call-0", "call-1"]
+
+
+def test_reasoning_goes_back_with_the_calls_but_not_to_the_agent(ask):
+    handler = scripted(message_stream(("thinking", "Secret reasoning"), ("tool_use", ("read_ticket", {"ticket_id": "T00727"})),
+                                      stop_reason="tool_use"),
+                       message_stream(("text", "Yes.")))
+    response = ask(handler)
+    assert handler.seen[1]["messages"][1]["content"][0]["type"] == "thinking"
+    assert "Secret reasoning" not in response.text
+
+
+def test_text_written_before_a_lookup_is_not_the_answer(ask):
+    handler = scripted(tool_turn(("read_ticket", {"ticket_id": "T00727"}), text="Let me check T00727."),
+                       message_stream(("text", "Nothing on that.")))
+    parsed = events(ask(handler).text)
+    assert [name for name, _ in parsed] == ["delta", "lookup", "delta", "done"]  # the client drops text at `lookup`
+    assert parsed[-1][1]["sources"] == []  # T00727 was named only in the working text
+
+
+def test_a_named_record_no_lookup_returned_is_not_a_source(ask):
+    response = ask(lambda request: message_stream(("text", "See T00727, T99999 and KB999.")))
+    assert events(response.text)[-1][1]["sources"] == [{"kind": "ticket", "id": "T00727", "title": "Invite link expired"}]
+
+
+@pytest.mark.parametrize("opening", [NO_ANSWER, NO_ANSWER.replace("'", "\u2019"), "  " + NO_ANSWER.upper(),
+                                     "The records do not show"])
+def test_the_agreed_opening_marks_an_answer_the_records_do_not_hold(ask, opening):
+    response = ask(lambda request: message_stream(("text", f"{opening} a phone number. I checked T00727.")))
+    assert events(response.text)[-1] == ("done", {"complete": True, "found": False, "sources": [
+        {"kind": "ticket", "id": "T00727", "title": "Invite link expired"}]})
+
+
+def test_the_agreed_opening_only_counts_at_the_start(ask):
+    response = ask(lambda request: message_stream(("text", f"T00727 has the target, though {NO_ANSWER} the cause.")))
+    assert events(response.text)[-1][1]["found"] is True
+
+
+def test_the_prompt_asks_for_ids_and_for_the_agreed_opening(ask):
+    handler = scripted(message_stream(("text", "Yes.")))
+    ask(handler)
+    assert "Name every record" in handler.seen[0]["system"]
+    assert NO_ANSWER in handler.seen[0]["system"]
+
+
+def test_an_unknown_id_is_told_to_the_model_and_is_no_source(ask):
+    handler = scripted(tool_turn(("read_ticket", {"ticket_id": "t00727"})), message_stream(("text", "Nothing on t00727.")))
+    parsed = events(ask(handler).text)
+    [result] = tool_results(handler.seen[1])
+    assert result["is_error"] is True
+    assert parsed[-1][1]["sources"] == []
+
+
+def test_the_last_turn_tells_the_model_to_stop_looking(ask):
+    handler = scripted(*[tool_turn(("read_ticket", {"ticket_id": "T00727"})) for _ in range(MAX_TURNS - 1)],
+                       message_stream(("text", "From what I have.")))
+    ask(handler)
+    assert tool_results(handler.seen[-1])[-1] == {"type": "text", "text": LAST_TURN}
+    assert all(item["type"] == "tool_result" for item in tool_results(handler.seen[-2]))
+
+
+def test_tool_markup_on_the_last_turn_never_stands_as_the_answer(ask):
+    markup = "<tool_call>\n<function=search_records>\n<parameter=query>\nT00727\n</parameter>\n</function>\n</tool_call>"
+    handler = scripted(*[tool_turn(("read_ticket", {"ticket_id": "T00727"})) for _ in range(MAX_TURNS - 1)],
+                       message_stream(("text", markup)))
+    parsed = events(ask(handler).text)
+    assert parsed[-2:] == [("lookup", {"label": "Looking something up"}),
+                           ("error", {"error": {"status": 502, "code": "model_empty",
+                                                "message": "The language model finished without an answer. Try again."}})]
+
+
+def test_tool_markup_before_the_last_turn_is_dropped_and_tried_again(ask):
+    handler = scripted(message_stream(("text", "<tool_call>broken")), message_stream(("text", "T00727 says no.")))
+    parsed = events(ask(handler).text)
+    assert [name for name, _ in parsed] == ["delta", "lookup", "delta", "done"]
+    assert parsed[-1][1]["sources"][0]["id"] == "T00727"
+    assert handler.seen[0]["messages"] == handler.seen[1]["messages"]  # the markup does not join the conversation
+
+
+def test_turns_stop_at_the_limit_and_the_last_may_not_look_anything_up(ask):
+    lookups = [tool_turn(("read_ticket", {"ticket_id": "T00727"})) for _ in range(MAX_TURNS - 1)]
+    handler = scripted(*lookups, message_stream(("text", "From what I have.")))
+    response = ask(handler)
+    assert len(handler.seen) == MAX_TURNS
+    assert [body["tool_choice"]["type"] for body in handler.seen] == ["auto"] * (MAX_TURNS - 1) + ["none"]
+    assert events(response.text)[-1][0] == "done"
+
+
+def test_a_last_turn_that_only_calls_tools_is_an_error(ask):
+    handler = scripted(*[tool_turn(("read_ticket", {"ticket_id": "T00727"})) for _ in range(MAX_TURNS)])
+    assert events(ask(handler).text)[-1][1]["error"]["code"] == "model_empty"
+
+
+def test_a_failed_lookup_ends_the_answer_and_never_reads_as_not_recorded(fake_embedder, caplog):
+    class DownStore(FakeStore):
+        def customer(self, customer_id):
+            raise psycopg.OperationalError("connection to db.secret.host failed")
+
+    handler = scripted(tool_turn(("read_customer", {"customer_id": "C0086"})), message_stream(("text", NO_ANSWER)))
+    with caplog.at_level(logging.ERROR, logger="orion_api"):
+        with client_for(offline(handler), DownStore(), fake_embedder) as test_client:
+            response = test_client.get(ASK, headers=auth(AGENT))
+    [(name, data)] = [event for event in events(response.text) if event[0] != "lookup"]
+    assert name == "error"
+    assert (data["error"]["status"], data["error"]["code"]) == (503, "database_unavailable")
+    assert len(handler.seen) == 1  # the model is not asked to explain a gap that is not in the records
+    assert "secret.host" not in response.text + caplog.text
 
 
 def test_text_with_newlines_stays_in_one_event():

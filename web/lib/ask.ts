@@ -5,9 +5,13 @@ export const QUESTION_LIMIT = 500;
 
 export type AskProblem = { status: number | null; code: string; message: string };
 
+// A record the answer names that the case or a lookup returned. The API checks that, so these are safe to link.
+export type AskSource = { kind: "ticket" | "customer" | "article"; id: string; title: string | null };
+
 export type AskEvent =
+  | { type: "lookup"; label: string }
   | { type: "delta"; text: string }
-  | { type: "done"; complete: boolean }
+  | { type: "done"; complete: boolean; found: boolean; sources: AskSource[] }
   | { type: "error"; problem: AskProblem };
 
 // What the desk shows if a failure arrives in a shape it does not know.
@@ -18,6 +22,24 @@ export function askProblem(body: unknown, status: number | null): AskProblem {
     code: typeof error?.code === "string" ? error.code : "unexpected_response",
     message: typeof error?.message === "string" ? error.message : "The desk did not return an answer. Try again.",
   };
+}
+
+// The model is told not to use Markdown, and after a lookup it sometimes does anyway. The panel shows plain text, so
+// the marks would be read as part of the answer. Done on the whole text, because a mark can arrive split across events.
+export function plainAnswer(text: string) {
+  return text.replace(/\*\*|`/g, "");
+}
+
+const SOURCE_PAGES: Record<AskSource["kind"], string> = { ticket: "tickets", customer: "customers", article: "knowledge" };
+
+export function sourceHref(source: AskSource) {
+  return `/${SOURCE_PAGES[source.kind]}/${encodeURIComponent(source.id)}`;
+}
+
+function isSource(value: unknown): value is AskSource {
+  const source = value as Partial<AskSource> | null;
+  return typeof source?.id === "string" && typeof source.kind === "string" && Object.hasOwn(SOURCE_PAGES, source.kind)
+    && (source.title === null || typeof source.title === "string");
 }
 
 function parseFrame(frame: string): AskEvent | null {
@@ -33,9 +55,13 @@ function parseFrame(frame: string): AskEvent | null {
   } catch {
     return null;
   }
-  const fields = body as { text?: unknown; complete?: unknown };
+  const fields = body as { text?: unknown; label?: unknown; complete?: unknown; found?: unknown; sources?: unknown };
+  if (name === "lookup" && typeof fields?.label === "string") return { type: "lookup", label: fields.label };
   if (name === "delta" && typeof fields?.text === "string") return { type: "delta", text: fields.text };
-  if (name === "done") return { type: "done", complete: fields?.complete === true };
+  if (name === "done") {
+    const sources = Array.isArray(fields?.sources) ? fields.sources.filter(isSource) : [];
+    return { type: "done", complete: fields?.complete === true, found: fields?.found !== false, sources };
+  }
   if (name === "error") return { type: "error", problem: askProblem(body, null) };
   return null;
 }

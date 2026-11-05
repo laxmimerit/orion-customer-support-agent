@@ -1,11 +1,15 @@
-"""What the language model may read while it answers: tickets, customers and help articles.
+"""What the language model may read while it answers: tickets, customers and help articles, and the note it may keep.
 
-Each tool calls a Store method the routes already use, so the model reaches nothing the desk can't show, and no tool
-writes. Results go through named fields or a response model, so emails and dates stay out here as they do on the desk.
+Each reading tool calls a Store method the routes already use, so the model reaches nothing the desk can't show, and no
+tool writes to the store. Results go through named fields or a response model, so emails and dates stay out here as they do on the desk.
 The tool arguments come from a model and are checked like any other request.
 
 Lookups also remembers every record it handed over. A source under an answer must be one of these, so the model
 cannot cite a record it never saw, and text inside a ticket cannot plant one.
+
+keep_note stores nothing here either, because the desk has no writes and the deployed API keeps nothing between
+requests. The note leaves in the `done` event, the panel holds it and shows it to the agent, and it comes back with the
+next question on that case.
 """
 from dataclasses import dataclass
 import re
@@ -19,6 +23,8 @@ from .models import Article, ArticleSummary, CustomerListItem, CustomerProfile, 
 MAX_LOOKUPS = 8
 SEARCH_LIMIT = 8
 CUSTOMER_LIMIT = 10
+# The longest note. web/lib/ask.ts holds the same number, and so does `note` on /api/tickets/{ticket_id}/ask.
+NOTE_LIMIT = 300
 
 
 class NoArguments(BaseModel):
@@ -47,6 +53,11 @@ class FindCustomers(BaseModel):
     name: str = Field(min_length=1, max_length=100, description="All or part of the company name")
 
 
+class KeepNote(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+    text: str = Field(min_length=1, max_length=NOTE_LIMIT, description=f"The note, at most {NOTE_LIMIT} characters")
+
+
 @dataclass(frozen=True)
 class Tool:
     description: str
@@ -68,6 +79,8 @@ TOOLS = {
                           ReadCustomer, "Reading a customer"),
     "read_article": Tool("Read one help article, with tickets on the same subject and others in its category.",
                          ReadArticle, "Reading an article"),
+    "keep_note": Tool("Keep one short note for the agent's next question on this case. A later note replaces it, and "
+                      "the agent can read it.", KeepNote, "Keeping a note"),
 }
 SCHEMAS = [{"name": name, "description": tool.description, "input_schema": tool.arguments.model_json_schema()}
            for name, tool in TOOLS.items()]
@@ -82,6 +95,7 @@ class Lookups:
         self.db, self.embedder = db, embedder
         self.used = 0
         self.seen = {}
+        self.kept = None
         self.note_ticket(detail)
 
     def note(self, kind, record_id, title):
@@ -168,6 +182,10 @@ class Lookups:
         for ticket in result.related_tickets.items:
             self.note("ticket", ticket.ticket_id, result.title)  # A related ticket's subject is the article's title.
         return result.model_dump(mode="json")
+
+    def keep_note(self, request):
+        self.kept = request.text
+        return "The note is kept for the next question."
 
     def cited(self, text):
         """The records the answer names, in the order it names them. A name no lookup returned is left out.

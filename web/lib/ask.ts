@@ -2,16 +2,22 @@
 
 // The longest question the API takes (`q` on /api/tickets/{ticket_id}/ask).
 export const QUESTION_LIMIT = 500;
+// The longest note the API takes (`note` on the same route).
+export const NOTE_LIMIT = 300;
 
 export type AskProblem = { status: number | null; code: string; message: string };
 
 // A record the answer names that the case or a lookup returned. The API checks that, so these are safe to link.
 export type AskSource = { kind: "ticket" | "customer" | "article"; id: string; title: string | null };
 
+// A page a web tool gave the model. Its title is null when it was fetched: OpenRouter doesn't say if a fetch worked, so
+// the desk can't either.
+export type AskPage = { url: string; title: string | null };
+
 export type AskEvent =
   | { type: "lookup"; label: string }
   | { type: "delta"; text: string }
-  | { type: "done"; complete: boolean; found: boolean; sources: AskSource[] }
+  | { type: "done"; complete: boolean; found: boolean; sources: AskSource[]; pages: AskPage[]; searches: string[]; note: string | null }
   | { type: "error"; problem: AskProblem };
 
 // What the desk shows if a failure arrives in a shape it does not know.
@@ -42,6 +48,13 @@ function isSource(value: unknown): value is AskSource {
     && (source.title === null || typeof source.title === "string");
 }
 
+// A page's address goes straight into a link, so anything but http and https stops here, whatever the API sent.
+function isPage(value: unknown): value is AskPage {
+  const page = value as Partial<AskPage> | null;
+  return typeof page?.url === "string" && URL.canParse(page.url) && ["http:", "https:"].includes(new URL(page.url).protocol)
+    && (page.title === null || typeof page.title === "string");
+}
+
 function parseFrame(frame: string): AskEvent | null {
   let name = "";
   const data: string[] = [];
@@ -55,12 +68,15 @@ function parseFrame(frame: string): AskEvent | null {
   } catch {
     return null;
   }
-  const fields = body as { text?: unknown; label?: unknown; complete?: unknown; found?: unknown; sources?: unknown };
+  const fields = body as { text?: unknown; label?: unknown; complete?: unknown; found?: unknown; sources?: unknown; pages?: unknown; searches?: unknown; note?: unknown };
   if (name === "lookup" && typeof fields?.label === "string") return { type: "lookup", label: fields.label };
   if (name === "delta" && typeof fields?.text === "string") return { type: "delta", text: fields.text };
   if (name === "done") {
     const sources = Array.isArray(fields?.sources) ? fields.sources.filter(isSource) : [];
-    return { type: "done", complete: fields?.complete === true, found: fields?.found !== false, sources };
+    const pages = Array.isArray(fields?.pages) ? fields.pages.filter(isPage) : [];
+    const searches = Array.isArray(fields?.searches) ? fields.searches.filter((query) => typeof query === "string") : [];
+    const note = typeof fields?.note === "string" ? fields.note : null;
+    return { type: "done", complete: fields?.complete === true, found: fields?.found !== false, sources, pages, searches, note };
   }
   if (name === "error") return { type: "error", problem: askProblem(body, null) };
   return null;

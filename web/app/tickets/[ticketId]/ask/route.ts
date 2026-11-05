@@ -1,5 +1,5 @@
 import { askCase } from "@/lib/api";
-import { QUESTION_LIMIT } from "@/lib/ask";
+import { NOTE_LIMIT, QUESTION_LIMIT } from "@/lib/ask";
 import { decodeId } from "@/lib/detail-pages";
 
 function refuse(status: number, code: string, message: string) {
@@ -13,14 +13,18 @@ export async function POST(request: Request, { params }: { params: Promise<{ tic
   if (!request.headers.get("content-type")?.startsWith("application/json")) {
     return refuse(415, "unsupported_media_type", "Send the question as JSON.");
   }
-  const body: { question?: unknown } | null = await request.json().catch(() => null);
+  const body: { question?: unknown; web?: unknown; note?: unknown } | null = await request.json().catch(() => null);
   const question = typeof body?.question === "string" ? body.question.trim() : "";
   if (!question) return refuse(422, "invalid_request", "Write a question first.");
   if (question.length > QUESTION_LIMIT) {
     return refuse(422, "invalid_request", `A question can be up to ${QUESTION_LIMIT} characters.`);
   }
 
-  const result = await askCase(decodeId((await params).ticketId), question, request.signal);
+  const note = typeof body?.note === "string" ? body.note.trim() : "";
+  if (note.length > NOTE_LIMIT) return refuse(422, "invalid_request", `A note can be up to ${NOTE_LIMIT} characters.`);
+
+  // Only a real true turns the web on: anything else, or nothing, leaves it off.
+  const result = await askCase(decodeId((await params).ticketId), question, body?.web === true, note || null, request.signal);
   if (!result.ok) {
     return Response.json({ error: result.problem }, { status: result.problem.status ?? 502 });
   }

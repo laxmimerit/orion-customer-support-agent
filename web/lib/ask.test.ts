@@ -6,6 +6,7 @@ const bytes = (text: string) => new TextEncoder().encode(text);
 const delta = (text: string) => `event: delta\ndata: ${JSON.stringify({ text })}\n\n`;
 const done = (body: unknown) => `event: done\ndata: ${JSON.stringify(body)}\n\n`;
 const KB004 = { kind: "article", id: "KB004", title: "Resend an invitation" };
+const PAGE = { url: "https://developer.mozilla.org/docs/429", title: "429 Too Many Requests" };
 
 describe("askReader", () => {
   it("reads each event in order", () => {
@@ -15,7 +16,7 @@ describe("askReader", () => {
       { type: "lookup", label: "Reading an article" },
       { type: "delta", text: "Not " },
       { type: "delta", text: "recorded." },
-      { type: "done", complete: true, found: true, sources: [KB004] },
+      { type: "done", complete: true, found: true, sources: [KB004], pages: [], searches: [], note: null },
     ]);
   });
 
@@ -44,18 +45,18 @@ describe("askReader", () => {
 
   it("reports an answer that was cut short", () => {
     expect(askReader()(bytes(done({ complete: false, found: true, sources: [] }))))
-      .toEqual([{ type: "done", complete: false, found: true, sources: [] }]);
+      .toEqual([{ type: "done", complete: false, found: true, sources: [], pages: [], searches: [], note: null }]);
   });
 
   it("reports an answer the records do not hold, with what was checked", () => {
     expect(askReader()(bytes(done({ complete: true, found: false, sources: [KB004] }))))
-      .toEqual([{ type: "done", complete: true, found: false, sources: [KB004] }]);
+      .toEqual([{ type: "done", complete: true, found: false, sources: [KB004], pages: [], searches: [], note: null }]);
   });
 
   it("keeps a source with no title", () => {
     const source = { kind: "customer", id: "C0300", title: null };
     expect(askReader()(bytes(done({ complete: true, found: true, sources: [source] }))))
-      .toEqual([{ type: "done", complete: true, found: true, sources: [source] }]);
+      .toEqual([{ type: "done", complete: true, found: true, sources: [source], pages: [], searches: [], note: null }]);
   });
 
   it.each([
@@ -65,8 +66,13 @@ describe("askReader", () => {
     ["an inherited kind", { complete: true, found: true, sources: [{ kind: "constructor", id: "I1", title: null }] }],
     ["a source with no ID", { complete: true, found: true, sources: [{ kind: "ticket", title: "x" }] }],
     ["a source that is not an object", { complete: true, found: true, sources: [null, 7] }],
+    ["a script address", { complete: true, found: true, pages: [{ url: "javascript:alert(1)", title: "x" }] }],
+    ["a data address", { complete: true, found: true, pages: [{ url: "data:text/html,x", title: "x" }] }],
+    ["a page that is no address", { complete: true, found: true, pages: [{ url: "T00727", title: null }] }],
+    ["a page with no address", { complete: true, found: true, pages: [{ title: "x" }] }],
+    ["pages that are not a list", { complete: true, found: true, pages: "https://example.com" }],
   ])("lists nothing for %s", (_, body) => {
-    expect(askReader()(bytes(done(body)))).toEqual([{ type: "done", complete: true, found: true, sources: [] }]);
+    expect(askReader()(bytes(done(body)))).toEqual([{ type: "done", complete: true, found: true, sources: [], pages: [], searches: [], note: null }]);
   });
 
   it("passes on the API's error body", () => {
@@ -94,6 +100,29 @@ describe("plainAnswer", () => {
 
   it("leaves a single star and plain text alone", () => {
     expect(plainAnswer("8 seats * $99, one\n\ntwo")).toBe("8 seats * $99, one\n\ntwo");
+  });
+});
+
+describe("the done event", () => {
+  it("keeps a web page, with or without a title", () => {
+    const fetched = { url: "http://example.com/a", title: null };
+    expect(askReader()(bytes(done({ complete: true, found: true, sources: [], pages: [PAGE, fetched] }))))
+      .toEqual([{ type: "done", complete: true, found: true, sources: [], pages: [PAGE, fetched], searches: [], note: null }]);
+  });
+
+  it("keeps the words the model searched for, and drops anything that is not text", () => {
+    expect(askReader()(bytes(done({ complete: true, found: true, sources: [], searches: ["HTTP 429", 7, null] }))))
+      .toEqual([{ type: "done", complete: true, found: true, sources: [], pages: [], searches: ["HTTP 429"], note: null }]);
+  });
+
+  it("carries the note for the next question", () => {
+    expect(askReader()(bytes(done({ complete: true, found: true, sources: [], note: "Ask about the invite." }))))
+      .toEqual([{ type: "done", complete: true, found: true, sources: [], pages: [], searches: [], note: "Ask about the invite." }]);
+  });
+
+  it("treats a note that is not text as no note", () => {
+    expect(askReader()(bytes(done({ complete: true, found: true, sources: [], note: 7 }))))
+      .toEqual([{ type: "done", complete: true, found: true, sources: [], pages: [], searches: [], note: null }]);
   });
 });
 

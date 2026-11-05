@@ -257,6 +257,12 @@
 .ask-form textarea:focus-visible { outline: 2px solid transparent; box-shadow: var(--focus-ring); }
 .ask-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; }
 .ask-hint { font-size: 12.5px; color: var(--ink-muted); }
+.ask-form .ask-web { display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; min-height: 32px; font-weight: 500; cursor: pointer; }
+.ask-web input { width: 16px; height: 16px; flex: none; accent-color: var(--teal); }
+.ask-web input:focus-visible { outline: 2px solid transparent; box-shadow: var(--focus-ring); }
+.ask-kept { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; padding: 10px 12px; border: 1px solid var(--line-soft); border-radius: 8px; }
+.ask-kept div { flex: 1 1 220px; min-width: 0; }
+.ask-kept p:not(.ask-label) { font-size: 13.5px; line-height: 1.5; color: var(--ink-2); white-space: pre-wrap; overflow-wrap: anywhere; }
 
 .ask-result { display: flex; flex-direction: column; gap: 8px; padding: 18px 26px 22px; border-top: 1px solid var(--line-soft); }
 .ask-label { font-size: 12.5px; font-weight: 600; color: var(--ink-muted); }
@@ -285,4 +291,5 @@
   .ask-form { padding: 14px 18px 18px; }
   .ask-result { padding: 16px 18px 18px; }
   .ask-sources a { display: inline-flex; align-items: center; min-height: 44px; }
+  .ask-form .ask-web { min-height: 44px; }
 }

@@ -20,10 +20,11 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from .assistant import Assistant, case_text
 from .embedding import Embedder
-from .lookups import Lookups
+from .lookups import NOTE_LIMIT, Lookups
 from .models import (AdminStatus, Article, ArticleSummary, BacklogRow, CategoryRow, Company, CustomerListItem,
                      CustomerProfile, ErrorResponse, FirstReplyRow, LanguageModels, Listing, PriorityRow, Report,
                      SearchResults, SimilarTickets, Snapshot, TicketDetail, TicketPage, VolumeRow)
+from .server_tools import ServerTools
 from .settings import load_settings
 from .store import report_description
 
@@ -222,6 +223,8 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
     def ask_ticket(
         ticket_id: str = Path(max_length=32),
         q: str = Query(min_length=1, max_length=500, description="The agent's question"),
+        web: bool = Query(False, description="Offer web search and web fetch for this question"),
+        note: str | None = Query(None, max_length=NOTE_LIMIT, description="The note the last answer kept, if any"),
         _: str = Depends(role),
         db=Depends(store),
         model=Depends(assistant),
@@ -229,11 +232,16 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
     ):
         """Exact, case-sensitive ID lookup (M01). The ticket, its messages and its customer go to the language model,
         which can read other tickets, customers and help articles through read-only tools, all without emails or
-        dates. Nothing is stored or sent to the customer, so each question stands alone. Events: `lookup` has `label`,
+        dates. OpenRouter also runs a sandboxed shell with no network for it, and, only when `web` is true, web search
+        and web fetch, each with a limit per question. Nothing is stored or sent to the customer, so a question knows
+        the last one only through `note`, which the client sends back. Events: `lookup` has `label`,
         and any `delta` text before it was working text to drop; `delta` has `text`; `done` has `complete`, false when
-        the answer was cut short, `found`, false when the model says the records don't hold the answer, and `sources`,
-        the records the answer names that the case or a lookup returned, each with `kind`, `id` and `title`; `error` has the
-        usual error body, because the status is already sent. A 503 `model_not_configured` means no key is set."""
+        the answer was cut short, `found`, false when the model says the records don't hold the answer, `sources`,
+        the records the answer names that the case or a lookup returned, each with `kind`, `id` and `title`, `pages`,
+        every web page a web tool gave, each with `url` and `title` (null when it was fetched, because OpenRouter does
+        not say if a fetch worked), `searches`, the words the model searched for, and `note`, for the next question,
+        or null; `error` has the usual error body,
+        because the status is already sent. A 503 `model_not_configured` means no key is set."""
         q = q.strip()
         if not q:
             raise ApiError(422, "invalid_request", "The question is empty.")
@@ -243,7 +251,8 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
         if not model.configured:
             raise ApiError(503, "model_not_configured", "No language model is set up. OPENROUTER_API_KEY is missing.")
         lookups = Lookups(db, search_model, detail)
-        return StreamingResponse(model.answer(case_text(detail), q, lookups), media_type="text/event-stream",
+        answer = model.answer(case_text(detail), q, lookups, ServerTools(web), (note or "").strip() or None)
+        return StreamingResponse(answer, media_type="text/event-stream",
                                  headers={"Cache-Control": "no-store, no-transform"})
 
     @app.get("/api/search", response_model=SearchResults, tags=["search"], responses=errors(401, 422, 503),

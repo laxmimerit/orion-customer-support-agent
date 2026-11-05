@@ -21,15 +21,15 @@ def read(lookups, tool, **arguments):
     return json.loads(text)
 
 
-def test_there_are_only_the_six_read_tools():
+def test_no_tool_exists_besides_the_six_reads_and_keep_note():
     assert set(TOOLS) == {"search_records", "list_articles", "read_ticket", "find_customers", "read_customer",
-                          "read_article"}
+                          "read_article", "keep_note"}
 
 
 def test_each_schema_names_its_required_argument():
     assert {schema["name"]: schema["input_schema"].get("required") for schema in SCHEMAS} == {
         "search_records": ["query"], "list_articles": None, "read_ticket": ["ticket_id"], "find_customers": ["name"],
-        "read_customer": ["customer_id"], "read_article": ["article_id"]}
+        "read_customer": ["customer_id"], "read_article": ["article_id"], "keep_note": ["text"]}
 
 
 def test_the_open_case_is_known_before_any_lookup(lookups):

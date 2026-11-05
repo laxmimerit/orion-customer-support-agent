@@ -329,7 +329,7 @@ export function similarTickets(ticketId: string, limit = SIMILAR_SHOWN) {
 
 // The API's stream of answer events, passed on unread. Its events hold the model's text and the IDs and titles of its
 // sources, and the token stays here. Longer than the 20 seconds in `get`: the model reasons first, and `signal` ends the call if the agent leaves.
-export async function askCase(ticketId: string, question: string, signal: AbortSignal): Promise<Result<ReadableStream<Uint8Array>>> {
+export async function askCase(ticketId: string, question: string, web: boolean, note: string | null, signal: AbortSignal): Promise<Result<ReadableStream<Uint8Array>>> {
   const { baseUrl, token } = settings();
   if (!token) {
     return { ok: false, problem: { status: null, code: "missing_token",
@@ -337,7 +337,8 @@ export async function askCase(ticketId: string, question: string, signal: AbortS
   }
   let response: Response;
   try {
-    response = await fetch(`${baseUrl}/api/tickets/${encodeURIComponent(ticketId)}/ask?q=${encodeURIComponent(question)}`, {
+    const options = `${web ? "&web=true" : ""}${note ? `&note=${encodeURIComponent(note)}` : ""}`;
+    response = await fetch(`${baseUrl}/api/tickets/${encodeURIComponent(ticketId)}/ask?q=${encodeURIComponent(question)}${options}`, {
       cache: "no-store",
       headers: { Authorization: `Bearer ${token}` },
       signal: AbortSignal.any([signal, AbortSignal.timeout(180_000)]),

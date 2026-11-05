@@ -10,6 +10,7 @@ import pytest
 
 from orion_api.assistant import BASE_URL, LAST_TURN, MAX_TURNS, MODEL, NO_ANSWER, Assistant, case_text, frame
 from orion_api.lookups import Lookups
+from orion_api.server_tools import SHELL, ServerTools
 from orion_api.main import create_app
 from orion_api.settings import load_settings
 
@@ -33,12 +34,26 @@ def sse(*items):
 
 
 def block_events(index, kind, value):
-    if kind == "tool_use":
+    if kind in ("tool_use", "server_tool_use"):
         name, arguments = value
         return [{"type": "content_block_start", "index": index, "content_block": {
-                    "type": "tool_use", "id": f"call-{index}", "name": name, "input": {}}},
+                    "type": kind, "id": f"call-{index}", "name": name, "input": {}}},
                 {"type": "content_block_delta", "index": index,
                  "delta": {"type": "input_json_delta", "partial_json": json.dumps(arguments)}},
+                {"type": "content_block_stop", "index": index}]
+    if kind == "shell_result":
+        tool_use_id, output = value
+        return [{"type": "content_block_start", "index": index, "content_block": {
+                    "type": "openrouter_shell_tool_result", "tool_use_id": tool_use_id,
+                    "content": {"output": output}, "container_id": "gen_abc"}},
+                {"type": "content_block_stop", "index": index}]
+    if kind == "search_result":
+        citations = [{"type": "web_search_result_location", "url": url, "title": title, "cited_text": cited_text,
+                      "encrypted_index": ""} for url, title, cited_text in value]
+        return [{"type": "content_block_start", "index": index, "content_block": {
+                    "type": "text", "text": "", "citations": []}}] + [
+                {"type": "content_block_delta", "index": index,
+                 "delta": {"type": "citations_delta", "citation": citation}} for citation in citations] + [
                 {"type": "content_block_stop", "index": index}]
     empty = {"type": "thinking", "thinking": "", "signature": ""} if kind == "thinking" else {"type": "text", "text": ""}
     delta = {"type": "thinking_delta", "thinking": value} if kind == "thinking" else {"type": "text_delta", "text": value}
@@ -107,7 +122,7 @@ def test_ask_streams_the_answer_as_events(client):
     assert response.headers["content-type"].startswith("text/event-stream")
     assert response.headers["cache-control"] == "no-store, no-transform"
     assert events(response.text) == [("delta", {"text": "Not "}), ("delta", {"text": "recorded."}),
-                                     ("done", {"complete": True, "found": True, "sources": []})]
+                                     ("done", {"complete": True, "found": True, "sources": [], "pages": [], "searches": [], "note": None})]
 
 
 def test_ask_passes_the_case_and_the_trimmed_question(client, fake_assistant):
@@ -205,12 +220,12 @@ def test_the_request_goes_to_openrouter_with_only_its_own_key(ask, monkeypatch):
 def test_reasoning_is_not_passed_on(ask):
     response = ask(lambda request: message_stream(("thinking", "Secret reasoning"), ("text", "Yes.")))
     assert events(response.text) == [("delta", {"text": "Yes."}),
-                                     ("done", {"complete": True, "found": True, "sources": []})]
+                                     ("done", {"complete": True, "found": True, "sources": [], "pages": [], "searches": [], "note": None})]
 
 
 def test_an_answer_cut_off_at_the_limit_says_so(ask):
     response = ask(lambda request: message_stream(("text", "Part"), stop_reason="max_tokens"))
-    assert events(response.text)[-1] == ("done", {"complete": False, "found": True, "sources": []})
+    assert events(response.text)[-1] == ("done", {"complete": False, "found": True, "sources": [], "pages": [], "searches": [], "note": None})
 
 
 def test_an_answer_with_no_text_is_an_error(ask):
@@ -261,7 +276,7 @@ def test_leaving_mid_answer_closes_the_provider_call():
 
     async def leave():
         lookups = Lookups(FakeStore(), FakeEmbedder(), {"ticket": T00727, "customer": C0086, "messages": MESSAGES})
-        answer = offline(handler).answer("{}", "Was the target met?", lookups)
+        answer = offline(handler).answer("{}", "Was the target met?", lookups, ServerTools())
         first = await anext(answer)
         await answer.aclose()
         return first
@@ -270,12 +285,14 @@ def test_leaving_mid_answer_closes_the_provider_call():
     assert closed == [True]
 
 
-def test_the_request_offers_only_the_read_tools(ask):
+def test_the_request_offers_the_read_tools_keep_note_and_only_the_shell(ask):
     handler = scripted(message_stream(("text", "Yes.")))
     ask(handler)
     body = handler.seen[0]
-    assert {tool["name"] for tool in body["tools"]} == {"search_records", "list_articles", "read_ticket",
-                                                        "find_customers", "read_customer", "read_article"}
+    assert {tool["name"] for tool in body["tools"] if "name" in tool} == {
+        "search_records", "list_articles", "read_ticket", "find_customers", "read_customer", "read_article",
+        "keep_note"}
+    assert [tool["type"] for tool in body["tools"] if "type" in tool] == [SHELL]
     assert body["tool_choice"] == {"type": "auto"}
 
 
@@ -289,7 +306,7 @@ def test_a_lookup_result_goes_back_and_the_answer_cites_it(ask):
         ("done", {"complete": True, "found": True, "sources": [
             {"kind": "article", "id": "KB022", "title": "Role change not applied"},
             {"kind": "ticket", "id": "T00727", "title": "Invite link expired"},
-        ]}),
+        ], "pages": [], "searches": [], "note": None}),
     ]
     assistant_turn, user_turn = handler.seen[1]["messages"][-2:]
     assert assistant_turn["role"] == "assistant"
@@ -333,7 +350,7 @@ def test_a_named_record_no_lookup_returned_is_not_a_source(ask):
 def test_the_agreed_opening_marks_an_answer_the_records_do_not_hold(ask, opening):
     response = ask(lambda request: message_stream(("text", f"{opening} a phone number. I checked T00727.")))
     assert events(response.text)[-1] == ("done", {"complete": True, "found": False, "sources": [
-        {"kind": "ticket", "id": "T00727", "title": "Invite link expired"}]})
+        {"kind": "ticket", "id": "T00727", "title": "Invite link expired"}], "pages": [], "searches": [], "note": None})
 
 
 def test_the_agreed_opening_only_counts_at_the_start(ask):

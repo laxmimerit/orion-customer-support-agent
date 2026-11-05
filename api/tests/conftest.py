@@ -216,12 +216,12 @@ class FakeAssistant:
     def __init__(self):
         self.asks = []
 
-    async def answer(self, case, question, lookups):
+    async def answer(self, case, question, lookups, tools, note=None):
         self.asks.append((case, question))
-        self.lookups = lookups
+        self.lookups, self.tools, self.note = lookups, tools, note
         yield frame("delta", {"text": "Not "})
         yield frame("delta", {"text": "recorded."})
-        yield frame("done", {"complete": True, "found": True, "sources": []})
+        yield frame("done", {"complete": True, "found": True, "sources": [], "pages": [], "searches": [], "note": None})
 
     async def connection(self):
         return {"connection": {"provider": "OpenRouter", "model": "test/model", "address": "https://example.invalid",

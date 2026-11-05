@@ -219,9 +219,10 @@ def wait(args):
             time.sleep(POLL_SECONDS)
         time.sleep(20)
         record["key_usage_after"] = key_usage(api)
-    record["finished_at"] = time.time()
-    record["result"] = body
-    save(state)
+    # A batch can run for hours, and other steps write this file meanwhile, so read it again before saving.
+    fresh = load()
+    fresh[args.step] = {**record, "finished_at": time.time(), "result": body}
+    save(fresh)
     print(json.dumps({name: value for name, value in body.items() if name != "results"}, indent=2))
 
 

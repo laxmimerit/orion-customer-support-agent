@@ -9,6 +9,9 @@ from orion_api.assistant import frame
 from orion_api.main import create_app
 from orion_api.settings import Settings
 
+# Filled by test_case_set_live.py, and printed at the end of the run so a failure stays in front of whoever ran it.
+CASE_RESULTS = []
+
 AGENT = "agent-test-token"
 ADMIN = "admin-test-token"
 SETTINGS = Settings(pg_host="db.invalid", pg_port=5432, pg_user="nobody", pg_password="unused",
@@ -272,3 +275,16 @@ def private_keys(value):
     if isinstance(value, dict):
         return {key for key in value if PRIVATE_KEY.search(key)}.union(*map(private_keys, value.values()))
     return set()
+
+
+def pytest_terminal_summary(terminalreporter):
+    """The case set as one table: each case by each model, and the reason beside every failure."""
+    if not CASE_RESULTS:
+        return
+    terminalreporter.section("case set")
+    for result in CASE_RESULTS:
+        verdict = "pass" if result["passed"] else "FAIL"
+        terminalreporter.write_line(f"{verdict}  {result['case']:<24} {result['line']:<10} {result['seconds']:>6}s "
+                                    f"{result['cost'] or '':<11} {'; '.join(result['problems'])}")
+    passed = sum(result["passed"] for result in CASE_RESULTS)
+    terminalreporter.write_line(f"{passed} of {len(CASE_RESULTS)} passed")

@@ -118,6 +118,48 @@ def ask(fake_store, fake_embedder):
     return run
 
 
+def limited(name, **headers):
+    """A 429 shaped like OpenRouter's real ones: the limit is named in the message, and the headers come only sometimes."""
+    return httpx2.Response(429, headers=headers, json={
+        "type": "error", "error": {"type": "rate_limit_error", "message": f"Rate limit exceeded: {name}. "}})
+
+
+@pytest.mark.parametrize("response, code, words", [
+    (lambda: limited("free-models-per-day-high-balance"), "model_daily_limit", "when OpenRouter's day resets"),
+    (lambda: limited("free-models-per-day", **{"x-ratelimit-reset": "1793923200000"}), "model_daily_limit", "comes back at 00:00 UTC"),
+    (lambda: limited("free-models-per-day", **{"x-ratelimit-reset": "soon"}), "model_daily_limit", "when OpenRouter's day resets"),
+    (lambda: limited("free-models-per-min"), "model_busy", "Try again in a minute"),
+    (lambda: api_error(429, "rate_limit_error"), "model_busy", "Try again in a minute"),
+])
+def test_a_limit_that_will_not_lift_in_a_minute_does_not_say_it_will(ask, response, code, words):
+    name, data = events(ask(lambda request: response()).text)[-1]
+    assert (name, data["error"]["code"]) == ("error", code)
+    assert words in data["error"]["message"]
+
+
+class BrokenEmbedder(FakeEmbedder):
+    def __init__(self, failure):
+        super().__init__()
+        self.failure = failure
+
+    def query(self, text):
+        raise self.failure
+
+
+@pytest.mark.parametrize("failure, code", [
+    (psycopg.OperationalError("down"), "database_unavailable"),
+    (psycopg.errors.UndefinedTable("gone"), "lookup_failed"),
+    (RuntimeError("the embedding model is missing"), "lookup_failed"),
+])
+def test_a_broken_lookup_is_named_as_that_and_never_blames_the_model(fake_store, failure, code):
+    handler = scripted(tool_turn(("search_records", {"query": "invite"})), message_stream(("text", "Never reached.")))
+    with client_for(offline(handler), fake_store, BrokenEmbedder(failure)) as test_client:
+        name, data = events(test_client.get(ASK, headers=auth(AGENT)).text)[-1]
+    assert (name, data["error"]["code"]) == ("error", code)
+    assert "model" not in data["error"]["message"].lower()
+    assert len(handler.seen) == 1  # Nothing goes back to the model after the failure.
+
+
 def test_ask_streams_the_answer_as_events(client):
     response = client.get(ASK, headers=auth(AGENT))
     assert response.status_code == 200

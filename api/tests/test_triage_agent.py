@@ -266,6 +266,15 @@ def test_a_reply_from_another_model_voids_the_result(agent):
     assert outcome.result is None
 
 
+def test_a_lookup_that_breaks_some_other_way_is_not_called_a_database_failure(agent, fake_store, monkeypatch):
+    def broken():
+        raise ValueError("a bad row")
+    monkeypatch.setattr(fake_store, "articles", broken)
+    outcome = agent(tool_call("mcp__desk__list_articles"), {"text": ANSWER})
+    assert outcome.error == "lookup_failed"
+    assert outcome.result is None
+
+
 def test_a_database_failure_is_not_read_as_a_missing_record(agent, fake_store, monkeypatch):
     def down():
         raise psycopg.OperationalError("db.invalid")

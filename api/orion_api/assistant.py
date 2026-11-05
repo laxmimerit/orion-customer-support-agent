@@ -13,6 +13,7 @@ error the agent sees. Nothing here moves to another model, so a free model that 
 import asyncio
 from contextlib import aclosing
 from dataclasses import dataclass, field
+from datetime import UTC, datetime
 import hashlib
 import json
 import logging
@@ -46,6 +47,8 @@ MODEL_DEADLINE = 150.0
 # has. The seconds leave that last turn time inside MODEL_DEADLINE.
 MAX_TURNS = 6
 LOOKUP_SECONDS = 100.0
+# A rate limit that lifts later than this has been used up, so "try again in a minute" would be untrue.
+DAILY_LIMIT = "free-models-per-day"  # OpenRouter's name for it. The limit per minute is free-models-per-min.
 LAST_TURN = "You have no lookups left. Answer now in plain text from what you have, and say what you could not check."
 SHELL_SPENT = "The shell limit is reached, so the shell is gone. Carry on without it."
 # With its tools off, the model can still write a call in its own syntax. That text is not an answer.
@@ -189,6 +192,21 @@ class WrongModel(Exception):
     """OpenRouter answered with a model the request did not name, which may be a paid one."""
 
 
+class LookupFailed(Exception):
+    """A desk tool broke while the model waited on it. The model did nothing wrong, so the error must not name it."""
+
+
+async def looked_up(lookups, call):
+    """One tool call as (text, is_error). A thread, as the routes get: the store and the embedder would block the event loop."""
+    try:
+        return await asyncio.to_thread(lookups.run, call.name, call.input)
+    except (psycopg.OperationalError, PoolTimeout):
+        raise
+    except Exception as exc:
+        log.error("a lookup failed: %s", type(exc).__name__)
+        raise LookupFailed from exc
+
+
 def require_model(message, choice):
     if message.model != choice.model:
         raise WrongModel
@@ -260,6 +278,21 @@ def unknown_model(exc):
         isinstance(exc, anthropic.BadRequestError) and "not a valid model ID" in str(exc.body))
 
 
+def daily_limit(exc):
+    """When a used-up day's allowance comes back, in words, or None for a limit that lifts by itself in a moment.
+
+    The free models share one count a day per account. Every such 429 names that limit in its body, but only some carry
+    the reset time: a real one on the Ask route, with tools in the request, came with no rate headers at all.
+    """
+    if DAILY_LIMIT not in str(exc.body):
+        return None
+    try:
+        back = datetime.fromtimestamp(int(exc.response.headers["x-ratelimit-reset"]) / 1000, UTC)
+    except (KeyError, ValueError):
+        return "It comes back when OpenRouter's day resets."
+    return f"It comes back at {back:%H:%M} UTC."
+
+
 def problem(exc, model=MODEL):
     """The error body for a failed call. The SDK's own message is left out: it quotes the provider, and a free model's
     404 can name a paid one to use instead."""
@@ -269,10 +302,14 @@ def problem(exc, model=MODEL):
         status, code, message = 502, "wrong_model", f"OpenRouter answered with a model other than {model}, so the desk stopped it."
     elif isinstance(exc, (psycopg.OperationalError, PoolTimeout)):
         status, code, message = 503, "database_unavailable", "The database did not answer. Try again shortly."
+    elif isinstance(exc, LookupFailed):
+        status, code, message = 503, "lookup_failed", "A lookup on the desk failed, so the answer stopped. Try again shortly."
     elif isinstance(exc, (anthropic.AuthenticationError, anthropic.PermissionDeniedError)):
         status, code, message = 502, "model_key_refused", "OpenRouter refused the desk's key."
     elif unknown_model(exc):
         status, code, message = 502, "model_not_found", f"OpenRouter does not offer {model}. The desk did not switch to another model."
+    elif isinstance(exc, anthropic.RateLimitError) and (returns := daily_limit(exc)):
+        status, code, message = 429, "model_daily_limit", f"{model} has used up its daily limit on OpenRouter. {returns} Pick another model or wait. The desk did not switch by itself."
     elif isinstance(exc, anthropic.RateLimitError):
         status, code, message = 429, "model_busy", f"{model} is busy or rate limited. Try again in a minute."
     elif isinstance(exc, anthropic.APIStatusError) and exc.status_code == 402:
@@ -406,8 +443,7 @@ class Assistant:
                     results = []
                     for call in calls:
                         yield frame("lookup", {"label": lookups.label(call.name)})
-                        # A thread, as the routes get: the store and the embedder would block the event loop.
-                        content, failed = await asyncio.to_thread(lookups.run, call.name, call.input)
+                        content, failed = await looked_up(lookups, call)
                         results.append({"type": "tool_result", "tool_use_id": call.id, "content": content,
                                         "is_error": failed})
                     if cut:
@@ -473,7 +509,7 @@ class Assistant:
                         break
                     results = []
                     for call in calls:
-                        content, failed = await asyncio.to_thread(lookups.run, call.name, call.input)
+                        content, failed = await looked_up(lookups, call)
                         results.append({"type": "tool_result", "tool_use_id": call.id, "content": content,
                                         "is_error": failed})
                     sent = [block.model_dump(exclude_none=True) for block in final.content

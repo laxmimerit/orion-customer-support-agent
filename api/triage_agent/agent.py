@@ -57,14 +57,14 @@ class Outcome:
 
 
 def desk_tools(lookups, broken):
-    """TriageLookups as SDK tools. A database failure goes in `broken`: "could not look" must not pass for "no record"."""
+    """TriageLookups as SDK tools. A failure goes in `broken`: "could not look" must not pass for "no record"."""
     def one(schema):
         @tool(schema["name"], schema["description"], schema["input_schema"])
         async def run(arguments):
             try:
                 text, failed = await asyncio.to_thread(lookups.run, schema["name"], arguments)
             except Exception as exc:
-                broken.append(type(exc).__name__)
+                broken.append("database_unavailable" if isinstance(exc, (psycopg.OperationalError, PoolTimeout)) else "lookup_failed")
                 text, failed = "The desk could not look that up.", True
             return {"content": [{"type": "text", "text": text}], "is_error": failed}
         return run
@@ -144,7 +144,7 @@ async def triage_ticket(config, store, embedder, ticket_id, home):
     if final is not None:
         outcome.turns, outcome.estimated_usd = final.num_turns, final.total_cost_usd or 0.0
         outcome.models |= set(final.model_usage or ())
-    outcome.error = outcome.error or ("database_unavailable" if broken else failure(final))
+    outcome.error = outcome.error or (broken[0] if broken else failure(final))
     if outcome.error is None:
         try:
             outcome.result = checked_triage(form_in(final.result or ""), lookups, config.model)

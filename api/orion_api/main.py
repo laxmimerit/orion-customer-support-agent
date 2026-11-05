@@ -295,7 +295,8 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
         not say if a fetch worked), `searches`, the words the model searched for, and `note`, for the next question,
         or null; `error` has the usual error body,
         because the status is already sent. The desk calls only the model named, and a failure is never retried on
-        another: `model_not_found`, `model_timeout` and `wrong_model` arrive as `error` events. A 422 `model_not_allowed`
+        another: `model_not_found`, `model_timeout`, `model_daily_limit` and `wrong_model` arrive as `error` events, and so do
+        `database_unavailable` and `lookup_failed`, which mean a tool broke and not the model. A 422 `model_not_allowed`
         or `model_not_run` means nothing was called. A 503 `model_not_configured` means no key is set."""
         q = q.strip()
         if not q:

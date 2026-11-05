@@ -1,0 +1,17 @@
+# The triage agent's own settings. Nothing here is secret: those are in .env.triage-agent at the repository root.
+# Nothing in ~/.claude, .claude/, the shell environment or the desk's .env changes any of this.
+
+[model]
+name = "nvidia/nemotron-3-ultra-550b-a55b:free"  # Must end in :free, or the agent refuses to start.
+base_url = "https://openrouter.ai/api"
+
+[limits]
+max_turns = 6                    # Per ticket, as the desk's Triage button. A ticket that reaches it gets no proposal.
+estimated_usd_per_ticket = 0.25  # The SDK's own estimate, not money: see "What the budgets mean" in README.md.
+estimated_usd_per_run = 5.00     # The same estimate, added up over a run.
+real_usd_per_run = 0.0           # What OpenRouter really charged the key during the run. Any more stops the run.
+tickets_per_run = 25
+seconds_per_ticket = 180
+failures_in_a_row = 3            # A provider that keeps failing is not worth more tickets: stop, and carry on later.
+busy_wait_seconds = 60           # One wait, then one more try, when the free model is busy.
+workers = 1                      # The free model allows about 20 requests a minute, and a ticket takes three or four.

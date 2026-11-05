@@ -21,6 +21,9 @@ testpaths = ["tests"]
 markers = ["live: reads the real orion_desk database; skipped when PG_* settings are missing"]
 
 [dependency-groups]
+agent = [
+    "claude-agent-sdk>=0.2.178",
+]
 dev = [
     "httpx2>=2.16.0",
     "pytest>=9.2.0",

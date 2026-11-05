@@ -12,3 +12,4 @@ coverage/
 review/
 .claude/worktrees/
 .open-tickets-last.json
+.triage-agent/

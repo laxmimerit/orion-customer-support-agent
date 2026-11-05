@@ -9,6 +9,7 @@ import { Conversation } from "@/components/conversation";
 import { ApiProblemPanel, ChannelIcon, Crumbs, Facts, PageHead, PriorityTile, StatusPill, TicketSearchBar } from "@/components/desk";
 import { BackIcon } from "@/components/icons";
 import { SimilarLoading, SimilarTickets } from "@/components/similar-tickets";
+import { TriagePanel } from "@/components/triage-panel";
 import { type Customer, type Ticket, ticketDetail } from "@/lib/api";
 import { decodeId, queueHref, queuePage } from "@/lib/detail-pages";
 import { NOT_RECORDED, channelLabel, initial, orNotRecorded, plural, sentenceCase } from "@/lib/format";
@@ -81,6 +82,7 @@ export default async function CasePage({ params, searchParams }: Props) {
               company={customer?.company ?? null}
               agentId={ticket.agent_id}
             />
+            <TriagePanel key={`triage-${ticket.ticket_id}`} ticketId={ticket.ticket_id} />
             <AskPanel key={ticket.ticket_id} ticketId={ticket.ticket_id} />
           </div>
           <aside className="split-rail" aria-label="Case details">

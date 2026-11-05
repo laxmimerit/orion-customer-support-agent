@@ -4,6 +4,7 @@ Every data route is under /api and reads only orion_desk. Run it as a factory:
 
     uv run uvicorn orion_api.main:create_app --factory --port 8000
 """
+import asyncio
 from contextlib import asynccontextmanager
 from http import HTTPStatus
 import logging
@@ -18,17 +19,18 @@ import psycopg
 from psycopg_pool import PoolTimeout
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from .assistant import Assistant, case_text
+from .assistant import Assistant, ModelFailed, case_text
 from .embedding import Embedder
-from .lookups import NOTE_LIMIT, Lookups
+from .lookups import NOTE_LIMIT, Lookups, TriageLookups, intake
 from .models import (AdminStatus, Article, ArticleSummary, BacklogRow, CategoryRow, Company, CustomerListItem,
                      CustomerProfile, ErrorResponse, FirstReplyRow, LanguageModels, Listing, PriorityRow, Report,
-                     SearchResults, SimilarTickets, Snapshot, TicketDetail, TicketPage, VolumeRow)
+                     SearchResults, SimilarTickets, Snapshot, TicketDetail, TicketPage, Triage, VolumeRow)
 from .server_tools import ServerTools
 from .settings import load_settings
 from .store import report_description
 
 log = logging.getLogger("orion_api")
+DISCONNECT_CHECK = 0.5  # Seconds between looks at whether the client is still there.
 bearer = HTTPBearer(auto_error=False, description="ORION_AGENT_TOKEN, or ORION_ADMIN_TOKEN for admin routes")
 
 
@@ -76,6 +78,17 @@ def embedder(request: Request):
 
 def assistant(request: Request):
     return request.app.state.assistant
+
+
+async def unless_gone(request, work):
+    """Await `work`, and cancel it if the client leaves. A stream stops by itself when nobody reads it; a plain response
+    would run to the end, and spend the model's tokens, for nobody."""
+    task = asyncio.ensure_future(work)
+    while not (await asyncio.wait({task}, timeout=DISCONNECT_CHECK))[0]:
+        if await request.is_disconnected():
+            task.cancel()
+            raise ApiError(503, "client_gone", "The client left before the answer finished.")
+    return task.result()
 
 
 EVENT_STREAM = {200: {"description": "A stream of `lookup` and `delta` events, then one `done` or `error`",
@@ -254,6 +267,35 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
         answer = model.answer(case_text(detail), q, lookups, ServerTools(web), (note or "").strip() or None)
         return StreamingResponse(answer, media_type="text/event-stream",
                                  headers={"Cache-Control": "no-store, no-transform"})
+
+    # async, unlike the routes above: it waits on the model through the async client, so the store goes to a thread.
+    @app.get("/api/tickets/{ticket_id}/triage", response_model=Triage, tags=["tickets"],
+             responses=errors(401, 402, 404, 422, 429, 502, 503),
+             summary="Category, priority and team from the language model, with the records it used")
+    async def triage_ticket(
+        request: Request,
+        ticket_id: str = Path(max_length=32),
+        _: str = Depends(role),
+        db=Depends(store),
+        model=Depends(assistant),
+        search_model=Depends(embedder),
+    ):
+        """Exact, case-sensitive ID lookup (M01). The model sees the ticket as it arrived: subject, body, channel, the
+        customer's own messages and the customer. The ticket's stored category, priority, component, targets, agent and
+        replies are held back, here and in its tools, so a result can be compared with them. `category`, `priority` and
+        `team` are closed lists, and an answer outside the form is a 502 `triage_invalid`, not a result. `record_ids`
+        holds only records a tool returned: the open case is there only if the model read it, and an empty list means
+        it relied on none. `dropped_ids` counts the IDs taken out because no tool returned them. Nothing is stored, so
+        the same ticket can come back different. A 503 `model_not_configured` means no key is set."""
+        detail = await asyncio.to_thread(db.ticket, ticket_id)
+        if detail is None:
+            raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
+        if not model.configured:
+            raise ApiError(503, "model_not_configured", "No language model is set up. OPENROUTER_API_KEY is missing.")
+        try:
+            return await unless_gone(request, model.triage(case_text(intake(detail)), TriageLookups(db, search_model, detail)))
+        except ModelFailed as failed:
+            raise ApiError(failed.body["status"], failed.body["code"], failed.body["message"]) from None
 
     @app.get("/api/search", response_model=SearchResults, tags=["search"], responses=errors(401, 422, 503),
              summary="Find tickets and help articles by meaning, or one ticket by its exact ID")

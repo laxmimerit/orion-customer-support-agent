@@ -223,6 +223,12 @@ class FakeAssistant:
         yield frame("delta", {"text": "recorded."})
         yield frame("done", {"complete": True, "found": True, "sources": [], "pages": [], "searches": [], "note": None})
 
+    async def triage(self, case, lookups):
+        self.asks.append((case, "triage"))
+        self.lookups = lookups
+        return {"category": "account access", "priority": "P2", "team": "Customer care", "reason": "Invitation trouble.",
+                "record_ids": ["KB004"], "model": "test/model", "dropped_ids": 1}
+
     async def connection(self):
         return {"connection": {"provider": "OpenRouter", "model": "test/model", "address": "https://example.invalid",
                                "sdk": "Anthropic SDK", "state": "connected"},

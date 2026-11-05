@@ -10,6 +10,9 @@ cannot cite a record it never saw, and text inside a ticket cannot plant one.
 keep_note stores nothing here either, because the desk has no writes and the deployed API keeps nothing between
 requests. The note leaves in the `done` event, the panel holds it and shows it to the agent, and it comes back with the
 next question on that case.
+
+Triage reads through BlindStore, which holds back what the ticket already says about its own category, priority and
+team. Without that the model could copy the answer, and a score against those fields would prove nothing.
 """
 from dataclasses import dataclass
 import re
@@ -25,6 +28,9 @@ SEARCH_LIMIT = 8
 CUSTOMER_LIMIT = 10
 # The longest note. web/lib/ask.ts holds the same number, and so does `note` on /api/tickets/{ticket_id}/ask.
 NOTE_LIMIT = 300
+# What a ticket holds when it arrives. component gives away the category, sla_*_hours the priority and agent_id the team;
+# the rest, agents' replies included, is written after triage.
+INTAKE_FIELDS = ("ticket_id", "subject", "body", "channel")
 
 
 class NoArguments(BaseModel):
@@ -195,3 +201,67 @@ class Lookups:
         named = [(match.start(), record) for record_id, record in self.seen.items()
                  if (match := re.search(rf"\b{re.escape(record_id)}\b", text))]
         return [record for _, record in sorted(named, key=lambda pair: pair[0])]
+
+
+def intake(detail):
+    """A case as it stood on arrival: only what the customer wrote and who they are."""
+    return {"ticket": {name: detail["ticket"].get(name) for name in INTAKE_FIELDS}, "customer": detail["customer"],
+            "messages": [message for message in detail["messages"] if message.get("author_role") == "customer"]}
+
+
+class BlindStore:
+    """The store with one ticket's own labels held back, on every route to them: a search hit, a row in its customer's
+    history or an article's related tickets would each show them. Other tickets stay whole, as past cases to learn from.
+
+    It forwards nothing by default, so a tool that reaches a new Store method fails until that method is thought through.
+    """
+
+    def __init__(self, db, ticket_id):
+        self.db, self.ticket_id = db, ticket_id
+
+    def articles(self):
+        return self.db.articles()
+
+    def customers(self):
+        # The case counts would give away the ticket's status, next to a history that leaves it out.
+        ticket = self.db.ticket(self.ticket_id)["ticket"]
+        return [{**row, "all_cases": row["all_cases"] - 1, "active_cases": row["active_cases"] - (ticket["status"] != "resolved")}
+                if row["customer_id"] == ticket["customer_id"] else row for row in self.db.customers()]
+
+    def without(self, listing):
+        items = [item for item in listing["items"] if item["ticket_id"] != self.ticket_id]
+        return {"total": listing["total"] - len(listing["items"]) + len(items), "items": items}
+
+    def ticket(self, ticket_id):
+        detail = self.db.ticket(ticket_id)
+        return intake(detail) if detail is not None and ticket_id == self.ticket_id else detail
+
+    def exact_ticket(self, q):
+        return None if q == self.ticket_id else self.db.exact_ticket(q)
+
+    def nearest(self, vector, priority, limit):
+        hits = self.db.nearest(vector, priority, limit + 1)
+        return [hit for hit in hits if hit["id"] != self.ticket_id][:limit]
+
+    def customer(self, customer_id):
+        profile = self.db.customer(customer_id)
+        return profile and {**profile, "support_history": self.without(profile["support_history"])}
+
+    def article(self, article_id):
+        article = self.db.article(article_id)
+        return article and {**article, "related_tickets": self.without(article["related_tickets"])}
+
+
+class TriageLookups(Lookups):
+    """The reading tools for one triage. `seen` starts empty: an ID counts only if a tool returned it, so the open case
+    is not a record the model looked up unless it read it. No note, because triage has no next question."""
+
+    schemas = [schema for schema in SCHEMAS if schema["name"] != "keep_note"]
+
+    def __init__(self, db, embedder, detail):
+        super().__init__(BlindStore(db, detail["ticket"]["ticket_id"]), embedder, detail)
+        self.named = set(self.seen)  # The case's own IDs: the model may mention these, but did not look them up.
+        self.seen = {}
+
+    def run(self, name, arguments):
+        return ("No tool has that name.", True) if name == "keep_note" else super().run(name, arguments)

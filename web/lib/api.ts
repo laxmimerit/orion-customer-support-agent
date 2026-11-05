@@ -6,6 +6,8 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { cache } from "react";
 
+import type { Triage } from "@/lib/triage";
+
 // Values already in the environment win over the repository's .env, as in api/orion_api/settings.py.
 // Only the API address and the agent token are read; the admin token stays with the API.
 function readEnvFile(file: string): Record<string, string> {
@@ -284,7 +286,7 @@ function refused(response: Response, body: { error?: { code?: unknown; message?:
   };
 }
 
-async function get<T>(route: string, authorised = true): Promise<Result<T>> {
+async function get<T>(route: string, authorised = true, signal: AbortSignal = AbortSignal.timeout(20_000)): Promise<Result<T>> {
   const { baseUrl, token } = settings();
   if (authorised && !token) {
     return { ok: false, problem: { status: null, code: "missing_token",
@@ -295,7 +297,7 @@ async function get<T>(route: string, authorised = true): Promise<Result<T>> {
     response = await fetch(baseUrl + route, {
       cache: "no-store",
       headers: authorised ? { Authorization: `Bearer ${token}` } : {},
-      signal: AbortSignal.timeout(20_000),
+      signal,
     });
   } catch {
     return { ok: false, problem: { status: null, code: "api_unreachable",
@@ -356,6 +358,11 @@ export async function askCase(ticketId: string, question: string, web: boolean, 
       message: `The API answered ${response.status}, but the reply was not a stream.` } };
   }
   return { ok: true, data: response.body };
+}
+
+// Longer than the 20 seconds in `get`, as an answer is: the model reads records first, and `signal` ends the call if the agent stops.
+export function triageCase(ticketId: string, signal: AbortSignal) {
+  return get<Triage>(`/api/tickets/${encodeURIComponent(ticketId)}/triage`, true, AbortSignal.any([signal, AbortSignal.timeout(180_000)]));
 }
 
 export function languageModels() {

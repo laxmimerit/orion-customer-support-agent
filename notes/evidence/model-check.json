@@ -1,0 +1,1158 @@
+{
+  "tickets": [
+    "T02215",
+    "T03067",
+    "T03389",
+    "T00274",
+    "T02645",
+    "T03665",
+    "T02235",
+    "T03293",
+    "T00994",
+    "T01813"
+  ],
+  "not_run": [
+    "anthropic",
+    "openai"
+  ],
+  "lines": [
+    {
+      "line": {
+        "id": "free",
+        "label": "Nemotron 3 Ultra",
+        "provider": "OpenRouter",
+        "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+        "paid": false,
+        "run": true
+      },
+      "ask": [
+        {
+          "check": "reply on time",
+          "round": 1,
+          "passed": true,
+          "text": "No. The SLA target for first response was 3.0 hours (sla_response_hours in T00727), but the actual first response took 7.96 hours (first_response_hours in T00727).",
+          "complete": true,
+          "found": true,
+          "sources": [
+            {
+              "kind": "ticket",
+              "id": "T00727",
+              "title": "Invite link expired"
+            }
+          ],
+          "error": null,
+          "seconds": 3.1,
+          "calls": 1,
+          "answered_by": [
+            "nvidia/nemotron-3-ultra-550b-a55b:free"
+          ],
+          "cost": "$0.000000",
+          "attempts": 1
+        },
+        {
+          "check": "reply on time",
+          "round": 2,
+          "passed": true,
+          "text": "No. The target was 3.00 hours (sla_response_hours) but the first response took 7.96 hours (first_response_hours).",
+          "complete": true,
+          "found": true,
+          "sources": [],
+          "error": null,
+          "seconds": 2.3,
+          "calls": 1,
+          "answered_by": [
+            "nvidia/nemotron-3-ultra-550b-a55b:free"
+          ],
+          "cost": "$0.000000",
+          "attempts": 1
+        },
+        {
+          "check": "reply on time",
+          "round": 3,
+          "passed": true,
+          "text": "No. The SLA target for first response was 3.0 hours (sla_response_hours), but the actual first response took 7.96 hours (first_response_hours).",
+          "complete": true,
+          "found": true,
+          "sources": [],
+          "error": null,
+          "seconds": 3.4,
+          "calls": 1,
+          "answered_by": [
+            "nvidia/nemotron-3-ultra-550b-a55b:free"
+          ],
+          "cost": "$0.000000",
+          "attempts": 1
+        },
+        {
+          "check": "long thread count",
+          "round": 1,
+          "passed": false,
+          "text": "Based on the full thread in T00360:\n\n**Customer messages stating \"The issue is still reproducible\": 9 total**\n\n**Follow-up numbers:**\n- First: Follow-up 6\n- Last: Follow-up 56\n\n**Agent replies after those messages:** No change. Every single agent reply in the thread is identical: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" This same canned response appears after every customer message, including all 9 \"still reproducible\" messages and the final follow-up 58.\n\n**Assessment:** The case is marked \"resolved\" (resolution_hours 37.16, CSAT 4), but the customer explicitly reported the issue still reproducible as late as follow-up 56, and the agent never varied the response or acknowledged the continuing problem. The records show the case was closed while the customer was still reporting the issue.",
+          "complete": true,
+          "found": true,
+          "sources": [
+            {
+              "kind": "ticket",
+              "id": "T00360",
+              "title": "Role change not applied"
+            }
+          ],
+          "error": null,
+          "seconds": 73.1,
+          "calls": 1,
+          "answered_by": [
+            "nvidia/nemotron-3-ultra-550b-a55b:free"
+          ],
+          "cost": "$0.000000",
+          "attempts": 1
+        },
+        {
+          "check": "long thread count",
+          "round": 2,
+          "passed": false,
+          "text": "The case shows 9 customer messages stating \"The issue is still reproducible\" \u2014 at follow-ups 6, 12, 23, 24, 31, 36, 38, 55, and 56. The first is follow-up 6; the last is follow-up 56.\n\nEvery agent reply in the entire thread is identical: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\" No agent reply changes after any of those \"still reproducible\" messages.\n\nThe ticket status is \"resolved\" and CSAT is 4, but the customer repeatedly reported the issue persisting up to follow-up 56 while the agent gave the same canned response each time.",
+          "complete": true,
+          "found": true,
+          "sources": [],
+          "error": null,
+          "seconds": 26.8,
+          "calls": 1,
+          "answered_by": [
+            "nvidia/nemotron-3-ultra-550b-a55b:free"
+          ],
+          "cost": "$0.000000",
+          "attempts": 1
+        },
+        {
+          "check": "long thread count",
+          "round": 3,
+          "passed": false,
+          "text": "Based on the full message thread in T00360:\n\n**Customer messages stating \"the issue is still reproducible\": 9 total**\n\n**Follow-up numbers:**\n- First: Follow-up 6\n- Last: Follow-up 56\n\n**Agent replies after those messages:** No, the agent's reply never changed. Every single agent response in the thread (58 responses) is identical boilerplate: \"Verified the account through the approved recovery flow and confirmed access was restored without sharing credentials.\"\n\nThe case is marked \"resolved\" with a CSAT of 4, but the customer repeatedly reported the issue was still reproducible up to follow-up 56, and the agent gave the same generic response each time without addressing the reproducibility or the workspace setting follow-ups.",
+          "complete": true,
+          "found": true,
+          "sources": [
+            {
+              "kind": "ticket",
+              "id": "T00360",
+              "title": "Role change not applied"
+            }
+          ],
+          "error": null,
+          "seconds": 15.2,
+          "calls": 1,
+          "answered_by": [
+            "nvidia/nemotron-3-ultra-550b-a55b:free"
+          ],
+          "cost": "$0.000000",
+          "attempts": 1
+        },
+        {
+          "check": "not in the records",
+          "round": 1,
+          "passed": true,
+          "text": "The records don't show a phone number for customer C0086. The customer record includes company details (industry, country, region, company size), subscription info, support history, and invoice history, but no phone number is recorded.",
+          "complete": true,
+          "found": false,
+          "sources": [
+            {
+              "kind": "customer",
+              "id": "C0086",
+              "title": "Fern Platform 086"
+            }
+          ],
+          "error": null,
+          "seconds": 14.5,
+          "calls": 2,
+          "answered_by": [
+            "nvidia/nemotron-3-ultra-550b-a55b:free"
+          ],
+          "cost": "$0.000000",
+          "attempts": 1
+        },
+        {
+          "check": "not in the records",
+          "round": 2,
+          "passed": true,
+          "text": "The records don't show a phone number for customer C0086 (Fern Platform 086). The customer record includes industry, country, region, company size, subscription details, support history, and invoice history, but no phone number field is present.",
+          "complete": true,
+          "found": false,
+          "sources": [
+            {
+              "kind": "customer",
+              "id": "C0086",
+              "title": "Fern Platform 086"
+            }
+          ],
+          "error": null,
+          "seconds": 9.1,
+          "calls": 2,
+          "answered_by": [
+            "nvidia/nemotron-3-ultra-550b-a55b:free"
+          ],
+          "cost": "$0.000000",
+          "attempts": 1
+        },
+        {
+          "check": "not in the records",
+          "round": 3,
+          "passed": true,
+          "text": "The records don't show a phone number for customer C0086 (Fern Platform 086). The customer data includes company details, subscription info, support history, and invoices, but no phone number field is present.",
+          "complete": true,
+          "found": false,
+          "sources": [
+            {
+              "kind": "customer",
+              "id": "C0086",
+              "title": "Fern Platform 086"
+            }
+          ],
+          "error": null,
+          "seconds": 10.3,
+          "calls": 2,
+          "answered_by": [
+            "nvidia/nemotron-3-ultra-550b-a55b:free"
+          ],
+          "cost": "$0.000000",
+          "attempts": 1
+        },
+        {
+          "check": "needs a lookup",
+          "round": 1,
+          "passed": true,
+          "text": "KB004",
+          "complete": true,
+          "found": true,
+          "sources": [
+            {
+              "kind": "article",
+              "id": "KB004",
+              "title": "Invite link expired"
+            }
+          ],
+          "error": null,
+          "seconds": 18.4,
+          "calls": 3,
+          "answered_by": [
+            "nvidia/nemotron-3-ultra-550b-a55b:free"
+          ],
+          "cost": "$0.000000",
+          "attempts": 1
+        },
+        {
+          "check": "needs a lookup",
+          "round": 2,
+          "passed": true,
+          "text": "KB004",
+          "complete": true,
+          "found": true,
+          "sources": [
+            {
+              "kind": "article",
+              "id": "KB004",
+              "title": "Invite link expired"
+            }
+          ],
+          "error": null,
+          "seconds": 17.0,
+          "calls": 3,
+          "answered_by": [
+            "nvidia/nemotron-3-ultra-550b-a55b:free"
+          ],
+          "cost": "$0.000000",
+          "attempts": 1
+        },
+        {
+          "check": "needs a lookup",
+          "round": 3,
+          "passed": true,
+          "text": "KB004",
+          "complete": true,
+          "found": true,
+          "sources": [
+            {
+              "kind": "article",
+              "id": "KB004",
+              "title": "Invite link expired"
+            }
+          ],
+          "error": null,
+          "seconds": 21.7,
+          "calls": 4,
+          "answered_by": [
+            "nvidia/nemotron-3-ultra-550b-a55b:free"
+          ],
+          "cost": "$0.000000",
+          "attempts": 1
+        }
+      ],
+      "triage": [
+        {
+          "ticket_id": "T02215",
+          "result": {
+            "category": "billing",
+            "priority": "P3",
+            "team": "Customer care",
+            "reason": "Multiple past tickets with identical subject 'Seat count differs from invoice' are all categorized as billing with P3 priority. Customer reports normal operations continue with a workaround and can address in days, indicating limited impact.",
+            "record_ids": [
+              "T00966",
+              "T02126",
+              "T03868",
+              "T01099",
+              "T02340",
+              "T01825",
+              "T01088",
+              "T00543"
+            ],
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "dropped_ids": 0
+          },
+          "error": null,
+          "attempts": 1,
+          "seconds": 19.1,
+          "tool_calls": [
+            "search_records",
+            "find_customers"
+          ],
+          "exposed": []
+        },
+        {
+          "ticket_id": "T03067",
+          "result": {
+            "category": "billing",
+            "priority": "P2",
+            "team": "Customer care",
+            "reason": "The customer reports a missing credit on their next invoice, a billing issue. Multiple past tickets with the same subject were categorized as billing with P2 priority. The workaround is costly but work continues, matching P2 impact.",
+            "record_ids": [
+              "T01896",
+              "T01281",
+              "T01630",
+              "T01884",
+              "T02870",
+              "T02696",
+              "T02263",
+              "T00768"
+            ],
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "dropped_ids": 0
+          },
+          "error": null,
+          "attempts": 1,
+          "seconds": 14.1,
+          "tool_calls": [
+            "search_records"
+          ],
+          "exposed": []
+        },
+        {
+          "ticket_id": "T03389",
+          "result": {
+            "category": "bug",
+            "priority": "P2",
+            "team": "Technical support",
+            "reason": "Attachment preview showing blank is a feature defect (bug). Several people cannot complete an important workflow and the workaround requires considerable manual effort, matching P2 impact.",
+            "record_ids": [
+              "T02044",
+              "T01588"
+            ],
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "dropped_ids": 0
+          },
+          "error": null,
+          "attempts": 1,
+          "seconds": 31.0,
+          "tool_calls": [
+            "search_records",
+            "read_ticket",
+            "find_customers",
+            "read_ticket"
+          ],
+          "exposed": []
+        },
+        {
+          "ticket_id": "T00274",
+          "result": {
+            "category": "bug",
+            "priority": "P3",
+            "team": "Technical support",
+            "reason": "Customer reports missing rows in CSV export, a known bug pattern from past tickets; one user affected with workaround, work continues.",
+            "record_ids": [
+              "T00209"
+            ],
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "dropped_ids": 0
+          },
+          "error": null,
+          "attempts": 1,
+          "seconds": 17.2,
+          "tool_calls": [
+            "search_records",
+            "read_ticket"
+          ],
+          "exposed": []
+        },
+        {
+          "ticket_id": "T02645",
+          "result": {
+            "category": "account access",
+            "priority": "P4",
+            "team": "Customer care",
+            "reason": "The customer explicitly states this is a non-urgent planning question for a test workspace with no production impact or deadline, matching past tickets categorized as account access with P4 priority.",
+            "record_ids": [
+              "T00506"
+            ],
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "dropped_ids": 0
+          },
+          "error": null,
+          "attempts": 1,
+          "seconds": 19.2,
+          "tool_calls": [
+            "search_records",
+            "read_ticket"
+          ],
+          "exposed": []
+        },
+        {
+          "ticket_id": "T03665",
+          "result": {
+            "category": "account access",
+            "priority": "P2",
+            "team": "Customer care",
+            "reason": "Expired invite link blocks several people from an important workflow today with a costly manual workaround, indicating significant impact (P2). Category is account access, handled by Customer care.",
+            "record_ids": [
+              "T00721",
+              "T01650",
+              "C0116"
+            ],
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "dropped_ids": 0
+          },
+          "error": null,
+          "attempts": 1,
+          "seconds": 31.1,
+          "tool_calls": [
+            "search_records",
+            "find_customers",
+            "read_ticket",
+            "read_ticket"
+          ],
+          "exposed": []
+        },
+        {
+          "ticket_id": "T02235",
+          "result": {
+            "category": "feature request",
+            "priority": "P4",
+            "team": "Customer success",
+            "reason": "The customer explicitly describes this as a non-urgent planning question or suggestion for a test workspace, with production unaffected and no deadline. Past tickets on the same topic are consistently categorized as feature requests.",
+            "record_ids": [
+              "T02580",
+              "T03722",
+              "T00679",
+              "T03573",
+              "T00486",
+              "T03559",
+              "T03433",
+              "T02935",
+              "T03975",
+              "T03878",
+              "T02202",
+              "T02131",
+              "T02463"
+            ],
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "dropped_ids": 0
+          },
+          "error": null,
+          "attempts": 1,
+          "seconds": 22.9,
+          "tool_calls": [
+            "search_records",
+            "search_records"
+          ],
+          "exposed": []
+        },
+        {
+          "ticket_id": "T03293",
+          "result": {
+            "category": "how-to",
+            "priority": "P3",
+            "team": "Customer success",
+            "reason": "Customer asks how to invite a read-only reviewer on a starter plan; past tickets and KB021 confirm this is a how-to question. Impact is limited to one person with a workaround in place, so P3.",
+            "record_ids": [
+              "T02377",
+              "KB021"
+            ],
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "dropped_ids": 0
+          },
+          "error": null,
+          "attempts": 1,
+          "seconds": 37.0,
+          "tool_calls": [
+            "search_records",
+            "read_ticket",
+            "list_articles",
+            "read_article"
+          ],
+          "exposed": []
+        },
+        {
+          "ticket_id": "T00994",
+          "result": {
+            "category": "feature request",
+            "priority": "P1",
+            "team": "Customer success",
+            "reason": "Customer requests audit trail download feature, states entire production team blocked with no workaround and cannot serve customers.",
+            "record_ids": [
+              "KB029",
+              "T03988"
+            ],
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "dropped_ids": 0
+          },
+          "error": null,
+          "attempts": 1,
+          "seconds": 21.4,
+          "tool_calls": [
+            "search_records",
+            "read_article"
+          ],
+          "exposed": []
+        },
+        {
+          "ticket_id": "T01813",
+          "result": {
+            "category": "how-to",
+            "priority": "P4",
+            "team": "Customer success",
+            "reason": "Customer asks how to export monthly ticket history for a test workspace; they explicitly state production is unaffected and there is no deadline, so impact is minimal. Past tickets on the same topic are categorized as how-to.",
+            "record_ids": [
+              "T00980"
+            ],
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "dropped_ids": 0
+          },
+          "error": null,
+          "attempts": 1,
+          "seconds": 17.6,
+          "tool_calls": [
+            "search_records",
+            "read_ticket"
+          ],
+          "exposed": []
+        }
+      ],
+      "summary": {
+        "ask_passed": {
+          "reply on time": 3,
+          "long thread count": 0,
+          "not in the records": 3,
+          "needs a lookup": 3
+        },
+        "ask_rounds": 3,
+        "ask_median_seconds": 15.2,
+        "ask_slowest_seconds": 73.1,
+        "triage": {
+          "tickets": 10,
+          "valid": 10,
+          "category": 10,
+          "priority": 10,
+          "team": 5,
+          "team_by_skills": 10,
+          "dropped_ids": 0,
+          "tool_calls": 25,
+          "exposed": 0,
+          "seconds": 230.6
+        },
+        "answered_by": [
+          "nvidia/nemotron-3-ultra-550b-a55b:free"
+        ],
+        "key_usage_change": 0.000859
+      }
+    },
+    {
+      "line": {
+        "id": "luna-high",
+        "label": "GPT-6 Luna, high effort",
+        "provider": "OpenRouter",
+        "model": "openai/gpt-6-luna",
+        "paid": true,
+        "run": true
+      },
+      "ask": [
+        {
+          "check": "reply on time",
+          "round": 1,
+          "passed": true,
+          "text": "No. T00727\u2019s first response took 7.96 hours, exceeding its 3-hour target.",
+          "complete": true,
+          "found": true,
+          "sources": [
+            {
+              "kind": "ticket",
+              "id": "T00727",
+              "title": "Invite link expired"
+            }
+          ],
+          "error": null,
+          "seconds": 2.4,
+          "calls": 1,
+          "answered_by": [
+            "openai/gpt-6-luna"
+          ],
+          "cost": "$0.000219",
+          "attempts": 1
+        },
+        {
+          "check": "reply on time",
+          "round": 2,
+          "passed": true,
+          "text": "No. T00727\u2019s first response took 7.96 hours, exceeding its 3-hour target.",
+          "complete": true,
+          "found": true,
+          "sources": [
+            {
+              "kind": "ticket",
+              "id": "T00727",
+              "title": "Invite link expired"
+            }
+          ],
+          "error": null,
+          "seconds": 2.3,
+          "calls": 1,
+          "answered_by": [
+            "openai/gpt-6-luna"
+          ],
+          "cost": "$0.000052",
+          "attempts": 1
+        },
+        {
+          "check": "reply on time",
+          "round": 3,
+          "passed": true,
+          "text": "No. T00727\u2019s first response took 7.96 hours, exceeding its 3-hour target.",
+          "complete": true,
+          "found": true,
+          "sources": [
+            {
+              "kind": "ticket",
+              "id": "T00727",
+              "title": "Invite link expired"
+            }
+          ],
+          "error": null,
+          "seconds": 2.2,
+          "calls": 1,
+          "answered_by": [
+            "openai/gpt-6-luna"
+          ],
+          "cost": "$0.000061",
+          "attempts": 1
+        },
+        {
+          "check": "long thread count",
+          "round": 1,
+          "passed": false,
+          "text": "No. Although T00360 is marked resolved, 9 customer messages say the issue is still reproducible. They run from follow-up 6 through follow-up 56. The agent\u2019s replies did not change: each repeated the same account-recovery confirmation, including after those reports.",
+          "complete": true,
+          "found": true,
+          "sources": [
+            {
+              "kind": "ticket",
+              "id": "T00360",
+              "title": "Role change not applied"
+            }
+          ],
+          "error": null,
+          "seconds": 3.8,
+          "calls": 1,
+          "answered_by": [
+            "openai/gpt-6-luna"
+          ],
+          "cost": "$0.000735",
+          "attempts": 1
+        },
+        {
+          "check": "long thread count",
+          "round": 2,
+          "passed": false,
+          "text": "No\u2014the resolved status in T00360 doesn\u2019t reflect the later reports that the issue is still reproducible. There are 10 such customer messages, from Follow-up 6 through Follow-up 56. The agent replies did not change: they repeatedly say access was restored through the approved recovery flow, including after those reports.",
+          "complete": true,
+          "found": true,
+          "sources": [
+            {
+              "kind": "ticket",
+              "id": "T00360",
+              "title": "Role change not applied"
+            }
+          ],
+          "error": null,
+          "seconds": 5.2,
+          "calls": 1,
+          "answered_by": [
+            "openai/gpt-6-luna"
+          ],
+          "cost": "$0.000243",
+          "attempts": 1
+        },
+        {
+          "check": "long thread count",
+          "round": 3,
+          "passed": true,
+          "text": "No\u2014the thread in T00360 has 10 customer messages saying the issue is still reproducible. They first appear at follow-up 6 and last at follow-up 56. The agent reply after each is the same access-restoration message; none changes to address the reproducible issue.",
+          "complete": true,
+          "found": true,
+          "sources": [
+            {
+              "kind": "ticket",
+              "id": "T00360",
+              "title": "Role change not applied"
+            }
+          ],
+          "error": null,
+          "seconds": 4.8,
+          "calls": 1,
+          "answered_by": [
+            "openai/gpt-6-luna"
+          ],
+          "cost": "$0.000207",
+          "attempts": 1
+        },
+        {
+          "check": "not in the records",
+          "round": 1,
+          "passed": true,
+          "text": "The records don\u2019t show a phone number. I checked case T00727 and customer record C0086; no phone number is recorded.",
+          "complete": true,
+          "found": false,
+          "sources": [
+            {
+              "kind": "ticket",
+              "id": "T00727",
+              "title": "Invite link expired"
+            },
+            {
+              "kind": "customer",
+              "id": "C0086",
+              "title": "Fern Platform 086"
+            }
+          ],
+          "error": null,
+          "seconds": 5.8,
+          "calls": 2,
+          "answered_by": [
+            "openai/gpt-6-luna"
+          ],
+          "cost": "$0.000412",
+          "attempts": 1
+        },
+        {
+          "check": "not in the records",
+          "round": 2,
+          "passed": true,
+          "text": "The records don\u2019t show the customer\u2019s phone number. I checked customer record C0086 and case T00727; neither includes one.",
+          "complete": true,
+          "found": false,
+          "sources": [
+            {
+              "kind": "customer",
+              "id": "C0086",
+              "title": "Fern Platform 086"
+            },
+            {
+              "kind": "ticket",
+              "id": "T00727",
+              "title": "Invite link expired"
+            }
+          ],
+          "error": null,
+          "seconds": 10.0,
+          "calls": 2,
+          "answered_by": [
+            "openai/gpt-6-luna"
+          ],
+          "cost": "$0.000337",
+          "attempts": 1
+        },
+        {
+          "check": "not in the records",
+          "round": 3,
+          "passed": true,
+          "text": "The records don't show the customer's phone number. I checked case T00727 and customer record C0086; neither includes one.",
+          "complete": true,
+          "found": false,
+          "sources": [
+            {
+              "kind": "ticket",
+              "id": "T00727",
+              "title": "Invite link expired"
+            },
+            {
+              "kind": "customer",
+              "id": "C0086",
+              "title": "Fern Platform 086"
+            }
+          ],
+          "error": null,
+          "seconds": 6.8,
+          "calls": 2,
+          "answered_by": [
+            "openai/gpt-6-luna"
+          ],
+          "cost": "$0.000105",
+          "attempts": 1
+        },
+        {
+          "check": "needs a lookup",
+          "round": 1,
+          "passed": true,
+          "text": "KB004, \u201cInvite link expired,\u201d best fits the case T00727.",
+          "complete": true,
+          "found": true,
+          "sources": [
+            {
+              "kind": "article",
+              "id": "KB004",
+              "title": "Invite link expired"
+            },
+            {
+              "kind": "ticket",
+              "id": "T00727",
+              "title": "Invite link expired"
+            }
+          ],
+          "error": null,
+          "seconds": 8.5,
+          "calls": 3,
+          "answered_by": [
+            "openai/gpt-6-luna"
+          ],
+          "cost": "$0.000416",
+          "attempts": 1
+        },
+        {
+          "check": "needs a lookup",
+          "round": 2,
+          "passed": true,
+          "text": "KB004, \u201cInvite link expired,\u201d best fits the case T00727.",
+          "complete": true,
+          "found": true,
+          "sources": [
+            {
+              "kind": "article",
+              "id": "KB004",
+              "title": "Invite link expired"
+            },
+            {
+              "kind": "ticket",
+              "id": "T00727",
+              "title": "Invite link expired"
+            }
+          ],
+          "error": null,
+          "seconds": 8.7,
+          "calls": 3,
+          "answered_by": [
+            "openai/gpt-6-luna"
+          ],
+          "cost": "$0.000100",
+          "attempts": 1
+        },
+        {
+          "check": "needs a lookup",
+          "round": 3,
+          "passed": true,
+          "text": "T00727 best matches KB004 and KB034. Both are titled \u201cInvite link expired\u201d in the account access category, and their content is identical, so the records don\u2019t distinguish one over the other.",
+          "complete": true,
+          "found": true,
+          "sources": [
+            {
+              "kind": "ticket",
+              "id": "T00727",
+              "title": "Invite link expired"
+            },
+            {
+              "kind": "article",
+              "id": "KB004",
+              "title": "Invite link expired"
+            },
+            {
+              "kind": "article",
+              "id": "KB034",
+              "title": "Invite link expired"
+            }
+          ],
+          "error": null,
+          "seconds": 17.6,
+          "calls": 4,
+          "answered_by": [
+            "openai/gpt-6-luna"
+          ],
+          "cost": "$0.000360",
+          "attempts": 1
+        }
+      ],
+      "triage": [
+        {
+          "ticket_id": "T02215",
+          "result": {
+            "category": "billing",
+            "priority": "P3",
+            "team": "Customer care",
+            "reason": "The invoice seat-count discrepancy is a billing issue. Only one person is affected, operations continue with a workaround, and the customer says it can wait a few days; a matching past case was also classified P3 billing.",
+            "record_ids": [
+              "T00966"
+            ],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "error": null,
+          "attempts": 1,
+          "seconds": 13.0,
+          "tool_calls": [
+            "search_records",
+            "read_ticket"
+          ],
+          "exposed": []
+        },
+        {
+          "ticket_id": "T03067",
+          "result": {
+            "category": "billing",
+            "priority": "P2",
+            "team": "Customer care",
+            "reason": "The missing invoice credit is a billing issue. Several people are affected, but a workaround exists and is costly, which fits P2.",
+            "record_ids": [],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "error": null,
+          "attempts": 1,
+          "seconds": 10.8,
+          "tool_calls": [
+            "search_records"
+          ],
+          "exposed": []
+        },
+        {
+          "ticket_id": "T03389",
+          "result": {
+            "category": "bug",
+            "priority": "P2",
+            "team": "Technical support",
+            "reason": "The attachment preview is giving incorrect results. Several people are held up, but a considerable-manual-work workaround exists, matching P2 impact.",
+            "record_ids": [
+              "T03183",
+              "KB008"
+            ],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "error": null,
+          "attempts": 1,
+          "seconds": 17.0,
+          "tool_calls": [
+            "search_records",
+            "read_ticket",
+            "read_article"
+          ],
+          "exposed": []
+        },
+        {
+          "ticket_id": "T00274",
+          "result": {
+            "category": "bug",
+            "priority": "P3",
+            "team": "Technical support",
+            "reason": "The CSV export is returning incomplete data, matching the prior export defect. One person is affected and normal work continues with a workaround, so the impact is limited.",
+            "record_ids": [
+              "T00279"
+            ],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "error": null,
+          "attempts": 1,
+          "seconds": 19.1,
+          "tool_calls": [
+            "search_records",
+            "read_ticket",
+            "read_ticket",
+            "read_ticket"
+          ],
+          "exposed": []
+        },
+        {
+          "ticket_id": "T02645",
+          "result": {
+            "category": "account access",
+            "priority": "P4",
+            "team": "Customer care",
+            "reason": "The issue concerns a workspace role change, which is an account-access matter. It affects only a test workspace, with production unaffected and no deadline.",
+            "record_ids": [
+              "T03510"
+            ],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "error": null,
+          "attempts": 1,
+          "seconds": 9.6,
+          "tool_calls": [
+            "search_records"
+          ],
+          "exposed": []
+        },
+        {
+          "ticket_id": "T03665",
+          "result": {
+            "category": "account access",
+            "priority": "P2",
+            "team": "Customer care",
+            "reason": "Expired invitation links are preventing several people from accessing the workspace. Their workaround is available but takes considerable manual work, matching P2 impact; similar cases are categorized as account access.",
+            "record_ids": [
+              "T03136"
+            ],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "error": null,
+          "attempts": 1,
+          "seconds": 12.9,
+          "tool_calls": [
+            "search_records"
+          ],
+          "exposed": []
+        },
+        {
+          "ticket_id": "T02235",
+          "result": {
+            "category": "feature request",
+            "priority": "P4",
+            "team": "Customer success",
+            "reason": "Custom SLA calendars are a requested capability, not a malfunction. The customer says production is unaffected and there is no deadline, matching the P4 precedent.",
+            "record_ids": [
+              "T02800"
+            ],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "error": null,
+          "attempts": 1,
+          "seconds": 8.8,
+          "tool_calls": [
+            "search_records"
+          ],
+          "exposed": []
+        },
+        {
+          "ticket_id": "T03293",
+          "result": {
+            "category": "how-to",
+            "priority": "P3",
+            "team": "Customer success",
+            "reason": "They\u2019re asking for guidance on inviting a read-only reviewer. Only one person is affected, and normal operations continue with a workaround; similar cases were handled as how-to requests at P3.",
+            "record_ids": [
+              "T02492",
+              "T02958",
+              "T01136"
+            ],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "error": null,
+          "attempts": 1,
+          "seconds": 16.8,
+          "tool_calls": [
+            "search_records",
+            "read_ticket",
+            "read_ticket",
+            "read_ticket"
+          ],
+          "exposed": []
+        },
+        {
+          "ticket_id": "T00994",
+          "result": {
+            "category": "feature request",
+            "priority": "P1",
+            "team": "Customer success",
+            "reason": "The request is to add an audit-trail download, matching prior cases and the help article; the customer reports production is stopped with no workaround, meeting P1 impact criteria.",
+            "record_ids": [
+              "T01416",
+              "T03028",
+              "KB029"
+            ],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "error": null,
+          "attempts": 1,
+          "seconds": 18.8,
+          "tool_calls": [
+            "search_records",
+            "read_ticket",
+            "read_ticket",
+            "read_article",
+            "read_ticket",
+            "read_ticket",
+            "read_article"
+          ],
+          "exposed": []
+        },
+        {
+          "ticket_id": "T01813",
+          "result": {
+            "category": "how-to",
+            "priority": "P4",
+            "team": "Customer success",
+            "reason": "The request concerns using the existing monthly ticket-history export, and similar cases are handled as how-to. The customer says production is unaffected and there is no deadline.",
+            "record_ids": [
+              "T01609",
+              "KB009"
+            ],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "error": null,
+          "attempts": 1,
+          "seconds": 15.0,
+          "tool_calls": [
+            "search_records",
+            "read_ticket",
+            "read_article"
+          ],
+          "exposed": []
+        }
+      ],
+      "summary": {
+        "ask_passed": {
+          "reply on time": 3,
+          "long thread count": 1,
+          "not in the records": 3,
+          "needs a lookup": 3
+        },
+        "ask_rounds": 3,
+        "ask_median_seconds": 5.8,
+        "ask_slowest_seconds": 17.6,
+        "triage": {
+          "tickets": 10,
+          "valid": 10,
+          "category": 10,
+          "priority": 10,
+          "team": 5,
+          "team_by_skills": 10,
+          "dropped_ids": 0,
+          "tool_calls": 27,
+          "exposed": 0,
+          "seconds": 141.8
+        },
+        "answered_by": [
+          "openai/gpt-6-luna"
+        ],
+        "key_usage_change": -0.039622
+      }
+    }
+  ]
+}

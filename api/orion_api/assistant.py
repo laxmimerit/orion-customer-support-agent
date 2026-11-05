@@ -6,8 +6,12 @@ It runs through the Anthropic SDK pointed at OpenRouter, which speaks the same M
 OPENROUTER_API_KEY stays in this process: it goes only to OpenRouter, and no response or log line
 carries it. Both base_url and api_key are always passed, so ANTHROPIC_* environment settings
 cannot send the key elsewhere or send another key to OpenRouter.
+
+MODELS is the allow-list. A request names a line of it, the desk calls exactly that model, and a failure ends in an
+error the agent sees. Nothing here moves to another model, so a free model that disappears can't turn into a paid call.
 """
 import asyncio
+from contextlib import aclosing
 from dataclasses import dataclass, field
 import hashlib
 import json
@@ -28,15 +32,18 @@ PROVIDER = "OpenRouter"
 SDK = "Anthropic SDK"
 BASE_URL = "https://openrouter.ai/api"
 MODEL = "nvidia/nemotron-3-ultra-550b-a55b:free"
-# Providers the desk could use, none of them set up. Nothing reads a key for these.
-OTHER_PROVIDERS = ("Anthropic", "OpenAI")
+LUNA = "openai/gpt-6-luna"
 
 # The model reasons before it answers, and that reasoning counts towards this limit.
 MAX_TOKENS = 8192
 ANSWER_TIMEOUT = 90.0
 STATUS_TIMEOUT = 5.0
+# The whole of one answer or triage, across every turn and retry. ANSWER_TIMEOUT can't do this: it times one read, so a
+# stalled call and its retry reach 180 seconds, and a keep-alive line starts it again. This stays under the limit in
+# web/lib/api.ts, so the desk names the model before the web server gives up and blames the API.
+MODEL_DEADLINE = 150.0
 # Each turn is one model call: a round of lookups, or the answer. Past either limit the model must answer with what it
-# has. The seconds leave that last turn time inside the 180 seconds web/lib/api.ts allows a whole answer.
+# has. The seconds leave that last turn time inside MODEL_DEADLINE.
 MAX_TURNS = 6
 LOOKUP_SECONDS = 100.0
 LAST_TURN = "You have no lookups left. Answer now in plain text from what you have, and say what you could not check."
@@ -129,10 +136,41 @@ ASK_FREE = ModelChoice(MODEL)
 TRIAGE_FREE = ModelChoice(MODEL)
 # output_config is the field OpenRouter honours on this route: a top-level response_format is dropped with no error.
 # require_parameters keeps the request from any provider of the model that would ignore either setting.
-TRIAGE_ENFORCED = ModelChoice("openai/gpt-6-luna", {
+TRIAGE_ENFORCED = ModelChoice(LUNA, {
     "output_config": {"effort": "high", "format": {"type": "json_schema", "schema": TriageDecision.model_json_schema()}},
     "provider": {"require_parameters": True},
 })
+ASK_LUNA_HIGH = ModelChoice(LUNA, {"output_config": {"effort": "high"}, "provider": {"require_parameters": True}})
+
+
+@dataclass(frozen=True)
+class DeskModel:
+    """One line of the allow-list. A line with no `ask` has not been run: the desk holds nothing to call it with."""
+    id: str  # What a request sends. A request can't name a provider's model directly.
+    label: str
+    provider: str
+    model: str
+    paid: bool
+    ask: ModelChoice | None = None
+    triage: ModelChoice | None = None
+
+    @property
+    def run(self):
+        return self.ask is not None
+
+    def listed(self):
+        return {"id": self.id, "label": self.label, "provider": self.provider, "model": self.model, "paid": self.paid,
+                "run": self.run}
+
+
+# The two Not run lines are written down and nothing more: no key is read and no client exists for them.
+MODELS = {line.id: line for line in (
+    DeskModel("free", "Nemotron 3 Ultra", PROVIDER, MODEL, False, ASK_FREE, TRIAGE_FREE),
+    DeskModel("luna-high", "GPT-6 Luna, high effort", PROVIDER, LUNA, True, ASK_LUNA_HIGH, TRIAGE_ENFORCED),
+    DeskModel("anthropic", "Claude Sonnet 5.5", "Anthropic", "claude-sonnet-5-5", True),
+    DeskModel("openai", "GPT-6 Luna, direct", "OpenAI", "gpt-6-luna", True),
+)}
+DEFAULT_MODEL = "free"
 
 
 class ModelFailed(Exception):
@@ -145,6 +183,15 @@ class ModelFailed(Exception):
 
 class UnofferedTool(Exception):
     """A server tool ran that this question did not offer. The tick box must not rest on OpenRouter alone."""
+
+
+class WrongModel(Exception):
+    """OpenRouter answered with a model the request did not name, which may be a paid one."""
+
+
+def require_model(message, choice):
+    if message.model != choice.model:
+        raise WrongModel
 
 
 def as_data(value):
@@ -202,21 +249,35 @@ def checked_triage(text, lookups, model):
     return {**decision.model_dump(), "reason": reason, "record_ids": kept, "model": model, "dropped_ids": len(dropped)}
 
 
+def timed_out(model):
+    return {"status": 504, "code": "model_timeout",
+            "message": f"{model} did not finish within {MODEL_DEADLINE:.0f} seconds. The desk stopped waiting and did not switch to another model."}
+
+
+def unknown_model(exc):
+    """A gone model is a 404, and an ID OpenRouter never had is a 400 that only its text tells from any other 400."""
+    return isinstance(exc, anthropic.NotFoundError) or (
+        isinstance(exc, anthropic.BadRequestError) and "not a valid model ID" in str(exc.body))
+
+
 def problem(exc, model=MODEL):
-    """The error body for a failed call. The SDK's own message is left out: it quotes the provider."""
+    """The error body for a failed call. The SDK's own message is left out: it quotes the provider, and a free model's
+    404 can name a paid one to use instead."""
     if isinstance(exc, UnofferedTool):
         status, code, message = 502, "tool_not_offered", "The model used a tool this question did not allow, so the desk stopped it."
+    elif isinstance(exc, WrongModel):
+        status, code, message = 502, "wrong_model", f"OpenRouter answered with a model other than {model}, so the desk stopped it."
     elif isinstance(exc, (psycopg.OperationalError, PoolTimeout)):
         status, code, message = 503, "database_unavailable", "The database did not answer. Try again shortly."
     elif isinstance(exc, (anthropic.AuthenticationError, anthropic.PermissionDeniedError)):
         status, code, message = 502, "model_key_refused", "OpenRouter refused the desk's key."
-    elif isinstance(exc, anthropic.NotFoundError):
-        status, code, message = 502, "model_not_found", f"OpenRouter does not offer {model} any more."
+    elif unknown_model(exc):
+        status, code, message = 502, "model_not_found", f"OpenRouter does not offer {model}. The desk did not switch to another model."
     elif isinstance(exc, anthropic.RateLimitError):
-        status, code, message = 429, "model_busy", "The free model is busy or rate limited. Try again in a minute."
+        status, code, message = 429, "model_busy", f"{model} is busy or rate limited. Try again in a minute."
     elif isinstance(exc, anthropic.APIStatusError) and exc.status_code == 402:
-        # The model is free but its server tools are not, so an empty balance can stop an answer.
-        status, code, message = 402, "model_credits", "The OpenRouter account has run out of credit for its tools."
+        # A free model's server tools are not free, so an empty balance can stop any answer.
+        status, code, message = 402, "model_credits", "The OpenRouter account has run out of credit for paid models and tools."
     else:
         status, code, message = 502, "model_unavailable", "The language model did not answer. Try again shortly."
     return {"status": status, "code": code, "message": message}
@@ -269,6 +330,26 @@ class Assistant:
                                         http_client=self.http_client() if self.http_client else None)
 
     async def answer(self, case, question, lookups, tools, note=None, choice=ASK_FREE):
+        """The events of `answer_events`, ended by a `model_timeout` error at MODEL_DEADLINE.
+
+        The timeout goes around each wait and never around a `yield`: a generator's timeout would otherwise cancel
+        whatever the reader is doing, and the reader would see a cancelled request and not this error.
+        """
+        deadline = asyncio.get_running_loop().time() + MODEL_DEADLINE
+        async with aclosing(self.answer_events(case, question, lookups, tools, note, choice)) as events:
+            while True:
+                try:
+                    async with asyncio.timeout_at(deadline):
+                        event = await anext(events)
+                except StopAsyncIteration:
+                    return
+                except TimeoutError:
+                    log.error("language model call timed out: %s", choice.model)
+                    yield frame("error", {"error": timed_out(choice.model)})
+                    return
+                yield event
+
+    async def answer_events(self, case, question, lookups, tools, note, choice):
         """Yield `lookup` and `delta` events as the model works, then one `done` or `error`.
 
         A turn that ends in tool calls was not the answer, so any text it wrote is working text: its `lookup` event
@@ -301,7 +382,9 @@ class Assistant:
                         trace.append(opened_call(stream))
                         async for event in stream:
                             read_call(trace[-1], event)
-                            if event.type == "text":
+                            if event.type == "message_start":
+                                require_model(event.message, choice)
+                            elif event.type == "text":
                                 written += event.text
                                 yield frame("delta", {"text": event.text})
                             elif event.type == "content_block_start" and event.content_block.type == "server_tool_use":
@@ -353,6 +436,14 @@ class Assistant:
                              "searches": tools.searches, "note": lookups.kept})
 
     async def triage(self, case, lookups, choice=TRIAGE_FREE):
+        """`run_triage`, ended by a `model_timeout` failure at MODEL_DEADLINE."""
+        try:
+            return await asyncio.wait_for(self.run_triage(case, lookups, choice), MODEL_DEADLINE)
+        except TimeoutError:
+            log.error("language model call timed out: %s", choice.model)
+            raise ModelFailed(timed_out(choice.model)) from None
+
+    async def run_triage(self, case, lookups, choice):
         """One case's triage as a dict for the Triage model, or ModelFailed. The turns and the time are as in `answer`.
 
         Nothing is streamed to the agent, because only a whole answer can be checked. There is no second try: an answer
@@ -376,6 +467,7 @@ class Assistant:
                         extra_body=choice.options,
                     ) as stream:
                         final = await stream.get_final_message()
+                    require_model(final, choice)
                     calls = [block for block in final.content if block.type == "tool_use"]
                     if not calls or last or final.stop_reason == "max_tokens":
                         break
@@ -397,14 +489,14 @@ class Assistant:
                                "message": "The language model finished without an answer. Try again."})
         return checked_triage(text, lookups, choice.model)
 
-    async def connection_state(self):
+    async def connection_state(self, model=MODEL):
         """Check the key and the model with OpenRouter's two free routes. No tokens are used."""
         if not self.configured:
             return "no_key"
         try:
             async with self.client(STATUS_TIMEOUT, 0) as client:
                 await client.get("/v1/key", cast_to=object)
-                listed = await client.get(f"/v1/models/{MODEL}/endpoints", cast_to=object)
+                listed = await client.get(f"/v1/models/{model}/endpoints", cast_to=object)
         except (anthropic.AuthenticationError, anthropic.PermissionDeniedError):
             return "key_refused"
         except anthropic.NotFoundError:
@@ -415,8 +507,13 @@ class Assistant:
         return "connected" if listed.get("data", {}).get("endpoints") else "model_unavailable"
 
     async def connection(self):
+        """Every line of the allow-list. A Not run line is left out of the check, so nothing is called for it."""
+        ready = [line for line in MODELS.values() if line.run]
+        checked = await asyncio.gather(*(self.connection_state(line.model) for line in ready))
+        states = {line.id: state for line, state in zip(ready, checked)}
+        default = MODELS[DEFAULT_MODEL]
         return {
-            "connection": {"provider": PROVIDER, "model": MODEL, "address": BASE_URL, "sdk": SDK,
-                           "state": await self.connection_state()},
-            "options": [{"provider": provider, "state": "not_set_up"} for provider in OTHER_PROVIDERS],
+            "connection": {"provider": default.provider, "model": default.model, "address": BASE_URL, "sdk": SDK,
+                           "state": states[DEFAULT_MODEL]},
+            "options": [{**line.listed(), "state": states.get(line.id, "not_run")} for line in MODELS.values()],
         }

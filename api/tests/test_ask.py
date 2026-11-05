@@ -8,8 +8,8 @@ import httpx2
 import psycopg
 import pytest
 
-from orion_api.assistant import (ASK_FREE, BASE_URL, LAST_TURN, MAX_TURNS, MODEL, NO_ANSWER, Assistant, ModelChoice,
-                                 case_text, frame)
+from orion_api.assistant import (ASK_FREE, BASE_URL, LAST_TURN, MAX_TURNS, MODEL, MODELS, NO_ANSWER, Assistant,
+                                 ModelChoice, case_text, frame)
 from orion_api.lookups import Lookups
 from orion_api.server_tools import SHELL, ServerTools
 from orion_api.main import create_app
@@ -63,9 +63,9 @@ def block_events(index, kind, value):
             {"type": "content_block_stop", "index": index}]
 
 
-def message_stream(*blocks, stop_reason="end_turn", generation=None, cost=None):
+def message_stream(*blocks, stop_reason="end_turn", generation=None, cost=None, model=MODEL):
     """An Anthropic Messages stream with the given (kind, value) blocks, as OpenRouter sends it."""
-    message = {"id": "gen-1", "type": "message", "role": "assistant", "model": MODEL, "content": [], "provider": "Nvidia",
+    message = {"id": "gen-1", "type": "message", "role": "assistant", "model": model, "content": [], "provider": "Nvidia",
                "stop_reason": None, "stop_sequence": None, "usage": {"input_tokens": 1, "output_tokens": 0}}
     items = [{"type": "message_start", "message": message}]
     for index, (kind, value) in enumerate(blocks):
@@ -81,10 +81,10 @@ def api_error(status, kind):
     return httpx2.Response(status, json={"type": "error", "error": {"type": kind, "message": f"upstream said {KEY}"}})
 
 
-def tool_turn(*calls, text=None):
+def tool_turn(*calls, text=None, model=MODEL):
     """A turn that ends in tool calls, each a (name, arguments) pair."""
     blocks = [("text", text)] if text else []
-    return message_stream(*blocks, *[("tool_use", call) for call in calls], stop_reason="tool_use")
+    return message_stream(*blocks, *[("tool_use", call) for call in calls], stop_reason="tool_use", model=model)
 
 
 def scripted(*turns):
@@ -227,8 +227,8 @@ def test_the_desk_sets_no_effort_of_its_own(ask):
 
 
 def test_a_model_choice_reaches_every_turn_of_an_answer(fake_store, fake_embedder):
-    handler = scripted(tool_turn(("list_articles", {})), message_stream(("text", "Yes.")))
     choice = ModelChoice("openai/gpt-6-luna", {"output_config": {"effort": "high"}})
+    handler = scripted(tool_turn(("list_articles", {}), model=choice.model), message_stream(("text", "Yes."), model=choice.model))
     detail = fake_store.ticket("T00727")
 
     async def run():
@@ -498,7 +498,7 @@ def test_language_models_reports_the_checked_state(fake_store, fake_embedder, ha
     assert response.json() == {
         "connection": {"provider": "OpenRouter", "model": MODEL, "address": BASE_URL, "sdk": "Anthropic SDK",
                        "state": state},
-        "options": [{"provider": "Anthropic", "state": "not_set_up"}, {"provider": "OpenAI", "state": "not_set_up"}],
+        "options": [{**line.listed(), "state": state if line.run else "not_run"} for line in MODELS.values()],
     }
     assert KEY not in response.text
 

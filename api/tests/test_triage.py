@@ -268,7 +268,7 @@ def test_the_desk_uses_the_free_model_and_sends_no_enforcement(triage):
 
 
 def test_the_enforced_model_sends_the_schema_and_high_effort(lookups):
-    handler = scripted(answer())
+    handler = scripted(message_stream(("text", json.dumps(FORM)), model=TRIAGE_ENFORCED.model))
     result = asyncio.run(offline(handler).triage("{}", lookups, TRIAGE_ENFORCED))
     body = handler.seen[0]
     assert body["model"] == "openai/gpt-6-luna" == result["model"]

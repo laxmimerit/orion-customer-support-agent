@@ -33,7 +33,7 @@ TICKETS = """SELECT t.ticket_id, t.category, t.priority, a.team
 FROM tickets t LEFT JOIN agents a ON a.agent_id = t.agent_id
 ORDER BY md5(t.ticket_id || %s), t.ticket_id"""
 SKILLS = "SELECT DISTINCT team, skills FROM agents ORDER BY team"
-BUSY = {"model_busy", "model_unavailable"}
+BUSY = {"model_busy", "model_unavailable", "model_timeout"}
 TRIES = 6
 WAIT_SECONDS = 30
 

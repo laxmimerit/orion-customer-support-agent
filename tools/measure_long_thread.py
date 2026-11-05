@@ -318,7 +318,7 @@ def run(args):
                 assistant = Assistant(settings.openrouter_api_key, lambda: httpx2.AsyncClient(transport=Tap(turns)))
                 result = asyncio.run(ask_once(assistant, cases[thread], questions[question],
                                               Lookups(store, embedder, detail), ServerTools(False), CHOICES[arm], turns))
-                busy = result["error"] and result["error"]["code"] in ("model_busy", "model_unavailable")
+                busy = result["error"] and result["error"]["code"] in ("model_busy", "model_unavailable", "model_timeout")
                 if not busy:
                     break
                 print(f"busy on try {attempt + 1}: {arm} {thread} {question}", flush=True)

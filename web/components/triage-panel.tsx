@@ -5,8 +5,10 @@ import { type MouseEvent, useEffect, useRef, useState } from "react";
 
 import { Facts, PriorityTile } from "@/components/desk";
 import { AlertIcon } from "@/components/icons";
+import { ModelPicker } from "@/components/model-picker";
 import { type AskProblem, askProblem } from "@/lib/ask";
 import { plural, sentenceCase } from "@/lib/format";
+import { type AllowedModel, firstRunnable } from "@/lib/models";
 import { type Triage, isTriage, recordHref } from "@/lib/triage";
 
 type Phase = "idle" | "waiting" | "done" | "stopped" | "failed";
@@ -20,8 +22,9 @@ const ANNOUNCED: Partial<Record<Phase, string>> = {
 const UNREACHABLE: AskProblem = { status: null, code: "desk_unreachable", message: "The desk did not answer. Check the connection and try again." };
 
 // A suggestion beside the stored values, never a change to them: the result lives only on this page.
-export function TriagePanel({ ticketId }: { ticketId: string }) {
+export function TriagePanel({ ticketId, models }: { ticketId: string; models: AllowedModel[] }) {
   const [phase, setPhase] = useState<Phase>("idle");
+  const [model, setModel] = useState(firstRunnable(models));
   const [triage, setTriage] = useState<Triage | null>(null);
   const [problem, setProblem] = useState<AskProblem | null>(null);
   const running = useRef<AbortController | null>(null);
@@ -45,7 +48,7 @@ export function TriagePanel({ ticketId }: { ticketId: string }) {
       const response = await fetch(`/tickets/${encodeURIComponent(ticketId)}/triage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: "{}",
+        body: JSON.stringify({ model }),
         signal: controller.signal,
       });
       const body: unknown = await response.json().catch(() => null);
@@ -78,6 +81,9 @@ export function TriagePanel({ ticketId }: { ticketId: string }) {
           <p>A language model reads what the customer wrote and past cases, without this ticket&apos;s stored category, priority or team. It suggests its own, and changes nothing.</p>
         </div>
         <button className={busy ? "button" : "button is-primary"} type="button" onClick={click}>{busy ? "Stop" : "Triage"}</button>
+      </div>
+      <div className="triage-picker">
+        <ModelPicker id="triage-model" models={models} value={model} onChange={setModel} disabled={busy} />
       </div>
 
       {/* Always mounted: a live region that arrives with its text often isn't read out. */}

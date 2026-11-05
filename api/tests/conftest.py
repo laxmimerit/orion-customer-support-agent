@@ -216,23 +216,24 @@ class FakeAssistant:
     def __init__(self):
         self.asks = []
 
-    async def answer(self, case, question, lookups, tools, note=None):
+    async def answer(self, case, question, lookups, tools, note=None, choice=None):
         self.asks.append((case, question))
-        self.lookups, self.tools, self.note = lookups, tools, note
+        self.lookups, self.tools, self.note, self.choice = lookups, tools, note, choice
         yield frame("delta", {"text": "Not "})
         yield frame("delta", {"text": "recorded."})
         yield frame("done", {"complete": True, "found": True, "sources": [], "pages": [], "searches": [], "note": None})
 
-    async def triage(self, case, lookups):
+    async def triage(self, case, lookups, choice=None):
         self.asks.append((case, "triage"))
-        self.lookups = lookups
+        self.lookups, self.choice = lookups, choice
         return {"category": "account access", "priority": "P2", "team": "Customer care", "reason": "Invitation trouble.",
                 "record_ids": ["KB004"], "model": "test/model", "dropped_ids": 1}
 
     async def connection(self):
         return {"connection": {"provider": "OpenRouter", "model": "test/model", "address": "https://example.invalid",
                                "sdk": "Anthropic SDK", "state": "connected"},
-                "options": [{"provider": "Anthropic", "state": "not_set_up"}]}
+                "options": [{"id": "anthropic", "label": "Claude", "provider": "Anthropic", "model": "test/claude",
+                             "paid": True, "run": False, "state": "not_run"}]}
 
 
 @pytest.fixture

@@ -512,7 +512,7 @@ def test_a_provider_402_is_model_credits_without_its_text(run, caplog):
     assert response.status_code == 200
     assert events(response.text) == [("error", {"error": {
         "status": 402, "code": "model_credits",
-        "message": "The OpenRouter account has run out of credit for its tools."}})]
+        "message": "The OpenRouter account has run out of credit for paid models and tools."}})]
     assert KEY not in response.text
     assert "upstream said" not in response.text
     assert KEY not in caplog.text

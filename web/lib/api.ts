@@ -6,6 +6,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { cache } from "react";
 
+import type { AllowedModel } from "@/lib/models";
 import type { Triage } from "@/lib/triage";
 
 // Values already in the environment win over the repository's .env, as in api/orion_api/settings.py.
@@ -259,7 +260,7 @@ export type ModelState = "connected" | "no_key" | "key_refused" | "model_unavail
 
 export type LanguageModels = {
   connection: { provider: string; model: string; address: string; sdk: string; state: ModelState };
-  options: { provider: string; state: "not_set_up" }[];
+  options: (AllowedModel & { state: ModelState | "not_run" })[];
 };
 
 export type ApiInfo = { title: string; version: string; routes: string[] };
@@ -329,9 +330,13 @@ export function similarTickets(ticketId: string, limit = SIMILAR_SHOWN) {
   return get<SimilarTickets>(`/api/tickets/${encodeURIComponent(ticketId)}/similar?limit=${limit}`);
 }
 
+// How long this server waits for a whole answer or triage. MODEL_DEADLINE in api/orion_api/assistant.py stays under it, so
+// a stalled model is reported as that. A test there reads this line.
+export const ANSWER_LIMIT_MS = 180_000;
+
 // The API's stream of answer events, passed on unread. Its events hold the model's text and the IDs and titles of its
 // sources, and the token stays here. Longer than the 20 seconds in `get`: the model reasons first, and `signal` ends the call if the agent leaves.
-export async function askCase(ticketId: string, question: string, web: boolean, note: string | null, signal: AbortSignal): Promise<Result<ReadableStream<Uint8Array>>> {
+export async function askCase(ticketId: string, question: string, web: boolean, note: string | null, model: string | null, signal: AbortSignal): Promise<Result<ReadableStream<Uint8Array>>> {
   const { baseUrl, token } = settings();
   if (!token) {
     return { ok: false, problem: { status: null, code: "missing_token",
@@ -339,11 +344,11 @@ export async function askCase(ticketId: string, question: string, web: boolean, 
   }
   let response: Response;
   try {
-    const options = `${web ? "&web=true" : ""}${note ? `&note=${encodeURIComponent(note)}` : ""}`;
+    const options = `${web ? "&web=true" : ""}${note ? `&note=${encodeURIComponent(note)}` : ""}${model ? `&model=${encodeURIComponent(model)}` : ""}`;
     response = await fetch(`${baseUrl}/api/tickets/${encodeURIComponent(ticketId)}/ask?q=${encodeURIComponent(question)}${options}`, {
       cache: "no-store",
       headers: { Authorization: `Bearer ${token}` },
-      signal: AbortSignal.any([signal, AbortSignal.timeout(180_000)]),
+      signal: AbortSignal.any([signal, AbortSignal.timeout(ANSWER_LIMIT_MS)]),
     });
   } catch {
     return { ok: false, problem: { status: null, code: "api_unreachable",
@@ -361,12 +366,18 @@ export async function askCase(ticketId: string, question: string, web: boolean, 
 }
 
 // Longer than the 20 seconds in `get`, as an answer is: the model reads records first, and `signal` ends the call if the agent stops.
-export function triageCase(ticketId: string, signal: AbortSignal) {
-  return get<Triage>(`/api/tickets/${encodeURIComponent(ticketId)}/triage`, true, AbortSignal.any([signal, AbortSignal.timeout(180_000)]));
+export function triageCase(ticketId: string, model: string | null, signal: AbortSignal) {
+  const chosen = model ? `?model=${encodeURIComponent(model)}` : "";
+  return get<Triage>(`/api/tickets/${encodeURIComponent(ticketId)}/triage${chosen}`, true, AbortSignal.any([signal, AbortSignal.timeout(ANSWER_LIMIT_MS)]));
 }
 
 export function languageModels() {
   return get<LanguageModels>("/api/language-models");
+}
+
+// No check and no call to a provider, so a case page can read it every time it opens.
+export function modelAllowList() {
+  return get<{ total: number; items: AllowedModel[] }>("/api/language-models/allow-list");
 }
 
 // The most hits one search returns. A full page means there may be more, so it is not a total.

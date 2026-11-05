@@ -4,8 +4,10 @@ import Link from "next/link";
 import { type FormEvent, type KeyboardEvent, type MouseEvent, useEffect, useRef, useState } from "react";
 
 import { AlertIcon } from "@/components/icons";
+import { ModelPicker } from "@/components/model-picker";
 import { type AskPage, type AskProblem, type AskSource, QUESTION_LIMIT, askProblem, askReader, plainAnswer, sourceHref } from "@/lib/ask";
 import { NOT_RECORDED, sentenceCase } from "@/lib/format";
+import { type AllowedModel, firstRunnable, modelLabel } from "@/lib/models";
 
 type Phase = "idle" | "waiting" | "writing" | "done" | "cut-short" | "stopped" | "failed";
 
@@ -79,8 +81,10 @@ function WebUse({ searches, pages }: { searches: string[]; pages: AskPage[] }) {
 
 // One question at a time: a new one replaces the last answer, and nothing is kept once the page closes. That goes for
 // the model's note too: the desk has no writes, so the note lives here and rides along with the next question.
-export function AskPanel({ ticketId }: { ticketId: string }) {
+export function AskPanel({ ticketId, models }: { ticketId: string; models: AllowedModel[] }) {
   const [question, setQuestion] = useState("");
+  const [model, setModel] = useState(firstRunnable(models));
+  const [askedModel, setAskedModel] = useState<string | null>(null);
   const [web, setWeb] = useState(false);
   const [note, setNote] = useState<string | null>(null);
   const [asked, setAsked] = useState("");
@@ -113,6 +117,7 @@ export function AskPanel({ ticketId }: { ticketId: string }) {
     running.current = controller;
     setAsked(text);
     setAskedWeb(web);
+    setAskedModel(modelLabel(models, model));
     // The box covers one question, so the next one starts with the web off.
     setWeb(false);
     setAnswer("");
@@ -127,7 +132,7 @@ export function AskPanel({ ticketId }: { ticketId: string }) {
       const response = await fetch(`/tickets/${encodeURIComponent(ticketId)}/ask`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: text, web, note }),
+        body: JSON.stringify({ question: text, web, note, model }),
         signal: controller.signal,
       });
       if (!response.ok || !response.body) {
@@ -218,6 +223,7 @@ export function AskPanel({ ticketId }: { ticketId: string }) {
             <button className="button" type="button" onClick={() => setNote(null)}>Clear note</button>
           </div>
         )}
+        <ModelPicker id="ask-model" models={models} value={model} onChange={setModel} disabled={busy} />
         <label className="ask-web">
           <input type="checkbox" checked={web} onChange={(event) => setWeb(event.target.checked)} />
           <span>Let the model use the web for this question</span>
@@ -245,7 +251,7 @@ export function AskPanel({ ticketId }: { ticketId: string }) {
         <div className="ask-result" aria-busy={busy}>
           <p className="ask-label">{askedWeb ? "You asked, with the web on" : "You asked"}</p>
           <p className="ask-question">{asked}</p>
-          <p className="ask-label">Model answer · check it against its sources before you use it</p>
+          <p className="ask-label">{askedModel ? `Answer from ${askedModel}` : "Model answer"} · check it against its sources before you use it</p>
           {phase === "waiting" && <p className="ask-waiting">{lookup ? `${lookup}…` : "Thinking…"}</p>}
           {answer && <p className="ask-answer">{plainAnswer(answer)}</p>}
           {phase === "cut-short" && <p className="ask-note">The answer was cut short, so it may be incomplete.</p>}

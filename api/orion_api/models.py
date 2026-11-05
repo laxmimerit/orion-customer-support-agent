@@ -364,9 +364,18 @@ class ModelConnection(BaseModel):
     state: Literal["connected", "no_key", "key_refused", "model_unavailable", "not_answering"]
 
 
-class ModelOption(BaseModel):
+# One line of the allow-list in assistant.py. id is what a request sends; run is false for a line the desk won't call.
+class AllowedModel(BaseModel):
+    id: str
+    label: str
     provider: str
-    state: Literal["not_set_up"]
+    model: str
+    paid: bool
+    run: bool
+
+
+class ModelOption(AllowedModel):
+    state: Literal["connected", "no_key", "key_refused", "model_unavailable", "not_answering", "not_run"]
 
 
 class LanguageModels(BaseModel):

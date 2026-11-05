@@ -20,13 +20,13 @@ import psycopg
 from psycopg_pool import PoolTimeout
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from .assistant import Assistant, ModelFailed, case_text
+from .assistant import DEFAULT_MODEL, MODELS, Assistant, ModelFailed, case_text
 from .embedding import Embedder
 from .lookups import NOTE_LIMIT, Lookups, TriageLookups, intake
 from .mcp import PARSE_ERROR
 from .mcp import answer as mcp_answer
 from .mcp import failure as mcp_failure
-from .models import (AdminStatus, Article, ArticleSummary, BacklogRow, CategoryRow, Company, CustomerListItem,
+from .models import (AdminStatus, AllowedModel, Article, ArticleSummary, BacklogRow, CategoryRow, Company, CustomerListItem,
                      CustomerProfile, ErrorResponse, FirstReplyRow, LanguageModels, Listing, PriorityRow, Report,
                      SearchResults, SimilarTickets, Snapshot, TicketDetail, TicketPage, Triage, VolumeRow)
 from .server_tools import ServerTools
@@ -106,6 +106,17 @@ def embedder(request: Request):
 
 def assistant(request: Request):
     return request.app.state.assistant
+
+
+def allowed_model(model: str = Query(DEFAULT_MODEL, max_length=64,
+                                     description="An `id` from /api/language-models/allow-list")):
+    """Not a Literal, as other fixed choices are: the allow-list is the point here, so a refusal says which rule it hit."""
+    line = MODELS.get(model)
+    if line is None:
+        raise ApiError(422, "model_not_allowed", f"{model!r} is not on the desk's model list.")
+    if not line.run:
+        raise ApiError(422, "model_not_run", f"{line.label} on {line.provider} is listed but has not been run, so the desk will not call it.")
+    return line
 
 
 async def unless_gone(request, work):
@@ -267,6 +278,7 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
         web: bool = Query(False, description="Offer web search and web fetch for this question"),
         note: str | None = Query(None, max_length=NOTE_LIMIT, description="The note the last answer kept, if any"),
         _: str = Depends(role),
+        chosen=Depends(allowed_model),
         db=Depends(store),
         model=Depends(assistant),
         search_model=Depends(embedder),
@@ -282,7 +294,9 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
         every web page a web tool gave, each with `url` and `title` (null when it was fetched, because OpenRouter does
         not say if a fetch worked), `searches`, the words the model searched for, and `note`, for the next question,
         or null; `error` has the usual error body,
-        because the status is already sent. A 503 `model_not_configured` means no key is set."""
+        because the status is already sent. The desk calls only the model named, and a failure is never retried on
+        another: `model_not_found`, `model_timeout` and `wrong_model` arrive as `error` events. A 422 `model_not_allowed`
+        or `model_not_run` means nothing was called. A 503 `model_not_configured` means no key is set."""
         q = q.strip()
         if not q:
             raise ApiError(422, "invalid_request", "The question is empty.")
@@ -292,18 +306,19 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
         if not model.configured:
             raise ApiError(503, "model_not_configured", "No language model is set up. OPENROUTER_API_KEY is missing.")
         lookups = Lookups(db, search_model, detail)
-        answer = model.answer(case_text(detail), q, lookups, ServerTools(web), (note or "").strip() or None)
+        answer = model.answer(case_text(detail), q, lookups, ServerTools(web), (note or "").strip() or None, chosen.ask)
         return StreamingResponse(answer, media_type="text/event-stream",
                                  headers={"Cache-Control": "no-store, no-transform"})
 
     # async, unlike the routes above: it waits on the model through the async client, so the store goes to a thread.
     @app.get("/api/tickets/{ticket_id}/triage", response_model=Triage, tags=["tickets"],
-             responses=errors(401, 402, 404, 422, 429, 502, 503),
+             responses=errors(401, 402, 404, 422, 429, 502, 503, 504),
              summary="Category, priority and team from the language model, with the records it used")
     async def triage_ticket(
         request: Request,
         ticket_id: str = Path(max_length=32),
         _: str = Depends(role),
+        chosen=Depends(allowed_model),
         db=Depends(store),
         model=Depends(assistant),
         search_model=Depends(embedder),
@@ -314,14 +329,16 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
         `team` are closed lists, and an answer outside the form is a 502 `triage_invalid`, not a result. `record_ids`
         holds only records a tool returned: the open case is there only if the model read it, and an empty list means
         it relied on none. `dropped_ids` counts the IDs taken out because no tool returned them. Nothing is stored, so
-        the same ticket can come back different. A 503 `model_not_configured` means no key is set."""
+        the same ticket can come back different. The desk calls only the model named: a 422 `model_not_allowed` or
+        `model_not_run` means nothing was called, and a 504 `model_timeout` means it did not finish in time. A 503
+        `model_not_configured` means no key is set."""
         detail = await asyncio.to_thread(db.ticket, ticket_id)
         if detail is None:
             raise ApiError(404, "ticket_not_found", f"No ticket has the ID {ticket_id!r}.")
         if not model.configured:
             raise ApiError(503, "model_not_configured", "No language model is set up. OPENROUTER_API_KEY is missing.")
         try:
-            return await unless_gone(request, model.triage(case_text(intake(detail)), TriageLookups(db, search_model, detail)))
+            return await unless_gone(request, model.triage(case_text(intake(detail)), TriageLookups(db, search_model, detail), chosen.triage))
         except ModelFailed as failed:
             raise ApiError(failed.body["status"], failed.body["code"], failed.body["message"]) from None
 
@@ -405,10 +422,17 @@ def create_app(settings=None, store_instance=None, embedder_instance=None, assis
 
     # async, unlike the routes above: it reads no store, and only waits on the network through the async client.
     @app.get("/api/language-models", response_model=LanguageModels, tags=["language-models"],
-             responses=errors(401), summary="The language model connection and the providers not set up")
+             responses=errors(401), summary="The language model connection and every line of the allow-list")
     async def get_language_models(_: str = Depends(role), model=Depends(assistant)):
-        """`state` comes from a live check of the key and the model, which uses no tokens. The key is never returned."""
+        """`state` comes from a live check of the key and each model that has been run, which uses no tokens. A line
+        that has not been run is `not_run` and is not checked. The key is never returned."""
         return await model.connection()
+
+    @app.get("/api/language-models/allow-list", response_model=Listing[AllowedModel], tags=["language-models"],
+             responses=errors(401), summary="The models the desk may call, the default first")
+    def get_allow_list(_: str = Depends(role)):
+        """No check and no call, so a case page can read it on every load. `run` is false for a line the desk refuses."""
+        return {"total": len(MODELS), "items": [line.listed() for line in MODELS.values()]}
 
     for path, name, row, summary in REPORT_ROUTES:
         app.get(f"/api/reports/{path}", response_model=Report[row], tags=["reports"],

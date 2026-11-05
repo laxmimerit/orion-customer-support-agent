@@ -87,7 +87,7 @@ export default async function Settings() {
   );
 }
 
-const MODEL_STATES: Record<ModelState, { pill: string; tone: "is-answering" | "is-off" | "is-failed"; note: string }> = {
+const MODEL_STATES: Record<ModelState | "not_run", { pill: string; tone: "is-answering" | "is-off" | "is-failed"; note: string }> = {
   connected: { pill: "Connected", tone: "is-answering",
     note: "OpenRouter accepted the key and lists the model. Checked when this page opened; no tokens are used." },
   no_key: { pill: "Not set up", tone: "is-off",
@@ -95,6 +95,7 @@ const MODEL_STATES: Record<ModelState, { pill: string; tone: "is-answering" | "i
   key_refused: { pill: "Key refused", tone: "is-failed", note: "OpenRouter refused the key in OPENROUTER_API_KEY." },
   model_unavailable: { pill: "Model unavailable", tone: "is-failed", note: "OpenRouter does not list this model at the moment." },
   not_answering: { pill: "Not answering", tone: "is-failed", note: "OpenRouter did not answer the check." },
+  not_run: { pill: "Not run", tone: "is-off", note: "Written on the list and never called." },
 };
 
 function LanguageModelPanel({ models }: { models: Result<LanguageModels> }) {
@@ -129,13 +130,21 @@ function LanguageModelPanel({ models }: { models: Result<LanguageModels> }) {
         <dt>Key</dt>
         <dd>Held by the desk API. It is never sent to the web server or the browser.</dd>
         <dt>Used by</dt>
-        <dd>The Ask panel on a case. Asking sends that ticket, its messages and its customer details to {connection.provider}, without emails or dates.</dd>
+        <dd>Triage and the Ask panel on a case. Using either sends that ticket, its messages and its customer details to {connection.provider}, without emails or dates.</dd>
+        <dt>If a model fails</dt>
+        <dd>The agent sees the error. The desk never moves to another model, and a paid one is used only when an agent picks it.</dd>
       </dl>
       <div className="settings-routes">
-        <span id="settings-providers-label" className="settings-routes-label">Other providers</span>
+        <span id="settings-providers-label" className="settings-routes-label">Allow-list · the only models the desk can call</span>
         <ul role="list" aria-labelledby="settings-providers-label" className="settings-providers">
           {options.map((option) => (
-            <li key={option.provider}><span>{option.provider}</span><NotSetUp /></li>
+            <li key={option.id}>
+              <span>{option.label} · {option.provider}</span>
+              <span className={`pill settings-pill ${MODEL_STATES[option.state].tone}`}>
+                <span className="dot" aria-hidden="true" />
+                {MODEL_STATES[option.state].pill}
+              </span>
+            </li>
           ))}
         </ul>
       </div>

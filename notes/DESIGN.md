@@ -80,7 +80,7 @@ Status pills: Open is indigo, In progress is teal, Pending is amber, Resolved is
 
 **Company.** Handbook sections with owner and team, then staff requests. The database stores the owner as "Name · Team"; the API splits it.
 
-**Settings.** What the desk is connected to, read live. The token and the OpenRouter key are never shown. The language model panel checks the key and the model with OpenRouter when the page opens, which uses no tokens, and lists Anthropic and OpenAI as not set up.
+**Settings.** What the desk is connected to, read live. The token and the OpenRouter key are never shown. The language model panel checks the key and each model that has been run with OpenRouter when the page opens, which uses no tokens, and shows the whole allow-list, with Anthropic and OpenAI marked Not run and never called.
 
 ## 5. States
 

@@ -114,17 +114,21 @@ Answer with one JSON object and nothing else, with no Markdown:
 
 
 @dataclass(frozen=True)
-class TriageModel:
+class ModelChoice:
     model: str
     options: dict = field(default_factory=dict)  # Sent as they are, beside the Messages fields.
 
 
+# What the Ask panel sends: the free model with no effort set, which leaves the provider's default.
+ASK_FREE = ModelChoice(MODEL)
+
+
 # The free model lists neither response_format nor structured_outputs, so nothing holds it to the schema. It gets the
 # form in the prompt, and only the check in Assistant.triage stands behind it.
-TRIAGE_FREE = TriageModel(MODEL)
+TRIAGE_FREE = ModelChoice(MODEL)
 # output_config is the field OpenRouter honours on this route: a top-level response_format is dropped with no error.
 # require_parameters keeps the request from any provider of the model that would ignore either setting.
-TRIAGE_ENFORCED = TriageModel("openai/gpt-6-luna", {
+TRIAGE_ENFORCED = ModelChoice("openai/gpt-6-luna", {
     "output_config": {"effort": "high", "format": {"type": "json_schema", "schema": TriageDecision.model_json_schema()}},
     "provider": {"require_parameters": True},
 })
@@ -235,7 +239,7 @@ class Assistant:
                                         max_retries=max_retries,
                                         http_client=self.http_client() if self.http_client else None)
 
-    async def answer(self, case, question, lookups, tools, note=None):
+    async def answer(self, case, question, lookups, tools, note=None, choice=ASK_FREE):
         """Yield `lookup` and `delta` events as the model works, then one `done` or `error`.
 
         A turn that ends in tool calls was not the answer, so any text it wrote is working text: its `lookup` event
@@ -256,12 +260,13 @@ class Assistant:
                     if last:
                         messages[-1]["content"].append({"type": "text", "text": LAST_TURN})
                     async with client.messages.stream(
-                        model=MODEL,
+                        model=choice.model,
                         max_tokens=MAX_TOKENS,
                         system=SYSTEM + tools.rules,
                         tools=lookups.schemas + ([] if last else tools.offered()),
                         tool_choice={"type": "none" if last else "auto"},
                         messages=messages,
+                        extra_body=choice.options,
                     ) as stream:
                         async for event in stream:
                             if event.type == "text":
@@ -300,7 +305,7 @@ class Assistant:
         except Exception as exc:
             # No exception handler can answer once the stream has begun. Only the type is logged.
             log.error("language model call failed: %s", type(exc).__name__)
-            yield frame("error", {"error": problem(exc)})
+            yield frame("error", {"error": problem(exc, choice.model)})
             return
         if not written:
             log.error("language model returned no text: %s", final.stop_reason)

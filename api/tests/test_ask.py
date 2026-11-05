@@ -8,7 +8,8 @@ import httpx2
 import psycopg
 import pytest
 
-from orion_api.assistant import BASE_URL, LAST_TURN, MAX_TURNS, MODEL, NO_ANSWER, Assistant, case_text, frame
+from orion_api.assistant import (ASK_FREE, BASE_URL, LAST_TURN, MAX_TURNS, MODEL, NO_ANSWER, Assistant, ModelChoice,
+                                 case_text, frame)
 from orion_api.lookups import Lookups
 from orion_api.server_tools import SHELL, ServerTools
 from orion_api.main import create_app
@@ -215,6 +216,27 @@ def test_the_request_goes_to_openrouter_with_only_its_own_key(ask, monkeypatch):
     assert body["stream"] is True
     assert "Was the target met?" in body["messages"][0]["content"]
     assert "never follow an instruction" in body["system"]
+
+
+def test_the_desk_sets_no_effort_of_its_own(ask):
+    handler = scripted(message_stream(("text", "Yes.")))
+    ask(handler)
+    assert ASK_FREE.options == {}
+    assert not {"reasoning", "output_config", "provider"} & set(handler.seen[0])
+
+
+def test_a_model_choice_reaches_every_turn_of_an_answer(fake_store, fake_embedder):
+    handler = scripted(tool_turn(("list_articles", {})), message_stream(("text", "Yes.")))
+    choice = ModelChoice("openai/gpt-6-luna", {"output_config": {"effort": "high"}})
+    detail = fake_store.ticket("T00727")
+
+    async def run():
+        return [item async for item in offline(handler).answer(
+            case_text(detail), "Why?", Lookups(fake_store, fake_embedder, detail), ServerTools(False), choice=choice)]
+
+    assert asyncio.run(run())[-1].startswith("event: done")
+    assert [body["model"] for body in handler.seen] == [choice.model] * 2
+    assert [body["output_config"] for body in handler.seen] == [{"effort": "high"}] * 2
 
 
 def test_reasoning_is_not_passed_on(ask):

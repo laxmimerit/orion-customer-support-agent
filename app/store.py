@@ -1,25 +1,23 @@
-"""Deliberately small legacy data layer. No generic SQL execution endpoint."""
-import os
-import ssl
+"""Deliberately small legacy data layer. No generic SQL execution endpoint.
+
+This is the hosted reference copy of Orion Classic: the records ship inside the
+deployment as a read-only snapshot, so the site needs no database service."""
+import sqlite3
 from contextlib import contextmanager
+from datetime import date, datetime
+from decimal import Decimal
+from pathlib import Path
+
+SNAPSHOT = Path(__file__).with_name("orion.db")
+sqlite3.register_converter("DECIMAL", lambda v: Decimal(v.decode()).quantize(Decimal("0.0001")))
+sqlite3.register_converter("DATETIME", lambda v: datetime.fromisoformat(v.decode()))
+sqlite3.register_converter("DATE", lambda v: date.fromisoformat(v.decode()))
 
 
 @contextmanager
 def database():
-    import pymysql
-    required = ("TIDB_HOST", "TIDB_USERNAME", "TIDB_PASSWORD", "TIDB_DATABASE")
-    if any(not os.environ.get(key) for key in required):
-        raise RuntimeError("Database configuration is incomplete")
-    # TLS verification is enabled for TiDB Cloud. Local Docker can explicitly disable it.
-    context = ssl.create_default_context(cafile=os.environ.get("TIDB_SSL_CA") or None)
-    connection = pymysql.connect(
-        host=os.environ["TIDB_HOST"], port=int(os.environ.get("TIDB_PORT", "4000")),
-        user=os.environ["TIDB_USERNAME"], password=os.environ["TIDB_PASSWORD"],
-        database=os.environ["TIDB_DATABASE"], charset="utf8mb4", autocommit=True,
-        connect_timeout=10, read_timeout=15, write_timeout=15,
-        ssl=None if os.environ.get("TIDB_TLS") == "off" else context,
-        cursorclass=pymysql.cursors.DictCursor,
-    )
+    connection = sqlite3.connect("file:" + str(SNAPSHOT) + "?mode=ro&immutable=1", uri=True, detect_types=sqlite3.PARSE_DECLTYPES)
+    connection.row_factory = lambda cursor, row: {c[0]: v for c, v in zip(cursor.description, row)}
     try:
         yield Store(connection)
     finally:
@@ -31,9 +29,7 @@ class Store:
         self.connection = connection
 
     def query(self, sql, args=()):
-        with self.connection.cursor() as cursor:
-            cursor.execute(sql, args)
-            return list(cursor.fetchall())
+        return self.connection.execute(sql.replace("%s", "?"), tuple(args)).fetchall()
 
     def one(self, sql, args=()):
         rows = self.query(sql, args)

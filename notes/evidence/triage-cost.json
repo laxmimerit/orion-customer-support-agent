@@ -408,7 +408,945 @@
       "results": null,
       "error": null
     },
-    "submitted_at": 1793846855.137619
+    "submitted_at": 1793846855.137619,
+    "key_usage_after": 0.13573868,
+    "finished_at": 1793862721.564332,
+    "result": {
+      "id": "batch-1793846853-jKgYFvt8YTmvZJdKnS6g",
+      "object": "batch",
+      "endpoint": "/v1/messages",
+      "model": "openai/gpt-6-luna-20260922",
+      "completion_window": "24h",
+      "status": "completed",
+      "created_at": 1793846853,
+      "finalized_at": 1793862695,
+      "provider": "OpenAI",
+      "expires_at": 1793933253,
+      "request_counts": {
+        "total": 12,
+        "completed": 12,
+        "failed": 0
+      },
+      "usage": {
+        "prompt_tokens": 17482,
+        "completion_tokens": 3883,
+        "total_tokens": 21365,
+        "cost": 0.00184485,
+        "is_byok": false
+      },
+      "error": null,
+      "results": [
+        {
+          "id": "batch_req_6aec2c22c28881909e287388e98a3a4a",
+          "custom_id": "T03018",
+          "response": {
+            "status_code": 200,
+            "request_id": "ada9f114-5ca2-4fdc-85cf-b9ae9069acc3",
+            "body": {
+              "id": "msg_batch-1793846853-jKgYFvt8YTmvZJdKnS6g:T03018",
+              "type": "message",
+              "role": "assistant",
+              "container": null,
+              "content": [
+                {
+                  "type": "thinking",
+                  "thinking": "**Creating output schema**\n\nI need to develop an output JSON schema for a feature request that's categorized as P4, meaning it has no impact on the production deadline. It seems important to include every record that was relied on for this. I'll reference past cases and specific articles, like KB023, and ensure we include relevant IDs from resolved tickets such as T03564 and T02586. I want to make sure the requirement is clear, concise, and follows the P4 guidelines.",
+                  "signature": ""
+                },
+                {
+                  "type": "redacted_thinking",
+                  "data": "gAAAAABq7CvlngvutJpcCJxecgTC_ezmM44soAu45zv4DY3E7oil4weS9iYZzMbVIpJeuAjFu1R-u39OEr2eSjm1G7KthCU4KhGUEvK4QxQ82MXoGZuXeWRoagMHwr5YbggKaQm1V8QS0-ZopODyQcuBjznS6DkvOTMcO1IMojSoJLYYdTIQpuZ_U5ZimBH1xrzXlb3Ft4BQ4Ge5rWsQW1XvThAf0nsOA_PbsPO96j85XIeNdtxZItjbrAG9psUexiHpUGH_qdzhehyE3PIBV9OB4VPcjmSJ4Ljy6zaKGeM42pNwzNRqnOwPKe7D5f_gLUdVWRlCVLcc_6gRfRu5Y6Ub4J1CgDlJ3D03y9WBX8JDQpqf0q-NcZTcyJ0keXHl1U-xBXUh-9m64jS5vlXfiOjkgNVpt-WsHRpSsdIvRUr9cyUJVr-saWLpEpQO6JZ67vd3YSlvr4ecdIOajcsIs5jIihl7rckWHdvsLJBhIFAIIQpko5nRalnaFnmw8XxalIIlmeokT5fw05U2jrTBj_w6cZT-OpeZejsL2DRxYIjXe4y417Cx1Diy1ny4nW4eM7mtBhf_uvsAZGxVJ-ZlwqiO_GKbE11frkGhFLP_VOnTrt3CYjHhEZ2V9NjM5qBkyxdYy61BPwCNLofjN2fZHr8p8tODq9JHdkHpHtrUkx_3gXRIPK5poshf0f7Dqt3_wTs6x64pRYh3r59D8dZ5fRdaVgXEFzNqYtz6vGdG76B1LYMPQWsEmOXg8O9A9Iq12RIYpERq8W_VIxZMY4xZ4RZ9EKiDkYYVA9csydtDqUCElJUQjvi0zJHN3tEz__glYomt4OtEMeFV-1fb-HtRaKy3xOCr1oojxQKSzwiSje1YJzvGHLtJl1XgfmJfQNGg1zf6r4FH7tq01yezrTWbnt4dAAgG4lHBA2TLeYK-lhui-hFGGVZoEClkNhmOd4lHJsqOC-k20AYx1A5IoDIXX2wZQk4zOMUoad55tt6iDx1KY1ARkyb2tFJeJfUqsgJoWCr3WGnPDY-d261L-f24hhezllcQn6pRX20FAuIRr1K2gvY7X5LQguuQCr2q3yGslZSVl0G0-Dmnk50ydsnzf5fVdNpmPmnWAjw_OQ6U6JgS7kocNgbuYE5T3dZ0HB2huGRNnqpkiO6Gto_vdfDEh0CV6vH8KS8BK6j9DmrcQhWUU56UkA_44BCEOoeaC2Ao1gfXRD6nCvhjNOT2la_thYIxXNqzm2Ybl-3Ry5BANHIxN_IUy-WkZ7YHfuJCZewjT8Vklnw4AvkobAYElXftlPLblCx375KVPtqT4pA9unUpJYycu5sJdidfNCeRDg0XJeuCgHzC_3IcUwzbQa_Wc8YYZ28DWjPeuAeK7pxXZhpdsJf-uwd6V9_kEwHhbRHcGNeIqvIteBhwgPJcu-TxNhjXzxJ4eBQFcH2zulA490WxitZLR1eI0Dz0LYgCN2UHW2I2aYHRPOUW9gg_zW_wwBBDt8dlYwr9Bw7v41vig9_pgzTeyqPEEelnWr_tfWy0VFLIk8z8fFTQRGvGAFu5DOzMwdxYEe1KbAiIU0-Lwtc8yfWSYQpuHnJ4esT0-TPVfRZdLMDrt0Zq_GAE2Cv6_GtrsW2AdQtLs7kVP3AI2epxFF9dKJBJp4xiM_JE24_1PN7YsBDLrU59YZUAiLAGdaI5fj6mRHhcYVGI6NTpAknYzxcBuz4HEMKga3rTWeWPw-jhcIa_5lc3Azb3dnbcn4qJ2jFurdzxULDWxVBpBKvbMhPFGFwpbaw3YitU6-NCDjjsKOJJ6ykrq0EC_lP0FdP5qtQzn1_zcrUP0hw7ThFbxdNH_C-jPYsSvISzowGwWiqKyzPLaIRRSjw1Y62-rlRTsKVEQbcNlJwyyLHYekDPxHIEjieB3J1HCOnN3iG1satFG3EGdHjZHAtvBLkhvgUvdbspSkjzMiDEjSc-5XlboBU7UQtoOOqr5c1BewNWYukJmklLuC2RZr6GTXZnXcSrT1B13e3iEP7a8h7bPCx2c9_kbqIiiUAW0LjkRiZ4svC4a35-KfCIz0iG7DgBzqRsD-4p--kPOLn0wxWMdRhRtNgQv6cObdzpvMgZfRhviPEZ7GZGgLrsIZhCtHjYcl_uDoLU3fSmAzGAWqiWIoocsvrg2Xfjj88EG1kZKOAhh0iykZCoV-JpMJrshxpNpXTBiVndJyRF__fAyoIBKXq4gOoCTGf9Aax6bo2K0TaVO8dvMB8pKXPN1DVTHOXEwat-AGaj__qWIIwxPbzANJSyG_Mz-8JbwFJYu_5cpgbCDjxUFCKtjOwyEPwGwHpY205z1F9vwMNXwm0B4kwIqFCiJDmQSqF-QQ2qZdrKwv60Jpc5y6rkoyXj7ozzJ1f4OAxYhd-C3TxGSXZiwEnlqX3ajq5ZjKx4IpKnGf73qPWDQ6hDrViI4EGnVet4xMIOpZH2L4m9Nf78u1FViUN-vkkStMdeKU-GUKt6DqztPGvubpIsrC9QZFjzf5eh1LMCpHmTRl6R8w1ItDxJ7nfgV-6Jc_Q0Rb4y1xhIkfQHrGLx5B6iEEURntmvC6QoY-oRxcMPPTf6k5_6qMsBtcD49FBE1waQ-iM6X65alKbXRbr1Qda_4R5APzLxmUqZ6X-LDqA5l7Mc1TWWjQjfJjJHU_phxOYAJgzpC7r7ftAGnXe0T6cgFWOp4M1Y_zkdvJF75ZpHDc3aWTus3frDafyYWSQQRTD3kx-gqhdhLY9vvYWSxqWQqNKH0xqN3p4LZ0fq1kLIstmPpo2e9bIvHYiPj7Yg16oASdBklr-Bb_CgJowk0erf0Z2ladhqCT6r_Tc8jp8SbQ2Yddu6l29ZZeKF5g-KMl0FOQ2AyDdJf3E1WgJAlrb3jn6pHI6-XnZDO_OvpdVlaGd6Iq5H42LBmXW_BWeESmwtYL4w2ThGYl2hDuCnQ18wstVMvh1j3MfUXAgIhLrIwgajek-Z9CJ2pcbzhc6bqqShpiAXphNVIwuBPlKmiP9Kk9p-33NdDO-kNvDf9bIgF81ITwnIWL1sOr3QFNw52TOEB8gpokmIKtsFElDWJ_qJTq7bonnpdLPL5HyX1uN5NZ2qfzIMTId4viXHDFVBi05M7mDo6MhwBd8nEr9-BGjxz2ThMFfoXe9d8-v9r6rh1pI3LVoIOYyvorIhCDhOS6ErxI30regBxO_8FRPL9vZ_2xQl_-ntFQyxJ2Fk808HSUxGnjG0E1mplUBvUoNAoNZGNe9jlzDGgHCO3D1Gb-OOhYF42Ecb"
+                },
+                {
+                  "type": "text",
+                  "text": "{\"category\":\"feature request\",\"priority\":\"P4\",\"team\":\"Customer success\",\"reason\":\"Scheduled exports are a requested capability rather than a malfunction. The customer says production is unaffected and there is no deadline.\",\"record_ids\":[\"KB023\",\"T03564\",\"T02586\"]}",
+                  "citations": []
+                }
+              ],
+              "model": "openai/gpt-6-luna",
+              "stop_reason": "end_turn",
+              "stop_details": null,
+              "stop_sequence": null,
+              "usage": {
+                "input_tokens": 1483,
+                "output_tokens": 194,
+                "output_tokens_details": {
+                  "thinking_tokens": 129
+                },
+                "cache_creation_input_tokens": null,
+                "cache_read_input_tokens": 0,
+                "cache_creation": null,
+                "inference_geo": null,
+                "server_tool_use": null,
+                "service_tier": "standard",
+                "speed": "standard"
+              }
+            }
+          },
+          "error": null
+        },
+        {
+          "id": "batch_req_6aec2c22b3a881908dba353221c4c4a1",
+          "custom_id": "T02038",
+          "response": {
+            "status_code": 200,
+            "request_id": "c10c8da0-6f5f-43d6-aee6-346f0fe89f7d",
+            "body": {
+              "id": "msg_batch-1793846853-jKgYFvt8YTmvZJdKnS6g:T02038",
+              "type": "message",
+              "role": "assistant",
+              "container": null,
+              "content": [
+                {
+                  "type": "thinking",
+                  "thinking": "**Clarifying feature request details**\n\nWe need to output JSON for the feature request about supporting custom SLA calendars. The priority seems to be P3 with limited impact, mainly affecting one person in the customer success team. I should look for record IDs from past tickets, possibly using T03722 and KB011 as relevant examples. I want to ensure the JSON explains why the feature request exists, noting that it doesn't currently exist, while relying on ticket matches.",
+                  "signature": ""
+                },
+                {
+                  "type": "thinking",
+                  "thinking": "**Finalizing priority and IDs**\n\nI need to include T03722 and T03975 for this request. Even though our priority is P3, it seems like the impact is based on past P2 experiences. The customer has mentioned that this will only affect normal operations for a single person, with a workaround available. So, I want to make sure I clearly state the reason for this prioritization while finalizing everything.",
+                  "signature": ""
+                },
+                {
+                  "type": "redacted_thinking",
+                  "data": "gAAAAABq7Cv0_JtG72rO-3LmGHs9YVIMj2S2t1ka1U-bkp-MiVXR2eVzYwPpOzMGJNH0xKY4R9i4TbeM2gyjr-Mz-ilQiWnM9xyWSRwXzi9h8kGyLZ3dsKYYGGa73bYokqRoRHT39FG7-N4GdRb2KQiqK6medAJzucmyqiquC0cQhM6eSxkD57GSc0DYhnDs_q-RQJjPwY1ZIjelsQTAwmkCKlYxBCAeQlU6j-aW_BmypSRxVaZLElbXdS54BWZlHmX_dYlTb5lF3emmABqoyzLNkevlBbdX2xQm_VzLWmquBHdWGqheWasDS_XVSwolmfZvQI6AEQcVUz3dRX7nT0vJO4JYp0_ONP6MA4sINKPFvSirjj_1Co8FXOd3GvTgOYPFRSh-Hk9Jp3yFeQF-Jb6Uy34Y8Uq0hGlKmlY5yr5O4LjBT84qGXM2LB5GhnzUI4V6A6bwnWo6za3N_MDauZ4l8Bhd7gIGKaRISFmI4_6QVqQ2GL4xNoucXK1_uDcosGDBpeouxo1AesBSt5AJwIoK67JpO-Vwl-9z8e46nAbA7DnB3ebNzlKYlEzu05dT9n4Jl6OQcz7WVb_McHwQzw-sYZUZ2qo4LY231fWAFsLz6mkT0-EHXkodris8S9azWWF4sb94dntkTXByV6km68r964pAqQnBPtJ092M9obgm9TMEuwhULn6_Fza9SYYLqungLOHimRJEjfdAJznKXjS8QBO4Fqqsf7JhOZHx3N11d6SHYiRSG20jbMa2GsBUhvoqusBwsWyrk0GiNFO_pbpgrexK297D6lere4i9K9-rFpRfwozQ_ZZ4WKfAZDoIYaUVWaqlAneMxHZVwO955Vw-dfAL5TMgjfCI-_6ipVSxrl-zhCqP_IgKWrTv3TrNB3FhW-m5b2vvRR-nDAcOwfYORaVQpXLp1247_u-Qy-gIejGQNnc6Tm154EtVnAvJQvqWLMjuUyGjCtQrIzv3U5Zo03bd86RbOswIx3yZmk5GjaU6iQlPNZ1E7ENrxGJ-GLX9K-WHmDYAFh9VlDXS6DzkuR4DWVlUxlr1r6huWKy7wiLQKyhjm7RUQSILC1JV9ybxYDZ9LYUoJmkrH5sLZ7jdQu4Wa2TalX5s1oaVtez7Z7RWk3V2we5BxjkVkM7j8v0P-SujoL9dQ2OCplHYpEo6Wg-7UK-x74SyGrw0IZWC_ciUwfSuEV-GuTag4E1dS4i9vPKjQf1QDf-jhCHRw0zIwtlDDRrhT7ldSrLqTzkzE5-FPy5AucHc-vrgdxS-0x70zabfYj7ynLPXqeiTEcPn-9pGqgKgrASndFnwJaiCK8yOo5-r336I7ZfeYmYk4bWoyOqUre54SiLPtRwauLPUDOdKhkl2MkXFNUCdO2xD2GYRMXWrLiMZHfgIwpqjMZd0UeGNYeHU9IAh_E5BQQdjrdbrCcLfUqyanMDTC1PDhWICLcppbMuywuRIvztA4OJ7IXIi2hRzWp3HK43SoKlXBf4lyz4C7hT-rUQ1rHisA41almc-QAouXITzgkOEyCitusFMi36u_WBWgbOZSuIdfcHlW99VjX1iGK-k-CtTgDUeocnWCfqnP_FsHN4tbqxUuDa-TMfK4NOOO1mh59P-TqibRVJG_b24xVVHfbYFf94NPIHEmPw5Cz59zA9BNitqKd0Mg_Cdkh03-nii9pPCKyyyMpoS4oI-zCLHlwtCuV8KJPvkOWsTZAmKUNVVM-wjTomLdKe7_RulGOFzau3TK5GiZy_ddVnQYMQAqZ8l5KLBSmtNr70LubGdIXRE0ZlTij0-bxU4XOWPJFwzURmES_IdApjVsDCOraPP895KR_tXj4gk5MQ-_TOMrBoMuNF2CMHLjVgTHWgtUYdW8VdkNz-7B5inC6IXgKqe7rt-_dfLwTJktK170JwcMQOad4FRytgWX5BsQIXxwloJWwcSbxQavI-F3Dfsvzi6doL0BOJVUFO6XL146F1gwJnAHhwzlzbyWrgG68jC3z1Q1CdOHkAcHDiJYkwFgIICjh3iW8O3NruVbyOHx78bt47TpfJPRPprL1dfowI-OQkhz2DYsb_JgnhF_XUXE5uzTsP5-qjfv3b5UEf_G2r9j292TZwoBZAMjsshC-k2ROhDbhT7FT6_8V1cSTxokzvzf-VNrRlI_oDt8JxY-65GHPSbOgiacdNBpG9G2WUgxE8dWan8cj1cetu-CZ3jZgOBPbRO7tmQsApXjCrGePuyMli9AEqfzIoBNsXn2kxUFP00BM3EcYAOfoboNXkQrVwYX9njpburaCIRK3t8Bm0uZH0DTGt7O-zgAY9NOcF9nwykcxaYa7mrHxM4Qn8egr_UyLtJ52BdciiiKFmPXLSqNpDcWm6-dwadi9oxBYK7BnBOpWhpiBQoKmap4Gu-Leq8bPjaVusTII0XPpOuhVjx0Jixe9-BVy9p-o55PzIpELKuvhjpd-1lK-m5P5zV3UuRG07wtBiHMp_vte5Ksdy3HtFw9O3lyGYejOXAA_i6cGDhQbeZxYFIu52zCfTrUrgDlm6nqhkkCd647l-YbCyjvArezXffH5ca7fJVKoSGGkzEOqojXAez1BzYmU4JLJKvdRk07O7c_kXipRM5lslGHTqQyeiVMkUi7Nch7EDqYjb81p0C014l-2mx0EVp4-fuzt7dagerMUB6-Tc5VopRQLaPIxgpRHCDQoD5308X13D77_WhA7EfCWuDEI-2AdP-jeh3MY7axRNRTrY3TLI69djCbVYGU9EwCZMPsxCBGYsLqnkQNu64VtjzS_yxtst_zG4Owh25OQEWPrUopIYE2voce2E08xpBG_WQlAbNYleoGhCYp0VgRA-Se29ZYbpIJRGsAWbECdNdkjkLlKj1HuVxq6gA5EYcRZursaj8nKGTdjL-HhQwNlVzLzBRQOyrfCxh5Cc45kI6Spe86EqLaW_i0jyrb3JO5FE3HyHXieKp07Mrqv8dBHM_zOAcBj1ijTMdztIo-ueUucGCgu6fgMpl_klZGhI2JF3yBAUvtGBBTdHacns5cw-uDDTDpnaVbkJ9BUCBOfRVdg7d0q4uDfUlj6qw9-2AndBmZOjTiN2K7hP_BCtIHcSfARpYFyHjYEII4pnHwQnEMx92Y2b-IHSaLJteSRRP3aQxvNyS1y_hAl3-5pZ_8IJEqCADXNuxwppitmJHVXwHpKxVmMKAn-HVH2AIZG6w4XdWqmnlAoLkjixidlq0G1HwvcGHqrVbCjNT1hcIpSuLQNlCzJTaRDBxTZSbrLu_LaABvhMS_BIO1AzfaS2aoJvUADgFBqVYHRYAWNOT4IHVRyVMptNB5s3W-oHm2zccbB0dnE_21jIOmBOw0efRduEsq5ZH5Hgt1jEftX1Ni7s5iDR3qj1Jc_3iQteXKKaRcyzxA2wUI9MxVsehIv_39XzL7B91rXt6bWZxRVXVkDMlBH8MoOKPfzkcIIr1ingABIZTwhYTJTLfi10QWAzaFGaQIVnTAufpxvGVhvQDLm1PMN1fxKwxIOuzAG0xEzLKbrnWmwR3AjFjpzzAOEpCvGilcKPfrcYsOnD0oNctjgT97vxc2dn_gsReGcPq_w9UWtsCm1BTvx2kbba4fuDXEI2fSAWwOwXA_rGNOWYp_tzdhEffzQ3JSG06iLEZ4KVZuozuLm5MHKGqaM0iEtCoXlg4iPYuS6sx2FdhrSw_EQIVkfq93MWJgNWSmH6bTFtpOnjktj-dRBmMhVqDqNSM13oOFCzAr58qQm7cwNSZsUVnkbAu1sxzrDmulgUPo08-nsEqeIIo_bY_AajawUlScyjrzFpbUThYEI8sZeWb9jxmfhhS8r9bPgtRlPUhEKUYpk6isOVySx4YlbqjZWvm8Vd4kdzUW3QAuB1BiCsRugqUikwEFJWurhLzJVTC3C9X7rqzDg1LhaEq35dmU1eoirqUh2R1HQix6UeKF8aq_XR-dCJwsTvpiUqmo66z4t0qB3ErG8hnbXxmazFSALPP2G6oeZYsMYxjoS23cXmLhhlYTQ_H3Z-bcW92KJEQ_6zLTuYgx3TW5HeHgnufOsCwwTBRf-kWnSprK_8gyGXYmOfNx9rBXR7AX7gOHovp6ubJk6grSsITuW8FlEWlem523tTzUeQDO36AQzWkI5WhK1AuS6SKgYL9WhwyI3V7OYnYuDU8F9rLdUyt9NJeOXgXKx_Qm2AnoO5m5SF-9LhKMBKMiM9dFfs1ISdYTdceP_dyeb0ps4L9xcvyoNFYY872C-48gw6-nTKo42HqIMAzB5P6Y6hPDj2G7EJlC6aUuka3p2EAIjhBRaOPARrT1M6gCfe8HOgtmonH4wyMBLgtlo9WvIE="
+                },
+                {
+                  "type": "text",
+                  "text": "{\"category\":\"feature request\",\"priority\":\"P3\",\"team\":\"Customer success\",\"reason\":\"Custom SLA calendars are a requested capability, consistent with similar past cases. One person is affected, and operations continue with a workaround, so impact is limited.\",\"record_ids\":[\"T03722\",\"T03975\"]}",
+                  "citations": []
+                }
+              ],
+              "model": "openai/gpt-6-luna",
+              "stop_reason": "end_turn",
+              "stop_details": null,
+              "stop_sequence": null,
+              "usage": {
+                "input_tokens": 1518,
+                "output_tokens": 277,
+                "output_tokens_details": {
+                  "thinking_tokens": 207
+                },
+                "cache_creation_input_tokens": null,
+                "cache_read_input_tokens": 0,
+                "cache_creation": null,
+                "inference_geo": null,
+                "server_tool_use": null,
+                "service_tier": "standard",
+                "speed": "standard"
+              }
+            }
+          },
+          "error": null
+        },
+        {
+          "id": "batch_req_6aec2c22cef48190a64c43bff6ae3e5e",
+          "custom_id": "T01531",
+          "response": {
+            "status_code": 200,
+            "request_id": "3dea9e8e-ad7c-4b50-9bdf-25011fb70076",
+            "body": {
+              "id": "msg_batch-1793846853-jKgYFvt8YTmvZJdKnS6g:T01531",
+              "type": "message",
+              "role": "assistant",
+              "container": null,
+              "content": [
+                {
+                  "type": "thinking",
+                  "thinking": "**Addressing a classification bug**\n\nI need to produce output in JSON format due to a classification bug. The export process is stopping unexpectedly, and this seems to match past cases, so it\u2019s a P4 priority\u2014with no immediate deadline. I\u2019ll have to rely on previous ticket IDs like T01733 and related articles for support. It\u2019s essential to include all records that relate to the bug, sticking to concise explanations with a character limit.",
+                  "signature": ""
+                },
+                {
+                  "type": "redacted_thinking",
+                  "data": "gAAAAABq7Cv8nUgHVtVxbh7SumkFfv1DVhHs4CWkxfsvv3h0cVyS2Q-sgZq_TmX2KVmAw6aoguylBcLMny9I_Tqsw6fE5XKHpPvkniw436DiQ5wKlnssmHXNURjn-G9OCRXUx2i7QkR1liJo6Slxs5YbmWQGRAJvg7C5u-vtLIGh4_lLUpLvvo0MjzSIclPAjmhmbxJh8Yhmch5M_qli6HvRNxy4T0_bgwdvWt4F-kUd6D7aKx6IaflKa_poBwW3MWK0obeWqHALIdlSRSdTgMGjG1KH6PCwXKnPiHDj2rfs3zfb_LuVYjPTuxCFev-4nS7QxpVSrTIq1mmZlwztoMPHfIR2iBt2QME9hFpM1u7vvYN9QmGXzetyVUEgtpKLk121FZxkLnIahV-xZJOITgslI6cAJbYHTFzjov84Jw9IV6ygAQYN2TeIHTJMlP8y16JngLPS5iU-XD88km4kS9sGFvEpYGcJ2LevY_TI9msrAfoFEJxVVm6ugfFz3XMUKRkQRiBwgge2b2IyFyFK4NiXLwGSKSLl2bn6QAsdHQOBnQz1ZPPvw-yvdt0dthIoPkT8F2yCHjAukujRXikNVQQKzEFULg1RO37ACQFjvoCkMw_m29fpU-wClGRiyc69KZee6e7aIXDCCU-rZVrgsPplcSyqJNDOeFRTXf_o88esVvLJystiqtRgl1W0hXvFlCi9ltowRv0JH0Yga1ji7JJXcUfwDjDbHryjw8irqfRwn1KxMHFjFFSXdtSMRwaOXQPTLozzqgabpfPUu3Yu48Z5ToC6WvJ2c4g8bnlP5SzHdHsgvVYWPD5WOYDJyXFulwKNDnRyCzjpf8Y2xqWpLwT5fatXjnRFC6uYPy0BLi18Gcy4aH73Rgg4sLSVxd4xxzbG8J7qdo-mm0zN5tzGZHU9qvcyURYG4MFC92hJsz0rRxQ_PvNiYQYX-9t6m29fNHBAv7IPPbIe3tPTv_SYaprOmfFLJ2ZAmolsiNFh0j973n5_2cycTQSSEEmTq7B8xyGYOV5CawXWhTAt0lWUfR5k_-5nRHbGufhKE6vqVf48q-xZE7efLDbk3Fbzzf9GqEhFPhBTII6vN7c_JMr8CJrchp3x0m3JN4AzhxL_BwgJp9rP0Neh0dUCid7AdUxRBv8U3w-mz6UHLAG_dleC0TeWSzxlOZWGxThUG0TlaiW46HVEeZuh_s0rcpv3kdoaKpOukNF0U0x8kxdnUtN8y6lRM_R7ywbG9OWWxdvlxJCPp9qFANObbnlnC3dh0_mk3fBVUfo7xnn6DTJSj-jFelbfiNWJdEd1fbDZ4B5HMzqq-KTcMDw290h6l8W9P4ZDrCPHlGeSf2ClqfyQ6q6Ehw1rfSLX58I4R3S4AWMwa7-hig1XUaVKhB4JH92ghXZq1bq4veQGvGxq2WSXIyWr6KZbChvyeNmBxwNsdi7NCyzFkXtH1-hEJjmNib0auXdsEuDB_5wkVByLiYs9LVsGn9xsKBIldx98FXJ2879eldkmsZAQ0DCjljyaGMUUAUaUq37hrd4uBznSvgn1rrtmsw-8LBkRsRT2hmfXIMXLjSPNr0EYejcUP7jy8UDcGt4VzOMQlQCtMlE3XAU8tniOqowS4VmZ5YmMQleEHf9AO1fMeMnj5QSiYi2pUi2cQ6bL6gT8eAoOpA7KQ44850QWV9Gd1ooKzvGCpWJuOWBvwN8BBJdAKqbUuM3ctNhvzM1PLOpXV1tPRMdLD9tEXec9sfn716_4j437FsKohNS44_zqAHL-Fqr89jkf_8cv3Laaw1IXZIrHoTfDqRTmNFEq7Tj29ZRm3tHGZ_umoUDx9POfp1nSwgG51pP29i6S-2rigbox1qwkp9sPzfKRfo6AQXL9lPayI0f8fge6XKXW-fXfoKv9CiPFxP5mn2IRJQmeZOxGjoamZKZCbEZfrBfQGY-mM6mPGU4Q9z4-D2b16I4e1D3tQzHweicaOVq0GU6XT5pH8uoa4AwVNKFp_FlJA29YFCr2ysCECdw_hRYqB8muXq2AHh7RBFJa6cFxnTDt6pQzCAdB7sqyQmxQBn3NIh3XR-FqhnJDkSJcMgvlDdTJyBFiVQstyghyP28kU5O64OAuIbMI742IIEtgeSDqVI05Lgzc3YuoCJ5jd9ZDLLCxg6m8w7E0InVoY0xM_DltGJasw9ktHXN_u88Y6gkoGRK_6vCAx9rG6aRkd3cSw8I5XAu-n7nQ_7HJbbBPk7puOeux_fg5ubsMEakgcOiF2752B7z7CUpzZNLkLjM2zxlBCqT2n50c03OYjjGoL02wC4v8lXllNyGr1W-RzxuvzHJnXrOiaL2ZHH1jYLRWHMF-VytoruVlCUSfE7-ZzrgGB1Wf4rGqWIRkPz0O2Npd11X14UoPFDkJEXxlmc0FL_sSfdyEiyXRC-GUC25-mgfMg8wPHCA6XbqCRdg5l2PaiA4ZL_WGv1zToZyR6E2SEm2ECn0zVACCsKu46NWnKYzfMATgzBdiG9jpUWMLxj6XeBl4W2kEdXnadTdqdEO_LNBOeodCq4pegkaInJblGBkWG5rakvmCQw3cQKBoM3YhTLSzfaAgqEsT8UF8unEdUehvSB_0AKU-9uXxy4EotdQ3IVaaL4cU-h93ZHHYU_tcDT3SIYWgFjqB_R_6umSxm_zmwhCCdHYMPPaiFWK8p-B9poiP7zvxzRO9kXu3J2fRSKICucPuGN49brlr-lWpZCpf5QAEzqEOz-WkLr5Y6RpzoHvGSjY6mb1wE68tCl1UhKe_F6jPGeBk6KJNkBw6WWpuft9qI7IURt3EFO-wzRAgmiZ3ZNCF1v0rBlCFVkiKweCSmNmf_OshG9PbhRyAeWbQitAK43imtC7QqvTnz6BCcZhfTJoS4ley5W2RUHPUGCqUa6-8HiSg3h6zYa-H82A31VBFhZnhJ1pYseZ0ToAxsDxnt0E4aPyDS9UvGg9dFmEw-GS5ZlbvOidzgEV8GQWlSXCG3ypEE4uKw-pgJI7s9MLBUWrNaTXfonRT4mBYRpdbHF6R5G9LYCh-TQYBoNROZcM2TmjldIKd4_LhSZjdVaio_coEoDtGIxxtbNDil6sZTooid3Ce26D3tNdsId2tJnlouaISrJKx0R4kQrDeT9C7WgJebd6rTUGyizdEq-tGZvVKf3moRctMznfwWZKMqdQXhGvLViYqCy0V9JMxlmFXnp06cczaAyZlfq0PjHV_ajJuRiHLdq80Pc2RyIFySpVQTgcdZDpEoYz0RaKE2rlPT8fGp9XjsKp-NE4e0b53-pk8w6wnv0gY1jYLraz6m5YBO3ayqjel-My7yJOs6wqbtZoHLfPgqPywLlaoUZ1UmYnU-xyz-fmLZS9R6bt2Z-ogiSZ50cS72n8WiP21Nny5p3da7neCpmXS0rSmbddC2rR7LOLjbyeXwXGfBfHZmOOUA2vUNX1H4EiHiXhiyRvq16XbM17mWIF2imqgC8cZx4PmzNj965XuCBEUpEmFNd9AEBESy7w6UNYvPwLG8_bhXMNNuTY3Fkt1TJu1T-sS4bzXnCOFYQ8fP4m4I_Dx4UV1dzLCshVnmgVExU0uPEBMlajq1sGWX5CM3GpcZlo2lN0Jh8zUtJpO6KmhrlIOsZfdMNQEGFoiZ-Cc1tviKghX6oC3Qi_pT8aLUds-dZGzvx7nZYbTYUWVti2FFCHVZ2ZvAsCmJUHqZN1F-l7BxxCGxRVxGa_RqhoCVZygxli01FfQoxeq0fLv-0H_Fpm1JcO0liUzyr_RhNz1YyhVZs0h0fOjF_3BGvVupSTJxFjAs9ITmWsZxA=="
+                },
+                {
+                  "type": "text",
+                  "text": "{\"category\":\"bug\",\"priority\":\"P4\",\"team\":\"Technical support\",\"reason\":\"The export stops before completion, matching the documented export bug. Production is unaffected and there is no deadline, so impact is P4.\",\"record_ids\":[\"KB002\",\"T01733\"]}",
+                  "citations": []
+                }
+              ],
+              "model": "openai/gpt-6-luna",
+              "stop_reason": "end_turn",
+              "stop_details": null,
+              "stop_sequence": null,
+              "usage": {
+                "input_tokens": 1510,
+                "output_tokens": 234,
+                "output_tokens_details": {
+                  "thinking_tokens": 170
+                },
+                "cache_creation_input_tokens": null,
+                "cache_read_input_tokens": 0,
+                "cache_creation": null,
+                "inference_geo": null,
+                "server_tool_use": null,
+                "service_tier": "standard",
+                "speed": "standard"
+              }
+            }
+          },
+          "error": null
+        },
+        {
+          "id": "batch_req_6aec2c22c35c8190bd3a55b1534d8a60",
+          "custom_id": "T03226",
+          "response": {
+            "status_code": 200,
+            "request_id": "d7dcc713-adb8-4256-a88d-fe880c5ad667",
+            "body": {
+              "id": "msg_batch-1793846853-jKgYFvt8YTmvZJdKnS6g:T03226",
+              "type": "message",
+              "role": "assistant",
+              "container": null,
+              "content": [
+                {
+                  "type": "thinking",
+                  "thinking": "**Organizing customer support records**\n\nI need to ensure the output is formatted in JSON accurately under the category of account access, marked as P3 due to limited impact. The Customer Care team will be involved, and I\u2019ll make sure to include all relevant record IDs from past cases. We can consider referencing multiple similar tickets, and it might not be necessary to include all eight records. The goal is to present clear information without exceeding the character limit.",
+                  "signature": ""
+                },
+                {
+                  "type": "thinking",
+                  "thinking": "**Compiling record IDs**\n\nI think it's important to align with previous tickets to strengthen our case. I'll include specific record IDs, like T00884, and consider whether to mention all of them. The reasoning being that they demonstrate similarities in past issues. It's clear we want to keep things straightforward and concise. I also have to remember that the output should be in JSON format only, without any excess details. Let's make sure everything is structured properly!",
+                  "signature": ""
+                },
+                {
+                  "type": "redacted_thinking",
+                  "data": "gAAAAABq7CvttWiLmUbjb62Q4DiHv4S-8ShQ5f0MA4KGwUPdRZvZNGCyUU9v0qMzOltyZoGEzaaI0L4IvS28AwnRAcOpbuoppv9-L7loXtbKthMV5txOR1Cxt0RwjbZslrKyR8_kJC9eLCcWbDHmWrrR_49B2DYPIpQWafOgO7JQ-FaA3bljEMwwaCfRViXda1TgJqmqjxpT20iHgujvterLsjXmFJfQSnPm43xWZ0ZrBYoK7bULcdo8l5IvBtdYu7riOqsfzwUBcVFVVi17XOxnm9Rgy48buhktltalJtJQO45cPX6_ups1orryZC5HZGaJoG-D7MlT4trQfzo4eWsDedfKsTHamPrHb-LPi2xxve4gefOhKAzBE8skGEGL-RzjNtCR7Pac8zcKBdKYcyFN3dP8-JZwEPB_Y5dRnFz6MKb2kfAHpKg0psDaI3yjompe5cgEAX4szXfTshfUWmXvxbI4ZnQTQXNU6eYy1zP1i0cm43XAWmugKp_0NaKJ-E1RDI2cq-lScSHy1OFMqmF1lt5WVjJ6I2aVMik0iVzzOmIntzlHzvW8dBjc4MTCzWcJCRFvAPkU2ZHZarHZ8pv4ylyFVaoMbNYUKKRRafpRENJj8QEliu_XYVVe_vfhGmDOgCjgx0bNsi1XNiNT0qlF-RzSKlfv-gxfT2d6mhDCSC-m1OOgAbgL4075Y8Sew9bLXN_ygIb4vR_asBsB1t-VRoIyc6FSgYYmZNxzRF4eleYBgA9Jbbcj-63Dt1s2rgjxkwzQBIgqf4AJInaqyZ7a32UswJjyvd3cB5YAdH7_ScJY9_rWpoBHWl4PhDq23-8oMn0dDUfQZUNZQn6tccyXs58dVlQ9T2WWEhm8Awgh3ce0XsqhnQvMNL1d9ttRvXrl7CD5BPK-tvnrSS4_xcFBteNlOuOz4GprAMhLJuSAn58Ijiet_YhUysA96E4WJGbxfSKgiV4AndzdqhUY-UtZ_g-mnwLsA0QAplcVQRqac2Lh757utXM_2rKTy7Reu3zPVbrS5d_4D1TiFgnXmjXx8mRJ3YRAUAEie9XWHj38m31Gk5YxgwgGOl6Hbc_VE_4KaddXV9A1IOmcaGs2Pt85wfc8agIZbrmpoVC3I8vzqC8xHVnWeASnvnOmZ0_xD-dWZn0e8dZmliM04iauVC4_d83A5i08C8kv-76b4WRQ9d1jRhdvirPFTSGl7DIDZ-Q2AYhhl0LjCwBiOLSc38CF31YecgYk2Cv0eeYWYu080PAfFO4aVYvg5PTQwPn7JZiPc7GpHVFY9PtTurmJnqqZ12a4w2fQObvnHTxs7__MQHnC-1yEqWVMReoKNa7K17c77vFAw_shJciMpYWMZGdiKxFWKJELqD0BGogHsDChp5K9V9d5YLGe8n049EfYsAbjYgn6CB73kXOG5lyzzGbYa_E19tcaDmghGyvE9Hy5VfUiokBGjCmeG6el3bUTtONBhSSApf-Jr7yyySfDOPQIsR4COVWqX_NDnsm3piNs_XEyrLU0AF4EfbyRr9EHBLZy3IhI416LAicVYxxY3t0ozMLEEGpr7NQQ-2e2zjKeRUWMNajmgeDuYy9KlTXNbdkFipaylT59HpSJlw4XCEx3sF-GcC2s4dNj-F81nFOrunUBaRRurUjJbf_ib8gWO8pJZLT1IjwDFn6adUW2VSO1TcstvEuVmNSipPW1A22_HChTkqIDNeZ7dA0h99fNNmgWZB8nNPl2A4nWhKwAGZ9edDoXh7CyIRrUog5eXCmnS5ENNAdVjqaoJhcON38X8LcQ65yMZFocOG-9gsTQgb7UkV_O3H1qZCbFTxIbrwBXpbuSD9_B7EZIq45vjN7QxxXhSJ6IOszCWtsZDm1ChE2QuNsF0V53bxx1OAukHH-3nd2Snp8FKiQvZ7GCmGdiUUFOgg4_6p_GKXXvASy8YuHo8fvf_tfLY7gmm0Y6_jmIzoeyuG-9hvIII5ZAQE73hLwV764RujbY3CzHHwMF3dSvOKUERlGWqrVlJlulM7XYe37Y6vkGx9BWThu9t0nu8A98KqAZR7cswJZDAi6EwMpKHSxZ-z9xk2SDeIiI2HUgAPndqmfs5EwQCGRdEoGncVRNIg2PCyqTmZNgx2d9_KObKNADnA78vZUSITmhBZXIuXfjPUB7WnTbauniQBzNOQJWnPuIMSBgPThBU2rkgxtNZVoEKGG5Mjbjv1bjHi4fqcRfny-FGo1F_-PlbCmX8gTi7unCcHGTKkgY_SeKcg3bSIZmFAL5mgkz1VYPryGam_jLX_Aqyp49BolQ4z3pmxO8dGN3whHtV7Mi9BxaAdTO2T69y6HGlyw2G6UttJ53HKhjkMzYNmkJyU-u8c4tQ5AZSIQEQkk2oNKHBc4ZkHvd0-I5V2PVyfCBrt59ifMnJUfsf7kf9JUR9QQr767r3Z8avnDGnrnSa1Ptcvxnlf6aqOMsrYr3Dr18kRvUEHuF52fFZvS2DeIA5MzfQhIGgwHq0VvSjZDVTu2SV-qU5ZB8EWOGdawkTPj1Ad4BFIWePROoIkDNlhTeo_9UQH5brm_3Ko_1ViihQl0S74KE0U_4ydUZO5dJWQrp3PZOxpMGZ2UNkQQZcLLdR01TUon9soW6sQl_ckT67Ne1VEotzv9Bmsj9JU6vonCoZlLqV35fp2od-jSqg7kmqsE-aNXJnM641aacWPqvfYoh1E95YWYQTPyD6q48eRysXZTYu83eoZ37R7CVx10LeichZy9Yhe4X9OGvFN0UvAGwiV7Mh-ZrjApsczbPTU3AtpDnyiULKWsFirn_my6MUDiTUlnwQL_f2eQD6Zslqz6q27OltEY9uYxHms1BCbrFeMRagwedPbDZOguPGBIDbyilCtAgeau61cpnTFG3qdiBNhZ4MEGce_JhlYc4xxps1nRAiTfArAuNguxgjYTz1zqfBLiBZnR2RH_6yyxBvYKo8F0e3AwBlddJcDeokMwq8x49Kag1SDhokL_508RWt0z6Kfo_Dn61eWVcldsajzxH-e0iNl8XV0OnRqMdWy5cQv9Mam781oqrcHRKhkz7NlEcioDrM9O9cL20X1ZrhBn5slpJcRpjAW7Nd8ziR_tWpin9Pze8z6cO6gEEwwYa0m9uPvyHRoCRk-ipsc0r8t_Z5sY1rZZaDLkfvHZLNB2uIHBJ7LPPGBzivXkAViyuXK0Tx8-MSZOmk_UcSnbHnHFGIVJkF-SboeEwXz206Ezby1FPvOWwCRmWcEAIVaq8mwwcamCBn4S7HUNLTqmsNSbz6cjb8U7hGCFJKaRsrD-ykfHI1yOk2faYvwjaSA2-HM4wZIyOFjTO5L7sdEWmNXc3j4_nMWRM2OR_2IHyD7Wb0BMCcGzYsjQ5YhltgnBwlEM6r6_PX85u9Wv37HjeB4oRjnQNrNJR4EOnL0aRqzPTJ96TLflHhBoAKVP0SEf7V_fpr1rumj4zcExMiE-wVRvaqQp54kK2LQmHBf80C-62HqC1HuwUbrO3L60o2qofgG81aw8uzxK8B_1caqunfjvtb7soRBldv_qD-sC3BPhBJDzMQYM6_pJar1Qc7-EHvThxIqND3OUhU2QR4i1RkFalq6OVbnsdXhRjKgWS9zmG3v7DshlR4ykCMkpgBby8XfifiRin9hOMfRhtn-j4yUD1jqMSIVnoFb4N8IVZVWqxrWgTTWzSDXgTdVtff3mq4iYxT8dwSdoDz1DYoSPmDvTQlFhbNZcajbCiUAlk94U_IiYKrbNegn8hxDVTMhrvGP-MwBoYQXaTdG5wN9XYYjwp9rV-62DpAYAplGvmanvt6VfDPkVZydD-oLm6dkwf00A9gG35zloA07xfZPcUoqOIQb2ntay0NHEL-6l4VF2whW3UyvOon_9zdbI0C7bzWRcvmcAnVoARS2Hhv6UTDb1bFlZ1g6v5yyaELhAH9869PWVg3Z0_PMa7OtUwoXZUot1QuSGmYTghBj33XPV0O_2dkU3rICu3ZmvmJPPXwZGfxjWN1KG9vlNp7XOQ3yV8FhK6N1f8PBxkaWYpjKC9CHjWlnQh2mvJ1YvuBwXlTabMZvQrANJ8Hym0IIfevdFFxpYxcxkSUVSBTN-Qw9HoCHrg9LKh64KaG76Owi3sEjoxgV8XKsbzGy9kAltBgI7M4xfqhtPILKboZ4ZOy-RtDg3MlcPs-D2wR7WFrO7461RawdnvSCCQIU0jir7u0KNFaJBY3S3usoK_KxnCol6YyyPse7vh-FsqkKVvubzfSzpuG0MIiG_VR88Eb2ALvF2dRj2f96cpSV2UXZHTsFRgsWAgMCJZMCUUkivi9M8XRzNzMU3E0hG57rE9MHof721qJwpeWRV_Xb5iJsmVGt-znj7lrTZrvHZ5zZKqiMEjJlNwaPHRHzBKayYeEHCP3MID2lFNzJ34_FruF9B_WeSX"
+                },
+                {
+                  "type": "text",
+                  "text": "{\"category\":\"account access\",\"priority\":\"P3\",\"team\":\"Customer care\",\"reason\":\"One person is affected, operations continue with a workaround, and resolution can wait a few days. Similar past cases were classified as account access, P3.\",\"record_ids\":[\"T00884\",\"T02780\",\"T01270\",\"T03081\",\"T00546\",\"T02616\",\"T01313\",\"T01224\"]}",
+                  "citations": []
+                }
+              ],
+              "model": "openai/gpt-6-luna",
+              "stop_reason": "end_turn",
+              "stop_details": null,
+              "stop_sequence": null,
+              "usage": {
+                "input_tokens": 1471,
+                "output_tokens": 313,
+                "output_tokens_details": {
+                  "thinking_tokens": 219
+                },
+                "cache_creation_input_tokens": null,
+                "cache_read_input_tokens": 0,
+                "cache_creation": null,
+                "inference_geo": null,
+                "server_tool_use": null,
+                "service_tier": "standard",
+                "speed": "standard"
+              }
+            }
+          },
+          "error": null
+        },
+        {
+          "id": "batch_req_6aec2c22cb4881909d81a4ce7478d2c7",
+          "custom_id": "T00737",
+          "response": {
+            "status_code": 200,
+            "request_id": "f4fdcb2e-2dba-4d16-b4fb-8272c9320b13",
+            "body": {
+              "id": "msg_batch-1793846853-jKgYFvt8YTmvZJdKnS6g:T00737",
+              "type": "message",
+              "role": "assistant",
+              "container": null,
+              "content": [
+                {
+                  "type": "thinking",
+                  "thinking": "**Clarifying billing output**\n\nI need to establish an output schema regarding a customer's billing question, likely categorizing it as P4 since they stated there's no impact on production or deadline. However, a total change in renewal means I should reference relevant ticket IDs and knowledge base articles, like KB013. My focus is on previous similar tickets and ensuring that the records cited directly support the customer's situation. I should consider whether I need to list every record referenced in my response.",
+                  "signature": ""
+                },
+                {
+                  "type": "thinking",
+                  "thinking": "**Compiling concise information**\n\nI'm focusing on using KB013 and possibly previous tickets. I have titles categorized as the only data to work with, so I must ensure to include KB013 and ticket T02540 as relevant references. It's important that I keep everything straightforward and clear. Everything should be formatted in JSON only, which will help in presenting the information cleanly. I need to make sure the output is as concise as possible while including necessary details.",
+                  "signature": ""
+                },
+                {
+                  "type": "redacted_thinking",
+                  "data": "gAAAAABq7Cvnj5v50Jul5CHk1-Mc4Q7EW2ZOLFJRmIMtZ6kOREps9leAasYT6nenPvfmdh5GloMgslY9TJYou0cEafKo8uymDUjobz_Tzwd8ekJRzZCXBhB6NEWywPuzOwdZfr-igS9uy7CWU_6l8Yb_U3tmi7Bw7MpZndRqoC9QOJELNfVhLuCEfwSqvs2bqgpEaeQbQJ3UATe8fMdtKbAh4OQR6eXka3D_lW2rLhI2EVVPfFhYBjWrA2LGoIQjFRU9ej5M4oOVg5my8DdIe6R7knqpie2SnY66wHZVRwSmAuUYPRnozr91qikQz6OeRy4iEkc9ii5rK3rtMeS3MjZp1mji53JG_su0K0M5ZipmCL8yNbUBkRF3r1zD3siDh7lxcbC4yGLW-xCHE8EsEBtU8Zi63zJl31LacqDk1Xced2imOBsdvHZI8LjoYeQXV4A2RiCRSEVJcgoqk4twswXxu62bUti4R3OSw9fhmBV-TWcGN3JtJwImMm4aNrYih-GXqN3-uzRbyPtVdciYVpbkmzXDgPDAyUXUOkFQQeuo01uXob5gy16NdhkZz3hHee2fyvpbhv0U0jwL81jEsruxcLMne2ri7xmO09y40BUKEv-dNRBf8h2j3BWYXsRl4tyDlUx1F2zu10fa6rzv-d3F_rvNqBaZvTuso3vCSE-XTTdA_MmLFy3qfyi39m1POo73a-ze5lxusU13rHCUn2rzKCArzU7BmQQ8lnjnv0Ui44Uw2iNgcfmADY-RnS55VNW524FLG5VblQZMzDw8It2yd-_FnLgb2Cohxz8LCRCwQIWFs783h3L5tot0CdIb2spNWMtqBSNsdcgRb5BALBbo_8sLA14Wogy0687wgVOVAi8IbqheFTfcLSw2DLlgDEd6dmMoKNMsgdVjEkaLioCbOrwYddSNmQw32nopMyqnDa0kj5tsWPKyixuhDHYDrBKu0Yg8SvYX6QI4LEwUrhUCxFVVT-2xVJ8B20BGsaM2CNHXgI-MX7n4iXT30lYpOyMdm25yTkSwReMwyL9oK6Wjlk1XJ4JU84sjVOME2-1S0gC13ov3f_koMRUi2MYIkxJ3RVYkL7UPQaG0D3YjEjHhpC0qyOU_3lzY2nG4Ndb4fe6CkbNfi2tQ8En83ktyKJKsqzqGFqjgOXVRyKUHdLux8dAMip8jiHkg3TeGDq5jNy1nc_agxeCuJMKl1nEEe3OKRxaDst8TaMjtN3owLbE-79e15KKjIHe18xRP4kDQb98nxEFRwbMp9PW_CG2jOQ0uLjZWnmBIDHlRelj5ILNCb73rVVCEWhZaRtWQez6KIDUwTZP_gc6Xa9y3qFN7_YCsiSqpdjzHMxOQyEuFC1zk86h09puhY5EMgD4vGHndfcbjcq9lmZQugW4rL-rfuUO_os-3nUUXT2QuEuktK2471d_s_qU9qCu7tHN0v0TDRoxMmaTWR-aHni1sUXRH5RF7WQH83gUCs-KSVwb2m57TAPTAm10htrcMQF9agUxU3lbOFJjQ_b27CDfscX6veqSM0dQzileLOR9Gthttr_HwTp8C-R1vStg_j6HSwl0lXWIVcErrMNNq6XKxxQSKaETgD8XTkKglm__iP-8dXrpDRvc6OeTKRMumWhmRjc7UGdssRTWLrvUIVyMBesOUVF9LaefEE0ngu96m4ZehsvoDMdQjmsNBAoARFgf0b1-a3Koa7KIeCE9vG-b05etoPmH3CPWv_PsESR6RSsjKuaMb82pQ1UfkkyexKjLV59EMjJivNSy4JTkGWAXmIoWz_d3SxUchT6hChcOnwL8Y32FsWaBGsWX_v6Zroxkf1Y0zn819HbIW63TIfm0EMjmrXH9uWp1yj3pMc6DpJdv63AE9-WFU5ELW3fjplsN6Cl7rLCLyZeUgxslwspYUhQolpysbeafrCxRA-AWJcBdPwF3gMeKORnzLPrQcu7T7UxYZgyeStkFz0-Xy-voxDkAHeCbCCDl-_2qRUbxDXaJQEo6kxpI90eso8N9pIFnuChm6n2N9F-sToweDoh6xj3Ocz6sxhYV5KFDcxPB6TQJgmvGu0XwphiFZQddV1RuAKBDTuODaqnv1XiJQPKsqEVsFpcdw46H04Z9wYn4-kYKiwNxoVlO2_xXCchBYJ0Xuh2rFh_bimwJnS3rbWMPT4ZsQrwoJea9rFwrJav0PD5og4vpHoCoLruEbfM6FuxLdOjiUexAiGV7e778St_oXSwTpMHFmr5uSra_FEKyv4hJn05QVVViKiSxS8x9P4g7WzaG6YQh7c-dD4hCLAQYmT-sPNTP-dsxLtVUHJMOV00jf-TP4en7JhvUqPfZJBziDfsYoASCyuIMOPvWHA8g8XpmVOe9gOzsoOhCUfqTTgs9wRfw97W0soT_oLj4f9e3kIiXB52KIxqj9kVWCL00aqrOpqwC8rACmCPMDHalwO2v5JLeek0x-npViXCi5db0ISAT2O4MbPDZjc20kXiJuv7KZEprjVcXAtyMsNeEuiTjRhZ1uPE2XAq-gXqlS3crrCFfAlayuJNzxO4ZlwJ3YuL3VYkjxuGdF0at0HwA46PtMTftGNbnXVKv7IN_-fOReEk70xxRLJghueX4ljYcVj5_ykPwbaWrzBJBw9-IaejWCxckXqezQZRXI__1-YIcHYjZFFo-5jCF3n6TGPqeESKx4dz1iNXLAe3Vq9CVjXN6WRA-zVZWE2RjkAYkebzDGdXtp28DIc3gB5bEu8cf42V6Qn4WC6blPmfimM-HHzgC9PtuYZdeR2MFHU2vOyN4iDPyaBc_aE01TTVDfbrbojkSNbW4cNScTCNCLhmErjJ7kmrk2CwgMFjB61Jm9LpdfLM8rgqo3SJhaszL32-x5_9Vu4TEW8hJ8Z8LkM2eggWoOIj-PPS-Nov5mmTxjJms2ZXf7N9WMblielBcEtldfw55gi2f5Jrq2PQ6pxUPfTsYumJ_TYNVo24zrErAUV00oqQ8PD5ucgrYnm1rfCArvE_RdVrZSPlnt18SKFPJOl-GJi1szpYFNbNUlsr8LKDHdbRR4J7hTHxrAEhSW5hCMmRa5oyV6RdT4tEd48FbmECgFo_6h-5SLpvpCaPyO7CbyOzDfebi-V-tpM89WywWKNWfPQBiLhhBHd6_sCTPSxPJd5sMrg6br3kD0NWF8CL_Yo_wK4sTm6iZse_q02lGJUe8m1JtLNk6PK3azq3A63sGEOTdqspRZi-dzZRR3NgtllYnR5zDoDdCaiyRIz9ZBmT66zLKQdXwSbhAGB2UzIBhnlNJNTEekWHoe5lUU7S5tvM9Bqq7NeNwC1tHeNFG8r7vUNQ5HcIsfaHwXSiS3JjP66nFR9mSAjs2JbNGoKi1QeBkrF79jcVZiz6GRAxQrnIELzmEqrcpCw1zz-znId0uWLjL4mM1CNJx56-Lw3rC4KcF4KWW3d6EQWDEqO6w0gbe3i2NdEw8RqEJtV6jYlxBfSkuN1neeGhWk_S2SSAIhYB-jjnIq4yjJdroVvHeV_yxQ1Xg5w0OHTvBM4Mct3wWD-7x4jV9ePaI9vfOhu1M53mDge1Dp7P0gnu5MgTvpTWHwUY1w4jc86D5BDHGDVz5S14pXIEadHAmqMEvxH72m7he5ZxKmviAHsP4QXCjbLJI_zqFSxjOt7853zLGesQtnagC_r1hMU4sufcnnPWemq3qFa8H8ZLBwHlFN4HmBv5tCMy_i6GS6Mp9SBjpMJUSUKcCd1HPfcJlbdAxM9lv33g6H9UaFcptZduUA4aGwxAvtnK2Ixc4AzYxntSkfWFLPxzQjLd93CJGV7Kq_Ph5TX3-A64jJFlLaJSEWah_uas5QF_nR4hWc3e5OEY5Es_qWLNs4YuYnVSIs0WhTu1BteoYMB-k8ejdK74QWryXNFg03PadmNWFJK_6mkX2EH444L-MFzvd5-2Itnrc0UkUemABZWFddV3e95ctGkzQELazjmRDf5yJQ8abrgQLKlBXenvgDlAJmDZIKZJ25WUkLvBKa2DSQPs4KWVf6N5pJOxCVjTFcEuICxO1tTUSVpaeqjvJMpS9t8EeUYgFKtXxShPdaEHW1DH6CzTDAyHuwt3re74-MEh9Fn9vf1GdDUbDdHLLLth9z-APbaGT5Ui2di5cjsc7dzxsp0LdEZ9EH53JMm4_J-FN2YgE8JxwqpOtfRNsVooKOG_4elyT3kY67S3g8OAxl-IKT-51NM2jD-yCIO2EtX4-Yy56kXxWjvOA2PcVOMr65UlzYNXrQjM0JPKUnIn4P5F6Lncru8TPn7b85m4cuesJAHsI0wgzeB7FEInQRYfsT_Oa6f2qdWepvnK7ppoGZb8ewhaCQdacQu9RiiWIW0DpUn7ngDHPDKk_D4GaRSDlBdxgjJprwzjRgbvekoqG9gMj6aGHJ-NUDmhlTYduALX1Kj0rY5RtwslNUK0Fd1lddi57k0YzVwvVOSQuJSFBxk1U4-cjmIwSKGZS8ADC7r89eGKVBraulW-o-QkkIc8ih2j4k1PI5p_2rp5TGUNO02xlB0aawW8_3ziHtMMiEGhUdO96LBFLbA-9QbNxBJ9G5c_tAAA=="
+                },
+                {
+                  "type": "text",
+                  "text": "{\"category\":\"billing\",\"priority\":\"P4\",\"team\":\"Customer care\",\"reason\":\"The renewal total is a billing issue. Production is unaffected and there is no deadline, so the impact is P4; similar renewal records are also categorized as billing.\",\"record_ids\":[\"KB013\",\"T02540\"]}",
+                  "citations": []
+                }
+              ],
+              "model": "openai/gpt-6-luna",
+              "stop_reason": "end_turn",
+              "stop_details": null,
+              "stop_sequence": null,
+              "usage": {
+                "input_tokens": 1393,
+                "output_tokens": 302,
+                "output_tokens_details": {
+                  "thinking_tokens": 232
+                },
+                "cache_creation_input_tokens": null,
+                "cache_read_input_tokens": 0,
+                "cache_creation": null,
+                "inference_geo": null,
+                "server_tool_use": null,
+                "service_tier": "standard",
+                "speed": "standard"
+              }
+            }
+          },
+          "error": null
+        },
+        {
+          "id": "batch_req_6aec2c22c93c8190aefa6badfd6cadd3",
+          "custom_id": "T02335",
+          "response": {
+            "status_code": 200,
+            "request_id": "ed0fc103-1588-4499-820e-cef36586f7c0",
+            "body": {
+              "id": "msg_batch-1793846853-jKgYFvt8YTmvZJdKnS6g:T02335",
+              "type": "message",
+              "role": "assistant",
+              "container": null,
+              "content": [
+                {
+                  "type": "redacted_thinking",
+                  "data": "gAAAAABq7Cv2Oq8IT0J7IPzG_ssXGRDaEI1k9sz4IzJxPmMchbkr7FFjQ4MRs1caV8w4gmt05uVCSzOAc7j_5azqCRPi41zjvT9Liw-bv5RToxJ3RInWQ8Ziah8gaZLOXdWVHpHc_UBYNzlKLikirsC_rc19VzzsZ9ktsl6yXUuk94PqufRlG22Av4NPnPxi2XF-EDFaF8fgClqlU6uGGrOiMY4HGdLlG-DoCaJocBk9atcDbLqjCXlffxTsyMiYuLsd_s0R6A7KL0clFnazFJ3a2lHtN4V86Cc5C3Q53bq0rRKlKmzSyxv_wCoh4lKsR-Uk4-7BTPQT9tDxsgjt1TpD7Yfld4Srg8J4ADSFdzG2085yqp1MqR_BTHvMmHLkvlCLTkAvnSaGFKqsWM3Acz7HbXNSI3ylj04SxO8G-jZ-42UW5DmQBA05aAGcpew6fyRy7mj6rCXCwW2gQajMDMqwYCg0oUSXxR0EEd1RpzsmmMhtw-VL3KW2itgKQoDqfRmiJqnt4ZRwtg38n0wO3yNXJOzcDU5Lwdz84rCpqcrXfVRbtk6BNQ6PKUyHxgn-b-FVE0rJEEylbBbigX7y7pgeZB5JVD-Rkd8pXbMSioe_Q-73B87EK8Yg5UJv4aX-qju6sczRM424InuJeElV3V6I5yV82Vt3vX3BHccvF_W9gVVyqz9vjIDbgwWqoIycUzCBKt6sw-9SIM0f_AoJ2tD9lb9EdJ8cVOn_XmW8a1FsisgCFrnfBlAToU-he953sICU_jjeJBtC5bTbn0hNSZE-1WK2jwbTBa39x2yHiKOCXqhNnXP3DYr4KybLjz1ZzzRGVSVNsT9xU3_GohAfFD7F3I5bTCA3zrUCtPVyYTJfG0qor7jEORQ1l0dxzKIV3pwjwLmn9Ugu-gHnNDcA9s15gxGnhP4bx9SNo0zS2k-7HMaGLLVugT4009M44ll04DIk0KqpPne-x7AbhsoG7pw7dFZZMaGsS4ETqM9S_RFHkMC3dDJAvdXvtgr6accz-qMkHv-KKDXO3dmNAXZLVZ2A30mV7-HfIew0RVkH4tgafN2yGWH07rLuLbwxjpOOGb4ufsZZUaBf3FpN0YmhDNX2R95q4GbrufYOCBKtB6JIhUXtcKdULHrHfUxWld7PDtGnhzi8gek95UMx4CEgQTVUlq0CC3C0ynXtfXbg9TvOWJNvhUPXcwu-LF_aa0qIGT5JtWep3yFp4HB6bHxM7CGnyWIQMCn72-o6-t86r7rRq8rKDvIpxnOpPFS5lXXuwpJIqv4NZDB44Qgl5JsIMi-NvxYrhegcxIefkRmEaiUa01JquzeZ9jFTMjzCVtCIaWeHhJb4tk1VMW6ZKDX11iIMoKyVGpHuxLtTtDeD4bJy5hC7hyNN1gk1YYLg99MnlKOb-ks07AS0T8VG7HcSrmyFv5LSFpWEoVbIvOJSfK3PDulfKJIjMrYhfbCiiVRW902y7j3_PgkI4cKdd0apcGUuk5_xKUu6ASZDoEmLcMdRxTpQQLiwWwuhmz2PNu3RyfcJ_3QvFmoc-muJOCWBbdlswlKNtGKh3ceTBDKXu1CtPp_KjFhq3qMyAmYSeK_-kR9a2wlaZeKIAg-PLri2a-nWMQf_5ERIKJIZGg9OZX7Jl1IlWhhyu_css8BZeL77oXqVgqTcWRx5LXGmEmaVpvwlux38FUSJNFVuu3d1wSSdLTgVAOVM9dtN-w6BLHCTl8wqp_p05UtHOB8OpRHfjaHtJlmrozOs8CCceMexaOLv2IS_OKvYvr08ur668IDDV1SIYFzuLVkEumnfQRmWe3iNs810HrOCLJNIszGN2ErvU9t4AMMd8E47X5cM0r7vAFM-95_BNro8AolmBVmNI1IYMSHawtVl6rtPs4pLPUttFL-NqSkjx7SsNPHtdtz8Xml0Fb3XrWAC9H9DnDxdD26bEGJS01xAK1ZWcmdjWrxJmyoi9L4f6lEmLEOsAIZunif8BcRwO_QR97JCqltsWGQPA20AdQ476uIvaYy6dhUKtDZetz92y959-plcSl50Kt6Q0z-D0wB9YWPtazwKy-9NEy3Jg1hJikygltcjHKuBNl_opIoyM6uSWFptfs7P1smeaGKpTUlp56u1t44-XGVDlelPTdS97NqUq_yqLvnSSdkTG9WQwlzwe9ea8v2mOyrJEYrpUgLPhl_qZJ59ETjfEvt-qVBvSqMSfllu7ggaSx-ca4GBgEyyPwHZOqvtZp8gDsVfDgeLOl-fz_jkQKqB0eque-budwoTf1oyHkq868TTEnizXmaWca1dvwWUVR9UgxO4X2qFD8_dLNBgaJPSQiKfhoaXY5WamUaa_n1pE36Qw35I1HAm5HVQ299seE20m_va121rIng_phn11jA5T35DNkjt6gofPWdQq8U7iaAvqRq2zSEonpoolyxUMGuZ4HV_eT0RKY0IJDiHH4vF2N4LBbILnHKeKGIEFLrTlNddeu4VssBlySNDfKXjQN6aQIU3RzCBEyegxoK6HSAFjFcjcHN6NiYEbPRbRH0x03V6r7AojRqDaZ8j4wVUihJh9DuKJMdeKBYsIyYWlVPfVBNrs7jgwzv1PjK4dmDLv1fC7zydl4MkzPnoRXrvaAb5snFp5tRmubp0zLRubMHn8WYENlaZRx_9kbKPZBUuHy5XdiKRmfnkXli3XBQ1WM3E-Dk02DeMv8b8ryqYl0CoDiMZ9dk63wex3cEVBhUx9uhm_3rL3UCUv6wipc61Nu4BNDgGOQsPmWRUg6udvITLhD-UYva03lVQgmW-MvAimZUDw98OeHqdAWHDiCQQ-Yd-7GiC1TmiHo38DTGZrNit67UOus_qjW-pltsBZeskEjgX2klRa_aPF1JkFgQlg2lnHXe_uVXgsqT7sQm9zUf6tgEGnY5Uw0d8qx4cr4pCUvCAdgDp2x7ULjyKbKuYkFexNjeK2jDg3BBeiuR4EPVyqR3dgKOwzJe5AvRp5ydnBjybQnln_IBjex2TVH0bUY95uM9b2Iavsv2ELLOBUf1mOcZywL93Ag3zm2Trr5Rv8vCnfp9gwR7OBYsFzGnwh3ii-7oi4D4D6iRp3hb0XzvSFjE0qNQPUogc8fpe5t0hu6vICIpC1cdH9vNbkU8MVjPrf81ok5Mn1WRJL8p7zJkVlxJ6tze4Q2DFPDSDgQdoVRyzUbFJDxfeDGfc2ko5deW83vZeQUv6UOg8eNguYdGPs3I6zleIUUhq1WhNWbKqijx8ug-lsxrkYrrnLe_gRCdErUCLHD8jiZdz4D6Czbq8VIm_F7e8QdpzfBDZM7w808oBqFsHLkmZ4CNhJ_qvqJb-jNsazN89lIvNbXONqYoGX60ohzpIGdL8ac1-tPL_nrl-_bKBwA7DPNDlYHYzWphSgRUjc5PAKktTWaarDFd34eBO-4yqHCLDFTAEpUwuZv-JvVa3Wn2hxJirKyn3VKLlY7yzJCC6eMyEFw4vtN8NfenC_ULn_mom1ZBE10V7vSTvzLB64ZO0sBNoQqoxozv04YgHPYR1wY9xrAQayYCCz2bzFMMY46wErvjHPYB7PHjkAS2NyAs4gChwX4qOktCc8x_F1mdt24pLw-DCEN0Jfeu08V_Q-_pafH3hIzSWNq_eIHGnFMfBzpYF7x99ATyShwUQtDsHb2YVDXe2y5MxF0tKD3rbMzKJB9wa1JIyEXu9KncRz0klLxIZZL1hSDaXhfgNsTQ1vBXCy0du55CEA5x6VurJ8N4Z4tzBbjhHNqK-m5EofqOGjJJcILte5fKXUyVNo5hPLbMmNdO7_YiC2JaEUtUN5ocNPwi_f5dQt8m4gt0WUxYZ5YrJ6Ajg6tXptLEX6EKs26Zw1fBBEaCymhps4P2MIB7yLmdOCw3KxZWx0rDMWy84DZHv1Fg86DKyFJMDz0SGKcXWFXUXtBWRxdrYEfPZ7kB-QnO3bY0sPnpfU4hm0VvVJWs3tHtoLi33Pd0CHJAJGoB00bQRO93xFhzjDdLN5oYv4uSfQr5QYN7TvSuTz8ySBdjj9uWj8JJ-R2CdNpS-"
+                },
+                {
+                  "type": "text",
+                  "text": "{\"category\":\"bug\",\"priority\":\"P3\",\"team\":\"Technical support\",\"reason\":\"The saved view incorrectly loses its sorting, matching prior resolved cases. Only one person is affected and operations continue with a workaround, so impact is limited.\",\"record_ids\":[\"T03182\"]}",
+                  "citations": []
+                }
+              ],
+              "model": "openai/gpt-6-luna",
+              "stop_reason": "end_turn",
+              "stop_details": null,
+              "stop_sequence": null,
+              "usage": {
+                "input_tokens": 1454,
+                "output_tokens": 255,
+                "output_tokens_details": {
+                  "thinking_tokens": 191
+                },
+                "cache_creation_input_tokens": null,
+                "cache_read_input_tokens": 0,
+                "cache_creation": null,
+                "inference_geo": null,
+                "server_tool_use": null,
+                "service_tier": "standard",
+                "speed": "standard"
+              }
+            }
+          },
+          "error": null
+        },
+        {
+          "id": "batch_req_6aec2c22b9f081909cc300699a89823e",
+          "custom_id": "T00013",
+          "response": {
+            "status_code": 200,
+            "request_id": "41a8e935-becd-4c6b-a421-aa73f06ac6f2",
+            "body": {
+              "id": "msg_batch-1793846853-jKgYFvt8YTmvZJdKnS6g:T00013",
+              "type": "message",
+              "role": "assistant",
+              "container": null,
+              "content": [
+                {
+                  "type": "thinking",
+                  "thinking": "**Evaluating outage documentation**\n\nI need to gather JSON data for a critical outage categorized as P1, which is blocking full production with no workaround available. I should look into past cases and include relevant IDs like KB018 and recent tickets. I'll focus on records that were pivotal during this outage, like T00020 and T00141, to inform our decisions. The outage is significant because it affects the entire production team, preventing customer service. I\u2019ll ensure all pertinent cases are included in the documentation.",
+                  "signature": ""
+                },
+                {
+                  "type": "thinking",
+                  "thinking": "**Citing relevant tickets**\n\nI should definitely cite a few similar past tickets to support my case, perhaps using IDs like T00020, T00141, T03006, and KB018. I need to keep my reasoning concise, using 1-2 sentences and staying under 300 characters. It\u2019s important to mention matching past cases classified as outage/P1. I\u2019ll focus on the most relevant matches, avoiding a lengthy list, while ensuring all relied upon records are included and emphasizing key tickets like T00020 and T00141 along with the article. JSON format only.",
+                  "signature": ""
+                },
+                {
+                  "type": "redacted_thinking",
+                  "data": "gAAAAABq7CvqHs49m3IdciABFB4yrqxb_Ckw3I99hK-o1MbyDQBPZMVs-rLWYKHfY6i3kdqDUI132mX8aLfTtphF1tRxkZeZR9Y0JNInMUBjvG_EzGbSJzjIsDsvryWhBXu8u01kG99qKFV18V5DDquzMmViJ8oPY9vRqOutsu2So3XVH28wlvTNLODHj78CjgBAjbMiiMlF4eOjg3OnYeCgjcvOObaknugIE9s7anmCMnBslPHsnZ36BvmO2bSdepES2V-Zk0_GErxUV3EoP7w-pzXsVSE1KMZ0_NuSey727M2F69PYfXxxfxHZ2Ax87miBWQMIK-h4wuJ7h8h88DjKTHkl3GraROiZuVQOUODYy6FNvdpbKOiXQU95i14MtrwtTvWvrGEm79_dPdXmgsre9PywujxdfHnvG0puaeT0xVXudE3ZhDT_xDacf99CeyeSJWcgMkrVrbEgWKl8NmTz9f1pBvzo7pynd5EU00zBf-TTip0XJ7yQmKSgIXuXWL1_Q37uADvrw4UC-zinQ1stUCCM7i6c1oW6tHl2j0Zxb7nvjWHtuHT1jXd6aly5acuqfEsQH3wIbJguPHq2nU8CMJm-HMtIj726ArWsJYj8v3bW0SaxRpCuW95QglooLRLCLJsQQbmDEJeHYJ2_SwFT-nJjd-AmXrA4sKz7gwIbN2khyg611Eh78cpvMMScenZjzm3t5R94bwVcdpK0a7v1sOelNLjiJjT-76-BKMtrVpr4UigKTI3YVeTOUKuEMD9my2LJl9A-Jqqns6T9YHmb5tXbqI4bYvGt0VRAkc8tfxKA8zfMJWzWp-AhkDqOhCbxYTwC3N6Jkny2eddJruodBu0MPm3kTCDrkDsohJhs76Z3IsfNaQ9iMQ2nSPgECYqkCvCM5h9z9a-y1QySSgAD2tTeqH1NgAqce-GB885OFKlb3R8nerwA640JN4_srICwvsn3okg7CG8TekqFJbwA9lhzeg0hTpuC6OB5PETwADzkz2w-WSTc3THxXTc6vd5c65O1Yg8ZPHtJTp1wgP7zdtrKZh-RdrLKdW9Q2MjuHtvX-S4fE33wS4fEqFNq64AyhRdsZsS8EGnk6_Q19vyjIz-USKw38L9UL5s7GagnTRBm4eolxSrR1Z_K48LTaH3guYPTV5VWOmY-Hif-FOsW1zXnc59wOvN6iIEEHkwfiYQNcBLW4C2qMVxo0Etq75x08uA458ekfV9-Bg3pbV4rBk6xyYHfzyh8DWK7gWf1MJ7FveTOa9w1ID0_NewzOPcethA884TEoCBgSlNGqF6DmeyVbgNF0QKprOkueNHkh-V2Hoz32_1jrQtheyrAQCym0wT9NPmZxhYpPRHNX4IJQ7LFJbklpm7sk6Y_D_cFRpGJkodfJxxGxP65zi5hh18NJ6MBeTNiyCYpAC4_ehOtPyfW7oGLqrBsoqyeGLyJoWGvFBkVGG6xoz-bs73J1FUw1Cq8oIiD4kGS_w1vWPC3PPSjqP2iLCeh03sk2T-bypIWgUWCNdCODFQxO4CSkYciz2QkYhhSHsbJUc-AMxUL2mXCV_3RQ-bUGyhl2lVJuUo8g6hBg6Www1j2Os3JX6ezNunUqRnjqdEGJ8n17nbpN4jiWf15ULOCn91rUMG6iIo5l5BH2XC_fGP9t43J8NelNYIypGZexMT3t-wPdTmsy7VSNEp0pi3R5_7annYPCITXhB6GdN_zMiUdoJgJFGQ-CiPaRStGgOqylsH4vYbEqBfcCfZoaREmJcto0kCGP8ewiy2pBpyv_-jUOLubjvMYcXFFP6NwredsgbyIQ034V7AyfNn7Ec2tfNmj1l7VgSXDTXwXlYmTkvv7RimuCtab0Qk-oV4osLdIaMxrRtLHeGPA_6AjAgtKrFwGlTMM1oV3eDuWL82kphgCXEIzXONVbDqAXHkWw2NV7y7971VMnR7yoRYAESfHhPKChMg7BKT27S4f5F1WTgHVAfGRhN_LXhFcVjJmNAS80LE6dgVfOeWU_lmDb5wD-Bk1eJ_r-h2BolWvrRlsit-ea9fah-RkPXiJGXPDkJk8qQ8WuAysrtRmXvuEgRmGfOuTOO7IQ1GZc4D-gHjzCXsBLdu3u9kPTmhq_ngR04HMp32I9xnk9cRj-qTq8sZzWQANo6Diuhm3PEZ_cvn70Z8OcnmJc1m0aYsUeMxnwEyCVf0wOhBO_wS4GEt9MDpEpgRVXiGQWcFI7s2JaE3Ruhx0pi2kOXhZhWatqStvJ7NabsYIriWoa6DkA8jFVUrv6ifty6Egz5ome9KrzY7wdourp4S6LDqaDn_J13yQfjunCM7d_35JYD39I-to_v-cDEnihOhqs0Hhw7kMgeQXdFVi496G6g63aE97GWtJk1cpYkqUWsJ-l9dLmbhEUh2bRkfPglBKNcbZ90NJKp9jthQm4Z92uqbLY656ON_QaCHgso_hFOz_1FbB6caWcnxB7_57Mj1LpwXdREHp8__BVtV3UR94xsuAAXROAxV1m4qx8tgH7_PPFBR6XU-XmDyKGyEMN3LSK62j-HHxBZ6M5RfIg3aEae332rKC73eq0QNOrxhr5IWs9EVIyDUEcEzQhkxiG26zjzwBPbqO6OsDORhvAv2-PZWS2G2XLWEU8Qg9nCWOb2nVx8HNK9UJTrgymvfQa9j30FBdaF3lwk9cqnBakDu4hoUZmo_tdDRgJUGZqS11CQt8JrBZZ7oI0MVazhbRxKTP5BJpE_qWLmxUmy1azf-H-nwklorpBQKx6q5TzdquXB80T0z4ZUl5FODFeAp_0WtvODX7NswdL90qPoZip6k9-TL5So4b5qlbYpoml6t1jnm_eCQUSPXoqIMjXFbHXVBFOckJI7dShJwuzuiI5FgU19Ku-qsM7Yz0ft6FCgFFAhlxY2jmc81yvf_a_oprYeolhQho2nsMvMSXgtOLyGAwp0Bu_mUyaWe1eL_qRO_TUoIuaWUcDCkEA6HEpJqeIVoAllpooovcvZgZfdkRweEgR3oN8h4NF6d48KrFZtntGszLG5nny1RDFiOroTCGabetKl4HAT8IMrxldhNKTz7anoVOwmEhiHcKZfNLkoNOBthEsdI8JS-4RbrcHmrahzLyneDd8AxnKOG2CcEQlIf5h8HWt2GJE5TPk17bE7e2WOL-n3iWeo8URuVHtuXYjER-sDHsLu9i84eZUcip6YIFsnwresLu3oBpsnzEclHkXrJ3N1tuDYdcFeKYv6rTJgTFkRimie7FUENUf8_NU5fsk4OxiEmntNw6IB3pETkFbzr3Vl-Z-txISzrJ6yuWJ5D10QRXCi0yCje7bn3vJhIGP4O070dbx3i6No4LyjFYsZlUlP_WgDUI0C2Jz2RNnHQQb5_xENf16AqNd7sS41Dc2j72E14xvGry4oQRXWDSFZLbZWL-TcKQlAUkA6NJGAAUupF3KYluC801EJtZB6TmXsOIJQCFMJDJH2KyX73NrEhSbcqvQKo0hv400gDcu5TUw09Ly97KqBH1irN1O5KMIpber1qUM7eqVGvPCNi15UwMytKSHJ_7AmXS1gX-CshHG_ewXPtMWLJgnZ7FkQdOY9uJBmA07cOaMjAuIogwZIk60CPgktr8K_Fc4UCPxRhV8eKc4IyXetNrJVx0PHsad13owQdPExqbFE80u8dACuXU1ys-Dcc7QmN8P_raQ21mzZdZLq-Bj-OinSi2S6vsdjluHU5LSAoHgxBVclWWEOd9ywHw1-iyU37O0KdcSFaoQKLQFP6mGWPtfdMnjPAEc51guq58IaK4ECkAFhMDhZH6LY_3L9UpGWbuMV8MNLTBD_DiBrmlNN-S1NRWQFJcxtT8T-krgpHwsDUMVmZ-XZ8F42HdEZ-eOCdTz-3gsacomdqi-B41wsFL8_AD3uw3sW4dPIabRA7RKXsOhPqaJLRilArCDUrMONjPcNO0_SHaZEPmq2eF8fkjQC52BFeZQKKbpsKqcww7PPj6atGz4haf-ME8ko1Eo9Pl75capn30CVxYyB0jsj2SGvsbCuXulOKHt2poPX4hVPzlX49Vdvi-RrMXbG9Qln9RELcMmwYQ4bqHqVhCRLRmzzoti8ptbM8N2PeDbQpyZ8KNsAA6Xwb09axqrs7_VVxzMhDucRK5vMz0ohhpfCIrWONFrYCXige1TEQdWOHZdxAZLbTF-A91K3s6Z8JDGVbibKt_qO0oTnU9ik8e3S9dGHRA2HHjMYooR1jmJ2cLIvTAR9tLujqqddv0vtgfdWHb8Q-m0FFplGo_ZvuELetMsvk1KaPZsIkPjTESGYhK92lbFTkjJVArKHZu-VBRCQnZEY3XpwS-hbxCQcQgeQEeJcfmYmPrRYKFizb_xLms648-_ZBlfsMJMySPK4VgwoHUR2nN1yWKQlfG-XTvF6ogqTlffA1_qBAK1tdFSTKJ7roQbRhI0mPZqqrqw25d2O2e6FsMWrL4fp_oe62UmJ5uewBGOxCyNa6XTBAfnGvAF4EstjRle0NIB7x8multSPNAaDtI60oNFUfYgXhjXSjpi50ik_BvLN07o4BoLk6dTmZ0cKptOEisZ4MKEENrOLGdBvK72ixLzTxori37TMTubKW9NtFzgij2CdT7vQEQycFCayJavUEbxym16YM4HHGQxacdqt7ffjhtO9-liE5EwDkMbDPMyAZD6XzEoWATeyrksH9oEgJ5wFg--xcbzK69-y402FJzvpydjL9dEhOEfvAxBVatGZ-Ab54d62GbejyKSRh1Q4yCfrAd7xDiZqIFt2akQPiqBi7blaV9IYC6qBJPMtHT3tYcULH2Hf_0QnhtSN6pa_DMuXLlYV2SHVVpt7ArwijuECkuArOB_NBkTJx86nSq6_9NeayllstsdGChgeka1IAuBrPUGvdSarojn8t1V-hHsIjQjSj9dkR1HgikADkmhviKoElMEbDLqcp7n7rnjDLx6KBTnpQLndoG6T25dvkPWjtOfN1b3ATVQ4h_-JJGyJWzbKN7ketx5EwMGaayXWUpo7GH8Y2LgRUxuczD9c8RH_yzyN3qFJ4BJfbDiWvWBxEXEFYekwphpBozKB1w9ZXZBNMPwRZqGlrFFAxKOR01U1mTn5tqcJiAabvJNnzv3NisvAvNcsmOijAgA5nuJMyNgrXbr7KaiV93glxGUe5zTj56a80ClLhoIMKl-KLJaaN4_qkQZjc4p71uhAkkRszdHPDRrVisMqcEqDmnurdbg-S6Zy2MREy57QNCafklliDVZPu_cZycwytznAy2UIM5orXoIgxi5TF5NnjKUze5jk5stzc9bOp9L7fO18Y7tF8Fkry2gM4l2gl2TWqUSFadBb6dSKE8JDqVGP8-2rFn5v8t8CZDOvZHCxKJ8rjGc0F3gdBGEI0qeRQudkR6S-dNQxB23Qb-ReE6b3b4rbqUYAfKU3pSZiINwemv34Oka-Da3N5w_lRVMcu3ML-3Y2X6I9UClG2JO3-InG6qi3Z_8jHv7qpLeczLg9Kw7N_xWh0ncu056K5RN6JT0uTS0oyE6304coQ49DvgCq1pu5M4Nj91CuMJtRpM0RqoReCZpJ3HNLdi-WQCwD8yzr6W1Ps5WezA1lbjaj47uKAO63j0m5HixuK_RU2cqKdCZsNR5l2JH39fverO-5tm0S1iKe4ElnIQ2zXkcze6lMmW0tUi86EhTYNpGxY="
+                },
+                {
+                  "type": "text",
+                  "text": "{\"category\":\"outage\",\"priority\":\"P1\",\"team\":\"Technical support\",\"reason\":\"The entire production team is unable to serve customers, with no workaround, so work has stopped. Similar past cases and the matching article classify this issue as an outage; similar cases were P1.\",\"record_ids\":[\"KB018\",\"T00020\",\"T00141\"]}",
+                  "citations": []
+                }
+              ],
+              "model": "openai/gpt-6-luna",
+              "stop_reason": "end_turn",
+              "stop_details": null,
+              "stop_sequence": null,
+              "usage": {
+                "input_tokens": 1514,
+                "output_tokens": 398,
+                "output_tokens_details": {
+                  "thinking_tokens": 317
+                },
+                "cache_creation_input_tokens": null,
+                "cache_read_input_tokens": 0,
+                "cache_creation": null,
+                "inference_geo": null,
+                "server_tool_use": null,
+                "service_tier": "standard",
+                "speed": "standard"
+              }
+            }
+          },
+          "error": null
+        },
+        {
+          "id": "batch_req_6aec2c22c71c81908367f0a19f75be71",
+          "custom_id": "T02696",
+          "response": {
+            "status_code": 200,
+            "request_id": "b233ffea-e2ee-49ce-bb28-fec9d3ba94c6",
+            "body": {
+              "id": "msg_batch-1793846853-jKgYFvt8YTmvZJdKnS6g:T02696",
+              "type": "message",
+              "role": "assistant",
+              "container": null,
+              "content": [
+                {
+                  "type": "thinking",
+                  "thinking": "**Evaluating search data classification**\n\nI think top matching records might be based on identifiers like T02372 and T02982. However, the search data also includes titles, status, and categories, which will help with classification. Maybe I should include all eight since there could be repeated matches. The P2 status really impacts things, and it overrides previous priorities. I shouldn\u2019t worry too much about the priority class because P2 is affecting several people, and the workaround could be costly. JSON only.",
+                  "signature": ""
+                },
+                {
+                  "type": "redacted_thinking",
+                  "data": "gAAAAABq7Cvxh169pOl0ajSgXEKMDHI4IkN_vi9M4dFWWZP3RwAa0-WI_oDaklbv6HCF37M5OoUnsmck3s_9kWtdrX67RelEhbxo9GEb2K9FukzC0lgQZsdVmF1OrYmOLupiNNck1Kf3-MHCnnhhMCc-gsDg9WY2QPlPWeZAEbSlttPjUX_Jj-qN-wV5X5dYLbxHiCp_tn51UeyDgcMHdxwbuIigtJW0rVhyArrGIFkhDqlBcVlu03yHZSJR_xp7RKVd7MFnfqZpeXwPg745M1Pb0Vu6rpPEEb4OGnOihldShz54_35Pu7xDLru3ZbqmRL-iK43Nx2_oA4BZd5WsOWdJyvmgyFYbmsCKFdy6FznhgLBipLrScTdafEeKKE0uJLlbe0ScAQXg0SZOdHFiq8EEhVHxnYz5jyF_5UWcDxkfTKgyXiTbMuQ6BvtdFktzer55VCVIwAEbu552hCAwkqqFu-TsXzVK2GiO0qxXdHPkFJy6RAN4tj1D4KzF2L34BFTlgm2egGJr79YbYqvJ1llz6gC8UuniMTpSI1VyQEizW5lyxNrhWPN8V372xuKvn3_Rb2CFwp4vk0Yr8jtopdpxb0g3e_qp3RwhdN4hSI14Z96mWXW0xs8ZQziJr3csm6BbYv6LWSsRO1pa7FiqsokBZFOiJDtFaTeSagcbqLNttpQKWMTGkGCO8_XmHcH2iPGunXuwRqzijQWzbzxEeIdgdsoP8oLAzqMvLUXdUvzHrfYNNwVHEVh0SuQPiI9P9O7WxAqvh-w3Le02HLv5HyvO_vTLlMQ1VsN56YuwlUldG4M3HqFhEZ4MR2Z1tY3PUJQ86Ch4g4xYzPAqseZIWNKLlWU7Y-qRn_jTJZadj3sLH3p6O6tRciLY74aPei8k3PLn1kfwISXEg5Jqcl3hvTw70BX3-aBU2vY6doH94W7pD_OmdhsKkmLWEfjDE2TbUK4S02l0wPaW6LGglNgUpQmPbh8HPpsy1UDtjHaFsQLMTxB8OAfxJXS9y1M38A8zfIFUMUFAzZqeXakHHUiyQj7xeboq4Xmc8DQWcbMmc7zK7rJnni2gQmXV0D3adVmFLRWXn-xxBYYerqHgoI4EoJhjD5mPuGkVtKEDJbRJnBT75NKUmi7pqdWDmS4Uki2DWgvs1pd5bIJfYOJvFGTx-4tFst4wOnAiMbaTPAAk0iUJrgNcOL2AHpSUCDfGPz9m5vdVyhTgcBj8pYXozjpEx3ZG6z7FWyKapohj4dpVW5fqnFSSloDOB3PWjFPqI8MMXyY0D3-_Nd3uqgZ1jEx2-tVw1npldCKJ0n-M1P_njlO6XZO7NR9TNc2F3xhs8TLg2kf5B6_YKsDlYfa3RDB0uwJZTyefNWPjZDDy0DpZKZo3LCIJOtKncQgd7LQ48gMRtPIn1hNKhFtTy9pYOgoH9khI4vYaFwgD-aZcO-ygpDrIneQieJ-NnIi9_E7PT7nwEYuCDyKzAZqO-pOQSdkrbgafGIrL3cDyMEkb5P52UvHAJCWm5cn9y1LAnEFlnLesVvoMQYTx9tAxKVUp8PeUrUPf3ryuRmx6unJtSwKZ_He5QUmwtvY6f8AaXKlHu60MptjambgUXU8IId6JMmqPotrSkNKuZYHiFrpPVZCZsL8VCPCm44x5C55VsAcauYswniWy7GDFkwoij6KGPLnUETIDAAP7dr75VL0ljoMxo0kyMQbg5F3LyzdcbtpuIfZJVT_GuGxJnGLwjbgysvCIamjMXHdsijDrMNyCWmGsNj5RYsjXQSyWwKFnmZbPul9vzXkQzPuj96VCLzhSn2DkdR0F8YlCr4SnydaaL8M2ENw-TPaodLRhhWbznj_Vy0pyIgl5qB6BkN9749xcFXTp5pmR7vwG1f9SKQoXBA4jEkve9BNKFlty01Gu4JaMzOZwBIHy_edB4ZAlX_EljOaqGENTJgE2vsOI2hhMKQljX52MrD-ZxUAK_7pwSlBx5WVTw-O4lS-nBGiQLPngUmlTBkvxzy2bww9Lkx2AN9YyUC8Ttps2pJnqFUxMRDrpQ4h_F6aEvdUpd-ljRN1oImTwveULAYGnllUvbwXJlEEGdyaA_Wyh4tdFYYmo3LxrfH7pQ-wIDwk9DZGskmJnOeNJTIvxxdEbnj_5ZC1UA5jMNSxSmJA9Jm3JXogx8ieOFXBuW1ZuXgimemL5vIVa0ZG2oNXTT9WLOCguL93ZixuQiOloSNTDGD_yI0OqAtIjyBjj-cp17Tb_g69u02VlWkXMmTDj07zZuJSJItQPiuTbxeTA9GNv54ixbGgR4XhhCQZvI_8xSp_Uhy4jKzeGWfpU97SYDhoJOlbIpbQk-6K5gF6bgsqBu4HvXLvSp1XiFNsFNKPLUFnNZvN_8ovnxlWHt3aIKueaxRKkp2HZ-YOdg29rlFJbvga20srKDCQuFmoDtCJMivs43BbJwPNjwHpb2KYqkvYyK5_aD9BiNoSWmkXOef9tN_WXUWPWoI7h828WAs1YGSFb0pV89XDj0GeLEbllyQ42aFAMwjIbmlzIJg8GQ52EewQCJaf7smNdv8J1FftbmzMd-6_0QT7DiR9SWn3QLu0YCYotFF8jEzC7AlS8TRMnLGOHNHlzOflP_oYhZ87yboGPk0VOXVS0kgdjrEAWcgcnaM5CE3OT0sPIxqCLt5GdQEBezMYzEGhB7BUx182BFau4775JK3Em2FDWlMRxjqJK3Z7VdYm0j8Tw7yCMiYdHO12lOGuHUQdXkUKvnPx0Ivzbfot3Zhvx1sSL_V82ZBxTbXSAscFlsf3uZpReP1960rn58D3BuoQe25Jbp_HUgbe-d_NtZ_fuJmiaQwZR9EhcoUCZ71wYd_kTq9JJavWVQODCsXY7hZbHDsfk_IUHQ7pO8SpgHImB5B7Nk2G1oIShVcOUuq_UWS7_BtsABiqZSsb-Vcxl2XZbi8Wp6AbOCiugORT_GAO3vJtQFtqJzOzjHMPvefkNop2wqnf0Fy9IYAUVWKX71yq1RIWWnGQm9jvmVmVSBbwNhM3x-9D2y-icaQ4dQ8Fxk3G8lBggcXtdJUAP6D3zl9z5sX8wCWqbJA2kzMwRcuviJacpMIOqkyQBtnSdxnpznTDrtUlHyIPdBv0T5TRSE5egAb2lKk4EOmfHmw_q7NgkKQzclp2SO_SnlgyGh3iDKFjcKu2T0tJRZluZIl9XNGg1CzKAaMDeiOoKMGooZYr-XPKNK9MMWnkTdbFenO0tgm0yUHN3roH349G-ZtZie2rDr_HT8xcGOURyLSYmf_xVMgVTdj0FgtymM27VI6jVHYD786AU4vwI2GtkMbw2ztOY8khUoLsKmqlwy1fgIQJZlheSjhR8nVtGc7BSy4srxLjD6hkzR_j-PmVS8cj1L_m_WwktmD3JvVbXmiM-B8evxX4VTjzrma9j8g9FPgB1xgfo0RJvTwuNa-46vLW2DbwDTlOg_dozwk_JFWsdkGxlJEO4OjUV7Ui7QK1Kktgh5NUozTX4Iyl15anKSxEXkfY63mbGSn7VvTrs8fcOqRckwh58ev8n2BazqyjwlINSuBnG35gUKnMRXMzmZsaFsYCuLs6pr_gQC2B6uObF6p8r8P1UigzUbd6ZBL1XiVxCKmfAs2G_XtQeS_4T8RxlZVQpIdgnlVTPLey9DIC-cYaWAgpbHWj9hwpjGK2g_LoXihS8MQNkDhtepymoJKyKkiYum9y2_WM1O9NYIy7KFhBehW-tbbGEUhnCuPHtTENy5J-U3S4dHKGeJb8J0lUcV4-cccIESYkW8G8Wa8YU9RStNpAUlogyaC-M2CrNg1Dq_Qk_MWXT6FFXMTnrSPWq4bWwSozzvJ1qiQ7zW8vZAaqI5TLjOy3fy047rrYAOpaFk4ObkiZDUMTbKRWkLb4gHRI7RUy3v2TXcS5WBCpf7VPFsbMPRFy52NvxZjDBAAaMOJ9Jy6sZJn6xQSlpoLyY0wdm2y1WVPb8kKoJnSUjx7eMkfjjo-ypNAPvJ7VIFO8adsMTK-LXfJvfWaYcYyAyAKunjUYLjPyzr2y2zrfdtK1kI8movVrEErp_wNPhiT-VfzLHJEinxpxK9R6BHOYY91jXDTp2JLKuNFRky9K529rk7tq06mKKkqwc2Pde6AeCHKsSqnc9A2EUxahl1Q1jOupC7b51MuG3C4yGXxlshEifQip0nlIySfKjqlEyjFlr6XQ1GO06EvfQ_CE2x2Rqjb5Dvhnv7S2FSzfde5I60lsIVLZ2jv8YfVtHru4h0dGyehW0GKuoGnNnF89lwwivIQr53sOb7iBr3tmVvoTx6s5h_bJFgII-SjSWHG3Jt_UnvXDsbr9qYsKXPYS0B1dzrVBskxOsJZhY-0vy3hltSa4Q0k1xe67PBfspfxG4ZPc5Q2Hz5s9FYW7RwdfiLHAZ4yaZQZ9jUata5kUeyN4gnDx7PU4WKoqiQNZambgCfzwXf-5zaTnsMDX6_aMKaAWNQowIkt5VZ9Vyd2H9BFHJCzYzl7Qg1ifZMWtLCwfcJ0E56eslwP6SUF0LjXIF65Ea4RlbNU8vnrZ9YV0j2p4LqnOu-1pRanqmXmGEM90N9QTDvYd3r5kZXbXT3_u4QSP6g46a5-WYETwQ1vFfqeEyQnOwoXCMUHXnSBIDf_LOh2dqVxkLrNyHfYqTVtSkeo4BUNv6O_uqZX2zx_nRf-Qbpj2gzkpkafY8h-A7CKWz7vDloelsYgbDHN_-wn-SICmbPZoXAtvI8PRjZNjDH8lBWw7NNOXhgIFfXQqgVTzBQBuChoq5L1yldMbd8s3DrI3FTjBfQo-p1GUs9j5ojFcZsbSATkOOOLuBu6kXOgUVnulFQIy2bJKpWOU6oSm4zyoUHKgR6F2aKseWU9xzLM51pDNcXTdSkB7ghdKTXZZzQXVKq_0x_Gkehx8LQSF0Vnc="
+                },
+                {
+                  "type": "text",
+                  "text": "{\"category\":\"billing\",\"priority\":\"P2\",\"team\":\"Customer care\",\"reason\":\"The missing invoice credit makes this a billing issue, consistent with similar past cases. Several people are held up and the workaround takes considerable manual work, warranting P2.\",\"record_ids\":[\"T02372\",\"T02982\",\"T02640\",\"T03196\",\"T01046\",\"T02185\",\"T03572\",\"T02745\"]}",
+                  "citations": []
+                }
+              ],
+              "model": "openai/gpt-6-luna",
+              "stop_reason": "end_turn",
+              "stop_details": null,
+              "stop_sequence": null,
+              "usage": {
+                "input_tokens": 1433,
+                "output_tokens": 347,
+                "output_tokens_details": {
+                  "thinking_tokens": 251
+                },
+                "cache_creation_input_tokens": null,
+                "cache_read_input_tokens": 0,
+                "cache_creation": null,
+                "inference_geo": null,
+                "server_tool_use": null,
+                "service_tier": "standard",
+                "speed": "standard"
+              }
+            }
+          },
+          "error": null
+        },
+        {
+          "id": "batch_req_6aec2c22c58c8190967e49aa4f860427",
+          "custom_id": "T03005",
+          "response": {
+            "status_code": 200,
+            "request_id": "405b9036-840f-4abd-8965-621500d61619",
+            "body": {
+              "id": "msg_batch-1793846853-jKgYFvt8YTmvZJdKnS6g:T03005",
+              "type": "message",
+              "role": "assistant",
+              "container": null,
+              "content": [
+                {
+                  "type": "redacted_thinking",
+                  "data": "gAAAAABq7Cv1baCT0AwGgJCToxnfdXWWBAccArMI3WaL-RZZjqTKMupsyZ_3-1WLmtLDD6ziI836sGA1btg1Arx1eXSH_MSVF6WwJDPSvPHaUbJWNZQiFbVhZPAhF-EtNCwDlerCY5as-_NesfaCXqXNNrnRBbMcTuDJrX4iKOJ95QPHWjowJCltgwfXfI3GJGJNlkMJfAxPxz0wzbzJAN68lEc9MZ5oDqeyfVW3JIGm2-6EzSvX04pfCxFkj5sHMKv5cP5qqBCoI1ADOTvAvYiD-ktLCZ7ddeXvFNFysxco_L3IRWuRbhbZB84QuJ7Jb_v9wAYE9f9OwLMQL3DWf3VRXoCx-7Y2xbh5M6dy6ZziA9Ypy8_IcCvjx2oJmDgG3AVTV6UWyriMqKre5JTwUi2bmOVhhbqxChe2vjPWzabrG3iHxHyDIkh7LPh3Jxndfs4ZZj67qXXZRmmczyifQpU2eajiTT_HaT0IlMTugkSjpInM0e7OQ8Kqd2Jk5Gxwvx_vAX-H9nLsGg5YnKhtQjpOKh6RA18HXa-_xtcbI1RTLGLzHQU23hz1RbenXRgEwZqLMGcRL-HwspQ01ZZ1rfR6HfRSK0_Z3_hukpQJYDmZfH5exRO2WE41UgfS8Hr58zEz1f3J1_HeHH7txC0vxZAR0PYXENAbi54M8a0YoBgve4XKhan8MnIIl2GK1RptagPisQGatHfsDnGSuZBZMgCZ2VVulENmjpZ4WXlEYwElmhitIIQcg6c89l8GPtYkuLqSAddVQEXNwGFqztJRoZDglKhkrM1Q-QmhTtMCjKmre9OVRFWh63UDiZ4SDnmfVaB900golyuzJmrIJSIVXijc38XauhLt5GD0yh_PAQlZkisqNWa9i2moXuDmdkC2_2fIOKj3vj26qfm5vOuQD9elS3dZ7BbBqi1YdlUdnTi74mDRHaeIO17bJS0VTTu_qEySuDrFCTMEG0YivoVUaYC-QhCMIGmRj2ptlt9z05SwfN1Es2JRFLuGZKAJM2fMDIs5uUHImZA7o5ADV1-_8s4I2Q6qQzZTOiJTTviCK2WNm-aP5JRziYyROV0Jbd5WZWHlaNbc04qdI8-tJgmN5h5O7GNqQ-RMOmFhhutm8SYJ7_wmcbZr2CcPE-dZSnPEaKx_9pRZnHshjgw5Mcinow1ePJS_MF-w1v_bD1HCgxulXBYHdWT3TVTuXGX5TSatwoqmE-s_fIkVnAsoDJMQG3opuji9_xLGM_jWQBRLcVRkO5j9G3CKzV2UQ8Z9mpOTHGDGI3yiqNWpUh9KhjcClGggmmBg3I5_FXevrmaYw4ctoCye8ichpCPit8VNRdTfAxhEQ7enYGkdj6qHXJUWExdIfqUAtCd4SeUW9rFOIbJ8eSE2PokxQc0y09EzPUA_s7lHY17mQakVZJK3exsBiOscPA7J36Lk_qohyZK_CrloFO6ZqQl9GP0qUZ5eu4fYDXpdZ1MSOtGeVLYhe7I9OE-myvO5emrshZaMibsL0lJ9jafKn9X0St3OXsCbaptBQD1te7MbXNDXDoGD2agvTF4eLrArLS_i6iqDnIPkVLYtl6OhpOtHbcjZx9vUtyUWXrd3F09Jl4pT4P_HZ8CeSZJ6t5kibSDSSXrwinDQQQIgvFwXA9LN6d_xCUw_vY2qwFVqcksZHLKsUz-1GBYdShN9Na5X2dy2b_mPJAgVYE_7CFzIw7rJbz38jdXt3GxIoRcz6TnL9RUmRMNL9mGHvOFwsMps7eoNMtLqUtCJ2RHSbXPNmGrN_CZLBoVJdW4GfSC8cbgyes7fwO_yJvTo2CC5l57wTgMNjB-Ve0LEmMdEc_zaVrjS8RKjxfCeTMkTACET-MScJgFcQLtEOLQ-CY5ql9FZisOqJu1HAVfIHB-IlT1LxrT07GwjphNAh6ZtFVhCH0d97wJABJvxwX3YTDpvforRrk_YMTbJ4MfmPNMw-fK6v-hk7FL0ungQ7eQm2ID3zXTOkAYqadEjz1p6ayxHgkX9KgwSjpMikik6KbE2opVt_V12UoiTlM3BphWRYDrqtRb9lvhPRL2NCKAxZfA2RvM2gIoGyuo2TZexveJ6wglVRmReiVyt2cO52_w-M7taXBPsL4j-I21I9hvMsQfct7r015Zo-k0ciXyflmS63h35cbsxANX9pHDeS1ddb4f9OtgeL9sQsZSeOYxAcuZ1L70BWLLJc-7j9HYSxwp--uiXyzf8sRsNDIZU1Afvju0la3fAcxvvJcHhdazDa6TaTADI1RyYlXhTidrH-7auSaPSCpctGPHK3YiO000zD5EdkqWTrUHZtWrp_TT1UdD5HwypX4QJEREsgUD_cTV61IuRMobImhytVXtatA08iXGcymReB417eqp9wEOGI42scVTj8xXNAXbCGGN2UcyxS0n7SEEUkQ4UhavuJkdUsrpep78Ca4VVADRifx-Z7Re6S2u7iO6hisR-p804CX4cfalYyybE1WkguzShoqEsGvoaBQ39gwQwQV4ceYB_Pr9US_OIvAVfj_-wp716ulN1vj-6czSBydPFAy7yRVK38Ns2nHMmEuKzAfOLHIs-CEPzB-abDpjEWsQXn0w4RL7Kp5M_GeOZhVdHKe7pYjP9FuEB0DkJq7UsAmYrw3L7eJmH3C3RDYt0-OTwGTvJB8j2MTkW7GK8Bz9OGr-T61hR6wxuX7LWDfc_RekYEea0iE9SgNDmMaiPzYhM2ZawG14BfHpjGry1hyaB4XRkIXRWGF9wjkTf5tQqN20D98LNawz6SDaStyrZn1EuQ-Q1figt0mesjZyZ3Y7qzVeEl8Den69-ELPc9pTgIKfjdxzLx20W1AQyRuvve4-gR808JuDg9UqQWqZqSVrxkcj1_llLYepAgRtPAUybsFfr3Zx_faQLsf-d5E2ZWBXWqPMRvU4CYXrTnMA_Twqe734BH01U9Kr4J3mEnMVQ36AcfsXo0-vGAk1GkENB644rF3Po-SLomdOD9jJSLZu_9r2DhdftnNem9CKyInsRldntk1GbZF6WdQpfwESrnvmKocurMY4rAYBenQ5wp4W-xrqcw0A2if1UDeQMbV4s6yC2Fp3Nw8245s6zmfv0d8FS3rXfQBqCPXA_pfYQ1FHRJ33He-B_W5pZ1zdFcrWNvMbonOZtliPU7Udye0HltolEGJyTMvB-1JTD-snIXEXONoj8h568FJRXfZD5enM6b0R9N_Yj-hbxJs-wVKML3vEQXasQv974WSP1VnKzHGlcSmo9-q9ZT9WVcLKQ53HmEY4J8PyiBV5ID83mNV8gFbZTVmoJ4ueqMAXgSu-Db2WWUKCYaCcZpyI-fh1Quztp-P_95LDUF3CmUMgUWOJF_1Hujl-Ydu4gAXgzckuguWPTndA3jUDspXbuuKPTegf5TCPSZw0IvTuIGBmau0QcdGKvZ2lmdkry4cwQky-1ESQADkGgp9gzZy9-IG9J50RSdl7fb71vuvAl91THnBiDf3BK-5G3b6rUhSnkbu_5BX5vlh0ybDLSwdw8-vAEM1Q8YDHFw-5CllAzV3sXX3zk7Zp84zXCKvVh0UqCdEc3XWk="
+                },
+                {
+                  "type": "text",
+                  "text": "{\"category\":\"account access\",\"priority\":\"P2\",\"team\":\"Customer care\",\"reason\":\"Expired invitation links are an account-access issue. Several people are held up, and the available workaround takes considerable manual work.\",\"record_ids\":[\"T02330\"]}",
+                  "citations": []
+                }
+              ],
+              "model": "openai/gpt-6-luna",
+              "stop_reason": "end_turn",
+              "stop_details": null,
+              "stop_sequence": null,
+              "usage": {
+                "input_tokens": 1420,
+                "output_tokens": 210,
+                "output_tokens_details": {
+                  "thinking_tokens": 151
+                },
+                "cache_creation_input_tokens": null,
+                "cache_read_input_tokens": 0,
+                "cache_creation": null,
+                "inference_geo": null,
+                "server_tool_use": null,
+                "service_tier": "standard",
+                "speed": "standard"
+              }
+            }
+          },
+          "error": null
+        },
+        {
+          "id": "batch_req_6aec2c22bfa08190a2a518c797653872",
+          "custom_id": "T00040",
+          "response": {
+            "status_code": 200,
+            "request_id": "d6fc133a-4f07-4ab5-8d59-d30f72ac6f3f",
+            "body": {
+              "id": "msg_batch-1793846853-jKgYFvt8YTmvZJdKnS6g:T00040",
+              "type": "message",
+              "role": "assistant",
+              "container": null,
+              "content": [
+                {
+                  "type": "thinking",
+                  "thinking": "**Analyzing service outage**\n\nI need to clarify the output schema since case messages can't be sent, which might indicate an outage rather than a bug. If several workflows are halted due to users being unable to send messages, that could suggest a critical issue. I want to look for similar past outages and identify record IDs from those cases. Citing records like KB018 and T00020 could support our assessment. Overall, this impacts several users seriously, marking it as a P2 priority.",
+                  "signature": ""
+                },
+                {
+                  "type": "thinking",
+                  "thinking": "**Identifying ticket priority**\n\nI need to explain the reasoning behind mentioning the message send failure. It's likely due to outages based on similar cases, and since several users are affected, the workaround is costly. This situation should be categorized as a P2 priority. I want to keep the explanation concise, ideally within 300 characters, and present it in JSON format only. It's essential to provide clear and structured information!",
+                  "signature": ""
+                },
+                {
+                  "type": "redacted_thinking",
+                  "data": "gAAAAABq7CvrcaOZGB68o8xcCCYEwTYZtQ9TTVMIDqGbrUvyH28W0V1IL58z6IWe5R-Da-C50kjHE3vNS9psSYLs-XcMPK-EmJUeKEzzQ6OWejyQPHgZkcSfeiUHGfEgcPEtTqGKQKIdC_QeRqHuMHBQo13BgHhMRW4fVmcs4SCSe-zSvsp3Ciz5TKjasMeZzp12eaWZwUB7Krf_rezXNqeUN6qPlO9CL8vjLDnfajTBnRxJzMtuK5hlRe8OggiirOWZcCOuZZ2lCpYOc4vMn4Uw-Rdt3kMJQhFAJe4znisyMFhV_ceWpNDyRj3C5NpV1GvmSWk9qHInXtO-RjCNaBMEwCTsuKojtCWtLSlrX_vpBv74OKdLn-2eOKneBk9LQa9bBu7tk9QNYpXARD8vM5TQEL4UzBY118dmc3FeCOTyuDa0g704bZgtsMkhJFfXLTK3cD2ftY5KAlZLOGMHQeFum6d-r-GYyzwKRquDp4p9TFQ5CEril-su8HpvStgKBzJP40xTKEyozmUN8pwbPLssCndVCKky3uiFh__NRRBI_6EsiJrrlfBfhBEfLLMt7j2aQJAKArhRRdiMIsoxjjE0l1BsIhRq51JG6UeBmtlyxwkXrREV3mBDBS0BRWxL1rgTcTZLJ_wVf4NHzArxLUGLbHrHCVXlrdEHQ2b9XuJrMvbcqApseSQkYlwBLYmzO2nJ34e9yjaY72D8OwSxYGVhPrvDR6x3X8Pooyiiek1v8b5OfZkur_tyCzjyO3rdtgaTcgJ55x_HzIW-3k988j9D-jUnriRcak9R1h0J9oseVjM7PV9T-6gFD5zY0U2owFpA_GpYjB3dBhzF65gPrd5qYk4z5LEmIlkVch6KDtDjJBcmVwfvsqcaWz-fB8HIl4YLV9Y6JC7AvShnINQb9Mynna_5liGxBch6rZCfhEcLxl6_ODdbgTn0t2w1dPuLjM8nTypy4mJxfPWO-cvsUv6u2vErT8nsCTT-gVu6LS5U01f2JlQRCBK-x-coYpsN3GnuokY-Vbm4c4KCdFTQyX47KEuiou53AB3jprDppLRG2BWT8iSQQhALNsXzhheDe7PgJkeJ0hIVp9RWIfj1yvw5NsNaqt3VbabvASWVDoI5WUEA2HdjGAz8m8DK8cniNcjV0jBnmgCQjHeytr2YJF7jrgBwM90VhHHa31Ql7o953RcCGmJnFTkoqiHbkf-sGwXbAVhBM9Qr7HP0gYRnTd9SOKcDKYkH4ndfGAUcwd0JrQnEXBJLxbMy1jOn9l4tmC0z5ekhX4XnzYrFW3sgfRxwAkQHMAsRB_KehsXs5n4KhrafQJK45K7dmQbinw7dRKWqozZlmwQdHndo4lK_2TupmWx1Hb4t5jKz_1556gls1aetdnjja3eowWJ0-xBPaDOn04lRc44cuzwnry2o3xoaT2xZx8qKG0okEeuchvNJb4sAXxXO9PM9ffcjZoo2Q1SO-okvQeIOGTywV1ODZCTYYAenpW9tIslpxctqQjaT9wZ6-tKItsdWzXE6Z9beAeqJXQ8vALwSgN3G-2BlmBJr_bNRQ4XVNp6JIhi2RZhU6k5zMfvKsuQPdnN7aAxgAl5Pry92O4t4ZsTnJNGGYCoHHkmOsrHhp67Ac8qYBxS29DtCOmHBP1VXy3pP78HPwBqlnz2z5yD4gq7yex-CSKEYwRmyPcqhPGYvcsiyCySSB-slYsttkhH5c-Xmf80rPTOEoLgDG526B_QIFUm7JyGehgnQMOduJwzUpx1LFYf7dq2VWjPyy3xUMb5YYMsMX5Zs322d_sobyT2-sz2ZGTB_Y6pKt9Ragy6-OvbFIQVyX-xRdc0Sn7g3huWcwtO6X-9kxecP0GzdIa2wWx-wzxHlCWSxYrfZyPcoA0YPZLRZhbteohQsj5PeHCTX-eBcSSXlNFGa_U0TusbNHZ7oxiTCC_9TWKnMi2YyAmryA1n2cXUoZpuYCiXZqytjsgfviVMshi7yXQ22p9kbttLOZlurZj-oD8MQ5ig_ICTfbBjF7XSW1gY7mjQm50FJtQDBIqdztT1qqpNuUwP8HA-rXcpaR6_G8fNPRlI9enGLNU67qxKQ8RDpOL8GaTS_v2ii3P6hWx3LHujojA3xi-V3gO76F3q-J4jKvz6SZRu7VlG0t_QHK8TRxuNAFMvgjrKLIv2tTTZuyEghcbtZhCKUVCSVkhSX00ZJsok2RYh16S-5YCLk3k_-aT8KrDPdZqWN54GBtwARvmct98f2SBYgqsbZvdyqAerLpo3MUIb_CyEDwDmqr4kCdHtl-KJKd6P8BL-hsp8dXx9sux8t76bmB_fq7_68Sb4o9BpG5zVzz3nAU24uGknTXuaYKastJWNNS8MU3Al2uRHrTWaSPCCGGI7IfIAZHJp1h7gklU3VWq8GPg3alvYbPfICahAoEToR4BgAfnZa-iQpxV-citE2ZH975jzheVTDRzk4lNXwY41V0vvHwmYpaRtTXRC6xp6jLQPIGOcVpNjiWj6qVe3C3JAWnfHm4kpqPTRpBZwLMwVSc50aRzSa29akAE_PI39hnQrZuvSy7mcsOgyQwi2LnPvCiSIisQ42KFwuEGNBauZh0qKNAHLH1fPX3xYQp7_Fv2eyTN_beOOmrosxzBDTfBSM2slUnk_t0gvlEDBV6b6DqUHszTdeCPqUr6ma68PJZ3VlvLZbcI_HC-foJHXW0jdAtp04EkDU5O8OFmDe25a3owlXNWdVhNpkdEQX7Au4zwUNxmtrpSsRQ5Q_1aRqjSHBZYmCkBVKh9vXOTVRKryb7qNz2a1qOX1K6pvMiUOC_SrsiaEsgT4wgg0pC4AOu04dbR9ldBLADXJppmOY5-2h1Ov30-Bo7Ivv-5hqDgTidlryxwjAeLhL6E-W8McB3zGXftZAupi_ugokclRA5HjniwgfgWL4Pz1Cuc-_I-9Csoq3-kLifVkqkHRONfuZnVDP-0T6iOTU7N_1N6YrP9vpbwTuLp_yZgC2yF7rvXLTbNEGoGSfnJL4kdUBgb3zVBIa0uYeMn6GP2qS3lvJxjWt91Ifgy9K2vY2V3cwyWivSHF4ttU-ODnZ-6MvA4_1ocLV1ap3f_KczN-Qk_JeiLCzCQhZvnmfmKNEQRa3FclqRis4iPdhrne0UpHtiSmIvB6BFdgoTQO_3TOnns7UL2tKGwLpfEwZXJ5JlWQdAWaKFvIbQWnXsaUfh9yn8fqzkQ6un9G2XxD8o5cH3CWQgrUa7TtKtA1KQauZsRVTWnIe6HAsDwmm3_Bo1tQPxSw7-zmtEgOl4r0vG5R4ZVzR-V0gJN0ZfXFwlRAdwOy0eSpg4a4SbNCkowXkzb6--q5FGslaDge6JAC38LbDJUlaN86tMjJlZhLNDxpD5GZUGb_IU1S_u_4x4RRH66esg-zoCMM0wpoIUSYJjjoEQqTzZaffjf2zUdCO3JGderYmsgXPLBcU6xsfQnn3jzhTfI6yGDQvfCsTAYCWVgIfevwRXnD-Kjdd88WVvc897znNaIeps8darWOIYWtBesy1CuxigevdfWW_z1fvqO4di_h-zljyhzyF_p2SDkNK0s3UD_fQahR3hbHnTo8iJKuPLdgkw-cf0M7-Llm9J5Wa0Pnt5Cq1n5cYtMGUaPANenHAptX1pqNjbOiZ5bVrzYJ1_3EIvT5UKgBMl3eEVAccRXEiRQT-d_6Ttyv9sxgwDOfn2esaDeS23pgaNPLXqgdTViKHZTmtczeKDsMU4vvIYtBSuVfWY-H2bsycWpC_is6eMJaeveHAtXDtL68y45hPZ5z4M5pox-KZtsDdZHsQqpoA-lX4eeamVYKxu0FJU1JalJEc4J8z6EYG02piXi_kOXpX5esO0b6DCuTP2eYhz66fTFHAHwu4qARkezSwTzWoBoAh_M95pY5a1bAyux-hH-mLCfe8FpJ1pvpzHaCmxjezaAdWpEoQRXj_ingKB1jW40vPBbn1zi18IwESXqzCkv6YxPVlt07rEB8jTwf3k4yDbNuA4ZAsn0zPwkM-dcz0am2Ui028Az8WBBi4T239xAQhzjNDnJny5hEgkJ3rQmvG8mJ5tlWsRk8_fSHSNSI3VrLTip23LlFEeXlSswwhBYCIUtdUSBC3cPhuhaq8_uF0bCZTUpbhS9TviqemEtkPsa9m2FDP-Gdh1h3lqitITaB_H9OMJhiAEBfk5quDvloWSIM2Tw4JYO4GJk4-c7Kh4euIGBMgOr91CbW0syDzWUFTbR-lsllSl53w5BuGLDM7MwLps7yikNI0mjW5Q-cxVu0UWfqbBOa_tUu7zFMJGiRDd0lSy5yUjxDo4TFx_ncJ4YpJmpWz_espwCQr0oOECuiLumQgyv430mZ90CInr-PuvaDKhFxqHVwotJYjCLekXgMDBq5i3YVQnuw="
+                },
+                {
+                  "type": "text",
+                  "text": "{\"category\":\"outage\",\"priority\":\"P2\",\"team\":\"Technical support\",\"reason\":\"Messages cannot be sent, matching prior outage cases. Several people are blocked and the manual workaround is costly, but work can continue.\",\"record_ids\":[\"KB018\",\"T00020\"]}",
+                  "citations": []
+                }
+              ],
+              "model": "openai/gpt-6-luna",
+              "stop_reason": "end_turn",
+              "stop_details": null,
+              "stop_sequence": null,
+              "usage": {
+                "input_tokens": 1459,
+                "output_tokens": 278,
+                "output_tokens_details": {
+                  "thinking_tokens": 214
+                },
+                "cache_creation_input_tokens": null,
+                "cache_read_input_tokens": 0,
+                "cache_creation": null,
+                "inference_geo": null,
+                "server_tool_use": null,
+                "service_tier": "standard",
+                "speed": "standard"
+              }
+            }
+          },
+          "error": null
+        },
+        {
+          "id": "batch_req_6aec2c231d1481909cf477de9c640672",
+          "custom_id": "T02213",
+          "response": {
+            "status_code": 200,
+            "request_id": "a9312027-ac3b-46d8-95c8-8ffcbb7b0225",
+            "body": {
+              "id": "msg_batch-1793846853-jKgYFvt8YTmvZJdKnS6g:T02213",
+              "type": "message",
+              "role": "assistant",
+              "container": null,
+              "content": [
+                {
+                  "type": "thinking",
+                  "thinking": "**Evaluating ticket categorization**\n\nI\u2019m focusing on categorizing a past case search based on how it impacts customer experience. It seems like there\u2019s a mismatch between historical tickets and the current situation, where the entire production team is blocked. This could be a strategic choice to prioritize customer success. I need to list relevant ticket cases and knowledge base items, being cautious not to include too many. I'll reference specific cases like KB027 and T03930 for clarity.",
+                  "signature": ""
+                },
+                {
+                  "type": "redacted_thinking",
+                  "data": "gAAAAABq7CwK7GRgr8qR5OvBGZBnoPGMHecQw8aXHEeNXEWAU7BhAo4UGCaSotSQ2aKvMrsGK9G1ysgvRk_QmM6335j5v0xwN3FqQYH3sU7WQWigIpK_-19Ndmz3bji8gxFtGDXCFzGVriC95yzsikmOR0JkY2GFEZ5watpCMRgNVIvww8PcMQ5npXIeg4vXPU-yQmt1FlE33GGhp1yf-DSB-v-mCOBGX5L-WobbYPXZld_I2LPooXiFRnntCANl_kYN4Rt2a0V706N7hj0hVuCv0IavKuX5hnqRledlcnEICm8XBc9csAqL0IsVkR9Yu4Lb3wNi9SIewxZTch-Zmu0uzvi64sC6j8278rZ_l1ZDgfaEzGIvvPqq1-VMS-ibHVeexQZ5wMJJ8cu8r-Gtk_uaKg_e_2o0GHOcXMt7EribxvsPpJcEkZ0LxhIA8wxPZrokkX0WjfU_GavEX8aTeIACva7Jlmh5YttTdKNZZI7a00HEo6nPwkexRmrqOUKDrh1Y4s5bnYL00IhHt_DUBTVun0XgUyY07T06UCJXAqWcnO1mJ8MoAMot4lUnQA5qpbXiFwsbhrrSFEwV7XgruUUMCaS28UpamRqO2lTV0QKneasBWPD-jFvS3HHbRMF9L70JCWQpGfnGBE3QBvJp70bpfRPdS48lK182Af8yI2li1Ts53K-g5kNgS2JT43Bvnm1f6GtmKjZAE1wvw9zg5bHr4h0d2smmp_C6Ix5S3RWnhZGhD_1g8zn6gn-ECkOKsKwG1q68mMpvWV3bh7-yYF86xWT8fn2HkkN-SDaa4TjTD__u1DMYgmRjaqGK3R6iRIW_VZ6ex1dz6Gj1Wvo6WwNBOfrq78PBQeUnXH5oP2fwpW4gBWr5bxVu_-tIgaIyzki18GeeCsHF_t656pkMKnrcB0VOiXZduD_7Yx_pVYCVi3pOIBwOkBNM72At-vp7uWetPhbCs9pk0Kw_RhNZ1Kf1orrwXGFAc4r--bmPL467MwmjKmmTrzR9MRqQRhYH_D5XZc2gU6eEGshMomL6M1ElUeJh-3EKvaRTxaTPhk91-PVdVBmm-9I6ZUqOFjLvVhUrvnHT17METsvF2667yIZMNo_oiIaRmnxyIC_p_7jYckC6kFjf0M0KIu7UlIRD8MfNz2LL3rvPnyVg4zY88Cb976vH6C1zrIWst-H96GNsY6rZldCUmkniWWq0pYNM8QUMSA9cgMQSO7whrUnqzuQatzDrQFssQq6aQcNqwjIZV3sy0wS8MyEaj-C4NMZjXnYqTH34FdZFUAbVBmA7cmkeG0hQ-XDkuFQu6IzuJ0eMFZZ_Cg6eGuPl9dciDKeii6gE54yibgsNK64uSqAqvRvgCLKEhFW2R6KcyFkXS0HtBR4ZcFyF3O9-0vd4cUSd1uG5v0xdHU9jpfTP6it0okyPUR75DmNFagtgV2AgmCQElbKyGLrBi0kWikXMN8GdBYH8d2EgTPQr3hqA3w0Ze-ApW-Q-ac6CpKgZdxPG_BtrKLClQ7wlnsCs5Y81mKUYGaGPXBuiXoeWw4_ilVQjG9MYv1nmtKzdVEQnC6M28f_PB-6NALkvD_oWH4w3cyx2xhKkAi35gG4_YzW9RapBXqZ-9plormx6odnZU7_m7GjS87WOorvwD0nmhzl2PxHnX_7NKFw8T9ZqDdzIq-JRFtLhg_6-aiIetdDhEZXRw-8zKvZzBXhB7rQQNMVEsZBFYOKgzipfBwMTe0LB8Ry_TshoxasS1F_akNz3K0C00coUDG-XtU9K8wPjwKYgpGzjskrYVhLrmAu81nOnbdn18zCpA_-fu9-_2fO9udFCyQqoZC0YvMa6zXuFt8XhsD-09eBDMg2FWS5XPNn5kKb_Uo9Aw9BI9-fh7A7E21-RsLphb0xl5iA5KUoEW5smIQlLKbguQOcwmL6vswr4AHfkiQq93hhmpJeQNef8ymYh6ogqL2nDkjmnm8eWvajQUy1t7c9bG4YD0BmbXWNSlZQhbw4VYysj-CEcHZJjwDBdTlSRyDU8a2JFyBRi8QotkUdjKc7K53r8sGFbtbzGqC0GF_3eb5CAE6cjbxlBKZrieXjqzcFcQ9qlJHMwwQGELtxi0dH1fldgPU80qeazhCShcfQvqd8SniP0bv6aQOhBAZk82P7QqVz0NuHc_rLwjTkztfWssO13HeTniZqvF0s_TJqsR14KLwOlRADSP_qJooNacePDdt2eN1Addxl5Mp--Krdo_WO3wSy0wjHnw0HMdIAoJ8nqkCqJ7lplkAXS_PePBB-mQEPUvmpEQ7qTFNQfsInTf83OL8AKd0j1n4QguNz1RG56athc6eMq7naWCo9nKVraHxCI7fZLd1T2oinBtErg2AfzP_CMnq9qWoLTu9wDdp_HpEWWQscARMrbnplZ8_ksNHYZqybT2Kur1n5tj56vtrPWRY1I8up2ez7oov2JQ3bkwTiaMBSddqDJahkBNvKonZ2kQoOUG-27kj3ckkugN6BrTK5vbAbMxfgAHyc3BL0CPluXy4FK6mWa9cFqeuSMRguGvKtNAoYKY0gDwvqfh0iBEYuhAPGPimJnhoih_eS1iDdlL31ZJRW3zOiIArCM5B9rcVctXI3O3d0B8UgHdCY89R3KRtBeMT2nO75HUn1zDKgqdu4Ii3FofQJZ1w9WjpasazSrMXJRCIQuDITQ_UVskMQlJUcswYmd6TETrgBPJdaeGLYKtyHTbBGe2aOedra7YW_rNDDEeCuCud1S5SEtGtoK-0tvtiY57YKtIZIArX4gpZTafQh-rqrLXo4vMhu1grwiNlYMD0zwxAgAY89BIUb-cswYwWy7KuMZ2x4t5VVAVjnPnHjtvK3jyvm5hufTB_W7ULF81cR_DnO2b_uo_VP3vHVLKMrQLpXwe3UZKnby0rL3Pz882DY3DdE7A9x0rqfSqiVKjyxUshWHe1Cx9V1UYb8UQTXyiDFWj70ZcUx32I8q_dJ_xxVZoAoNJuJZY_du32_NKKFgjrhewwingxNmex6cz90L_RxN3nKvVcnJSn3oAYfBM5tDljdA7aJxGi7zV8cAO7_KBQTmurjgTn1x6npOcO5AT_4QyHU_uRXyi2Vqm2kMzaoE--D3gi_oKb7PrHOdb-xeKvsR_yfeI2m1yVs4l0degm2K4RZhChdh_9RJZFz-nyJZu3Vh6bsqYjL896bQrA4Rz6yIAd7pWZx58T5pYT-H-TsnnzenVfWxlY_C5rUN1J7sR8gmA8vpK8JmJX8bPO4nf1lPczlOb4udhBQmj0K6dZad07VC8ky3WU_qE8v8qoR9_5Wi59jjmS4hYPKtFAt1lVVsEEQ4zlQgR0kwr7CVV-88ruhgkE9MVT-qpt1JBkt5hR5rZ-LMkUBB6QbMaMrifm8El69A3-9mybIBrOa6XMewPXttoYXqMZk0nNqL5m2-7Ts_P9xYT9wNglI8ZBI5FmrQI_EU61gM0CabMDOn9VEKQO4YbbKiFDWvq7923yUwzkdXy17IxLO0YBUfbGcVr5Ce3dQvbkutxU_SbDplxrGGQmHomQDArOkxBZxH2V6W35WaewATsr2DACTBnPaQQ5g1cqSIxKKX3G4OB8RIv3V7y5TDK9Jiq4tAcWac0MgNFv0wV52um1u3HJZd-qrinSUQ56hCW2wL5zlUdZ3cxXz-Sy00Q2cYblpVLrFGwsd2WEEND8XTPKXuj_h0hbreqbSMn52Igk3ip3-NuAwq13hwwyA_ILj062KmXUL3oBMnNdGYSA38QSbpBSByS6JAwHrtKc7dxmWlFQ9IVmTz6upcjfGlJhHPGtq0cuSHxJfAvOgd9ww6LrV486rVGtf70VCnYvQXmrlc3RxoQXcGibQmcGKWOm_bhaanVg_uIC5tFtb8UXD-QepwqBolR9VvzNmtDDfVb1N58r7XJ0igmuFE5kUloqJJo_E20TX0urJ-h1-tu9ZGpB-fGGIGyxiLQBQXlSgAOf8N7q9Ml1_CjFKUmuqnSkaNFvQINmne82kowhiCiBzG9PWthmcHzvnPzOkB1dErMW0ECY2uxS942JIUYTF4vzbxZwr5_Xk4n7tHJtSG4dCCCkjmUXCJ6yZxeS-RbtaiLZOL1GWBz-5kvYFGtfjpiOf_Zkz6eJ9PBiN6WbQLjHtFC2ltJIurk0LHnqZkUaYr_81BIxNkMXT59xYJmdvwAPVMvQGQDWQmc4FJGJKXy9K7ebFjm_gag5-afwD5-k_4bU5fFWiTAuiDBZy_a7c1yfoSn3wFmExN3yYloRNCGtLX1Paz79OvwVhtRDfnJp7hr1LHmlXwEsj22YP4u2ZB0A1-U5EKuY_PLB7YtDyVZCmbu8kOLNr-nOKlL-R6kPR2MkAYOd5_k-SCsU2HeNsuwz4_9YFPY6Yqkgy3YdbouGNbSYkC5M51NKnKvswtc6QCYAaWT5tZ13HYufgKDj8GQn697GBo8D4BdYrZa1kHmV84PjbMPTmSRgmDPWYpkQhn7qIxivrctKqIjAmRzYKj4WGmpDlJ0nHbl-fZLpOFdRb07CneKSZZhydYH_D3jLeNtPcNRB63OYk3aEZ5zIPkHcO41IVTBdSPsP9Jq0xx2Ae_-K7et10n-C9P9oNLtXjg9bg43oEkybc5zO2RmSU2Livc76WPDzkxkciOcWH5S2yg_0Yp4_hOC9AD-JM8X9DAU49-iO3Qr1h_tU25lyJJ7-k0c5MgxYtf7PklDL-kWUFpZxoYfCRJAlhaiDJxozzmyZruMJ6kuvn8mY5w2oXOw9wNUb_Su8RDXZLuqNXxGOUKArV3-hfs8wX47DlDHCidHu-z1K_iOIzDF_IPGrKII39Z22Jw0GnoK4yXg-J0euKl7pthSrN7s7mf7FL6OIJNGXt6XNCWTW3MwEbcE1J4ANpoYT6SW2PytF4xiGas9-8H-D8tmYdw-Sv1HO_0eXub8xQttvIoAtMj2fn_OR_WREGT_rXMvcSZRt_g6_1lxtLK0IvIJAyETWCzMIf3Nhg0Y1GTI-HY60H3mo8ACZysgfzcTg6drgHF4fssBCL_GOS8G0VtmWzNxle5nBO-qMIeTC3taAdbvtMvvpMnIHz1RyjHAhfKBD_3id4NE_QLvu1UccpdrunTywOcKHG2qvtK3ufeDNOMhlKx6B62giM-Ae6eKGxTPqcKGh5w4DZFEuAqt09GiUspw3j1jVPU_KHOfBD6XBQE04Mf2DtZgHA3-Q5BvQ9zciQx68-1PYju7OOzwQfg980Q5bq60XC7iTCLJIljIWRLb-55tXcHZvLd9HrgNV-ablB-xtoxyRm-aDGS-_TpJqXTBpTo6g5YtJ10nzEEyumZWqaU7xfU-xhaEsu66WI_-yaCXwN2ypHcrUY6EA7y72Awp2MZ0UGGFebPPP3KFXFIXgN1tPsur1kDglfX-VdNSjvjF_fJdQDfg5Cqq0iPiCVDmBKavUJyW6GvxO4YkrzBrkZDHSmPop6jTFVPWyfghbgGElEpm8-uR4lUiB-wgyXC0rKTsfvOn-psQbV3T9F0bsqIKYHLOh7oY947vLsbMMvNnZjU88_DlmF_qt2oR4CogopkL2hq7hGH3Tghzfk2OiW5wfZ8jIYWw78A4xqCzjiAIvFcRlfVs0wj1zzettyaLksukqHVZdRi2FqjeFdFD4YrSYTro8oF6xJzp0MwekjLFqNetVILOAgeliECQqS09oY8rfdeEOYTRDoMuXsDBNboGnDS43L8E4BybzE63wIO_H8fZDHatfiXVgPi_xLa9gsn37jTx6MvuIUyHdRZjWwhhj-ERbVyEscWZcZSarJo0k5iRfedFwbkRstTdCcj-n7Kna0LugTWAcNizXHq5QYrymKkhMWikuOMZNkNBL3DRcovBvNttplPjW8pEHMvrrcMf0LMAOB4QrQyfLnbdaI4OnyLTvqj_YMoffPhTiIi6329-mjUrHSQ9dhmquTFtPh8WiOiyQIzNEByGoxSaNHz-0xX3BNOfsADXvWB699sME3yCwHG3Gt81wrCtG6LLa953DOPAYG4F5U0G3Ku2QNXtChucCNvmmdOmeKXyrk7es0qD-51Y0oO7m8FDZQ-oa52Sp0O7HFOwvgmJmTzOivZKlBaHdgvGpCXJfwvXFTIgr3YDXC7Q8NCuHnoevT6FeZ3LY_XsNukTqcjlw1IKRtOfwLjEx6FHYuxVgaHcGOLKL63P399atwyWPmncqVOYUSKtFuckkZ9fbcI37aOaaKVesWNfOaRbSchOoLkr273pXRZC05FLJ3PSzY6Pli4i1Np4dJ-Uu7FceD0E248IjLxHxsyOvxIfc1vyxcOKxWYLFIvT8mZqnZUm64syQ_CyPtal7eVXi6CkJHOk_jYy8eJSuB4UpJAVKmvqM60PH3b6dZ-k2QY0mP0wmM1Ou3PoFrrd9EVJ7GZ8VuDOAOyqs4CYo2NWZapjhA6iBhC_vsiHtlNonaJxqA-BWyZAIFIUoSaRLJwQOHDAOdovGORsYKjAdpAYrkHqiEzZ8HmTxek2w2rYbQCSJCgbVlEBobBUylN6oFuen3pSokjKfdFpksYgx31Kl3GZC4By_Rc_E02h9SA62rmljB52tnNSL6DA-jlPe3yKQQphQL6mG5kFFHFYRIdIzSbBQ6RnqtA_tjHXU2ZHqPeC-07svjHfEWEmkhLGTrDunJNkrBjriFpjxhGjU1dg7_JMpeTzwmLCUGRfbci1v8oe78cSM_RWqSkowGMHzCTxb4NaPWKyhMAKXHHuR7EXeZawbQ8C_bip4zsMjvi0fQSAFUeYf6QrPE_DVtDwBLzDSguMKI36_TE84bi2Rw-uyubgMYgljjnErzArmTs2qF9gZ7jdhBxO8c3_9iaymnRF9b9-rOSzYYNdQO4m_QDzjSdoxx7szBEEDIu4PG2nhETaJKrqbnez0yGZndRjdYuLLTf2H6LYPKkC3AKaqjUFscVAlHpLE5uspZ0oti5IjOBH7LmIdrx2V_YNQ-ai0P7OcuBLWRClWBEyp-QKZO1HyFC-vrY0OVHEHdE5GIF7TWNUm6j1eh7H3TZmq3xyyD8Xh6ssZ7QQ_6KTp-iauW6SstHBXqWYcPjZRHJM6vs6_ePZeB0j2nYJ4Hirr_LgWkumUtVlYQEPkLC1mPrgc7nv8QV71H0TFb7lUrIBbUwBUv1JE4Huitm_SkrsAmBjJS1wAT9QgJMNzYxYayvRXI4NgQlNUG9no3pr77iNx1xERQ3NKd4J-lpcXvLLxJ7A3gP5y3zkbmKpsYN7mT_-UZgHyUVjsQZ88qPBEg87zf6n6KomOIJQGtlYWnDUkRHsLk5D7Y--_YksQnhmnsZ0zrLV0KeodrqrITBJZzoTywu_0WsulwfyBb_PSGy2OGzVymoXiXU8_AP4gltnAtDbrSpB6agIla1924Z7LXKby-acW3YywtYM56dllvKltN93nuyTeIQ_is_jVJsjl8WJx_xKzulJHTZ3rhBQcoK7npeao88TZKRyLcShg-aGuvCHlYdWc-jHWl0mQ0CNxcerBRADnDIxmIzFb9azYG11-O1L9MjCw2Ze1fwPsqVyzzHezEWie_AAcLHXpOAsMp4k_tHUcnOyF2qeUrstUMa8zKxfY7dhMxEmNScha1wlfKBcqVpgOcq9iIYBEhMJ5VbujfG2BNLq7jmvhKXwIcqxd5nl0iFO5-pngFvfiAOkXUD0fjernSAQH57OkD3-z3whe_esYry_cTD3rLxib8xXd-OxdR8x_tEaDWy8HpJEFMzdlu0Uk0SToRv-MaARN1DXlBXcNpMe-gOUDG9vN0ClUdYLIUw-wFk32n9VrFXf_N3dWA9H30MuqGiIqMqIIWelDW5iLV2Q360bTDkoNxNzCKl1hy_LYEjzQx3G0yjzFZD00xstxtfk1HY0QplWwOAmkL5mPKIjtE0hZupqnVhf_EbI5MgqnuFYCnck1hH02QU4Mxs6j4VaZrJ4FTr0uFpXO7jV7mseQDBamKrHZHwsSFdjX2gA2007O9Llc2FC58xcPv8GvaWHN43r_teCc57dVweSRZ9n4hos_XGa7N_DNSzQAM77LUBg2Q6xtojwKvXpL_ty5yd0bFRnGDvtGJB8tpPJzKyGiL-udDKZC12DDaxeRRRN2RheqZnvIfMQcU5pPZe21qZjdbPpYd0KTwL5RL54OQ3FMopSK1XoaMa0mdfP7qLVB0gnhEP89IWG-i0ftk2mLCN73LkNPm8P3z4EbRz4oFY7tRXCmE-XfNr2_3PodsDB7M_213rT81TSJAMBynKaEACbR6vHmT5mUOiH-P_9qHsBRFgGyEPm9mjj0ZeSnRveCRTe58V_S5QsRZv5KveIuPyKSVJRzjkXvTSnVPM0F8v-s1JZdPOzT43aPov-iYlfFlLtKGE2PU4b263YUFvRADYVUDmWzrirYaoFNpE9HUjZXme9LjAx28goxZxvpBPnk1wqUwmjQpbfsjQKV2oxr08pdxo-X6iDdZ6mnGTcrn4m31XqSVmgsGpMQRM0TW5IbTD0XmlNaicba0_oTyZ45iIOtoe4V3YTeRkd7IMzVG_jJeOD_k426TvelVMPKnGxUM8fO-M277QoVCVRFmfZ9_2Aswt"
+                },
+                {
+                  "type": "redacted_thinking",
+                  "data": "gAAAAABq7CwK9N7SROBR0RtWCzbBgga0oENj2OiW6LIYHIC6gOKy_ivJpOraYs0SkopGNO_G_o3i92Tm9Xi23hHKo33Qam5f0tUYrb4E9AW82Ttdco0HOJqhUIW3-GOAxAgj6_dl9g8MLJ9cTdbOofAJLFCcwxhKvT4M4HHSZkWVJraXiDHva1nOztDHf_d7jICl9QjLa6-c-yaTLqPXyVSy9Y8lFJfgmEx57-bszZgOsU07fV_IUffb9zcLRcGl665WQ7jgoUGF1TStkWwycECdwIrxst5GYExVJr8iuIo3u1xAZmR-Vqor7s1M2GqfqEiPpd3ns6H2AZuaCTNZn2txFS-nVb7W8XoAZ-Uvg943vhr57I2MdKUyJaLLi5gfwTkQOtQ9Y8lIA82awaKPjTFp3f-UVs4kRIgg91chJQ7hVIu1vQgl-YxSk8ejRwyfCNXZ9_CXCQSA8cTmFK4ZkP9Ps7ZAlM3q5O1hvHAFMsL4PVRA-QUpaSJ3peEWTKwhAiXsNItyUlBZP1STCzOq-UlBpOqRJyo0C5RNzdcRk_tagJJdTSe3pBCAWPgSPjTbPlZbplticg9L34nOZaqFr6Mrxbr4DWkrOYnJqDqf_tTWm4DZQ_n9Py_2VHVXANEdUMw7ogmjy4_TPl0RaPwb6e8OVgCtCN69uSvm4jFzXo-NOP0iMQRpvrKz89AiH-QvXXo93dwlerzo4aYQb-dUPJww-2ZpUr6mVLc82aq6AgwwkGbBOC7f83BpCboBP1feMmYsXLPcdtjKUMjNWQm93ScciQtzjBrA3E1mSVp5Jw2qeFIeA3JDmsjiu1rWMnTad1Ck2alPeuBcL4s39tmpBVdDOCP1429Mje-ntayawbaG5e3SwHqlZiYrswrCVvuaVfs452gPumYu70zg3ZfrMj8LzBnWOo2xKeDy-ueCcGP7s4mV1n_XwseXZT9fNhcx54h_CtRGPp5Qh2VkCoQMToLErwqDsBNDaKbM6pgvacnn422GN3VwAkFA5LN1WAtccRH48kaov0TJlXndYd8BE6vQyYpJwCx96sXMBTSfEg3lwab6ejU1iI2kajCelSCZIvRG1oSO7Twlohk5m4tZRSiX0pLwDcB2aV4_vf-uzcCD_JKhVG_f2JW-s0RZ_VYYtsR3pvKDzxOI49TITwwprT5w1ix4ZVk54my-wIVxS7jUJ4nC_2_Tk4zgQn387JOA2TN3XTvg_flqUPJLUClXwfGx40WdWujwaBlr7MpuPVZHeH4FaqmbF6w4ZlRXev86ubeKWI9-sCwPgao167_qwO_Md3yqBNqNEOdZbz9FEH705rgvOLVynPcaSWWzYWJSQGiz2DXV5MMUqhp8C7m2MnhOoA1N4FPV2Oz-XKhzux4UleuSlkMnh-TecQhE1RwFrMg_5JAeyHq5SxjZuAgojCJINT_bAqI4Aua3RwrpQ2Bpq2t4O_QvgN8ckP9iZxvDMisIgDng8O4YkRRtTh---T1ViJXgsHRx08_ZsSAzJhOOFxNCUBvQRzmQQ6D0SEFnTyvSfA8kID9MBPmDK6EthMpUgh6XHlI_7lc1jGObXIrh5Ex5NfKVf1F1KC9Pj1n-rxrJz1uyWrcdHn69FpTwScNkcQTR8KVomghs4C6VBuRge93-w3D7DAKJg-CZHIja7DmvqDELKAQ5IqlRiHzbS9HvpVzwsQa6JdKOSTt0AicZq1UG7c0C0ipatWPw9nhDAih-KwghI2vEcVHjVEkkL2VK39JmANLk5oXNrIrrQL3hvi_sOfJDzPW2qDjiCUr_xNEdnu3ZgZYP9y0ybHm0yCApa66ShF4Hol-8CJ4M8v1I_PYGjZlHh2d3LhYxtnNouKsCTe6WbeY7ZXmORaTWtYuih1iYU4WqcmMGZDmPBGAkIHWGubrvW2fr8Huj_ovr8QyOOOJI7TX9zh5ha5TvKloOT4S5e-0SIbJYHnECtBJQ2g0O0-CTVK_psE7EZQN5S6w_-MVKiKrFaiDHy6d1U7O-AJtb3gEwMhFZKX3Mw_DDm7EsNHy9_bVZfLArVtMwDNUXpSwpwjuuy4BiIpMacICJrl0zobUdVbvAjAJ1me6VpKM_ak-IfrojeZb0lm4jyUkZga131oyIhnkWtjUHBSC3HgzQq3oBalKnbbDw2Se3iWFsXYxXTp1tgtxh4DcOx1s_Nd2BL56RqGDvfGEIe9TOufNaU5BUWdJoo0Dau1WURP2F3gJcmNaYkpf3CsXJxmGL6RjfoVqE3-i_YOqLI5XvgbVw_BgorN48CfVZ1EA_4ntUZsS5id4Xy4cnOC7U3HQSpkjAOYuGf9lRRIHAKaBtnRLcEWEB39bM4oag_XyuJo1eizmg4fEOowt-irRMDhxscY4UgWeWWMHc5zQ8nR4iBjCMKnJPCDsZTLZ5DYA5sXxN1yB6eML0dHkl-VvteDrep1vSKD59slnTaex80xiMIr0bonR-6VJeCkJNrFnoljZrfLHdTVHxUD2fLapZ8PMSnoccOVoiQw0YQoDpFQb4oBglB1iGddXa9E9M3Al7rpvlb0vpl8HCgfuymWO3DV_rYQ5Dl9d0FB07q2hzf27aQbGEvNFDjTOehMOTc89jMMxKgpc9yV45ysWCBB0wNOOK2GPQoDE6R9Lt_V2c28N7Vm75IFoFw8Qim8geo7ThAWkAm7-HZsle0_SHxloq2tUqmY_-CcT2iH70GSCj-0PS-cnjb_WsKerOrnRzb2cMmk7SaJocOGDNn-GDHhpooePcw88hHm___R2Bjbv1DxX3puFMzRKRa5hLJOn3MMQTvpKcgCKjYMEf759nEv3lVhYQUqmn_Wfr-layjhrw8RlCIZdhrXz4CiszpDTX-w-WA7q5llPaWDPNPveDuCFy8EN_7yQ9t2IeXpply6YJY4zA1TMxHRzO1IgmITw5f1fnHXxwXSi4toXNd-7VaIm8LEM-aYvwQiBkrwLQiOu-8UJc3fEqo1tYzUirAmxKTQ6CeR8stZpMAo3RNo-5VTXujYlHV5k7NIG8kmq9sqwsc9Z3c43cplD7bGiFj0-HpvgHWh360J6F3Nz9eqmI_G3TeZ-_epuyj8WFhaaV28hwwQipYU_Fu80UirydpfRchfdh7yQsaXRaGjXPaGPxuMIzP6w7wlwEkDKbSh20Ep3IOS0NUJvylt8N2dNqc2zQoVVt-AGMkz-VXyViG1wMrAiNA41mIKMrx9WPmIiKCDqkIKC3G-r8y4W2TMyIS-ROGFQkCoG5uM85jsAVUWEEqay7np1F8PdGYShiqwqJspTSCJeaGSSxbFhMrUtiC9OBBPM4wTEFzg5PTLSS-WHxtrNr-Hc3miz-B-akUDgnVHmr3v3rQXObh_PMlXbC0NTTF8nJ4ng4SEKfm1-TDTmFgXMR5OBXR9EZBnzcq6BxLFIhs3pn_1hfN_JwsQriFGyJm4pa9ZTPjhnYPQ9K4yjb-WI1Y1xumQZb3JLFA4OTcjFG-uwrGXeul9XXx95bgGUAM0lTSeD4zXb-248oPuQx_HsodWo6Qwn2RBdOEHB8TGfAq2pls5FYBxouasmuILeGbf9WQUprK2KOfpFM7yFC4qF4-DucfA_Z2gEPP_Mt3WvKsSNXhNBEJ8A1nuuCK5ufvoz1cZcInztALoVrWhbdcAskAQbLFQhk-smMiYkeJ_zmmznR3XY21L9MwOXI1lkzra7OK1ayfL2ah5Cq7L1VFY53g7YspiKIocywoA71E8mHH6v0mU_NYGIIKVoZNdTBuZnWTSw7ibpOSo3vMIxu-b166ypEGb2HZTBTOxzB1t18DREaioay9PYqWQ=="
+                },
+                {
+                  "type": "text",
+                  "text": "{\"category\":\"how-to\",\"priority\":\"P1\",\"team\":\"Customer success\",\"reason\":\"The archived-conversations title matches the how-to article and prior cases; no specific product failure is described. The entire production team is blocked with no workaround, so this is P1.\",\"record_ids\":[\"KB027\",\"T03930\",\"T03326\",\"T02629\",\"T03175\",\"T03851\",\"T02413\",\"T02744\"]}",
+                  "citations": []
+                }
+              ],
+              "model": "openai/gpt-6-luna",
+              "stop_reason": "end_turn",
+              "stop_details": null,
+              "stop_sequence": null,
+              "usage": {
+                "input_tokens": 1439,
+                "output_tokens": 781,
+                "output_tokens_details": {
+                  "thinking_tokens": 682
+                },
+                "cache_creation_input_tokens": null,
+                "cache_read_input_tokens": 0,
+                "cache_creation": null,
+                "inference_geo": null,
+                "server_tool_use": null,
+                "service_tier": "standard",
+                "speed": "standard"
+              }
+            }
+          },
+          "error": null
+        },
+        {
+          "id": "batch_req_6aec2c2326408190a65766557eef614a",
+          "custom_id": "T02531",
+          "response": {
+            "status_code": 200,
+            "request_id": "c3191f2a-22c6-43c7-9d58-faa8a805b958",
+            "body": {
+              "id": "msg_batch-1793846853-jKgYFvt8YTmvZJdKnS6g:T02531",
+              "type": "message",
+              "role": "assistant",
+              "container": null,
+              "content": [
+                {
+                  "type": "thinking",
+                  "thinking": "**Identifying task categories**\n\nI need to focus on matching an article with tickets for a how-to task. I'll consider references like KB015 and T03608, among possibly others. It seems essential to provide records that clarify which category this task belongs to. That way, I can ensure everything is organized properly for the user. I want to make sure I'm being thorough and that I have all the relevant information lined up!",
+                  "signature": ""
+                },
+                {
+                  "type": "redacted_thinking",
+                  "data": "gAAAAABq7Cvm0_lZJGX61esMKRyOpvksmtl1M7lYYWeSHGRR8W-VQzH5R6AGsS78QLaDOlhqquQGNtmMVOdLVsBebhdZAZHJ4uvwpSsHefa4m4OQh2uZi4uLKvixsGSL9qckKF53IidWR6d4FSSFVse2wM5dZYGccoG1bL9p8x1WqJKDjuhiORyqt5rLFN31Y0NNYH6uF_VAEZYVMHEbLrEqszZi79SAK0E_iBKV_m5HIodluVyyTPZBNRQmhCOXrUJB4i9bbl8_rR6sJShbWyxw9mHsUc8lNJ-gOC9Hnv-iS-AFDy47QLgZ7zlXl-Jipwa_qHtVmR0-YwQXqo1r8FCsmQB_TxGoRHRhys8MRJIoJH1r4K8rcTHdiDxt_6-9KBfEb8LPV9OSNwwZpRAE7nU8Md4fvCnXFzSfYnIRMyeIoCwFk_M8hsfaBC1bMVFXv3ghQrHYY43aq4xCBEakcm436BqN1YU9eJCuURt8fEHruQ-_krAEmTgnwS4nsprrDrhf3yLbH_8Phdnr_58QS3mxv4dCmZYBULPrwQCGdv32oPYQHauE6es7d-84sqduui6TqB1hRiocemh0sjVZob-WgSTkSFF3ayi8_IG3_EuHJr-xEnfbJ0-Syc1LBtSEQZiil7I8kpxZH0w88GYX06juXOUo2bvbCPfXrxWFNU7LulNVtiLl4XdfHOPuqcsfIF2-7jdVqjGqsTxCI6DDn7yVhfHz0XfPmacyiJyNsFyVVFXZogqqtvN0NYOjx_9S1ejM_t33DNq7QVQyW-8YkpX5OPuwAvNKKryvYUo17wresGM1xDMZ5a0-Y9lDg41RO2BBWPNR0DFIfg2ev2xVAq-eWMN7PhwmXZ4lsb0V0FS1acRtGD0XDqCJi89aGyBWL6A48Wbfg1KEmtZRobGdGE8C7FBaI_a0pR_RxpCSt4tfPg-KwpQybvlgeQCQW-DsNi1Vy5zvHxAFJCDdZtvPY3xKQCyi9XahWjGt8DsJ_tH7dPmAKeqtIEAazlxC01Ew40y9DU0C4kCH88od5yfO7Hx23om1XDbpzO9tYMQbx7MBkSY0HkQpM2e1bEGOm6JFiR6TGLEklVLU3Vj4cdzN6THa_vj2fNvc3PVGA_5AH7Nf-8l1-2P1_SP2VUE6JC22pTJBr_DeDkWQOvCiM1cVpKOOpU0SrMYLoY_CiX9qmeC8UJwrSTfUtKwoN13W-Az2aY8yYGltPqjy2s0rsXcuxlYgwHyjMMnOvezBwatQ0AnYl6y0vAlHlIFne7LYVy0OPEcCQqCzLQM1vAjkfVzGgc5mXX3SPZXw4wsDAT3YxJD8Y-WOaa_oD1mP2ZbFB-TlWK5mQ8jYm3-CIGV8oNhKCgV1fz5Pv0E6cQA5n-wxs8coZmmAm9zTDBXnEOmZGbCG-JNBF1grWwcFw1wtIYCpWiI8TDkIW0TMs38e0bLjOC4dK8mVlyO30_uT2ZIU1JUbhwQJNig5gEJ-EQkCpGH58Ol95JyP94SvSEBE2cLcjQC26ds0Dr0sdce69Sk6Dme2maqmRFouj-aabttTse86rt-8PmxCcT1LPyp17jT2APMbc8D45087GqjUoYaWy4V7euTrrET4L22ebIiUWwJ9azrMWvyEtI3LyQxAc7T4su79QRxxNyz4umanoEh3xmnpvA4EhRb6Hk-_k6jpqqPLjYCoLoGsYppnxhRWwFlIzaPyXEGXaj8AFqqLoZs77ZTHeVuK4klmIlrXvWDhTZUVpF0m99yL7YGS4FLO9FNlQG9n1_6bw9ITUofBU_5QBurrisX9Orkk3V38bSbYwjdvx0RCSsHE7UAwX42znBTH7YjzAgA6TWVU71Y9XszT6vYSoGV2egpCxsaGe2Cb6dYl34D-rhfnDjSBUK0wqen9M1JAqLDQy5JIh-XxHwbM5egBKkSDn_dUcpW2tqjrLWr67B-JkX5PKsAbbTjNQjAe704ElYdRArcf5vrE4BkaMReeODbw6UmZ1Gl7OWzt-ucbzAqHUzIEjiY-Yxg5DskXowN3BPojXafYS979xbBP4aPhTZY2j87DqF4tSN-B6H3DhG0LmH0MsbJgFrZWUV6lMsHPtqVBuJxwl1VRRl1QYxh90BbGf28BE2NPPw4wwaOPSEPWEa2z_DjCraiYzjR0XGIy_7e173miLHTQwOPijCCqspDq8JzshENdWvYSwc4QAHmZn2wv7w1NWy897jJn3usugGcJZtSgZC5dygCiTG8HnaTy66yfRuRJYsIu1JRA1Z7jFGf_QvovNu2LKKEZyHXlyd-nAzVulwSDRzSvTxgfm4Awy0dkMEQuiYLoXIJwg0JdKWunogybQasyv1ACff0tz7v18977bAF1cwOn0btsDOdYb8wSUckKVleN5dsWixAGPNU9B1VpIBFJqUfDIYFVE3VQvOYJmYh_TaOBXqiIftITgyyiMzFRwwW2OVXviVfQgtS9pETdCeEUVCaf5U2qgO18yBfsrXQaJMc2Azc9ay5z8nXZbnWb9P7byeKIkQu3ugMEQHV2NQIFWFS7fHSAZCGBPSBiFwxq1V1t0G_z0Dpm_i3Uwzvle0xfBUgk8ET20-is5i7tNQ_Y0sAfcnhV0nM2YiOCTknkMnw9lxeEpXtNE-995JTPSv0lTo7ofYC1cX6erxvY5TA4SpIn_YO5BgLogo1xRexpn4PFCwlPp6QC23gYNuSgvLyYjcZEQWWv6E97TuHKf7lRmQg6kUJfNytXZklRPVHYeieP6uxjrihU4-OM7PsYqEiEi2Q6ReHhx463PwptAwxSu-faRzrspB15KQMA69v_Ur5MHD3pDPePUa0xcvr79UXcyOoV0zX-aWfIt5LtVoZN8J59o_ZhI5VK3zicft8WwFtCoLsbmzlNe11odxOt-vrUv7aBpPtFx-kWx2gzZBnCRR_onoajAx4on-K2046V1fKjB_W9HVDi6lP-iQdMRbA_WIOVDoS4jlLQwc0oJuljcsny_h9YDIp7ToBsj9u9wl6doYzUcwvkiLY6CEIz6qXARDMZYn5eZLi3Mx7PmNnI5KSpC0Bh13bWnjPbjFTnKRdd7Nhy5A8oS6CqcafOpIlI0-kVzf5Yd5MvN1DptrK5p-oIln-HR8EaxljbjtqfkbuJou-IekQK2CGskflQzLjtFGroTfHerhSPKAxxQjWmkuPxnlgLMCW97Ip_ACrFxjXLSsnoAep4M1j_90FP7HgNcKqxHgT1ZKw-SgWCNxmzLMBWnP98NzuJ8AvdFF6fvLjoK6qSbOKbN6hPXQOiLGgfd9L1ZgKVGsluuMjTMd9BclrAwtSKsnri8KVIZzjpFvwwV4Y6Hh5qlVsXyk8Ub83F1KwrxuMGAPrnUgbwRlqAqiYNupQRvxX7yv6FbTjUcCSYgeL4tFSrAVAjDzqoj9dtD9ayUdld4KdKTLAY1W-_Nh6yh6Ll450vKyxSvMH5K0PnHH3Bb5_zGce1_j4ynhH8YIriDbkS1KQ_JWlh3KD33pAJ6E8LNg5m-sGT96_kVG6YiQwVQ3rsuvuntAo_PN1S5IMiYkS1BT5C3rygzMHrlHOeeZV9Wa9W22e-rxR24SoK8CAt6fACvYM-5iuNpXtiTcK0FdSoBfVjbFA3FMBffgNHVCMOYCxx9K9wmKfU_7DnrawgWZYbIEpi0d6RLyJ9ZNGPlk6LFpQghrabXAcyUkAfQEwRIqvu1WRsL7NB7L24lsPSy6aOgEvSjRhlNJN1K5qtxrPmPA_Ej1oSIK4iA9FEVgQtacgMlw7zt11kCortudI6PiZ5n4jd2VTylQUTMD7LY1-l8yCFWuFRtdZuZ4FYQiGSMIWWI45m_lr-WvWD1b9ekfsxu35yodWHHRmp8oH8hqouIChLgpey1bkzi8zO2YghejYW_9cnvDRWmQaLl33s1VfqLExfYJ1ADlE3P_NJwUVQH7x9iw_sJbXOlGl3HXAvRx80PljoVxpD5gHO_452mTSR-QkSmMTXW3cjINVCeBcIKQSqJdAQKOOwDoUlx0sFDPRfOPQc7c8TSlz1XklcBFvQ7q_YOArAjQkyzkpH_L2O9kj19s0OTH9T_CTl159GSf84SI7flf9BQH39ebZEbKjngmrjDo9oKAAky3t5SFy-SC62DaWF1lxcjJ7SqmMUzPta4T-yMBTE35Ooqx3I49xE_UlH64WvgXAIGzBL1gsZ8_13ciCjh-xuhOxI3yvPGPS7jvyjRTOmcYaCIDS-5q1koYevv2f3ssHz-Ht0P_5gSUM29U5TFzAkSwEJj0kXs1100mSWoIqSJDQd0c0MqQjFD3Kgrup2ECA4lHZRB4E3u6Z7AmrBxkkitDQG1QSDPAcOGup15-JB6yJgcr3F2skZ91sPl-gDZ7RTLlfMeh862I5eGFCv-MTF28LIbnRqGE1RsyHxy7N18YT2torLFyDfsU88nvum613lLJUDsHyoU_j-IOjmRQW1-nnEAPR2ltsHrkLvOU9M23jkXCNk_PmSeM7vXJOEUFjPopPPbnnbdhZ7fYtvLZUrhsXmsWAvUxWpjvEhfzwC9u7_zrMCi_l15ILbM58sAgBUKFlcLPiOJUDUfgP-t4jXNvCdouV-UTAc4JDSyjU="
+                },
+                {
+                  "type": "text",
+                  "text": "{\"category\":\"how-to\",\"priority\":\"P1\",\"team\":\"Customer success\",\"reason\":\"The matching reply-template article and past cases indicate this is a how-to request. The customer says the entire production team is blocked with no workaround, so work has stopped.\",\"record_ids\":[\"KB015\",\"T03608\"]}",
+                  "citations": []
+                }
+              ],
+              "model": "openai/gpt-6-luna",
+              "stop_reason": "end_turn",
+              "stop_details": null,
+              "stop_sequence": null,
+              "usage": {
+                "input_tokens": 1388,
+                "output_tokens": 294,
+                "output_tokens_details": {
+                  "thinking_tokens": 222
+                },
+                "cache_creation_input_tokens": null,
+                "cache_read_input_tokens": 0,
+                "cache_creation": null,
+                "inference_geo": null,
+                "server_tool_use": null,
+                "service_tier": "standard",
+                "speed": "standard"
+              }
+            }
+          },
+          "error": null
+        }
+      ]
+    },
+    "score": {
+      "valid": 12,
+      "category": 12,
+      "priority": 12,
+      "team_by_skills": 12,
+      "rows": [
+        {
+          "ticket_id": "T03018",
+          "decision": {
+            "category": "feature request",
+            "priority": "P4",
+            "team": "Customer success",
+            "reason": "Scheduled exports are a requested capability rather than a malfunction. The customer says production is unaffected and there is no deadline.",
+            "record_ids": [
+              "KB023",
+              "T03564",
+              "T02586"
+            ],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "category": true,
+          "priority": true,
+          "team_by_skills": true,
+          "stored": {
+            "category": "feature request",
+            "priority": "P4",
+            "team": "Customer care"
+          }
+        },
+        {
+          "ticket_id": "T02038",
+          "decision": {
+            "category": "feature request",
+            "priority": "P3",
+            "team": "Customer success",
+            "reason": "Custom SLA calendars are a requested capability, consistent with similar past cases. One person is affected, and operations continue with a workaround, so impact is limited.",
+            "record_ids": [
+              "T03722",
+              "T03975"
+            ],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "category": true,
+          "priority": true,
+          "team_by_skills": true,
+          "stored": {
+            "category": "feature request",
+            "priority": "P3",
+            "team": "Customer success"
+          }
+        },
+        {
+          "ticket_id": "T01531",
+          "decision": {
+            "category": "bug",
+            "priority": "P4",
+            "team": "Technical support",
+            "reason": "The export stops before completion, matching the documented export bug. Production is unaffected and there is no deadline, so impact is P4.",
+            "record_ids": [
+              "KB002",
+              "T01733"
+            ],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "category": true,
+          "priority": true,
+          "team_by_skills": true,
+          "stored": {
+            "category": "bug",
+            "priority": "P4",
+            "team": "Customer care"
+          }
+        },
+        {
+          "ticket_id": "T03226",
+          "decision": {
+            "category": "account access",
+            "priority": "P3",
+            "team": "Customer care",
+            "reason": "One person is affected, operations continue with a workaround, and resolution can wait a few days. Similar past cases were classified as account access, P3.",
+            "record_ids": [
+              "T00884",
+              "T02780",
+              "T01270",
+              "T03081",
+              "T00546",
+              "T02616",
+              "T01313",
+              "T01224"
+            ],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "category": true,
+          "priority": true,
+          "team_by_skills": true,
+          "stored": {
+            "category": "account access",
+            "priority": "P3",
+            "team": "Customer care"
+          }
+        },
+        {
+          "ticket_id": "T00737",
+          "decision": {
+            "category": "billing",
+            "priority": "P4",
+            "team": "Customer care",
+            "reason": "The renewal total is a billing issue. Production is unaffected and there is no deadline, so the impact is P4; similar renewal records are also categorized as billing.",
+            "record_ids": [
+              "KB013",
+              "T02540"
+            ],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "category": true,
+          "priority": true,
+          "team_by_skills": true,
+          "stored": {
+            "category": "billing",
+            "priority": "P4",
+            "team": "Technical support"
+          }
+        },
+        {
+          "ticket_id": "T02335",
+          "decision": {
+            "category": "bug",
+            "priority": "P3",
+            "team": "Technical support",
+            "reason": "The saved view incorrectly loses its sorting, matching prior resolved cases. Only one person is affected and operations continue with a workaround, so impact is limited.",
+            "record_ids": [
+              "T03182"
+            ],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "category": true,
+          "priority": true,
+          "team_by_skills": true,
+          "stored": {
+            "category": "bug",
+            "priority": "P3",
+            "team": "Customer care"
+          }
+        },
+        {
+          "ticket_id": "T00013",
+          "decision": {
+            "category": "outage",
+            "priority": "P1",
+            "team": "Technical support",
+            "reason": "The entire production team is unable to serve customers, with no workaround, so work has stopped. Similar past cases and the matching article classify this issue as an outage; similar cases were P1.",
+            "record_ids": [
+              "KB018",
+              "T00020",
+              "T00141"
+            ],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "category": true,
+          "priority": true,
+          "team_by_skills": true,
+          "stored": {
+            "category": "outage",
+            "priority": "P1",
+            "team": "Technical support"
+          }
+        },
+        {
+          "ticket_id": "T02696",
+          "decision": {
+            "category": "billing",
+            "priority": "P2",
+            "team": "Customer care",
+            "reason": "The missing invoice credit makes this a billing issue, consistent with similar past cases. Several people are held up and the workaround takes considerable manual work, warranting P2.",
+            "record_ids": [
+              "T02372",
+              "T02982",
+              "T02640",
+              "T03196",
+              "T01046",
+              "T02185",
+              "T03572",
+              "T02745"
+            ],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "category": true,
+          "priority": true,
+          "team_by_skills": true,
+          "stored": {
+            "category": "billing",
+            "priority": "P2",
+            "team": "Customer success"
+          }
+        },
+        {
+          "ticket_id": "T03005",
+          "decision": {
+            "category": "account access",
+            "priority": "P2",
+            "team": "Customer care",
+            "reason": "Expired invitation links are an account-access issue. Several people are held up, and the available workaround takes considerable manual work.",
+            "record_ids": [
+              "T02330"
+            ],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "category": true,
+          "priority": true,
+          "team_by_skills": true,
+          "stored": {
+            "category": "account access",
+            "priority": "P2",
+            "team": "Technical support"
+          }
+        },
+        {
+          "ticket_id": "T00040",
+          "decision": {
+            "category": "outage",
+            "priority": "P2",
+            "team": "Technical support",
+            "reason": "Messages cannot be sent, matching prior outage cases. Several people are blocked and the manual workaround is costly, but work can continue.",
+            "record_ids": [
+              "KB018",
+              "T00020"
+            ],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "category": true,
+          "priority": true,
+          "team_by_skills": true,
+          "stored": {
+            "category": "outage",
+            "priority": "P2",
+            "team": "Customer success"
+          }
+        },
+        {
+          "ticket_id": "T02213",
+          "decision": {
+            "category": "how-to",
+            "priority": "P1",
+            "team": "Customer success",
+            "reason": "The archived-conversations title matches the how-to article and prior cases; no specific product failure is described. The entire production team is blocked with no workaround, so this is P1.",
+            "record_ids": [
+              "KB027",
+              "T03930",
+              "T03326",
+              "T02629",
+              "T03175",
+              "T03851",
+              "T02413",
+              "T02744"
+            ],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "category": true,
+          "priority": true,
+          "team_by_skills": true,
+          "stored": {
+            "category": "how-to",
+            "priority": "P1",
+            "team": "Customer care"
+          }
+        },
+        {
+          "ticket_id": "T02531",
+          "decision": {
+            "category": "how-to",
+            "priority": "P1",
+            "team": "Customer success",
+            "reason": "The matching reply-template article and past cases indicate this is a how-to request. The customer says the entire production team is blocked with no workaround, so work has stopped.",
+            "record_ids": [
+              "KB015",
+              "T03608"
+            ],
+            "model": "openai/gpt-6-luna",
+            "dropped_ids": 0
+          },
+          "category": true,
+          "priority": true,
+          "team_by_skills": true,
+          "stored": {
+            "category": "how-to",
+            "priority": "P1",
+            "team": "Technical support"
+          }
+        }
+      ]
+    }
   },
   "free": {
     "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
@@ -460,6 +1398,7 @@
     },
     "key_usage_after_read": 0.162403655
   },
+  "key_usage_final": 0.13524527,
   "read": {
     "attempts": [
       {

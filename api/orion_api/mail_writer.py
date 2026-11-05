@@ -1,4 +1,4 @@
-"""The desk's only writes: adding rows to mail_messages, mail_links and mail_actions, as the login made by
+"""The desk's only writes: adding rows to mail_messages, mail_links, mail_actions and case_notes, as the login made by
 tools/create_mail_writer.py.
 
 That login has no UPDATE or DELETE and can reach no other table, so the database itself holds this to adding mail. It is
@@ -16,6 +16,8 @@ ON CONFLICT (mail_id) DO NOTHING"""
 ADD_ACTION = """INSERT INTO mail_actions (draft_id, action, ticket_id, actor, details)
 VALUES (%(draft_id)s, %(action)s, %(ticket_id)s, %(actor)s, %(details)s)
 ON CONFLICT (draft_id, action) DO NOTHING"""
+ADD_NOTE = """INSERT INTO case_notes (note_id, ticket_id, author, handed_to, body)
+VALUES (%(note_id)s, %(ticket_id)s, %(author)s, %(handed_to)s, %(body)s) RETURNING noted_at"""
 
 
 class MailWriter:
@@ -38,6 +40,18 @@ class MailWriter:
         with self.connect() as db, db.cursor() as cursor:
             cursor.execute(ADD_ACTION, row)
             return cursor.rowcount == 1
+
+    def add_link(self, mail_id, ticket_id):
+        """True if the link went in, False if this mail already has one."""
+        with self.connect() as db, db.cursor() as cursor:
+            cursor.execute(ADD_LINK, {"mail_id": mail_id, "ticket_id": ticket_id, "linked_by": "manual"})
+            return cursor.rowcount == 1
+
+    def add_note(self, row):
+        """The time the note was stored."""
+        with self.connect() as db, db.cursor() as cursor:
+            cursor.execute(ADD_NOTE, row)
+            return cursor.fetchone()[0]
 
     def save(self, mails, links):
         """One transaction, so a mail and its link land together."""

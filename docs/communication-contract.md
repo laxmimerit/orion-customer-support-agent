@@ -82,7 +82,7 @@ A draft record holds: `draft_id`, `ticket_id`, `to`, `subject`, `body`, `sources
 1. How a person signs in, and who may approve: any agent, or a lead only? (C3)
 2. Whether inbound mail should also sync on a timer. Today a person presses Sync mail (section 8).
 3. Whether tickets that arrived by web, API or chat get mail replies, or a reply on their own channel.
-4. Whether a person can link an unlinked mail by hand, or make a ticket from it. Today it waits on the Unlinked mail page.
+4. Whether a person can make a ticket from an unlinked mail. Linking one by hand is settled in section 10.
 5. How long drafts, discarded drafts and the state log are kept.
 
 ## 7. The mailbox connection today
@@ -128,3 +128,20 @@ Where this differs from the rules above, by the creator's decision:
 - **Section 3:** a draft can't be edited or discarded, and a failed draft is not sent again. A different text, or another try, is a new draft. `sending` is written before SMTP, so a crash leaves a draft that can't go twice.
 - **C7:** a reply keeps `Re:` and the original subject unchanged, so Gmail keeps the conversation. Only a subject with no ticket ID gains `[T00727]`, and Gmail may start a new conversation for that one.
 - **Citation:** the article is a line the desk adds to the end of the text, so the approver reads it. It is not a file attachment.
+
+## 10. Running the day
+
+Authorised by the creator for section 13. `tools/create_case_notes.py` makes `case_notes` and adds `manual` to `mail_links.linked_by`. The mail writer login can read and add, and never change.
+
+| Route | Does |
+|---|---|
+| `GET /api/mail/{mail_id}/triage` | Category, priority and team for one mail. Always GPT-6 Luna, the line marked `mail`, and nothing is stored |
+| `GET /api/mail/{mail_id}/match` | The nearest active case by meaning, as a possible duplicate. A person decides |
+| `POST /api/mail/{mail_id}/link` | Links the mail by hand, once |
+| `GET /api/follow-ups` | Late cases with an unsent follow-up draft, the oldest 100 |
+| `GET`, `POST /api/tickets/{ticket_id}/notes` | Internal notes. A note with `handed_to` is a handoff |
+
+- **Notes:** only the notes routes read `case_notes`. No model tool, draft or mail does.
+- **Handoff:** recorded in `case_notes` only. `tickets.agent_id` doesn't change, because migrated rows are never edited.
+- **Follow-up draft:** text built from the ticket's own fields. It is not stored and can't be approved or sent. A reply still goes through Compose, on a linked mail.
+- **Names:** `author` and `handed_to` are picked from `agents`, as approval is. The shared token can't prove who picked them, and a manual link records no name.

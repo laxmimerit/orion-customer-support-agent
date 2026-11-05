@@ -386,13 +386,62 @@ class LanguageModels(BaseModel):
 
 # The customer mailbox. No mailbox address leaves the API. label, messages and unread are null when they aren't known.
 class MailMessage(BaseModel):
-    """A customer mail. No address and no date, as everywhere on the desk. `linked_by` is `subject`, `thread` or null."""
+    """A customer mail. No address and no date, as everywhere on the desk. `linked_by` is `subject`, `thread`, `manual` or
+    null."""
     mail_id: str
     ticket_id: str | None
     linked_by: str | None
     sender_name: str | None
     subject: str | None
     body: str | None
+
+
+class MatchedTicket(BaseModel):
+    ticket_id: str
+    subject: str | None
+    status: str | None
+    similarity: float
+
+
+class MailMatch(BaseModel):
+    match: MatchedTicket | None
+
+
+class LinkRequest(BaseModel):
+    ticket_id: str = Field(min_length=1, max_length=32)
+
+
+# A log has to say when, so this shape carries a time. A note with `handed_to` is a handoff.
+class CaseNote(BaseModel):
+    note_id: str
+    author: str
+    handed_to: str | None
+    body: str
+    noted_at: UtcDatetime
+
+
+class CaseNotes(Listing[CaseNote]):
+    agents: list[str]
+
+
+class NoteRequest(BaseModel):
+    author: str = Field(min_length=1, max_length=100)
+    body: str = Field(min_length=1, max_length=4000)
+    handed_to: str | None = Field(default=None, min_length=1, max_length=100)
+
+
+# `age_hours` is hours to the data snapshot, as on TicketSummary. `approver` is the case's agent, null if it has none.
+class FollowUp(BaseModel):
+    ticket_id: str
+    subject: str | None
+    status: str | None
+    priority: str | None
+    company: str | None
+    approver: str | None
+    late_reply: bool
+    late_resolution: bool
+    age_hours: Decimal | None
+    draft: str
 
 
 class MailSync(BaseModel):

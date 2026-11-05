@@ -5,7 +5,7 @@ import { MAIL_UNVERIFIED, mailLinkLabel } from "@/lib/mail";
 import "./mail.css";
 
 // React escapes all of this. A mail body is never rendered as HTML: it comes from outside the desk.
-export function MailItem({ mail }: { mail: MailMessage }) {
+export function MailItem({ mail, children }: { mail: MailMessage; children?: React.ReactNode }) {
   return (
     <li className="mail-item">
       <div className="mail-meta">
@@ -15,6 +15,7 @@ export function MailItem({ mail }: { mail: MailMessage }) {
       </div>
       <p className="mail-subject">{mail.subject || "No subject recorded"}</p>
       <div className="mail-body">{mail.body ?? NOT_RECORDED}</div>
+      {children}
     </li>
   );
 }

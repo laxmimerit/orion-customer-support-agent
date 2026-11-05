@@ -280,7 +280,7 @@ export type MailStatus = {
 export type MailMessage = {
   mail_id: string;
   ticket_id: string | null;
-  linked_by: "subject" | "thread" | null;
+  linked_by: "subject" | "thread" | "manual" | null;
   sender_name: string | null;
   subject: string | null;
   body: string | null;
@@ -460,6 +460,49 @@ export function sendDraft(draftId: string) {
 
 export function ticketActions(ticketId: string) {
   return get<{ total: number; items: MailAction[] }>(`/api/tickets/${encodeURIComponent(ticketId)}/actions`);
+}
+
+export type MailMatch = { match: { ticket_id: string; subject: string | null; status: string | null; similarity: number } | null };
+
+export type CaseNote = { note_id: string; author: string; handed_to: string | null; body: string; noted_at: string };
+
+export type CaseNotes = { total: number; items: CaseNote[]; agents: string[] };
+
+export type FollowUp = {
+  ticket_id: string;
+  subject: string | null;
+  status: string | null;
+  priority: string | null;
+  company: string | null;
+  approver: string | null;
+  late_reply: boolean;
+  late_resolution: boolean;
+  age_hours: string | null;
+  draft: string;
+};
+
+export function mailMatch(mailId: string) {
+  return get<MailMatch>(`/api/mail/${encodeURIComponent(mailId)}/match`);
+}
+
+export function linkMail(mailId: string, ticketId: string) {
+  return send<MailMessage>("POST", `/api/mail/${encodeURIComponent(mailId)}/link`, true, AbortSignal.timeout(20_000), { ticket_id: ticketId });
+}
+
+export function triageMail(mailId: string, signal: AbortSignal) {
+  return get<Triage>(`/api/mail/${encodeURIComponent(mailId)}/triage`, true, AbortSignal.any([signal, AbortSignal.timeout(ANSWER_LIMIT_MS)]));
+}
+
+export function caseNotes(ticketId: string) {
+  return get<CaseNotes>(`/api/tickets/${encodeURIComponent(ticketId)}/notes`);
+}
+
+export function addCaseNote(ticketId: string, note: { author: string; body: string; handed_to: string | null }) {
+  return send<CaseNote>("POST", `/api/tickets/${encodeURIComponent(ticketId)}/notes`, true, AbortSignal.timeout(20_000), note);
+}
+
+export function followUps() {
+  return get<{ total: number; items: FollowUp[] }>("/api/follow-ups");
 }
 
 export function unlinkedMail() {

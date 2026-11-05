@@ -20,7 +20,8 @@ def test_every_route_is_under_api_apart_from_docs(client):
              "/api/tickets/{ticket_id}/triage", "/api/language-models",
              "/api/language-models/allow-list", "/api/mail/status", "/api/mail/unlinked", "/api/mail/sync",
              "/api/tickets/{ticket_id}/mail", "/api/tickets/{ticket_id}/drafts", "/api/tickets/{ticket_id}/actions",
-             "/api/drafts/{draft_id}/approve", "/api/drafts/{draft_id}/send"}
+             "/api/drafts/{draft_id}/approve", "/api/drafts/{draft_id}/send", "/api/tickets/{ticket_id}/notes",
+             "/api/mail/{mail_id}/triage", "/api/mail/{mail_id}/match", "/api/mail/{mail_id}/link", "/api/follow-ups"}
     assert paths == {"/api/tickets", "/api/tickets/{ticket_id}", "/api/search", "/api/admin/status", "/api/mcp", *reports,
                      *pages}
 
@@ -30,7 +31,8 @@ def test_every_route_is_get_only(client):
     and the database login holds the rest to adding rows. test_compose.py covers the three that make and send a reply."""
     methods = {method for route in client.app.routes
                if route.path.startswith("/api") and route.path not in ("/api/mcp", "/api/mail/sync", "/api/tickets/{ticket_id}/drafts",
-                                                                          "/api/drafts/{draft_id}/approve", "/api/drafts/{draft_id}/send")
+                                                                          "/api/drafts/{draft_id}/approve", "/api/drafts/{draft_id}/send",
+                                                                          "/api/mail/{mail_id}/link", "/api/tickets/{ticket_id}/notes")
                for method in route.methods}
     assert methods <= {"GET", "HEAD"}
     response = client.post("/api/tickets", headers=auth(AGENT))
@@ -51,7 +53,8 @@ def test_root_opens_the_docs(client):
                                   "/api/tickets/T00727/knowledge", "/api/tickets/T00727/similar",
                                   "/api/tickets/T00727/ask?q=Why", "/api/tickets/T00727/triage",
                                   "/api/language-models", "/api/language-models/allow-list", "/api/mail/status",
-                                  "/api/mail/unlinked", "/api/tickets/T00727/mail"])
+                                  "/api/mail/unlinked", "/api/tickets/T00727/mail", "/api/tickets/T00727/notes",
+                                  "/api/mail/ML1/triage", "/api/mail/ML1/match", "/api/follow-ups"])
 def test_a_token_is_required(client, path):
     response = client.get(path)
     assert response.status_code == 401

@@ -42,7 +42,7 @@ SCHEMA = (
     """CREATE TABLE IF NOT EXISTS mail_links (
     mail_id VARCHAR(16) PRIMARY KEY REFERENCES mail_messages (mail_id),
     ticket_id VARCHAR(64) NOT NULL REFERENCES tickets (ticket_id),
-    linked_by VARCHAR(16) NOT NULL CHECK (linked_by IN ('subject', 'thread')),
+    linked_by VARCHAR(16) NOT NULL CHECK (linked_by IN ('subject', 'thread', 'manual')),
     linked_at TIMESTAMP NOT NULL DEFAULT (now() AT TIME ZONE 'UTC')
 )""",
     "CREATE INDEX IF NOT EXISTS mail_links_ticket ON mail_links (ticket_id)",

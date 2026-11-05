@@ -1,6 +1,6 @@
 "use server";
 
-import { type ApiProblem, type MailSync, approveDraft, sendDraft, syncMail, ticketDetail } from "@/lib/api";
+import { type ApiProblem, type MailMatch, type MailSync, addCaseNote, approveDraft, linkMail, mailMatch, sendDraft, syncMail, ticketDetail } from "@/lib/api";
 
 // What the queue's preview panel loads for the chosen ticket. Only these fields leave the server:
 // the ticket detail also holds contact details and timestamps, and the desk shows neither.
@@ -48,4 +48,23 @@ export async function approveReply(draftId: string, approvedBy: string): Promise
 export async function sendReply(draftId: string): Promise<DraftStepResult> {
   const result = await sendDraft(draftId);
   return result.ok ? { ok: true } : { ok: false, problem: result.problem };
+}
+
+export type MatchResult = { ok: true; match: MailMatch["match"] } | { ok: false; message: string };
+
+export async function findDuplicate(mailId: string): Promise<MatchResult> {
+  const result = await mailMatch(mailId);
+  return result.ok ? { ok: true, match: result.data.match } : { ok: false, message: result.problem.message };
+}
+
+export type StepResult = { ok: true } | { ok: false; message: string };
+
+export async function linkToCase(mailId: string, ticketId: string): Promise<StepResult> {
+  const result = await linkMail(mailId, ticketId);
+  return result.ok ? { ok: true } : { ok: false, message: result.problem.message };
+}
+
+export async function saveNote(ticketId: string, author: string, body: string, handedTo: string | null): Promise<StepResult> {
+  const result = await addCaseNote(ticketId, { author, body, handed_to: handedTo });
+  return result.ok ? { ok: true } : { ok: false, message: result.problem.message };
 }

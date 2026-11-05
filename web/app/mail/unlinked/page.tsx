@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { ApiProblemPanel, PageHead, TicketSearchBar } from "@/components/desk";
 import { MailItem, MailUnverified } from "@/components/mail-item";
 import { MailSyncButton } from "@/components/mail-sync-button";
+import { MailTools } from "@/components/mail-tools";
 import { unlinkedMail } from "@/lib/api";
 import { mailCount } from "@/lib/mail";
 
@@ -31,7 +32,7 @@ export default async function UnlinkedMailPage() {
               </div>
             ) : (
               <ol className="mail-list">
-                {result.data.items.map((mail) => <MailItem key={mail.mail_id} mail={mail} />)}
+                {result.data.items.map((mail) => <MailItem key={mail.mail_id} mail={mail}><MailTools mailId={mail.mail_id} /></MailItem>)}
               </ol>
             )}
           </section>

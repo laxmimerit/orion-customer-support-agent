@@ -8,6 +8,7 @@ export const MAIL_UNVERIFIED = "Mail is shown as the sender wrote it. The desk h
 const LINKED_BY: Record<NonNullable<MailMessage["linked_by"]>, string> = {
   subject: "Ticket ID in the subject",
   thread: "Reply in the same thread",
+  manual: "Linked by an agent",
 };
 
 export function mailLinkLabel(linkedBy: MailMessage["linked_by"]) {

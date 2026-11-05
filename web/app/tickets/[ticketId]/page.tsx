@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { ActionHistory } from "@/components/action-history";
 import { AskPanel } from "@/components/ask-panel";
 import { CaseClock } from "@/components/case-clock";
+import { CaseNotes } from "@/components/case-notes";
 import { Conversation } from "@/components/conversation";
 import { ApiProblemPanel, ChannelIcon, Crumbs, Facts, PageHead, PriorityTile, StatusPill, TicketSearchBar } from "@/components/desk";
 import { BackIcon } from "@/components/icons";
@@ -94,6 +95,9 @@ export default async function CasePage({ params, searchParams }: Props) {
               mails={mail.ok ? mail.data.items.map(({ mail_id, sender_name, subject }) => ({ mail_id, sender_name, subject })) : []} />
             <Suspense key={`actions-${ticket.ticket_id}`} fallback={null}>
               <ActionHistory ticketId={ticket.ticket_id} />
+            </Suspense>
+            <Suspense key={`notes-${ticket.ticket_id}`} fallback={null}>
+              <CaseNotes ticketId={ticket.ticket_id} />
             </Suspense>
           </div>
           <aside className="split-rail" aria-label="Case details">
